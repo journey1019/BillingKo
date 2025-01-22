@@ -1,11 +1,14 @@
+import './index.css'; // TailwindCSS가 정의된 CSS 파일
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css'; // TailwindCSS 스타일
+import ReactDOM from 'react-dom/client';
 
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
 );
