@@ -2,29 +2,31 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "@/service/authService";
 
-const Login = () => {
-    const [userId, setUserId] = useState(""); // 사용자 ID
-    const [userPw, setUserPw] = useState(""); // 사용자 PW
-    const [error, setError] = useState(""); // 에러 메시지
-    const navigate = useNavigate(); // 페이지 이동
+const Login = ({ setAuth }) => {
+    const [userId, setUserId] = useState("");
+    const [userPw, setUserPw] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
-        e.preventDefault(); // 폼 기본 동작 방지
-        setError("");  // 기존 에러 초기화
+        e.preventDefault();
+        setError("");
 
         try {
             const data = await login(userId, userPw);
 
-            // 받은 데이터 출력 (로그인 성공 시)
-            console.log("Login Success:", data);
-
-            // 토큰 저장 (예: localStorage)
+            // 로그인 성공 시 토큰 저장
             localStorage.setItem("token", data.user_token);
+            localStorage.setItem("user_id", data.user_id);
+            localStorage.setItem("user_name", data.user_nm);
+            localStorage.setItem("token_expired", data.token_expired);
 
-            // 로그인 성공 후 홈페이지로 리다이렉션
+            // 상태 업데이트
+            setAuth(true);
+
+            // 홈페이지로 이동
             navigate("/");
         } catch (err) {
-            // 에러 메시지 출력
             setError(err.message);
         }
     };
