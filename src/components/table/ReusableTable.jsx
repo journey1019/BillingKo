@@ -37,12 +37,20 @@ const ReusableTable = ({ columns, data, options }) => {
                 onClick: () => options?.onRowClick && options.onRowClick(row), // Row 클릭 이벤트
                 style: { cursor: "pointer" }, // 포인터 커서 추가
             })}
+            renderRowActions={({ row }) => (
+                <div>
+                    <input
+                        type="radio"
+                        name="rowSelect"
+                        onClick={() => options?.onRowClick && options.onRowClick(row)}
+                    />
+                </div>
+            )}
             {...mergedOptions} // 병합된 옵션 전달
         />
     );
 };
 
-// PropTypes 정의
 ReusableTable.propTypes = {
     columns: PropTypes.arrayOf(
         PropTypes.shape({

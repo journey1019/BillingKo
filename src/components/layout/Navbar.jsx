@@ -9,6 +9,7 @@ import {
   FaChartBar,
   FaLayerGroup,
 } from "react-icons/fa";
+import { SiBitcoincash } from "react-icons/si";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -58,7 +59,7 @@ const Navbar = () => {
           </li>
           <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
             <Link to="/price">
-              <FaShoppingCart size={20} />
+              <SiBitcoincash size={20} />
             </Link>
             {isSidebarOpen && (
               <Link to="/price" className="transition duration-300">

@@ -3,20 +3,17 @@ import useFetch from "@/hooks/useFetch.js";
 import { MonthlyTableColumns } from '@/columns/MonthlyTableColumns';
 import { MonthlyTableOptions } from '@/options/MonthlyTableOptions.jsx';
 import ReusableTable from "@/components/table/ReusableTable";
+import SingleDatePicker from '@/components/time/SingleDatePicker.jsx';
 
 const Homepage = () => {
     // 데이터 가져오기
     const { data, loading, error } = useFetch("/data/monthly.json");
     const [selectedRow, setSelectedRow] = useState(null); // 선택된 Row의 데이터 저장
+    const [date, setDate] = useState(null);
+
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
-
-    // Row 클릭 핸들러
-    // const handleRowClick = (row) => {
-    //     setSelectedRow(row.original); // 클릭된 Row 데이터 저장
-    //     console.log(selectedRow) // 디버그용
-    // };
 
     // Row 클릭 핸들러
     const handleRowClick = (row) => {
@@ -35,15 +32,31 @@ const Homepage = () => {
             drawer.classList.add('hidden', '-translate-x-full');
         }
     };
+
+    // 날짜 선택
+    const handleDateChange = (selectedDate) => {
+        setDate(selectedDate);
+    };
+
     return (
         <>
-            {/* 메인 콘텐츠 */}
-            {/*<div className="rounded bg-white p-6 shadow-md w-full">*/}
-            {/*    <h1 className="text-2xl font-bold">Welcome to the Billing App!</h1>*/}
-            {/*    <p className="mt-2 text-gray-600">This is the main content area.</p>*/}
-            {/*</div>*/}
             <div className="container mx-auto">
-                <h1 className="py-1 text-base font-bold">Monthly Data</h1>
+                <div className="flex flex-row justify-between">
+                    <h1 className="py-1 text-base font-bold">2024년 12월</h1>
+                    {/* SingleDatePicker */}
+                    <div className="z-10">
+                        <SingleDatePicker
+                            value={date}
+                            onDateChange={handleDateChange}
+                            placeholder="Pick a date"
+                        />
+                        {date && (
+                            <p className="text-gray-700">
+                                Selected Date: {date.toLocaleDateString()}
+                            </p>
+                        )}
+                    </div>
+                </div>
                 <ReusableTable
                     columns={MonthlyTableColumns}
                     data={data}
@@ -91,6 +104,13 @@ const Homepage = () => {
                     </button>
                 </div>
             </div>
+
+            {/* 메인 콘텐츠 */}
+            {/*<div className="rounded bg-white p-6 shadow-md w-full">*/}
+            {/*    <h1 className="text-2xl font-bold">Welcome to the Billing App!</h1>*/}
+            {/*    <p className="mt-2 text-gray-600">This is the main content area.</p>*/}
+            {/*</div>*/}
+
 
             {/* 테이블 및 Drawer 레이아웃 */}
             {/*<div className="grid grid-cols-3 gap-2">*/}

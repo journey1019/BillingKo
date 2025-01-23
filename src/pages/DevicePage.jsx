@@ -1,5 +1,6 @@
 import useFetch from '@/hooks/useFetch.js';
 import { DeviceTableColumns } from '@/columns/DeviceTableColumns';
+import { DeviceTableOptions } from '@/options/DeviceTableOptions.jsx';
 import ReusableTable from '@/components/table/ReusableTable';
 
 const AccountPage = () => {
@@ -7,14 +8,6 @@ const AccountPage = () => {
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
-
-    const DeviceTableOptions = {
-        initialState: {
-            sorting: [{ id: "activated", desc: false }], // 기본 정렬 설정
-        },
-        enableRowSelection: true, // 행 선택 활성화
-        enablePagination: true, // 페이지네이션 활성화
-    };
 
     return (
         <div>
