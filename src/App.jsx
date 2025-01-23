@@ -1,16 +1,22 @@
-import RootLayout from "@/components/layout/RootLayout.jsx";
+import { Routes, Route } from "react-router-dom";
 
+import RootLayout from "@/components/layout/RootLayout.jsx";
+import Homepage from "@/pages/Homepage.jsx";
+import AccountPage from "@/pages/AccountPage.jsx";
+import DevicePage from '@/pages/DevicePage.jsx';
+import PricePage from '@/pages/PricePage.jsx';
 
 const App = () => {
-    return (
-      <RootLayout>
-        {/* 자유롭게 페이지 컴포넌트를 추가 */}
-        <div className="p-6 bg-white rounded shadow-md">
-          <h1 className="text-2xl font-bold">Welcome to the Billing App!</h1>
-          <p className="mt-2 text-gray-600">This is the main content area.</p>
-        </div>
-      </RootLayout>
-    );
+  return (
+    <RootLayout>
+      <Routes>
+        <Route path="/" element={<Homepage />} /> {/* 기본 경로 */}
+        <Route path="/account" element={<AccountPage />} />
+        <Route path="/device" element={<DevicePage />} />
+        <Route path="/price" element={<PricePage />} />
+      </Routes>
+    </RootLayout>
+  );
 };
 
 export default App;
