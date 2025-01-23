@@ -1,25 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "@/service/authService";
 
 const Login = ({ setAuth }) => {
     const [userId, setUserId] = useState("");
     const [userPw, setUserPw] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
+    // 로컬 스토리지에서 저장된 ID와 PW 로드
+    useEffect(() => {
+        const savedUserId = localStorage.getItem("remember_user_id");
+        const savedUserPw = localStorage.getItem("remember_user_pw");
+
+        if (savedUserId && savedUserPw) {
+            setUserId(savedUserId);
+            setUserPw(savedUserPw);
+            setRememberMe(true);
+        }
+    }, []);
+
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError("");
+        setError(""); // 기존 에러 초기화
 
         try {
             const data = await login(userId, userPw);
 
-            // 로그인 성공 시 토큰 저장
+            // 받은 데이터 출력 (로그인 성공 시)
+            console.log("Login Success:", data);
+
+            // 토큰 및 사용자 정보 저장
             localStorage.setItem("token", data.user_token);
             localStorage.setItem("user_id", data.user_id);
             localStorage.setItem("user_name", data.user_nm);
             localStorage.setItem("token_expired", data.token_expired);
+
+            // ID/PW 기억하기 설정
+            if (rememberMe) {
+                localStorage.setItem("remember_user_id", userId);
+                localStorage.setItem("remember_user_pw", userPw);
+            } else {
+                localStorage.removeItem("remember_user_id");
+                localStorage.removeItem("remember_user_pw");
+            }
 
             // 상태 업데이트
             setAuth(true);
@@ -27,6 +52,7 @@ const Login = ({ setAuth }) => {
             // 홈페이지로 이동
             navigate("/");
         } catch (err) {
+            // 에러 메시지 출력
             setError(err.message);
         }
     };
@@ -68,6 +94,18 @@ const Login = ({ setAuth }) => {
                             className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                             required
                         />
+                    </div>
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="rememberMe"
+                            checked={rememberMe}
+                            onChange={(e) => setRememberMe(e.target.checked)}
+                            className="mr-2"
+                        />
+                        <label htmlFor="rememberMe" className="text-sm text-gray-700">
+                            Remember Me
+                        </label>
                     </div>
                     <button
                         type="submit"
