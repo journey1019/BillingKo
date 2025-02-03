@@ -1,4 +1,5 @@
-import { postWithQueryString } from "./api";
+import { postWithBody } from "./api"; // Body
+import { postWithQueryString } from "./api"; // QueryString
 import { get, post, put, del } from "./api";
 
 /**
@@ -7,34 +8,44 @@ import { get, post, put, del } from "./api";
  */
 export const fetchAccounts = async () => {
     try {
-        return await get("/accounts");
+        return await get("/accounts/");
     } catch (error) {
         console.error("Failed to fetch accounts:", error.response?.data || error.message);
         throw error;
     }
 };
 
+// /**
+//  * 새로운 계정 생성
+//  * @param {object} accountData 계정 정보
+//  * @returns {Promise<object>} 생성된 계정 데이터
+//  */
+// export const createAccount = async (accountData) => {
+//     try {
+//         return await postWithQueryString("/accounts", accountData);
+//     } catch (error) {
+//         console.error("Failed to create account:", error);
+//         throw error;
+//     }
+// };
 /**
  * 새로운 계정 생성
  * @param {object} accountData 계정 정보
  * @returns {Promise<object>} 생성된 계정 데이터
  */
 export const createAccount = async (accountData) => {
+    // "null" 문자열이 아니라 실제 null로 변환
+    if (!accountData.invoice_address2 || accountData.invoice_address2.trim() === "") {
+        accountData.invoice_address2 = null;
+    }
+
     try {
-        return await postWithQueryString("/accounts", accountData);
+        return await postWithBody("/accounts/", accountData);
     } catch (error) {
-        console.error("Failed to create account:", error);
+        console.error("Failed to create account:", error.response?.data || error.message);
         throw error;
     }
 };
-// export const createAccount = async (accountData) => {
-//     try {
-//         return await post("/accounts", accountData);
-//     } catch (error) {
-//         console.error("Failed to create account:", error.response?.data || error.message);
-//         throw error;
-//     }
-// };
 
 /**
  * 계정 수정

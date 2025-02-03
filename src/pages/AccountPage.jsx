@@ -47,6 +47,7 @@ const AccountPage = () => {
 
     return (
         <div className="container mx-auto">
+            {/* Container */}
             <div className="flex flex-row justify-between mb-3">
                 {/* Title */}
                 <h1 className="py-1 text-lg font-bold">Account Data</h1>

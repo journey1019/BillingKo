@@ -9,7 +9,7 @@ const AccountNewPage = () => {
 
     // 폼 데이터 상태 관리
     const [formData, setFormData] = useState({
-        account_number: "",
+        acct_num: "",
         acct_name: "",
         acct_resident_num: "",
         classification: "",
@@ -47,7 +47,7 @@ const AccountNewPage = () => {
 
         const confirmMessage = `
             Please confirm the following details:
-            Account Number: ${formData.account_number}
+            Account Number: ${formData.acct_num}
             Account Name: ${formData.acct_name}
             Resident Number: ${formData.acct_resident_num}
             Classification: ${formData.classification}
@@ -90,15 +90,15 @@ const AccountNewPage = () => {
                     {/* Account_Num */}
                     <div className="grid grid-cols-6 items-center space-x-4">
                         <label
-                            htmlFor="account_number"
+                            htmlFor="acct_num"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
                             Account Number
                         </label>
                         <input
                             type="text"
-                            id="account_number"
-                            value={formData.account_number}
+                            id="acct_num"
+                            value={formData.acct_num}
                             onChange={handleInputChange}
                             className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="KO_99999"

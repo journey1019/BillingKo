@@ -6,7 +6,7 @@ const AccountEditPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        account_number: "",
+        acct_num: "",
         acct_name: "",
         acct_resident_num: "",
         classification: "",
