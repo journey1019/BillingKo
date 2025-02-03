@@ -15,6 +15,20 @@ export const fetchAccounts = async () => {
     }
 };
 
+/**
+ * 특정 계정 이력 조회
+ * @param {string} acct_num - 조회할 계정의 acct_num
+ * @returns {Promise<object>} 서버 응답 데이터
+ */
+export const fetchAccountHistory = async (acct_num) => {
+    try {
+        return await get(`/accounts/${acct_num}`);
+    } catch (error) {
+        console.error("Failed to fetch accounts:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
 // /**
 //  * 새로운 계정 생성
 //  * @param {object} accountData 계정 정보

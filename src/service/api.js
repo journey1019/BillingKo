@@ -17,14 +17,6 @@ export const postWithQueryString = async (url, params) => {
 };
 
 // POST 요청을 JSON Body로 전송
-// export const postWithBody = async (url, body) => {
-//     const response = await axios.post(`${API_URL}${url}`, body, {
-//         headers: {
-//             'Content-Type': 'application/json', // JSON 전송을 명시
-//         },
-//     });
-//     return response.data;
-// };
 export const postWithBody = async (url, body) => {
     const response = await api.post(url, body, {
         headers: {
