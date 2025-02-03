@@ -1,71 +1,76 @@
-import { useState } from 'react';
-import useFetch from "@/hooks/useFetch.js";
-import { MonthlyTableColumns } from '@/columns/MonthlyTableColumns';
-import { MonthlyTableOptions } from '@/options/MonthlyTableOptions.jsx';
+import { useState } from "react";
+import useApiFetch from "@/hooks/useApiFetch";
+import { fetchMonthlyData } from "@/service/monthlyService"; // API 호출 함수
+import { MonthlyTableColumns } from "@/columns/MonthlyTableColumns";
+import { MonthlyTableOptions } from "@/options/MonthlyTableOptions";
 import ReusableTable from "@/components/table/ReusableTable";
-import SingleDatePicker from '@/components/time/SingleDatePicker.jsx';
+import MonthPicker from "@/components/time/MonthPicker";
+import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 
 const Homepage = () => {
-    // 데이터 가져오기
-    const { data, loading, error } = useFetch("/data/monthly.json");
+    // 기본값: 현재 날짜 기준 한 달 전
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const [selectedDate, setSelectedDate] = useState(oneMonthAgo);
+    const yearMonth = selectedDate.toISOString().slice(0, 7).replace("-", "") // YYYYMM 형식
+
+    // API 호출: useApiFetch를 활용
+    const { data, loading, error } = useApiFetch(fetchMonthlyData, yearMonth);
+
+    // Table Row Click
     const [selectedRow, setSelectedRow] = useState(null); // 선택된 Row의 데이터 저장
-    const [date, setDate] = useState(null);
 
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    // 날짜 변경 핸들러
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+    };
 
     // Row 클릭 핸들러
     const handleRowClick = (row) => {
         setSelectedRow(row.original); // 클릭된 Row 데이터 저장
-        const drawer = document.getElementById('drawer-body-scrolling');
+        const drawer = document.getElementById("drawer-body-scrolling");
         if (drawer) {
-            drawer.classList.remove('hidden', '-translate-x-full');
+            drawer.classList.remove("hidden", "-translate-x-full");
         }
     };
 
     // Drawer 닫기
     const closeDrawer = () => {
         setSelectedRow(null);
-        const drawer = document.getElementById('drawer-body-scrolling');
+        const drawer = document.getElementById("drawer-body-scrolling");
         if (drawer) {
-            drawer.classList.add('hidden', '-translate-x-full');
+            drawer.classList.add("hidden", "-translate-x-full");
         }
     };
 
-    // 날짜 선택
-    const handleDateChange = (selectedDate) => {
-        setDate(selectedDate);
-    };
+    // if (loading) return <LoadingSpinner/>;
+    if (error) return <p className="text-red-500">Error: {error}</p>;
 
     return (
-        <>
-            <div className="container mx-auto">
-                <div className="flex flex-row justify-between">
-                    <h1 className="py-1 text-base font-bold">2024년 12월</h1>
-                    {/* SingleDatePicker */}
-                    <div className="z-10">
-                        <SingleDatePicker
-                            value={date}
-                            onDateChange={handleDateChange}
-                            placeholder="Pick a date"
-                        />
-                        {date && (
-                            <p className="text-gray-700">
-                                Selected Date: {date.toLocaleDateString()}
-                            </p>
-                        )}
-                    </div>
+        <div className="container mx-auto">
+            <div className="flex flex-row items-center justify-between mb-3">
+                <h1 className="text-lg font-bold">
+                    Selected Month:{" "}
+                    {selectedDate.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                    })}
+                </h1>
+                <div className="z-10">
+                    <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
                 </div>
+            </div>
+            {loading ? <LoadingSpinner/> : (
                 <ReusableTable
                     columns={MonthlyTableColumns}
                     data={data}
                     options={{
                         ...MonthlyTableOptions,
-                        onRowClick: handleRowClick, // Row 클릭 이벤트 전달
+                        onRowClick: handleRowClick,
+                        // onRowClick: (row) => (console.log(row.original)),
                     }}
                 />
-            </div>
+            )}
 
             {/* Drawer */}
             <div
@@ -104,79 +109,7 @@ const Homepage = () => {
                     </button>
                 </div>
             </div>
-
-            {/* 메인 콘텐츠 */}
-            {/*<div className="rounded bg-white p-6 shadow-md w-full">*/}
-            {/*    <h1 className="text-2xl font-bold">Welcome to the Billing App!</h1>*/}
-            {/*    <p className="mt-2 text-gray-600">This is the main content area.</p>*/}
-            {/*</div>*/}
-
-
-            {/* 테이블 및 Drawer 레이아웃 */}
-            {/*<div className="grid grid-cols-3 gap-2">*/}
-            {/*    /!* Table *!/*/}
-            {/*    <div className={`col-span-${selectedRow ? "2" : "3"} transition-all`}>*/}
-            {/*        <h1 className="py-1 text-base font-bold">Monthly Data</h1>*/}
-            {/*        <ReusableTable*/}
-            {/*            columns={MonthlyTableColumns}*/}
-            {/*            data={data}*/}
-            {/*            options={{*/}
-            {/*                ...MonthlyTableOptions,*/}
-            {/*                onRowClick: handleRowClick, // Row 클릭 이벤트 전달*/}
-            {/*            }}*/}
-            {/*        />*/}
-            {/*    </div>*/}
-
-            {/*    /!* Drawer *!/*/}
-            {/*    {selectedRow && (*/}
-            {/*        <div className="col-span-1 bg-white shadow-md p-6 w-full">*/}
-            {/*            <h1 className="text-base font-bold">세부 정보</h1>*/}
-            {/*            <pre>{JSON.stringify(selectedRow, null, 2)}</pre>*/}
-            {/*        </div>*/}
-            {/*    )}*/}
-            {/*    {selectedRow && (*/}
-            {/*        <div className="col-span-1 bg-white shadow-md p-6">*/}
-            {/*            <h1 className="text-base font-bold">세부 정보</h1>*/}
-            {/*            <div>*/}
-            {/*                <h2 className="font-bold mt-4">Use Byte Details</h2>*/}
-            {/*                <ul>*/}
-            {/*                    {(selectedRow.use_byte_detail || []).map((detail, index) => (*/}
-            {/*                        <li key={index}>*/}
-            {/*                            ConType: {detail.con_type}, FreeByteCode: {detail.free_byte_code}, Use Byte: {detail.use_byte}*/}
-            {/*                        </li>*/}
-            {/*                    ))}*/}
-            {/*                    {!(selectedRow.use_byte_detail?.length) && <p>No use byte details available.</p>}*/}
-            {/*                </ul>*/}
-
-            {/*                <h2 className="font-bold mt-4">Payment Details</h2>*/}
-            {/*                <ul>*/}
-            {/*                    {selectedRow.payment?.fee_detail?.map((fee, index) => (*/}
-            {/*                        <li key={index}>*/}
-            {/*                            Classification: {fee.classfication}, Billing Fee: {fee.billing_fee} USD*/}
-            {/*                        </li>*/}
-            {/*                    ))}*/}
-            {/*                    {!(selectedRow.payment?.fee_detail?.length) && <p>No payment details available.</p>}*/}
-            {/*                </ul>*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*    )}*/}
-            {/*</div>*/}
-
-            {/* 테이블 섹션 */}
-            {/*<div>*/}
-            {/*    <h1 className="py-1 text-base font-bold">Monthly Data</h1>*/}
-            {/*    <ReusableTable columns={MonthlyTableColumns} data={data} options={MonthlyTableOptions} />*/}
-            {/*</div>*/}
-
-            {/*<div className="flex flex-row">*/}
-            {/*    <div style={{ width: "calc(100vw - 500px)" }}>*/}
-            {/*        <ReusableTable columns={MonthlyTableColumns} data={data} options={MonthlyTableOptions} />*/}
-            {/*    </div>*/}
-            {/*    <div className="ml-2 w-full h-full bg-white rounded sha">*/}
-            {/*        컴포넌트*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-        </>
+        </div>
     );
 };
 

@@ -11,6 +11,7 @@ import {
 } from 'react-icons/fa';
 import { SiBitcoincash } from 'react-icons/si';
 import { TbLogout } from 'react-icons/tb';
+import { FiPlus } from 'react-icons/fi';
 
 
 const Navbar = () => {
@@ -39,53 +40,38 @@ const Navbar = () => {
 
                 {/* Sidebar Menu */}
                 <ul className="mt-4 space-y-2">
-                    <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
-                        <Link to="/account">
+                    <Link to="/accounts" className="block">
+                        <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
                             <FaAddressCard size={20} />
-                        </Link>
-                        {isSidebarOpen && (
-                            <Link to="/account" className="transition duration-300">
-                                사용자 관리
-                            </Link>
-                        )}
-                    </li>
-                    <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
-                        <Link to="/device">
+                            {isSidebarOpen && <span className="transition duration-300">사용자 관리</span>}
+                        </li>
+                    </Link>
+                    <Link to="/device" className="block">
+                        <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
                             <FaChalkboard size={20} />
-                        </Link>
-                        {isSidebarOpen && (
-                            <Link to="/device" className="transition duration-300">
-                                단말기 관리
-                            </Link>
-                        )}
-                    </li>
-                    <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
-                        <Link to="/price">
+                            {isSidebarOpen && <span className="transition duration-300">단말기 관리</span>}
+                        </li>
+                    </Link>
+                    <Link to="/price" className="block">
+                        <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
                             <SiBitcoincash size={20} />
-                        </Link>
-                        {isSidebarOpen && (
-                            <Link to="/price" className="transition duration-300">
-                                요금제 관리
-                            </Link>
-                        )}
-                    </li>
-                    <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
-                        <FaChartBar size={20} />
-                        {isSidebarOpen && (
-                            <Link to="/" className="transition duration-300">
-                                Reports
-                            </Link>
-                        )}
-                    </li>
-                    <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
-                        <FaLayerGroup size={20} />
-                        {isSidebarOpen && (
-                            <Link to="/" className="transition duration-300">
-                                Integrations
-                            </Link>
-                        )}
-                    </li>
+                            {isSidebarOpen && <span className="transition duration-300">요금제 관리</span>}
+                        </li>
+                    </Link>
+                    <Link to="/" className="block">
+                        <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
+                            <FaChartBar size={20} />
+                            {isSidebarOpen && <span className="transition duration-300">Reports</span>}
+                        </li>
+                    </Link>
+                    <Link to="/" className="block">
+                        <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
+                            <FaLayerGroup size={20} />
+                            {isSidebarOpen && <span className="transition duration-300">Integrations</span>}
+                        </li>
+                    </Link>
                 </ul>
+
             </div>
 
             {/* Navbar */}
@@ -99,26 +85,50 @@ const Navbar = () => {
                         KOREA ORBCOMM
                     </Link>
                     <ul className="flex space-x-8">
-                        <li className="flex items-center space-x-2 transition hover:text-blue-400">
-                            <FaChalkboard />
-                            <Link to="/user">사용자 관리</Link>
+                        <li>
+                            <Link
+                                to="/user"
+                                className="flex items-center space-x-2 p-2 transition hover:text-blue-400"
+                            >
+                                <FaChalkboard />
+                                <span>사용자 관리</span>
+                            </Link>
                         </li>
-                        <li className="flex items-center space-x-2 transition hover:text-blue-400">
-                            <FaShoppingCart />
-                            <Link to="/orders">Orders</Link>
+                        <li>
+                            <Link
+                                to="/orders"
+                                className="flex items-center space-x-2 p-2 transition hover:text-blue-400"
+                            >
+                                <FaShoppingCart />
+                                <span>단말기 관리</span>
+                            </Link>
                         </li>
-                        <li className="flex items-center space-x-2 transition hover:text-blue-400">
-                            <FaChartBar />
-                            <Link to="/reports">Reports</Link>
+                        <li>
+                            <Link
+                                to="/reports"
+                                className="flex items-center space-x-2 p-2 transition hover:text-blue-400"
+                            >
+                                <FaChartBar />
+                                <span>요금제 관리</span>
+                            </Link>
                         </li>
-                        <li className="flex items-center space-x-2 transition hover:text-blue-400">
-                            <FaLayerGroup />
-                            <Link to="/integrations">Integrations</Link>
+                        <li>
+                            <Link
+                                to="/integrations"
+                                className="flex items-center space-x-2 p-2 transition hover:text-blue-400"
+                            >
+                                <FaLayerGroup />
+                                <span>Integrations</span>
+                            </Link>
                         </li>
-                      {/* Logout */}
-                        <li className="flex items-center space-x-2 transition hover:text-blue-400">
-                          <TbLogout />
-                          <Link to="/logout">로그아웃</Link>
+                        <li>
+                            <Link
+                                to="/logout"
+                                className="flex items-center space-x-2 p-2 transition hover:text-blue-400"
+                            >
+                                <TbLogout />
+                                <span>로그아웃</span>
+                            </Link>
                         </li>
                     </ul>
                 </div>
@@ -130,7 +140,17 @@ const Navbar = () => {
                     isSidebarOpen ? 'left-48' : 'left-16'
                 }`}
             >
-                <span>Home</span>
+                <div className="container mx-auto flex flex-row justify-between items-center">
+                    {/* Search Device | Account */}
+                    <span>Search Device</span>
+
+                    {/* Add Button */}
+                    <button onClick={() => console.log('click')}>
+                        <li className="flex flex-row p-2 rounded-md bg-blue-500 items-center text-sm text-white">
+                            <FiPlus />
+                        </li>
+                    </button>
+                </div>
             </div>
         </div>
     );

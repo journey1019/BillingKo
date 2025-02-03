@@ -1,10 +1,8 @@
-import api from "./api";
+import { get } from "./api";
 
-export const fetchMonthlyData = async (yearMonth) => {
-    try {
-        const response = await api.get(`/monthly/${yearMonth}`); // 연월 기반 API 호출
-        return response.data;
-    } catch (error) {
-        throw new Error(error.response?.data?.detail || "Failed to fetch monthly data");
-    }
-};
+/**
+ * 월별 데이터 가져오기
+ * @param {string} yearMonth YYYYMM 형식의 날짜
+ * @returns {Promise<object>} 서버 응답 데이터
+ */
+export const fetchMonthlyData = (yearMonth) => get(`/monthly/${yearMonth}`);
