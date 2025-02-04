@@ -8,6 +8,19 @@ const api = axios.create({
     timeout: 5000, // 요청 타임아웃 설정 (5초)
 });
 
+// 공통 에러 처리 함수
+const handleError = (error) => {
+    if (error.response) {
+        console.error(
+            `Response Error: ${error.response.status} - ${error.response.statusText}`
+        );
+        console.error("Response Details:", error.response.data);
+    } else {
+        console.error("Network Error:", error.message);
+    }
+    return Promise.reject(error);
+};
+
 // POST 요청을 Query String로 전송
 export const postWithQueryString = async (url, params) => {
     const response = await axios.post(`${API_URL}${url}`, null, {
@@ -44,23 +57,30 @@ api.interceptors.request.use(
 
 // 응답 인터셉터
 api.interceptors.response.use(
-    (response) => {
-        console.log("Response Data:", response.data); // 응답 디버깅
-        return response;
-    },
-    (error) => {
-        if (error.response) {
-            console.error(
-                `Response Error: ${error.response.status} - ${error.response.statusText}`
-            );
-            console.error("Response Details:", error.response.data); // 응답 상세 확인
-        } else {
-            console.error("Network Error:", error.message);
-        }
-        return Promise.reject(error);
-    }
+    (response) => response,
+    handleError
 );
 
+// // 응답 인터셉터
+// api.interceptors.response.use(
+//     (response) => {
+//         console.log("Response Data:", response.data); // 응답 디버깅
+//         return response;
+//     },
+//     (error) => {
+//         if (error.response) {
+//             console.error(
+//                 `Response Error: ${error.response.status} - ${error.response.statusText}`
+//             );
+//             console.error("Response Details:", error.response.data); // 응답 상세 확인
+//         } else {
+//             console.error("Network Error:", error.message);
+//         }
+//         return Promise.reject(error);
+//     }
+// );
+
+// 공통 메서드
 // GET 요청
 export const get = async (url, params = {}) => {
     const response = await api.get(url, { params });

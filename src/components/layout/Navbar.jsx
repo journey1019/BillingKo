@@ -80,7 +80,7 @@ const Navbar = () => {
                     isSidebarOpen ? 'left-48' : 'left-16'
                 }`}
             >
-                <div className="flex items-center justify-between px-6 py-4">
+                <div className="flex items-center justify-between px-6 pt-3 pb-4">
                     <Link to="/" className="text-2xl font-bold hover:underline">
                         KOREA ORBCOMM
                     </Link>

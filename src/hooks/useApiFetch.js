@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 /**
  * API 호출을 관리하는 커스텀 훅
@@ -11,7 +11,8 @@ const useApiFetch = (apiFunction, params) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchData = async () => {
+    // 불필요한 param에 의한 재호출 방지
+    const fetchData = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
@@ -22,7 +23,7 @@ const useApiFetch = (apiFunction, params) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [apiFunction, params]);
 
     useEffect(() => {
         fetchData();

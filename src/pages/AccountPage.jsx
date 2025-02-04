@@ -17,9 +17,9 @@ const AccountPage = () => {
     const { data, loading, error, refetch } = useApiFetch(fetchAccounts);
     const [selectedAccountId, setSelectedAccountId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
-    const [isOpenDropdown, setIsOpenDropdown] = useState(false);
+    const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
     const navigate = useNavigate();
-
+ㅜ
     const [historyData, setHistoryData] = useState(null);
     const [historyLoading, setHistoryLoading] = useState(false);
     const [historyError, setHistoryError] = useState(null);
@@ -80,7 +80,6 @@ const AccountPage = () => {
     if (loading) return <LoadingSpinner/>;
     if (error) return <p>Error: {error}</p>;
 
-    console.log(JSON.stringify(historyData))
     return (
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-3' : 'grid-cols-1'}`}>
             {/* Left Section */}

@@ -23,7 +23,7 @@ export const fetchAccountHistory = async (acct_num) => {
     try {
         return await get(`/accounts/${acct_num}`);
     } catch (error) {
-        console.error("Failed to fetch accounts:", error.response?.data || error.message);
+        console.error("Failed to fetch account History:", error.response?.data || error.message);
         throw error;
     }
 };
