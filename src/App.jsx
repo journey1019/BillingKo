@@ -9,6 +9,8 @@ import Login from "@/pages/Login.jsx";
 import Logout from "@/pages/Logout.jsx";
 import AccountNewPage from '@/pages/AccountNewPage.jsx';
 import AccountEditPage from '@/pages/AccountEditPage.jsx';
+import PriceNewPage from '@/pages/PriceNewPage.jsx';
+import PriceEditPage from '@/pages/PriceEditPage.jsx';
 
 // ProtectedRoute 컴포넌트
 const ProtectedRoute = ({ isAuthenticated, children }) => {
@@ -71,11 +73,14 @@ const App = () => {
                             <Routes>
                                 <Route path="/" element={<Homepage />} />
                                 <Route path="/accounts" element={<AccountPage />} />
-                                <Route path="/device" element={<DevicePage />} />
+                                <Route path="/devices" element={<DevicePage />} />
                                 <Route path="/price" element={<PricePage />} />
 
                                 <Route path="/accounts/new" element={<AccountNewPage />} />
                                 <Route path="/accounts/:acct_num/edit" element={<AccountEditPage />} />
+
+                                <Route path="/price/new" element={<PriceNewPage />} />
+                                <Route path="/price/:ppid/edit" element={<PriceEditPage />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>

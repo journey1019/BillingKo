@@ -28,6 +28,11 @@ const Login = ({ setAuth }) => {
         try {
             const data = await login(userId, userPw);
 
+            // JWT 토큰 형식 검사
+            if (!data.user_token || !/^[-\w]+\.[-\w]+\.[-\w]+$/.test(data.user_token)) {
+                throw new Error("Invalid token format received from server.");
+            }
+
             // 받은 데이터 출력 (로그인 성공 시)
             console.log("Login Success:", data);
 

@@ -19,7 +19,7 @@ const AccountPage = () => {
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
     const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
     const navigate = useNavigate();
-ㅜ
+
     const [historyData, setHistoryData] = useState(null);
     const [historyLoading, setHistoryLoading] = useState(false);
     const [historyError, setHistoryError] = useState(null);
@@ -157,7 +157,9 @@ const AccountPage = () => {
 
                             {/* Buttons - Edit & Mail & . */}
                             <ButtonGroup
-                                acct_num={selectedAccountId.acct_num}
+                                entityType="accounts"
+                                id={selectedAccountId.acct_num}
+                                deleteFunction={deleteAccount}
                                 onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
                             />
                         </div>

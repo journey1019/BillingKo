@@ -31,9 +31,12 @@ export const postWithQueryString = async (url, params) => {
 
 // POST 요청을 JSON Body로 전송
 export const postWithBody = async (url, body) => {
+    const token = localStorage.getItem("token");
+
     const response = await api.post(url, body, {
         headers: {
-            'Content-Type': 'application/json', // JSON 전송을 명시
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
     });
     return response.data;
@@ -42,11 +45,17 @@ export const postWithBody = async (url, body) => {
 // 요청 인터셉터
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("token"); // 로컬 스토리지에서 토큰 가져오기
-        if (token && !config.url.includes("/user/login/")) {
-            config.headers.Authorization = `Bearer ${token}`; // Authorization 헤더에 토큰 추가
+        let token = localStorage.getItem("token");
+
+        // Bearer 접두사가 없는 경우 자동 추가
+        if (token && !token.startsWith("Bearer ")) {
+            token = `Bearer ${token}`;
         }
-        console.log("Request Config:", config); // 요청 디버깅
+
+        if (token && !config.url.includes("/user/login/")) {
+            config.headers.Authorization = token;
+        }
+        console.log("Request Config:", config);
         return config;
     },
     (error) => {
@@ -54,6 +63,8 @@ api.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
+
 
 // 응답 인터셉터
 api.interceptors.response.use(

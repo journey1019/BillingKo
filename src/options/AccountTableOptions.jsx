@@ -7,7 +7,7 @@ export const AccountTableOptions = {
     enableMultiRowSelection: false,
     enablePagination: true,
     enableFilters: true,
-    positionToolbarAlertBanner: 'head-overlay', // 경고를 표시하되, Column 제목 가림
+    positionToolbarAlertBanner: 'head-overlay',
 
 
     muiTableBodyRowProps: ({ row, table }) => ({
