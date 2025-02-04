@@ -46,7 +46,7 @@ const Navbar = () => {
                             {isSidebarOpen && <span className="transition duration-300">사용자 관리</span>}
                         </li>
                     </Link>
-                    <Link to="/device" className="block">
+                    <Link to="/devices" className="block">
                         <li className="flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline">
                             <FaChalkboard size={20} />
                             {isSidebarOpen && <span className="transition duration-300">단말기 관리</span>}

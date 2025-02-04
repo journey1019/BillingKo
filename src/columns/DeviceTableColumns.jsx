@@ -2,6 +2,7 @@ export const DeviceTableColumns = [
     {
         accessorKey: 'serial_number',
         header: 'Serial Number',
+        enableClickToCopy : true,
     },
     {
         accessorKey: 'acct_num',

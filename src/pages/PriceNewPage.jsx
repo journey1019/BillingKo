@@ -14,7 +14,7 @@ const PriceNewPage = () => {
         subscription_fee: "",
         free_byte: "",
         surcharge_unit: "",
-        each_surcharge_unit: "",
+        each_surcharge_fee: "",
         apply_company: "",
         remarks: "",
         note: "",
@@ -33,7 +33,7 @@ const PriceNewPage = () => {
         const requiredFields = [
             "ppid", "basic_fee", "subscription_fee",
             "free_byte", "surcharge_unit",
-            "each_surcharge_unit", "apply_company"
+            "each_surcharge_fee", "apply_company"
         ];
 
         for (const field of requiredFields) {
@@ -48,7 +48,7 @@ const PriceNewPage = () => {
         const updatedData = { ...data };
 
         // 각 필드가 비어 있으면 null 대신 기본값 설정
-        if (!updatedData.each_surcharge_unit || updatedData.each_surcharge_unit.trim() === "") {
+        if (!updatedData.each_surcharge_fee || updatedData.each_surcharge_fee.trim() === "") {
             updatedData.each_surcharge_fee = "0.0";  // 기본값 설정
         }
 
@@ -190,18 +190,18 @@ const PriceNewPage = () => {
                             required
                         />
                     </div>
-                    {/* Each_Surcharge_Unit */}
+                    {/* Each_Surcharge_Fee */}
                     <div className="grid grid-cols-6 items-center space-x-4">
                         <label
-                            htmlFor="each_surcharge_unit"
+                            htmlFor="each_surcharge_fee"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Each Surcharge Unit
+                            Each Surcharge Fee
                         </label>
                         <input
                             type="number"
-                            id="each_surcharge_unit"
-                            value={formData.each_surcharge_unit}
+                            id="each_surcharge_fee"
+                            value={formData.each_surcharge_fee}
                             onChange={handleInputChange}
                             className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="0.0"

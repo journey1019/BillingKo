@@ -2,6 +2,7 @@ export const AccountTableColumns = [
     {
         accessorKey: 'acct_num',
         header: 'Account Num',
+        enableClickToCopy : true,
     },
     {
         accessorKey: 'acct_name',

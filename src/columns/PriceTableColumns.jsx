@@ -2,6 +2,7 @@ export const PriceTableColumns = [
     {
         accessorKey: "ppid",
         header: "PPID",
+        enableClickToCopy : true,
     },
     {
         accessorKey: "basic_fee",

@@ -14,7 +14,7 @@ const PriceEditPage = () => {
         subscription_fee: "",
         free_byte: "",
         surcharge_unit: "",
-        each_surcharge_unit: "",
+        each_surcharge_fee: "",
         apply_company: "",
         remarks: "",
         note: "",

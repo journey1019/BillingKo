@@ -11,6 +11,8 @@ import AccountNewPage from '@/pages/AccountNewPage.jsx';
 import AccountEditPage from '@/pages/AccountEditPage.jsx';
 import PriceNewPage from '@/pages/PriceNewPage.jsx';
 import PriceEditPage from '@/pages/PriceEditPage.jsx';
+import DeviceNewPage from '@/pages/DeviceNewPage.jsx';
+import DeviceEditPage from '@/pages/DeviceEditPage.jsx';
 
 // ProtectedRoute 컴포넌트
 const ProtectedRoute = ({ isAuthenticated, children }) => {
@@ -81,6 +83,9 @@ const App = () => {
 
                                 <Route path="/price/new" element={<PriceNewPage />} />
                                 <Route path="/price/:ppid/edit" element={<PriceEditPage />} />
+
+                                <Route path="/devices/new" element={<DeviceNewPage />} />
+                                <Route path="/devices/:serial_number/edit" element={<DeviceEditPage />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>
