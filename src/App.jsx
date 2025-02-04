@@ -47,7 +47,7 @@ const App = () => {
         }
     }, [isAuthenticated]);
 
-    console.log(isAuthenticated)
+    console.log(`인증 성공 여부: ${isAuthenticated}`)
 
     return (
         <Routes>
@@ -75,22 +75,13 @@ const App = () => {
                                 <Route path="/price" element={<PricePage />} />
 
                                 <Route path="/accounts/new" element={<AccountNewPage />} />
-                                <Route path="/accounts/edit" element={<AccountEditPage />} />
+                                <Route path="/accounts/:acct_num/edit" element={<AccountEditPage />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>
                 }
             />
         </Routes>
-
-        // <RootLayout>
-        //     <Routes>
-        //         <Route path="/" element={<Homepage />} /> {/* 기본 경로 */}
-        //         <Route path="/account" element={<AccountPage />} />
-        //         <Route path="/device" element={<DevicePage />} />
-        //         <Route path="/price" element={<PricePage />} />
-        //     </Routes>
-        // </RootLayout>
     );
 };
 

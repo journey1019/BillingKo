@@ -1,11 +1,57 @@
 import { MdModeEditOutline } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
+import { deleteAccount } from '@/service/accountService';
+import { useState } from 'react';
 
-const ButtonGroup = () => {
+const ButtonGroup = ({ acct_num, onDeleteSuccess }) => {
+    const navigate = useNavigate();
+
+    // const handleDelete = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         console.log("Delete 요청 보낼 데이터", acct_num);
+    //         await deleteAccount(acct_num);
+    //         alert("Delete!");
+    //         navigate("/accounts");
+    //     } catch (err) {
+    //         console.error(err.message);
+    //     }
+    // }
+    const handleDelete = async (e) => {
+        e.preventDefault();
+        const confirmDelete = window.confirm("Are you sure you want to delete this account?");
+        if (!confirmDelete) return;
+
+        try {
+            console.log("Deleting account:", acct_num);
+            await deleteAccount(acct_num);
+            alert("Account deleted successfully!");
+
+            // 부모 컴포넌트의 상태 갱신을 위해 콜백 호출
+            if (onDeleteSuccess) {
+                onDeleteSuccess();
+            }
+        } catch (err) {
+            console.error("Failed to delete account:", err.message);
+        }
+    };
+
     return (
         <div className="inline-flex rounded-md shadow-xs" role="group">
-            <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-                <MdModeEditOutline className="mr-3"/>
+            <button type="button"
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                    onClick={() => navigate(`/accounts/${acct_num}/edit`)}
+            >
+                <MdModeEditOutline className="mr-3" />
                 Edit
+            </button>
+            <button type="button"
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                    onClick={handleDelete}
+            >
+                <MdDelete className="mr-3" />
+                Delete
             </button>
             <button type="button"
                     className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">

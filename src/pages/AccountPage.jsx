@@ -66,6 +66,13 @@ const AccountPage = () => {
         navigate(`/accounts/${id}/edit`);
     };
 
+    // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
+    const handleDeleteSuccess = () => {
+        refetch();  // 데이터 새로고침
+        setSelectedAccountId(null);  // 선택 해제
+        setIsExpanded(false); // Grid 초기 화면 복구
+    };
+
     // Edit & Delete 메뉴
     const toggleDropdown = () => setIsOpenDropdown(!isOpenDropdown);
     const closeDropdown = () => setIsOpenDropdown(false);
@@ -150,7 +157,10 @@ const AccountPage = () => {
                             <h2 className="py-1 text-lg font-bold text-red-600">{selectedAccountId.acct_num}</h2>
 
                             {/* Buttons - Edit & Mail & . */}
-                            <ButtonGroup />
+                            <ButtonGroup
+                                acct_num={selectedAccountId.acct_num}
+                                onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
+                            />
                         </div>
 
                         {/* Bottom */}

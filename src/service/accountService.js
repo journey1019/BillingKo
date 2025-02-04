@@ -1,5 +1,4 @@
 import { postWithBody } from "./api"; // Body
-import { postWithQueryString } from "./api"; // QueryString
 import { get, post, put, del } from "./api";
 
 /**
@@ -67,9 +66,9 @@ export const createAccount = async (accountData) => {
  * @param {object} accountData 수정할 데이터
  * @returns {Promise<object>} 수정된 계정 데이터
  */
-export const updateAccount = async (id, accountData) => {
+export const updateAccount = async (acct_num, accountData) => {
     try {
-        return await put(`/accounts/${id}`, accountData);
+        return await put(`/accounts/${acct_num}`, accountData);
     } catch (error) {
         console.error("Failed to update account:", error.response?.data || error.message);
         throw error;
@@ -81,9 +80,9 @@ export const updateAccount = async (id, accountData) => {
  * @param {string} id 삭제할 계정 ID
  * @returns {Promise<void>} 삭제 완료
  */
-export const deleteAccount = async (id) => {
+export const deleteAccount = async (acct_num) => {
     try {
-        return await del(`/accounts/${id}`);
+        return await del(`/accounts/${acct_num}`);
     } catch (error) {
         console.error("Failed to delete account:", error.response?.data || error.message);
         throw error;
