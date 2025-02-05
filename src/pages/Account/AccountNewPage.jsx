@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { createAccount } from '@/service/accountService';
+import { createAccount } from '@/service/accountService.js';
 
 import { IoMdClose } from 'react-icons/io';
 

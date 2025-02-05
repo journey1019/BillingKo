@@ -1,52 +1,75 @@
 import { useEffect, useState } from 'react';
-import useApiFetch from '@/hooks/useApiFetch';
-import { fetchPrice, deletePrice, fetchPricePart } from '@/service/priceService';
-import { PriceTableColumns } from '@/columns/PriceTableColumns';
-import { PriceTableOptions } from '@/options/PriceTableOptions.jsx';
-import ReusableTable from '@/components/table/ReusableTable';
+import useApiFetch from '@/hooks/useApiFetch.js';
+import { fetchAccounts, deleteAccount, fetchAccountHistory } from '@/service/accountService.js';
+import { AccountTableColumns } from '@/columns/AccountTableColumns.jsx';
+import { AccountTableOptions } from '@/options/AccountTableOptions.jsx';
+import ReusableTable from '@/components/table/ReusableTable.jsx';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
 
-import { FiPlus } from 'react-icons/fi';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { RiSettings3Fill } from 'react-icons/ri';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-const PricePage = () => {
-    const { data, loading, error, refetch } = useApiFetch(fetchPrice);
-    const [selectedPriceId, setSelectedPriceId] = useState(null);
+import { FiPlus } from "react-icons/fi";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { RiSettings3Fill } from "react-icons/ri";
+
+const AccountPage = () => {
+    const { data, loading, error, refetch } = useApiFetch(fetchAccounts);
+    const [selectedAccountId, setSelectedAccountId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
     const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
     const navigate = useNavigate();
 
-    const [particularData, setParticularData] = useState(null);
-    const [particularLoading, setParticularLoading] = useState(false);
-    const [particularError, setParticularError] = useState(null);
+    const [historyData, setHistoryData] = useState(null);
+    const [historyLoading, setHistoryLoading] = useState(false);
+    const [historyError, setHistoryError] = useState(null);
 
-    // 선택된 ppid 변경 시만 이력 데이터 가져오기
+    // 선택된 acct_num 변경 시만 이력 데이터 가져오기
     useEffect(() => {
-        const fetchParticular = async () => {
-            if (!selectedPriceId) return;  // 선택된 값이 없으면 호출하지 않음
+        const fetchHistory = async () => {
+            if (!selectedAccountId) return;  // 선택된 값이 없으면 호출하지 않음
 
-            setParticularLoading(true);
-            setParticularError(null);
+            setHistoryLoading(true);
+            setHistoryError(null);
             try {
-                const response = await fetchPricePart(selectedPriceId.ppid);
-                setParticularData(response);
+                const response = await fetchAccountHistory(selectedAccountId.acct_num);
+                setHistoryData(response);
             } catch (error) {
-                setParticularError(error.message || "Failed to fetch price particular");
+                setHistoryError(error.message || "Failed to fetch account history");
             } finally {
-                setParticularLoading(false);
+                setHistoryLoading(false);
             }
         };
 
-        fetchParticular();
-    }, [selectedPriceId]);  // selectedPriceId가 변경될 때만 실행
+        fetchHistory();
+    }, [selectedAccountId]);  // selectedAccountId가 변경될 때만 실행
+
+    const getSelectedAccount = () => {
+        return data?.find(account => account.id === selectedAccountId) || {};
+    };
+
+    // 계정 삭제 핸들러
+    const handleDelete = async (id) => {
+        if (window.confirm("Are you sure you want to delete this account?")) {
+            try {
+                await deleteAccount(id);
+                refetch();
+                alert("Account deleted successfully!");
+                setSelectedAccountId(null);
+            } catch (error) {
+                console.error("Failed to delete account:", error.message);
+            }
+        }
+    };
+
+    const handleModify = (id) => {
+        navigate(`/accounts/${id}/edit`);
+    };
 
     // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
     const handleDeleteSuccess = () => {
         refetch();  // 데이터 새로고침
-        setSelectedPriceId(null);  // 선택 해제
+        setSelectedAccountId(null);  // 선택 해제
         setIsExpanded(false); // Grid 초기 화면 복구
     };
 
@@ -64,9 +87,9 @@ const PricePage = () => {
 
                 {/* Top */}
                 <div className="flex flex-row justify-between mb-3">
-                    <h1 className="py-1 text-lg font-bold">Price Data</h1>
+                    <h1 className="py-1 text-lg font-bold">Account Data</h1>
                     <div className="flex space-x-2 items-center">
-                        <button onClick={() => navigate('/price/new')}
+                        <button onClick={() => navigate('/accounts/new')}
                                 className="flex flex-row items-center space-x-2 p-2 rounded-md bg-blue-500 text-sm text-white hover:bg-blue-600 transition">
                             <FiPlus />
                             <span>New</span>
@@ -99,22 +122,22 @@ const PricePage = () => {
                 </div>
                 {/* Bottom */}
                 <ReusableTable
-                    columns={PriceTableColumns}
+                    columns={AccountTableColumns}
                     data={data}
                     options={{
-                        ...PriceTableOptions,
+                        ...AccountTableOptions,
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 console.log('onRowSelect called with id:', selectedRow);
-                                // setSelectedPriceId(selectedRow);
+                                // setSelectedAccountId(selectedRow);
                                 // setIsExpanded(true);
 
                                 // 같은 Row 선택
-                                if (selectedPriceId && selectedPriceId.ppid === selectedRow.ppid) {
-                                    setSelectedPriceId(null);
+                                if (selectedAccountId && selectedAccountId.acct_num === selectedRow.acct_num) {
+                                    setSelectedAccountId(null);
                                     setIsExpanded(false); // 동일 row 선택 시 닫기
                                 } else { // 다른 Row 선택시
-                                    setSelectedPriceId(selectedRow);
+                                    setSelectedAccountId(selectedRow);
                                     setIsExpanded(true); // 새로운 row 선택 시 열기
                                 }
                             },
@@ -122,21 +145,21 @@ const PricePage = () => {
                     }}
                 />
             </div>
-            
+
             {/* Right Section (Only visible when expanded) */}
-            {isExpanded && selectedPriceId && (
+            {isExpanded && selectedAccountId && (
                 <div className="p-2 col-span-2">
                     <div className="flex flex-col">
                         {/* Top */}
                         <div className="flex flex-row justify-between mb-3">
                             {/* Acct_Num */}
-                            <h2 className="py-1 text-lg font-bold text-red-600">{selectedPriceId.ppid}</h2>
+                            <h2 className="py-1 text-lg font-bold text-red-600">{selectedAccountId.acct_num}</h2>
 
                             {/* Buttons - Edit & Mail & . */}
                             <ButtonGroup
-                                entityType="price"
-                                id={selectedPriceId.ppid}
-                                deleteFunction={deletePrice}
+                                entityType="accounts"
+                                id={selectedAccountId.acct_num}
+                                deleteFunction={deleteAccount}
                                 onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
                             />
                         </div>
@@ -144,18 +167,18 @@ const PricePage = () => {
                         {/* Bottom */}
                         <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">
                             <div className="p-4">
-                                <h2 className="text-xl font-bold">Price Particular</h2>
-                                {particularLoading ? (
+                                <h2 className="text-xl font-bold">Account History</h2>
+                                {historyLoading ? (
                                     <LoadingSpinner />
-                                ) : particularError ? (
-                                    <p>Error loading particular: {particularError}</p>
+                                ) : historyError ? (
+                                    <p>Error loading history: {historyError}</p>
                                 ) : (
                                     <div className="px-3">
                                         <ReusableTable
-                                            columns={PriceTableColumns}
-                                            data={particularData ? [particularData] : []}
+                                            columns={AccountTableColumns}
+                                            data={historyData ? [historyData] : []}
                                             options={{
-                                                initialState: { sorting: [{ id: 'ppid', desc: true }] },
+                                                initialState: { sorting: [{ id: 'acct_num', desc: true }] },
                                                 enablePagination: false,
                                                 enableSorting: false,
                                             }}
@@ -167,10 +190,8 @@ const PricePage = () => {
                     </div>
                 </div>
             )}
-
-
         </div>
     );
 };
 
-export default PricePage;
+export default AccountPage;

@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchAccounts, deleteAccount, fetchAccountHistory } from '@/service/accountService';
-import { AccountTableColumns } from '@/columns/AccountTableColumns';
-import { AccountTableOptions } from '@/options/AccountTableOptions';
-import ReusableTable from '@/components/table/ReusableTable';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { fetchDevices, deleteDevice, fetchDeviceHistory } from '@/service/deviceService.js';
+import { DeviceTableColumns } from '@/columns/DeviceTableColumns.jsx';
+import { DeviceTableOptions } from '@/options/DeviceTableOptions.jsx';
+import ReusableTable from '@/components/table/ReusableTable.jsx';
+import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
 
 import { useNavigate } from "react-router-dom";
 
-import { FiPlus } from "react-icons/fi";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { RiSettings3Fill } from "react-icons/ri";
+import { FiPlus } from 'react-icons/fi';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { RiSettings3Fill } from 'react-icons/ri';
 
-const AccountPage = () => {
-    const { data, loading, error, refetch } = useApiFetch(fetchAccounts);
-    const [selectedAccountId, setSelectedAccountId] = useState(null);
+const DevicePage = () => {
+    const { data, loading, error, refetch } = useApiFetch(fetchDevices);
+    const [selectedDeviceId, setSelectedDeviceId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
     const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
     const navigate = useNavigate();
@@ -24,52 +24,30 @@ const AccountPage = () => {
     const [historyLoading, setHistoryLoading] = useState(false);
     const [historyError, setHistoryError] = useState(null);
 
-    // 선택된 acct_num 변경 시만 이력 데이터 가져오기
+    // 선택된 serial_number 변경 시만 이력 데이터 가져오기
     useEffect(() => {
         const fetchHistory = async () => {
-            if (!selectedAccountId) return;  // 선택된 값이 없으면 호출하지 않음
+            if (!selectedDeviceId) return;  // 선택된 값이 없으면 호출하지 않음
 
             setHistoryLoading(true);
             setHistoryError(null);
             try {
-                const response = await fetchAccountHistory(selectedAccountId.acct_num);
+                const response = await fetchDeviceHistory(selectedDeviceId.serial_number);
                 setHistoryData(response);
             } catch (error) {
-                setHistoryError(error.message || "Failed to fetch account history");
+                setHistoryError(error.message || "Failed to fetch device history");
             } finally {
                 setHistoryLoading(false);
             }
         };
 
         fetchHistory();
-    }, [selectedAccountId]);  // selectedAccountId가 변경될 때만 실행
-
-    const getSelectedAccount = () => {
-        return data?.find(account => account.id === selectedAccountId) || {};
-    };
-
-    // 계정 삭제 핸들러
-    const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this account?")) {
-            try {
-                await deleteAccount(id);
-                refetch();
-                alert("Account deleted successfully!");
-                setSelectedAccountId(null);
-            } catch (error) {
-                console.error("Failed to delete account:", error.message);
-            }
-        }
-    };
-
-    const handleModify = (id) => {
-        navigate(`/accounts/${id}/edit`);
-    };
+    }, [selectedDeviceId]);  // selectedDeviceId가 변경될 때만 실행
 
     // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
     const handleDeleteSuccess = () => {
         refetch();  // 데이터 새로고침
-        setSelectedAccountId(null);  // 선택 해제
+        setSelectedDeviceId(null);  // 선택 해제
         setIsExpanded(false); // Grid 초기 화면 복구
     };
 
@@ -87,9 +65,9 @@ const AccountPage = () => {
 
                 {/* Top */}
                 <div className="flex flex-row justify-between mb-3">
-                    <h1 className="py-1 text-lg font-bold">Account Data</h1>
+                    <h1 className="py-1 text-lg font-bold">Device Data</h1>
                     <div className="flex space-x-2 items-center">
-                        <button onClick={() => navigate('/accounts/new')}
+                        <button onClick={() => navigate('/devices/new')}
                                 className="flex flex-row items-center space-x-2 p-2 rounded-md bg-blue-500 text-sm text-white hover:bg-blue-600 transition">
                             <FiPlus />
                             <span>New</span>
@@ -114,7 +92,7 @@ const AccountPage = () => {
                                 </ul>
                             </div>
                         )}
-                        <button onClick={() => console.log('acct_setting')}
+                        <button onClick={() => console.log('device_setting')}
                                 className="flex flex-row items-center p-2 rounded-md bg-gray-200 border border-gray-300 hover:bg-gray-300 transition">
                             <RiSettings3Fill />
                         </button>
@@ -122,22 +100,22 @@ const AccountPage = () => {
                 </div>
                 {/* Bottom */}
                 <ReusableTable
-                    columns={AccountTableColumns}
+                    columns={DeviceTableColumns}
                     data={data}
                     options={{
-                        ...AccountTableOptions,
+                        ...DeviceTableOptions,
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 console.log('onRowSelect called with id:', selectedRow);
-                                // setSelectedAccountId(selectedRow);
+                                // setSelectedDeviceId(selectedRow);
                                 // setIsExpanded(true);
 
                                 // 같은 Row 선택
-                                if (selectedAccountId && selectedAccountId.acct_num === selectedRow.acct_num) {
-                                    setSelectedAccountId(null);
+                                if (selectedDeviceId && selectedDeviceId.serial_number === selectedRow.serial_number) {
+                                    setSelectedDeviceId(null);
                                     setIsExpanded(false); // 동일 row 선택 시 닫기
                                 } else { // 다른 Row 선택시
-                                    setSelectedAccountId(selectedRow);
+                                    setSelectedDeviceId(selectedRow);
                                     setIsExpanded(true); // 새로운 row 선택 시 열기
                                 }
                             },
@@ -147,19 +125,19 @@ const AccountPage = () => {
             </div>
 
             {/* Right Section (Only visible when expanded) */}
-            {isExpanded && selectedAccountId && (
+            {isExpanded && selectedDeviceId && (
                 <div className="p-2 col-span-2">
                     <div className="flex flex-col">
                         {/* Top */}
                         <div className="flex flex-row justify-between mb-3">
-                            {/* Acct_Num */}
-                            <h2 className="py-1 text-lg font-bold text-red-600">{selectedAccountId.acct_num}</h2>
+                            {/* Serial_Number */}
+                            <h2 className="py-1 text-lg font-bold text-red-600">{selectedDeviceId.serial_number}</h2>
 
                             {/* Buttons - Edit & Mail & . */}
                             <ButtonGroup
-                                entityType="accounts"
-                                id={selectedAccountId.acct_num}
-                                deleteFunction={deleteAccount}
+                                entityType="devices"
+                                id={selectedDeviceId.serial_number}
+                                deleteFunction={deleteDevice}
                                 onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
                             />
                         </div>
@@ -167,7 +145,7 @@ const AccountPage = () => {
                         {/* Bottom */}
                         <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">
                             <div className="p-4">
-                                <h2 className="text-xl font-bold">Account History</h2>
+                                <h2 className="text-xl font-bold">Device History</h2>
                                 {historyLoading ? (
                                     <LoadingSpinner />
                                 ) : historyError ? (
@@ -175,10 +153,10 @@ const AccountPage = () => {
                                 ) : (
                                     <div className="px-3">
                                         <ReusableTable
-                                            columns={AccountTableColumns}
+                                            columns={DeviceTableColumns}
                                             data={historyData ? [historyData] : []}
                                             options={{
-                                                initialState: { sorting: [{ id: 'acct_num', desc: true }] },
+                                                initialState: { sorting: [{ id: 'serial_number', desc: true }] },
                                                 enablePagination: false,
                                                 enableSorting: false,
                                             }}
@@ -194,4 +172,4 @@ const AccountPage = () => {
     );
 };
 
-export default AccountPage;
+export default DevicePage;

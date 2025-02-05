@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updatePrice, fetchPricePart } from "@/service/priceService";
+import { updatePrice, fetchPricePart } from "@/service/priceService.js";
 
 import { IoMdClose } from 'react-icons/io';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';

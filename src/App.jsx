@@ -2,17 +2,21 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import RootLayout from "@/components/layout/RootLayout.jsx";
 import Homepage from "@/pages/Homepage.jsx";
-import AccountPage from "@/pages/AccountPage.jsx";
-import DevicePage from "@/pages/DevicePage.jsx";
-import PricePage from "@/pages/PricePage.jsx";
+import AccountPage from "@/pages/Account/AccountPage.jsx";
+import DevicePage from "@/pages/Device/DevicePage.jsx";
+import PricePage from "@/pages/Price/PricePage.jsx";
 import Login from "@/pages/Login.jsx";
 import Logout from "@/pages/Logout.jsx";
-import AccountNewPage from '@/pages/AccountNewPage.jsx';
-import AccountEditPage from '@/pages/AccountEditPage.jsx';
-import PriceNewPage from '@/pages/PriceNewPage.jsx';
-import PriceEditPage from '@/pages/PriceEditPage.jsx';
-import DeviceNewPage from '@/pages/DeviceNewPage.jsx';
-import DeviceEditPage from '@/pages/DeviceEditPage.jsx';
+import AccountNewPage from '@/pages/Account/AccountNewPage.jsx';
+import AccountEditPage from '@/pages/Account/AccountEditPage.jsx';
+import PriceNewPage from '@/pages/Price/PriceNewPage.jsx';
+import PriceEditPage from '@/pages/Price/PriceEditPage.jsx';
+import DeviceNewPage from '@/pages/Device/DeviceNewPage.jsx';
+import DeviceEditPage from '@/pages/Device/DeviceEditPage.jsx';
+import UploadFilePage from '@/pages/File/UploadFilePage.jsx';
+import FilePage from '@/pages/File/FilePage.jsx';
+import CDRPage from '@/pages/File/CDRPage.jsx';
+import MonthlyPage from '@/pages/Monthly/MonthlyPage.jsx';
 
 // ProtectedRoute 컴포넌트
 const ProtectedRoute = ({ isAuthenticated, children }) => {
@@ -74,9 +78,17 @@ const App = () => {
                         <RootLayout>
                             <Routes>
                                 <Route path="/" element={<Homepage />} />
+                                <Route path="/file" element={<FilePage />} />
                                 <Route path="/accounts" element={<AccountPage />} />
                                 <Route path="/devices" element={<DevicePage />} />
                                 <Route path="/price" element={<PricePage />} />
+                                <Route path="/monthly" element={<MonthlyPage />} />
+
+                                <Route path="/file/upload" element={<UploadFilePage />} />
+                                <Route path="/file/upload/cdr" element={<UploadFilePage />} />
+                                <Route path="/file/upload/accounts" element={<UploadFilePage />} />
+                                <Route path="/file/cdr" element={<CDRPage />} />
+                                <Route path="/file/accounts" element={<CDRPage />} />
 
                                 <Route path="/accounts/new" element={<AccountNewPage />} />
                                 <Route path="/accounts/:acct_num/edit" element={<AccountEditPage />} />

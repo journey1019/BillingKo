@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateDevice, fetchDeviceHistory } from "@/service/deviceService";
+import { updateDevice, fetchDeviceHistory } from "@/service/deviceService.js";
 import { IoMdClose } from 'react-icons/io';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 

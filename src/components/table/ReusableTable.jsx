@@ -1,7 +1,7 @@
 import PropTypes from "prop-types"; // PropTypes 추가
 import { MaterialReactTable } from "material-react-table";
 
-const ReusableTable = ({ columns, data, options }) => {
+const ReusableTable = ({ columns, data = [], options = {} }) => {
     // 공통 스타일 설정
     const defaultOptions = {
         initialState: {
@@ -32,7 +32,7 @@ const ReusableTable = ({ columns, data, options }) => {
     return (
         <MaterialReactTable
             columns={columns} // 필수 컬럼 정의
-            data={data || []} // 데이터 배열
+            data={data} // 데이터 배열
             getRowProps={(row) => ({
                 onClick: () => options?.onRowClick && options.onRowClick(row), // Row 클릭 이벤트
                 style: { cursor: "pointer" }, // 포인터 커서 추가

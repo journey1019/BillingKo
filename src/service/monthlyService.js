@@ -5,4 +5,4 @@ import { get } from "./api";
  * @param {string} yearMonth YYYYMM 형식의 날짜
  * @returns {Promise<object>} 서버 응답 데이터
  */
-export const fetchMonthlyData = (yearMonth) => get(`/monthly/${yearMonth}`);
+export const fetchMonthlyData = (yearMonth) => get(`/monthly/ko/${yearMonth}`);

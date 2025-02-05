@@ -1,53 +1,52 @@
 import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchDevices, deleteDevice, fetchDeviceHistory } from '@/service/deviceService.js';
-import { DeviceTableColumns } from '@/columns/DeviceTableColumns';
-import { DeviceTableOptions } from '@/options/DeviceTableOptions.jsx';
-import ReusableTable from '@/components/table/ReusableTable';
+import { fetchPrice, deletePrice, fetchPricePart } from '@/service/priceService.js';
+import { PriceTableColumns } from '@/columns/PriceTableColumns.jsx';
+import { PriceTableOptions } from '@/options/PriceTableOptions.jsx';
+import ReusableTable from '@/components/table/ReusableTable.jsx';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
-
-import { useNavigate } from "react-router-dom";
 
 import { FiPlus } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiSettings3Fill } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
-const DevicePage = () => {
-    const { data, loading, error, refetch } = useApiFetch(fetchDevices);
-    const [selectedDeviceId, setSelectedDeviceId] = useState(null);
+const PricePage = () => {
+    const { data, loading, error, refetch } = useApiFetch(fetchPrice);
+    const [selectedPriceId, setSelectedPriceId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
     const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
     const navigate = useNavigate();
 
-    const [historyData, setHistoryData] = useState(null);
-    const [historyLoading, setHistoryLoading] = useState(false);
-    const [historyError, setHistoryError] = useState(null);
+    const [particularData, setParticularData] = useState(null);
+    const [particularLoading, setParticularLoading] = useState(false);
+    const [particularError, setParticularError] = useState(null);
 
-    // 선택된 serial_number 변경 시만 이력 데이터 가져오기
+    // 선택된 ppid 변경 시만 이력 데이터 가져오기
     useEffect(() => {
-        const fetchHistory = async () => {
-            if (!selectedDeviceId) return;  // 선택된 값이 없으면 호출하지 않음
+        const fetchParticular = async () => {
+            if (!selectedPriceId) return;  // 선택된 값이 없으면 호출하지 않음
 
-            setHistoryLoading(true);
-            setHistoryError(null);
+            setParticularLoading(true);
+            setParticularError(null);
             try {
-                const response = await fetchDeviceHistory(selectedDeviceId.serial_number);
-                setHistoryData(response);
+                const response = await fetchPricePart(selectedPriceId.ppid);
+                setParticularData(response);
             } catch (error) {
-                setHistoryError(error.message || "Failed to fetch device history");
+                setParticularError(error.message || "Failed to fetch price particular");
             } finally {
-                setHistoryLoading(false);
+                setParticularLoading(false);
             }
         };
 
-        fetchHistory();
-    }, [selectedDeviceId]);  // selectedDeviceId가 변경될 때만 실행
+        fetchParticular();
+    }, [selectedPriceId]);  // selectedPriceId가 변경될 때만 실행
 
     // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
     const handleDeleteSuccess = () => {
         refetch();  // 데이터 새로고침
-        setSelectedDeviceId(null);  // 선택 해제
+        setSelectedPriceId(null);  // 선택 해제
         setIsExpanded(false); // Grid 초기 화면 복구
     };
 
@@ -65,9 +64,9 @@ const DevicePage = () => {
 
                 {/* Top */}
                 <div className="flex flex-row justify-between mb-3">
-                    <h1 className="py-1 text-lg font-bold">Device Data</h1>
+                    <h1 className="py-1 text-lg font-bold">Price Data</h1>
                     <div className="flex space-x-2 items-center">
-                        <button onClick={() => navigate('/devices/new')}
+                        <button onClick={() => navigate('/price/new')}
                                 className="flex flex-row items-center space-x-2 p-2 rounded-md bg-blue-500 text-sm text-white hover:bg-blue-600 transition">
                             <FiPlus />
                             <span>New</span>
@@ -92,7 +91,7 @@ const DevicePage = () => {
                                 </ul>
                             </div>
                         )}
-                        <button onClick={() => console.log('device_setting')}
+                        <button onClick={() => console.log('acct_setting')}
                                 className="flex flex-row items-center p-2 rounded-md bg-gray-200 border border-gray-300 hover:bg-gray-300 transition">
                             <RiSettings3Fill />
                         </button>
@@ -100,22 +99,22 @@ const DevicePage = () => {
                 </div>
                 {/* Bottom */}
                 <ReusableTable
-                    columns={DeviceTableColumns}
+                    columns={PriceTableColumns}
                     data={data}
                     options={{
-                        ...DeviceTableOptions,
+                        ...PriceTableOptions,
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 console.log('onRowSelect called with id:', selectedRow);
-                                // setSelectedDeviceId(selectedRow);
+                                // setSelectedPriceId(selectedRow);
                                 // setIsExpanded(true);
 
                                 // 같은 Row 선택
-                                if (selectedDeviceId && selectedDeviceId.serial_number === selectedRow.serial_number) {
-                                    setSelectedDeviceId(null);
+                                if (selectedPriceId && selectedPriceId.ppid === selectedRow.ppid) {
+                                    setSelectedPriceId(null);
                                     setIsExpanded(false); // 동일 row 선택 시 닫기
                                 } else { // 다른 Row 선택시
-                                    setSelectedDeviceId(selectedRow);
+                                    setSelectedPriceId(selectedRow);
                                     setIsExpanded(true); // 새로운 row 선택 시 열기
                                 }
                             },
@@ -123,21 +122,21 @@ const DevicePage = () => {
                     }}
                 />
             </div>
-
+            
             {/* Right Section (Only visible when expanded) */}
-            {isExpanded && selectedDeviceId && (
+            {isExpanded && selectedPriceId && (
                 <div className="p-2 col-span-2">
                     <div className="flex flex-col">
                         {/* Top */}
                         <div className="flex flex-row justify-between mb-3">
-                            {/* Serial_Number */}
-                            <h2 className="py-1 text-lg font-bold text-red-600">{selectedDeviceId.serial_number}</h2>
+                            {/* Acct_Num */}
+                            <h2 className="py-1 text-lg font-bold text-red-600">{selectedPriceId.ppid}</h2>
 
                             {/* Buttons - Edit & Mail & . */}
                             <ButtonGroup
-                                entityType="devices"
-                                id={selectedDeviceId.serial_number}
-                                deleteFunction={deleteDevice}
+                                entityType="price"
+                                id={selectedPriceId.ppid}
+                                deleteFunction={deletePrice}
                                 onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
                             />
                         </div>
@@ -145,18 +144,18 @@ const DevicePage = () => {
                         {/* Bottom */}
                         <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">
                             <div className="p-4">
-                                <h2 className="text-xl font-bold">Device History</h2>
-                                {historyLoading ? (
+                                <h2 className="text-xl font-bold">Price Particular</h2>
+                                {particularLoading ? (
                                     <LoadingSpinner />
-                                ) : historyError ? (
-                                    <p>Error loading history: {historyError}</p>
+                                ) : particularError ? (
+                                    <p>Error loading particular: {particularError}</p>
                                 ) : (
                                     <div className="px-3">
                                         <ReusableTable
-                                            columns={DeviceTableColumns}
-                                            data={historyData ? [historyData] : []}
+                                            columns={PriceTableColumns}
+                                            data={particularData ? [particularData] : []}
                                             options={{
-                                                initialState: { sorting: [{ id: 'serial_number', desc: true }] },
+                                                initialState: { sorting: [{ id: 'ppid', desc: true }] },
                                                 enablePagination: false,
                                                 enableSorting: false,
                                             }}
@@ -168,8 +167,10 @@ const DevicePage = () => {
                     </div>
                 </div>
             )}
+
+
         </div>
     );
 };
 
-export default DevicePage;
+export default PricePage;
