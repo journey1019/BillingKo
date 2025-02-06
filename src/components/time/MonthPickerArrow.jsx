@@ -3,7 +3,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
-const MonthPickerArrow = ({ value, onDateChange, placeholder = "Select month" }) => {
+const MonthPicker = ({ value, onDateChange, placeholder = "Select month" }) => {
+    const today = new Date(); // 현재 날짜 가져오기
+
     // Custom Input 컴포넌트
     const CustomInput = forwardRef(({ value, onClick }, ref) => (
         <div className="relative">
@@ -39,6 +41,13 @@ const MonthPickerArrow = ({ value, onDateChange, placeholder = "Select month" })
     const handleNextMonth = () => {
         const nextMonth = new Date(value);
         nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+        // 다음 달이 현재 달보다 큰 경우 경고 알림
+        if (nextMonth > today) {
+            alert("You cannot select a future date.");
+            return;
+        }
+
         onDateChange(nextMonth);
     };
 
@@ -60,6 +69,7 @@ const MonthPickerArrow = ({ value, onDateChange, placeholder = "Select month" })
                 dateFormat="yyyy-MM" // 연도-월 형식
                 showMonthYearPicker // 월과 연도만 선택
                 customInput={<CustomInput />} // 사용자 정의 Input 사용
+                maxDate={today} // 오늘 날짜까지만 선택 가능
             />
 
             {/* 오른쪽 화살표 */}
@@ -74,4 +84,4 @@ const MonthPickerArrow = ({ value, onDateChange, placeholder = "Select month" })
     );
 };
 
-export default MonthPickerArrow;
+export default MonthPicker;
