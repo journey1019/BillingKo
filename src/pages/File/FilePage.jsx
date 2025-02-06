@@ -62,18 +62,19 @@ const FilePage = () => {
                     </button>
                 </div>
             </div>
-            <div className="grid col-span-1">
-                <h1 className="py-1 text-lg font-bold">File Updated History</h1>
-                <ReusableTable
-                    data={fileHistoryData || []}
-                    columns={FileUpdateTableColumns}
-                    options={{
-                        ...FileTableOptions,
-                    }}
-                    isLoading={fileHistoryLoading}
-                    error={fileHistoryError}
-                />
-            </div>
+            {/* File Uploaded Table */}
+            {/*<div className="grid col-span-1">*/}
+            {/*    <h1 className="py-1 text-lg font-bold">File Updated History</h1>*/}
+            {/*    <ReusableTable*/}
+            {/*        data={fileHistoryData || []}*/}
+            {/*        columns={FileUpdateTableColumns}*/}
+            {/*        options={{*/}
+            {/*            ...FileTableOptions,*/}
+            {/*        }}*/}
+            {/*        isLoading={fileHistoryLoading}*/}
+            {/*        error={fileHistoryError}*/}
+            {/*    />*/}
+            {/*</div>*/}
             <div className="grid col-span-2">
                 <FileStatusForm />
             </div>

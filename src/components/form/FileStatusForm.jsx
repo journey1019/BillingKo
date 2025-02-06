@@ -2,14 +2,20 @@ import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
 import { fetchFileUpdateHistory } from '@/service/fileService.js';
 import MonthPicker from '@/components/time/MonthPicker.jsx';
+import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
+import LoadingSpinner from '@/components/common/LoadingSpinner'
 
-// 필수 파일 리스트 생성 함수
-const generateRequiredFiles = (yearMonth) => [
+// 필수 CDR 파일 리스트 생성
+const generateCDRFiles = (yearMonth) => [
     `122123_${yearMonth}_CDRv3.csv`,
     `122693_${yearMonth}_CDRv3.csv`,
     `123252_${yearMonth}_CDRv3.csv`,
     `123343_${yearMonth}_CDRv3.csv`,
     `123700_${yearMonth}_CDRv3.csv`,
+];
+
+// 필수 NetworkReport 파일 리스트 생성
+const generateNetworkReportFiles = (yearMonth) => [
     `122123_${yearMonth}_NetworkReport.csv`,
     `122693_${yearMonth}_NetworkReport.csv`,
     `123225_${yearMonth}_NetworkReport.csv`,
@@ -26,17 +32,30 @@ const FileStatusForm = () => {
 
     const { data: fileHistoryData, loading, error, refetch } = useApiFetch(() => fetchFileUpdateHistory(yearMonth));
 
-    const [uploadedFiles, setUploadedFiles] = useState([]);
-    const [missingFiles, setMissingFiles] = useState([]);
+    const [cdrUploadedFiles, setCdrUploadedFiles] = useState([]);
+    const [cdrMissingFiles, setCdrMissingFiles] = useState([]);
+    const [nrUploadedFiles, setNrUploadedFiles] = useState([]);
+    const [nrMissingFiles, setNrMissingFiles] = useState([]);
 
     useEffect(() => {
         if (fileHistoryData) {
-            const requiredFiles = generateRequiredFiles(yearMonth);
+            const cdrRequiredFiles = generateCDRFiles(yearMonth);
+            const nrRequiredFiles = generateNetworkReportFiles(yearMonth);
+
             const uploadedFileNames = fileHistoryData.map(file => file.file_name);
-            const missing = requiredFiles.filter(file => !uploadedFileNames.includes(file));
-            const uploaded = requiredFiles.filter(file => uploadedFileNames.includes(file));
-            setUploadedFiles(uploaded);
-            setMissingFiles(missing);
+
+            // CDR 파일 상태 분리
+            const cdrMissing = cdrRequiredFiles.filter(file => !uploadedFileNames.includes(file));
+            const cdrUploaded = cdrRequiredFiles.filter(file => uploadedFileNames.includes(file));
+
+            // NetworkReport 파일 상태 분리
+            const nrMissing = nrRequiredFiles.filter(file => !uploadedFileNames.includes(file));
+            const nrUploaded = nrRequiredFiles.filter(file => uploadedFileNames.includes(file));
+
+            setCdrUploadedFiles(cdrUploaded);
+            setCdrMissingFiles(cdrMissing);
+            setNrUploadedFiles(nrUploaded);
+            setNrMissingFiles(nrMissing);
         }
     }, [fileHistoryData, yearMonth]);
 
@@ -51,36 +70,52 @@ const FileStatusForm = () => {
     return (
         <div className="p-5 bg-white rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-5">
-                <h2 className="text-xl font-bold">File Upload Status for {selectedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</h2>
-                <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                <h2 className="text-lg font-bold">File Upload Status for {selectedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</h2>
+                <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
             </div>
 
-            {/* 업로드된 파일 */}
-            <div className="mb-4">
-                <h3 className="text-lg font-semibold text-green-600">Uploaded Files</h3>
-                <ul className="grid grid-cols-2 gap-2">
-                    {uploadedFiles.map(file => (
-                        <li key={file} className="bg-green-100 text-green-800 px-4 py-2 rounded-md shadow-sm">
-                            {file}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-
-            {/* 누락된 파일 */}
-            <div>
-                <h3 className="text-lg font-semibold text-red-600">Missing Files</h3>
-                <ul className="grid grid-cols-2 gap-2">
-                    {missingFiles.length > 0 ? (
-                        missingFiles.map(file => (
-                            <li key={file} className="bg-red-100 text-red-800 px-4 py-2 rounded-md shadow-sm">
-                                {file}
-                            </li>
-                        ))
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* CDR Files Section */}
+                <div>
+                    <h3 className="text-base font-semibold text-blue-600">CDR Files</h3>
+                    {loading ? (
+                        <LoadingSpinner/>
                     ) : (
-                        <li className="text-green-800">All required files are uploaded!</li>
+                        <div className="grid gap-2">
+                            {cdrUploadedFiles.map((file, index) => (
+                                <div key={`cdr-uploaded-${index}`} className="min-h-[40px] text-sm flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-md shadow-sm">
+                                    ✅ {file}
+                                </div>
+                            ))}
+                            {cdrMissingFiles.map((file, index) => (
+                                <div key={`cdr-missing-${index}`} className="min-h-[40px] text-sm flex items-center bg-red-100 text-red-800 px-4 py-2 rounded-md shadow-sm">
+                                    ❌ {file}
+                                </div>
+                            ))}
+                        </div>
                     )}
-                </ul>
+                </div>
+
+                {/* Network Report Files Section */}
+                <div>
+                    <h3 className="text-base font-semibold text-blue-600">Network Report Files</h3>
+                    {loading ? (
+                        <LoadingSpinner/>
+                    ) : (
+                        <div className="grid gap-2">
+                            {nrUploadedFiles.map((file, index) => (
+                                <div key={`nr-uploaded-${index}`} className="min-h-[40px] text-sm flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-md shadow-sm">
+                                    ✅ {file}
+                                </div>
+                            ))}
+                            {nrMissingFiles.map((file, index) => (
+                                <div key={`nr-missing-${index}`} className="min-h-[40px] text-sm flex items-center bg-red-100 text-red-800 px-4 py-2 rounded-md shadow-sm">
+                                    ❌ {file}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
