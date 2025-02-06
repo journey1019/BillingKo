@@ -1,41 +1,60 @@
 import { useEffect, useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-import { fetchFileUpdateHistory } from '@/service/fileService.js';
+import useApiFetch from '@/hooks/useApiFetch.js';
+import { fetchFileUpdateHistory, fetchCDRFileUpdate, fetchNetworkReportFileUpdate } from '@/service/fileService.js';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
+import MonthPicker from '@/components/time/MonthPicker.jsx';
 import { FileUpdateTableColumns } from '@/columns/FileUpdateTableColumns.jsx';
 import { FileTableOptions } from '@/options/FileTableOptions.jsx';
+import { CDRTableColumns } from '@/columns/CDRTableColumns.jsx';
+import { CDRTableOptions } from '@/options/CDRTableOptions.jsx';
+import { NetworkReportTableColumns } from '@/columns/NetworkReportTableColumns.jsx';
+import { NetworkReportTableOptions } from '@/options/NetworkReportTableOptions.jsx';
+import FileStatusForm from '@/components/form/FileStatusForm.jsx'
 
 const FilePage = () => {
     const navigate = useNavigate();
 
+    // 기본값: 현재 날짜 기준 한 달 전
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const [selectedDate, setSelectedDate] = useState(oneMonthAgo);
+    const yearMonth = selectedDate.toISOString().slice(0, 7).replace("-", "") // YYYYMM 형식
+
+    // 날짜 변경 핸들러
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+    };
+
+    const { data: fileHistoryData, loading: fileHistoryLoading, error: fileHistoryError, refetch: fileHistoryRefetch } = useApiFetch(fetchFileUpdateHistory);
+    const { data: cdrData, loading: cdrLoading, error: cdrError, refetch: cdrRefetch } = useApiFetch(fetchCDRFileUpdate, yearMonth);
+    const { data: nrData, loading: nrLoading, error: nrError, refetch: nrRefetch } = useApiFetch(fetchNetworkReportFileUpdate, yearMonth);
+
+
     // file update history data
-    const [fileHistory, setFileHistory] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-
-    useEffect(() => {
-        const getFileHistory = async () => {
-            try {
-                const data = await fetchFileUpdateHistory();
-                setFileHistory(data);
-            } catch (err) {
-                setError('파일 이력을 가져오는 중 오류가 발생했습니다.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        getFileHistory();
-    }, []);
-
-    if (loading) return <LoadingSpinner/>;
-    if (error) return <p className="text-red-500">{error}</p>;
+    // const [fileHistory, setFileHistory] = useState([]);
+    // const [loading, setLoading] = useState(true);
+    // const [error, setError] = useState('');
+    //
+    // useEffect(() => {
+    //     const getFileHistory = async () => {
+    //         try {
+    //             const data = await fetchFileUpdateHistory();
+    //             setFileHistory(data);
+    //         } catch (err) {
+    //             setError('파일 이력을 가져오는 중 오류가 발생했습니다.');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     getFileHistory();
+    // }, []);
 
     return(
-        <div className="grid grid-cols-3">
-            <h1>File </h1>
-            <div className="grid col-span-3">
+        <div className="grid grid-cols-4">
+            <div className="grid col-span-4">
                 <div>
                     <button onClick={() => navigate('/file/upload')} className="flex flex-row items-center space-x-2 p-2 rounded-md bg-blue-500 text-sm text-white hover:bg-blue-600 transition mr-4">
                         <FiPlus />
@@ -46,16 +65,59 @@ const FilePage = () => {
             <div className="grid col-span-1">
                 <h1 className="py-1 text-lg font-bold">File Updated History</h1>
                 <ReusableTable
-                    data={fileHistory}
+                    data={fileHistoryData || []}
                     columns={FileUpdateTableColumns}
                     options={{
                         ...FileTableOptions,
                     }}
+                    isLoading={fileHistoryLoading}
+                    error={fileHistoryError}
                 />
             </div>
+            <div className="grid col-span-2">
+                <FileStatusForm />
+            </div>
+            {/* 'CDR' & 'Network Report' Table */}
+            <div className="grid col-span-4 space-y-3">
+                <div className="flex flex-row items-center justify-between">
+                    <h1 className="text-lg font-bold">
+                        Selected Month:{' '}
+                        {selectedDate.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                        })}
+                    </h1>
+                    <div className="flex flex-row z-10">
+                        <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                    </div>
+                </div>
+
+                <h1 className="text-xl font-semibold">CDR Table</h1>
+                {/* CDR Table */}
+                {/* 로딩 상태 */}
+                <ReusableTable
+                    data={cdrData || []}  // 데이터가 없으면 빈 배열 전달
+                    columns={CDRTableColumns}
+                    options={{
+                        ...CDRTableOptions,
+                    }}
+                    isLoading={cdrLoading}
+                    error={cdrError}
+                />
+
+                <h1 className="text-xl font-semibold">Network Report Table</h1>
+                <ReusableTable
+                    data={nrData || []}  // 데이터가 없으면 빈 배열 전달
+                    columns={NetworkReportTableColumns}
+                    options={{
+                        ...NetworkReportTableOptions,
+                    }}
+                    isLoading={nrLoading}
+                    error={nrError}
+                />
+            </div>
+
             <div>
-                <p>CDR Table</p>
-                <p>NetworkReport Table</p>
                 <p>Account Table</p>
                 <p>Device Table</p>
                 <p>PPlan Table</p>

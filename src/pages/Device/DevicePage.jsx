@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchDevices, deleteDevice, fetchDeviceHistory } from '@/service/deviceService.js';
+import { fetchDevices, deleteDevice, fetchDeviceHistory, fetchDevicePart } from '@/service/deviceService.js';
 import { DeviceTableColumns } from '@/columns/DeviceTableColumns.jsx';
 import { DeviceTableOptions } from '@/options/DeviceTableOptions.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
+import DevicePartForm from '@/components/form/DevicePartForm.jsx';
 
 import { useNavigate } from "react-router-dom";
 
@@ -14,30 +15,49 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiSettings3Fill } from 'react-icons/ri';
 
 const DevicePage = () => {
-    const { data, loading, error, refetch } = useApiFetch(fetchDevices);
+    const { data: deviceData, loading: deviceLoading, error: deviceError, refetch: deviceRefetch } = useApiFetch(fetchDevices);
     const [selectedDeviceId, setSelectedDeviceId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
     const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
     const navigate = useNavigate();
 
+    // 이력 데이터 상태
     const [historyData, setHistoryData] = useState(null);
-    const [historyLoading, setHistoryLoading] = useState(false);
-    const [historyError, setHistoryError] = useState(null);
+    const [historyDataLoading, setHistoryDataLoading] = useState(false);
+    const [historyDataError, setHistoryDataError] = useState(null);
+
+    // 부분 단말 데이터 상태
+    const [devicePartData, setDevicePartData] = useState(null);
+    const [partDataLoading, setPartDataLoading] = useState(false);
+    const [partDataError, setPartDataError] = useState(null);
 
     // 선택된 serial_number 변경 시만 이력 데이터 가져오기
     useEffect(() => {
         const fetchHistory = async () => {
             if (!selectedDeviceId) return;  // 선택된 값이 없으면 호출하지 않음
 
-            setHistoryLoading(true);
-            setHistoryError(null);
+            // 부분 계정 데이터 가져오기
+            setHistoryDataLoading(true);
+            setHistoryDataError(null);
             try {
-                const response = await fetchDeviceHistory(selectedDeviceId.serial_number);
-                setHistoryData(response);
+                const partResponse = await fetchDeviceHistory(selectedDeviceId.serial_number);
+                setHistoryData(partResponse);
             } catch (error) {
-                setHistoryError(error.message || "Failed to fetch device history");
+                setHistoryDataError(error.message || 'Failed to fetch device details');
             } finally {
-                setHistoryLoading(false);
+                setHistoryDataLoading(false);
+            }
+
+            // 부분 계정 데이터 가져오기
+            setPartDataLoading(true);
+            setPartDataError(null);
+            try {
+                const partResponse = await fetchDevicePart(selectedDeviceId.serial_number);
+                setDevicePartData(partResponse);
+            } catch (error) {
+                setPartDataError(error.message || 'Failed to fetch device details');
+            } finally {
+                setPartDataLoading(false);
             }
         };
 
@@ -46,7 +66,7 @@ const DevicePage = () => {
 
     // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
     const handleDeleteSuccess = () => {
-        refetch();  // 데이터 새로고침
+        deviceRefetch();  // 데이터 새로고침
         setSelectedDeviceId(null);  // 선택 해제
         setIsExpanded(false); // Grid 초기 화면 복구
     };
@@ -55,13 +75,14 @@ const DevicePage = () => {
     const toggleDropdown = () => setIsOpenDropdown(!isOpenDropdown);
     const closeDropdown = () => setIsOpenDropdown(false);
 
-    if (loading) return <LoadingSpinner/>;
-    if (error) return <p>Error: {error}</p>;
-
     return (
-        <div className={`grid gap-0 ${isExpanded ? 'grid-cols-3' : 'grid-cols-1'}`}>
+        <div className={`grid gap-0 ${isExpanded ? 'grid-cols-4' : 'grid-cols-2'}`}>
+            <div className="col-span-4 border-b pb-3 mb-2 border-gray-400">
+                <h1 className="text-2xl font-base">Device</h1>
+            </div>
+
             {/* Left Section */}
-            <div className={`p-2 ${isExpanded ? 'col-span-1' : 'col-span-3'}`}>
+            <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-4'}`}>
 
                 {/* Top */}
                 <div className="flex flex-row justify-between mb-3">
@@ -101,7 +122,7 @@ const DevicePage = () => {
                 {/* Bottom */}
                 <ReusableTable
                     columns={DeviceTableColumns}
-                    data={data}
+                    data={deviceData || []}
                     options={{
                         ...DeviceTableOptions,
                         meta: {
@@ -121,6 +142,8 @@ const DevicePage = () => {
                             },
                         },
                     }}
+                    isLoading={deviceLoading}
+                    error={deviceError}
                 />
             </div>
 
@@ -144,25 +167,53 @@ const DevicePage = () => {
 
                         {/* Bottom */}
                         <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">
-                            <div className="p-4">
-                                <h2 className="text-xl font-bold">Device History</h2>
-                                {historyLoading ? (
+                            <div className="p-3">
+                                <h2 className="text-xl font-bold">단말 세부 정보</h2>
+
+                                {partDataLoading ? (
                                     <LoadingSpinner />
-                                ) : historyError ? (
-                                    <p>Error loading history: {historyError}</p>
+                                ) : partDataError ? (
+                                    <p className="text-red-500">Error loading history: {historyError}</p>
+                                ) : devicePartData ? (
+                                    <DevicePartForm devicePartData={devicePartData} />
                                 ) : (
-                                    <div className="px-3">
-                                        <ReusableTable
-                                            columns={DeviceTableColumns}
-                                            data={historyData ? [historyData] : []}
-                                            options={{
-                                                initialState: { sorting: [{ id: 'serial_number', desc: true }] },
-                                                enablePagination: false,
-                                                enableSorting: false,
-                                            }}
-                                        />
-                                    </div>
+                                    <p>Select an device to view details</p>
                                 )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Under Section (Only visible when expanded) */}
+            {isExpanded && selectedDeviceId && (
+                <div className="p-2 col-span-4">
+                    <div className="flex flex-col">
+                        <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">
+                            <div className="p-2">
+                                <h2 className="text-xl font-medium pl-2 pb-2">{selectedDeviceId.serial_number} History</h2>
+                                <div className="px-3">
+                                    <ReusableTable
+                                        columns={DeviceTableColumns}
+                                        data={historyData ? historyData : []}
+                                        //data={Array.isArray(historyData) ? historyData : [historyData].filter(Boolean)}  // 배열로 변환하여 전달
+                                        options={{
+                                            initialState: { sorting: [{ id: 'serial_number', desc: true }] },
+                                            enablePagination: false,
+                                            enableSorting: false,
+                                        }}
+                                        isLoading={historyDataLoading}
+                                        error={historyDataError}
+                                    />
+                                </div>
+
+                                {/*{historyLoading ? (*/}
+                                {/*    <LoadingSpinner />*/}
+                                {/*) : historyError ? (*/}
+                                {/*    <p>Error loading history: {historyError}</p>*/}
+                                {/*) : (*/}
+
+                                {/*)}*/}
                             </div>
                         </div>
                     </div>

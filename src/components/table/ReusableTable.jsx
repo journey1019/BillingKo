@@ -1,7 +1,7 @@
 import PropTypes from "prop-types"; // PropTypes 추가
 import { MaterialReactTable } from "material-react-table";
 
-const ReusableTable = ({ columns, data = [], options = {} }) => {
+const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, error = null }) => {
     // 공통 스타일 설정
     const defaultOptions = {
         initialState: {
@@ -30,24 +30,42 @@ const ReusableTable = ({ columns, data = [], options = {} }) => {
     };
 
     return (
-        <MaterialReactTable
-            columns={columns} // 필수 컬럼 정의
-            data={data} // 데이터 배열
-            getRowProps={(row) => ({
-                onClick: () => options?.onRowClick && options.onRowClick(row), // Row 클릭 이벤트
-                style: { cursor: "pointer" }, // 포인터 커서 추가
-            })}
-            renderRowActions={({ row }) => (
-                <div>
-                    <input
-                        type="radio"
-                        name="rowSelect"
-                        onClick={() => options?.onRowClick && options.onRowClick(row)}
-                    />
-                </div>
+        <>
+            {error ? (
+                <p className="text-red-500">Failed to load data: {error}</p>
+            ) : (
+                <MaterialReactTable
+                    columns={columns} // 필수 컬럼 정의
+                    data={data} // 데이터 배열
+                    state={{
+                        isLoading: isLoading, // Loading 애니메이션 활성화
+                    }}
+                    muiCircularProgressProps={{
+                        color: 'secondary',
+                        thickness: 5,
+                        size: 55,
+                    }}
+                    muiSkeletonProps={{
+                        animation: 'pulse',
+                        height: 28,
+                    }}
+                    getRowProps={(row) => ({
+                        onClick: () => options?.onRowClick && options.onRowClick(row), // Row 클릭 이벤트
+                        style: { cursor: "pointer" }, // 포인터 커서 추가
+                    })}
+                    renderRowActions={({ row }) => (
+                        <div>
+                            <input
+                                type="radio"
+                                name="rowSelect"
+                                onClick={() => options?.onRowClick && options.onRowClick(row)}
+                            />
+                        </div>
+                    )}
+                    {...mergedOptions} // 병합된 옵션 전달
+                />
             )}
-            {...mergedOptions} // 병합된 옵션 전달
-        />
+        </>
     );
 };
 
@@ -68,12 +86,16 @@ ReusableTable.propTypes = {
         renderDetailPanel: PropTypes.func, // renderDetailPanel 함수 정의
         onRowClick: PropTypes.func, // Row 클릭 이벤트 PropTypes 정의
     }),
+    isLoading: PropTypes.bool,
+    error: PropTypes.string,
 };
 
 
 // 기본 props 설정
 ReusableTable.defaultProps = {
     options: {}, // 기본값은 빈 객체
+    isLoading: false,
+    error: null,
 };
 
 export default ReusableTable;

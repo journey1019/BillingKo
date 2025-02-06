@@ -1,4 +1,4 @@
-export const CDRTableOptions = {
+export const NetworkReportTableOptions = {
     initialState: {
         // sorting: [{ id: 'acct_num', desc: false }],
         showColumnFilters: true,

@@ -17,7 +17,12 @@ const DeviceEditPage = () => {
         model_name: "",
         internet_mail_id: "",
         alias: "",
-        remarks: ""
+        remarks: "",
+        use_yn: "",
+        regist_date: "",
+        update_date: "",
+        regist_user_id: "",
+        update_user_id: ""
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -37,6 +42,8 @@ const DeviceEditPage = () => {
                     ...device,
                     activated: formatDate(device.activated),
                     deactivated: formatDate(device.deactivated),
+                    regist_date: formatDate(device.regist_date),
+                    update_date: formatDate(device.update_date),
                 });
             } catch (err) {
                 setError("Failed to fetch device data");
@@ -48,11 +55,6 @@ const DeviceEditPage = () => {
         loadDeviceData();
     }, [serial_number]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
     // 빈 문자열을 null로 변환하는 함수
     const convertEmptyToNull = (data) => {
         const updatedData = { ...data };
@@ -62,6 +64,15 @@ const DeviceEditPage = () => {
             }
         });
         return updatedData;
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleToggleChange = () => {
+        setFormData((prev) => ({ ...prev, use_yn: prev.use_yn === 'Y' ? 'N' : 'Y' }));
     };
 
     const handleSubmit = async (e) => {
@@ -81,8 +92,6 @@ const DeviceEditPage = () => {
 
     if (loading) return <LoadingSpinner />;
     if (error) return <p>Error: {error}</p>;
-
-    console.log(formData)
 
     return (
         <>
@@ -161,11 +170,12 @@ const DeviceEditPage = () => {
                             type="date"
                             id="deactivated"
                             name="deactivated"
-                            value={formData.deactivated || ""}
+                            value={formData.deactivated}
                             onChange={handleChange}
                             className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                         />
                     </div>
+
 
                     {/* PPID */}
                     <div className="grid grid-cols-6 items-center space-x-4">
@@ -202,7 +212,7 @@ const DeviceEditPage = () => {
                             type="text"
                             id="internet_mail_id"
                             name="internet_mail_id"
-                            value={formData.internet_mail_id || ""}
+                            value={formData.internet_mail_id}
                             onChange={handleChange}
                             className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                         />
@@ -215,7 +225,7 @@ const DeviceEditPage = () => {
                             type="text"
                             id="alias"
                             name="alias"
-                            value={formData.alias || ""}
+                            value={formData.alias}
                             onChange={handleChange}
                             className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                         />
@@ -228,11 +238,91 @@ const DeviceEditPage = () => {
                             type="text"
                             id="remarks"
                             name="remarks"
-                            value={formData.remarks || ""}
+                            value={formData.remarks}
                             onChange={handleChange}
                             className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                         />
                     </div>
+
+                    {/* Use Y/N */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="use_yn" className="col-start-1 text-sm font-medium text-gray-900">Use</label>
+                        <div className="col-span-2 col-start-2 flex items-center space-x-4">
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.use_yn === 'Y'}
+                                    onChange={handleToggleChange}
+                                    className="sr-only peer"
+                                />
+                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600"></div>
+                                <div className="absolute w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-all"></div>
+                            </label>
+                            <span className="text-sm text-gray-700">
+                            {formData.use_yn === 'Y' ? 'Yes' : 'No'}
+                        </span>
+                        </div>
+                    </div>
+
+                    {/* Register Date */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="regist_date" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
+                            Register Date
+                        </label>
+                        <input
+                            type="date"
+                            id="regist_date"
+                            value={formData.regist_date}
+                            onChange={handleChange}
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                        />
+                    </div>
+
+                    {/* Update Date */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="regist_dateupdate_date" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
+                            Update Date
+                        </label>
+                        <input
+                            type="date"
+                            id="update_date"
+                            value={formData.update_date}
+                            onChange={handleChange}
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                        />
+                    </div>
+
+                    {/* Registration User ID */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="regist_user_id" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
+                            Registration User ID
+                        </label>
+                        <input
+                            type="text"
+                            id="regist_user_id"
+                            value={formData.regist_user_id}
+                            onChange={handleChange}
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                            placeholder=""
+                        />
+                    </div>
+
+                    {/* Update User ID */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="update_user_id" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
+                            Update User ID
+                        </label>
+                        <input
+                            type="text"
+                            id="update_user_id"
+                            value={formData.update_user_id}
+                            onChange={handleChange}
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                            placeholder=""
+                        />
+                    </div>
+
+
 
                     <button type="submit" className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
                         Submit

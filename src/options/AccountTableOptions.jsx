@@ -1,6 +1,6 @@
 export const AccountTableOptions = {
     initialState: {
-        sorting: [{ id: 'acct_num', desc: false }],
+        sorting: [{ id: 'acct_num', desc: true }],
         showColumnFilters: true,
     },
     enableRowSelection: true,

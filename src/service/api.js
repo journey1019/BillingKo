@@ -67,29 +67,22 @@ api.interceptors.request.use(
 
 
 // 응답 인터셉터
+// api.interceptors.response.use(
+//     (response) => response,
+//     handleError
+// );
 api.interceptors.response.use(
     (response) => response,
-    handleError
+    (error) => {
+        if (error.response) {
+            if (error.response.status === 401) {
+                console.error("Unauthorized: Invalid or expired token.");
+                // 필요 시 토큰 갱신 로직 추가
+            }
+        }
+        return Promise.reject(error);
+    }
 );
-
-// // 응답 인터셉터
-// api.interceptors.response.use(
-//     (response) => {
-//         console.log("Response Data:", response.data); // 응답 디버깅
-//         return response;
-//     },
-//     (error) => {
-//         if (error.response) {
-//             console.error(
-//                 `Response Error: ${error.response.status} - ${error.response.statusText}`
-//             );
-//             console.error("Response Details:", error.response.data); // 응답 상세 확인
-//         } else {
-//             console.error("Network Error:", error.message);
-//         }
-//         return Promise.reject(error);
-//     }
-// );
 
 // 공통 메서드
 // GET 요청

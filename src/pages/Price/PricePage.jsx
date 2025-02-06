@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchPrice, deletePrice, fetchPricePart } from '@/service/priceService.js';
+import { fetchPrice, deletePrice, fetchPriceHistory, fetchPricePart } from '@/service/priceService.js';
 import { PriceTableColumns } from '@/columns/PriceTableColumns.jsx';
 import { PriceTableOptions } from '@/options/PriceTableOptions.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
@@ -11,6 +11,7 @@ import { FiPlus } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiSettings3Fill } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
+import PricePartForm from '@/components/form/PricePartForm.jsx';
 
 const PricePage = () => {
     const { data, loading, error, refetch } = useApiFetch(fetchPrice);
@@ -19,24 +20,42 @@ const PricePage = () => {
     const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
     const navigate = useNavigate();
 
-    const [particularData, setParticularData] = useState(null);
-    const [particularLoading, setParticularLoading] = useState(false);
-    const [particularError, setParticularError] = useState(null);
+    const [historyData, setHistoryData] = useState(null);
+    const [historyLoading, ssetHistoryLoading] = useState(false);
+    const [historyError, setHistoryError] = useState(null);
 
+    // 부분 단말 데이터 상태
+    const [pricePartData, setPricePartData] = useState(null);
+    const [partDataLoading, setPartDataLoading] = useState(false);
+    const [partDataError, setPartDataError] = useState(null);
+    
     // 선택된 ppid 변경 시만 이력 데이터 가져오기
     useEffect(() => {
         const fetchParticular = async () => {
             if (!selectedPriceId) return;  // 선택된 값이 없으면 호출하지 않음
 
-            setParticularLoading(true);
-            setParticularError(null);
+            // 이력 데이터 가져오기
+            ssetHistoryLoading(true);
+            setHistoryError(null);
             try {
-                const response = await fetchPricePart(selectedPriceId.ppid);
-                setParticularData(response);
+                const response = await fetchPriceHistory(selectedPriceId.ppid);
+                setHistoryData(response);
             } catch (error) {
-                setParticularError(error.message || "Failed to fetch price particular");
+                setHistoryError(error.message || 'Failed to fetch price particular');
             } finally {
-                setParticularLoading(false);
+                ssetHistoryLoading(false);
+            }
+
+            // 부분 계정 데이터 가져오기
+            setPartDataLoading(true);
+            setPartDataError(null);
+            try {
+                const partResponse = await fetchPricePart(selectedPriceId.ppid);
+                setPricePartData(partResponse);
+            } catch (error) {
+                setPartDataError(error.message || 'Failed to fetch price details');
+            } finally {
+                setPartDataLoading(false);
             }
         };
 
@@ -54,13 +73,17 @@ const PricePage = () => {
     const toggleDropdown = () => setIsOpenDropdown(!isOpenDropdown);
     const closeDropdown = () => setIsOpenDropdown(false);
 
-    if (loading) return <LoadingSpinner/>;
+    if (loading) return <LoadingSpinner />;
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <div className={`grid gap-0 ${isExpanded ? 'grid-cols-3' : 'grid-cols-1'}`}>
+        <div className={`grid gap-0 ${isExpanded ? 'grid-cols-4' : 'grid-cols-2'}`}>
+            <div className="col-span-4 border-b pb-3 mb-2 border-gray-400">
+                <h1 className="text-2xl font-base">Price</h1>
+            </div>
+
             {/* Left Section */}
-            <div className={`p-2 ${isExpanded ? 'col-span-1' : 'col-span-3'}`}>
+            <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-4'}`}>
 
                 {/* Top */}
                 <div className="flex flex-row justify-between mb-3">
@@ -122,7 +145,7 @@ const PricePage = () => {
                     }}
                 />
             </div>
-            
+
             {/* Right Section (Only visible when expanded) */}
             {isExpanded && selectedPriceId && (
                 <div className="p-2 col-span-2">
@@ -143,17 +166,40 @@ const PricePage = () => {
 
                         {/* Bottom */}
                         <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">
-                            <div className="p-4">
-                                <h2 className="text-xl font-bold">Price Particular</h2>
-                                {particularLoading ? (
+                            <div className="p-3">
+                                <h2 className="text-xl font-bold">가격 세부 정보</h2>
+
+                                {partDataLoading ? (
                                     <LoadingSpinner />
-                                ) : particularError ? (
-                                    <p>Error loading particular: {particularError}</p>
+                                ) : partDataError ? (
+                                    <p className="text-red-500">Error loading history: {historyError}</p>
+                                ) : pricePartData ? (
+                                    <PricePartForm pricePartData={pricePartData}/>
+                                ) : (
+                                    <p>Select an price to view details</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {isExpanded && selectedPriceId && (
+                <div className="p-2 col-span-4">
+                    <div className="flex flex-col">
+                        <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">
+                            <div className="p-2">
+                                <h2 className="text-xl font-bold">Price Particular</h2>
+
+                                {historyLoading ? (
+                                    <LoadingSpinner />
+                                ) : historyError ? (
+                                    <p>Error loading particular: {historyError}</p>
                                 ) : (
                                     <div className="px-3">
                                         <ReusableTable
                                             columns={PriceTableColumns}
-                                            data={particularData ? [particularData] : []}
+                                            data={historyData ? [historyData] : []}
                                             options={{
                                                 initialState: { sorting: [{ id: 'ppid', desc: true }] },
                                                 enablePagination: false,
@@ -167,8 +213,6 @@ const PricePage = () => {
                     </div>
                 </div>
             )}
-
-
         </div>
     );
 };

@@ -12,10 +12,10 @@ export const FileUpdateTableColumns = [
         accessorKey: 'user_id',
         header: 'User ID ',
     },
-    // {
-    //     accessorKey: 'update_index',
-    //     header: 'Update Index ',
-    // },
+    {
+        accessorKey: 'update_index',
+        header: 'Update Index ',
+    },
     {
         accessorKey: 'file_size',
         header: 'File Size',

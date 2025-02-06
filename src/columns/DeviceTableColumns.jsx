@@ -42,4 +42,24 @@ export const DeviceTableColumns = [
         accessorKey: 'remarks',
         header: 'Remarks',
     },
+    {
+        accessorKey: 'use_yn',
+        header: '사용',
+    },
+    {
+        accessorKey: 'regist_date',
+        header: 'Register Date',
+    },
+    {
+        accessorKey: 'update_date',
+        header: 'Update Date',
+    },
+    {
+        accessorKey: 'regist_user_id',
+        header: 'Registration User ID',
+    },
+    {
+        accessorKey: 'update_user_id',
+        header: 'Update User ID',
+    },
 ];

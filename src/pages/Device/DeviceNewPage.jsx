@@ -18,7 +18,12 @@ const DeviceNewPage = () => {
         model_name: "",
         internet_mail_id: "",
         alias: "",
-        remarks: ""
+        remarks: "",
+        use_yn: "",
+        regist_date: "",
+        update_date: "",
+        regist_user_id: "",
+        update_user_id: ""
     });
 
     const [error, setError] = useState(null);
@@ -75,6 +80,11 @@ const DeviceNewPage = () => {
             Internet Mail ID: ${confirmedData.internet_mail_id}
             Alias: ${confirmedData.alias}
             Remarks: ${confirmedData.remarks}
+            Use: ${confirmedData.use_yn}
+            Registration Date: ${confirmedData.regist_date}
+            Update Date: ${confirmedData.update_date}
+            Registration User ID: ${confirmedData.regist_user_id}
+            Update User ID: ${confirmedData.update_user_id}
         `;
 
         if (!window.confirm(confirmMessage)) {
@@ -259,6 +269,99 @@ const DeviceNewPage = () => {
                             placeholder="Remarks"
                         />
                     </div>
+
+                    {/* use_yn */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label
+                            htmlFor="use_yn"
+                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
+                        >
+                            사용
+                        </label>
+                        <div className="col-span-2 col-start-2 flex items-center space-x-4">
+                            {/* Toggle 버튼 */}
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    id="use_yn"
+                                    checked={formData.use_yn === 'Y'} // Y일 경우 체크
+                                    onChange={(e) =>
+                                        handleInputChange({
+                                            target: { id: 'use_yn', value: e.target.checked ? 'Y' : 'N' },
+                                        })
+                                    }
+                                    className="sr-only peer"
+                                />
+                                <div
+                                    className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer dark:bg-gray-700 peer-checked:bg-blue-600"></div>
+                                <div
+                                    className="absolute w-5 h-5 bg-white rounded-full shadow-lg transform peer-checked:translate-x-5 transition-all"></div>
+                            </label>
+                            <span className="text-sm text-gray-700">
+                                {formData.use_yn === 'Y' ? 'Yes' : 'No'}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Register Date */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="regist_date" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
+                            Register Date
+                        </label>
+                        <input
+                            type="date"
+                            id="regist_date"
+                            value={formData.regist_date}
+                            onChange={handleInputChange}
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                        />
+                    </div>
+
+                    {/* Update Date */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="regist_dateupdate_date" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
+                            Update Date
+                        </label>
+                        <input
+                            type="date"
+                            id="update_date"
+                            value={formData.update_date}
+                            onChange={handleInputChange}
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                        />
+                    </div>
+
+                    {/* Registration User ID */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="regist_user_id" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
+                            Registration User ID
+                        </label>
+                        <input
+                            type="text"
+                            id="regist_user_id"
+                            value={formData.regist_user_id}
+                            onChange={handleInputChange}
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                            placeholder=""
+                        />
+                    </div>
+
+                    {/* Update User ID */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="update_user_id" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
+                            Update User ID
+                        </label>
+                        <input
+                            type="text"
+                            id="update_user_id"
+                            value={formData.update_user_id}
+                            onChange={handleInputChange}
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                            placeholder=""
+                        />
+                    </div>
+
+
 
                     <button type="submit"
                             className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">

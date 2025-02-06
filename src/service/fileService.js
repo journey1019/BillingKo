@@ -1,7 +1,7 @@
+import { get, post, put, del } from "./api";
 import axios from 'axios';
 
 const API_URL_CDR = 'http://127.0.0.1:8000/file/cdrFiles';
-const API_URL_HISTORY = 'http://127.0.0.1:8000/file/fileUpdateHistory';
 
 /**
  * CDR 파일 업로드
@@ -38,18 +38,36 @@ export const uploadCdrFile = async (file) => {
  * @returns {Promise<Array>} 서버에서 반환된 파일 이력 데이터
  */
 export const fetchFileUpdateHistory = async () => {
-    // 로컬 스토리지에서 토큰 가져오기
-    const token = localStorage.getItem('token');
-
     try {
-        const response = await axios.get(API_URL_HISTORY, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data; // 이력 데이터 반환
+        return await get(`/file/fileUpdateHistory`);
     } catch (error) {
-        console.error('Failed to fetch file update history:', error);
+        console.error('Failed to fetch file update history:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+/**
+ * 업데이트 된 CDR Monthly 가져오기
+ * @returns {Promise<Array>} 서버에서 반환된 파일 이력 데이터
+ */
+export const fetchCDRFileUpdate = async (yearMonth) => {
+    try {
+        return await get(`/monthly/cdr/${yearMonth}`);
+    } catch (error) {
+        console.error('Failed to fetch updated cdr file:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+/**
+ * 업데이트 된 CDR Monthly 가져오기
+ * @returns {Promise<Array>} 서버에서 반환된 파일 이력 데이터
+ */
+export const fetchNetworkReportFileUpdate = async (yearMonth) => {
+    try {
+        return await get(`/monthly/network/${yearMonth}`);
+    } catch (error) {
+        console.error('Failed to fetch updated network report file:', error.response?.data || error.message);
         throw error;
     }
 };
