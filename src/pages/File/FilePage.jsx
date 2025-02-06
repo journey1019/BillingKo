@@ -53,8 +53,8 @@ const FilePage = () => {
     // }, []);
 
     return(
-        <div className="grid grid-cols-4">
-            <div className="grid col-span-4">
+        <div className="grid grid-cols-4 2xl:grid-cols-3">
+            <div className="grid col-span-4 2xl:col-span-3">
                 <div>
                     <button onClick={() => navigate('/file/upload')} className="flex flex-row items-center space-x-2 p-2 rounded-md bg-blue-500 text-sm text-white hover:bg-blue-600 transition mr-4">
                         <FiPlus />
@@ -75,11 +75,11 @@ const FilePage = () => {
             {/*        error={fileHistoryError}*/}
             {/*    />*/}
             {/*</div>*/}
-            <div className="grid col-span-2">
+            <div className="grid col-span-2 2xl:col-span-1">
                 <FileStatusForm />
             </div>
             {/* 'CDR' & 'Network Report' Table */}
-            <div className="grid col-span-4 space-y-3">
+            <div className="grid col-span-4 2xl:col-span-3 space-y-3">
                 <div className="flex flex-row items-center justify-between">
                     <h1 className="text-lg font-bold">
                         Selected Month:{' '}

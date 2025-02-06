@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
 import { fetchFileUpdateHistory } from '@/service/fileService.js';
-import MonthPicker from '@/components/time/MonthPicker.jsx';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
-import LoadingSpinner from '@/components/common/LoadingSpinner'
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 // 필수 CDR 파일 리스트 생성
 const generateCDRFiles = (yearMonth) => [
@@ -14,7 +13,6 @@ const generateCDRFiles = (yearMonth) => [
     `123700_${yearMonth}_CDRv3.csv`,
 ];
 
-// 필수 NetworkReport 파일 리스트 생성
 const generateNetworkReportFiles = (yearMonth) => [
     `122123_${yearMonth}_NetworkReport.csv`,
     `122693_${yearMonth}_NetworkReport.csv`,
@@ -44,13 +42,11 @@ const FileStatusForm = () => {
 
             const uploadedFileNames = fileHistoryData.map(file => file.file_name);
 
-            // CDR 파일 상태 분리
-            const cdrMissing = cdrRequiredFiles.filter(file => !uploadedFileNames.includes(file));
-            const cdrUploaded = cdrRequiredFiles.filter(file => uploadedFileNames.includes(file));
+            const cdrUploaded = fileHistoryData.filter(file => cdrRequiredFiles.includes(file.file_name));
+            const nrUploaded = fileHistoryData.filter(file => nrRequiredFiles.includes(file.file_name));
 
-            // NetworkReport 파일 상태 분리
+            const cdrMissing = cdrRequiredFiles.filter(file => !uploadedFileNames.includes(file));
             const nrMissing = nrRequiredFiles.filter(file => !uploadedFileNames.includes(file));
-            const nrUploaded = nrRequiredFiles.filter(file => uploadedFileNames.includes(file));
 
             setCdrUploadedFiles(cdrUploaded);
             setCdrMissingFiles(cdrMissing);
@@ -61,7 +57,7 @@ const FileStatusForm = () => {
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
-        refetch(); // 선택된 날짜에 따라 데이터 다시 불러오기
+        refetch();
     };
 
     if (loading) return <p>Loading...</p>;
@@ -69,52 +65,60 @@ const FileStatusForm = () => {
 
     return (
         <div className="p-5 bg-white rounded-lg shadow-md">
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-2">
                 <h2 className="text-lg font-bold">File Upload Status for {selectedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</h2>
                 <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* CDR Files Section */}
                 <div>
                     <h3 className="text-base font-semibold text-blue-600">CDR Files</h3>
-                    {loading ? (
-                        <LoadingSpinner/>
-                    ) : (
-                        <div className="grid gap-2">
-                            {cdrUploadedFiles.map((file, index) => (
-                                <div key={`cdr-uploaded-${index}`} className="min-h-[40px] text-sm flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-md shadow-sm">
-                                    ✅ {file}
+                    <div className="grid gap-2">
+                        {cdrUploadedFiles.map((file, index) => (
+                            <div
+                                key={`cdr-uploaded-${index}`}
+                                className="relative min-h-[40px] text-sm md:text-xs flex items-center bg-green-100 text-green-800 p-2 rounded-md shadow-sm group"
+                            >
+                                ✅ {file.file_name}
+                                <div className="absolute top-full mt-1 hidden group-hover:block p-2 bg-gray-800 text-white text-xs rounded-lg shadow-md z-10">
+                                    <p><strong>Update Date:</strong> {new Date(file.update_date).toLocaleString()}</p>
+                                    <p><strong>User ID:</strong> {file.user_id}</p>
+                                    <p><strong>File Size:</strong> {file.file_size} bytes</p>
                                 </div>
-                            ))}
-                            {cdrMissingFiles.map((file, index) => (
-                                <div key={`cdr-missing-${index}`} className="min-h-[40px] text-sm flex items-center bg-red-100 text-red-800 px-4 py-2 rounded-md shadow-sm">
-                                    ❌ {file}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                            </div>
+                        ))}
+                        {cdrMissingFiles.map((file, index) => (
+                            <div key={`cdr-missing-${index}`} className="min-h-[40px] text-sm md:text-xs flex items-center bg-red-100 text-red-800 p-2 rounded-md shadow-sm">
+                                ❌ {file}
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Network Report Files Section */}
                 <div>
                     <h3 className="text-base font-semibold text-blue-600">Network Report Files</h3>
-                    {loading ? (
-                        <LoadingSpinner/>
-                    ) : (
-                        <div className="grid gap-2">
-                            {nrUploadedFiles.map((file, index) => (
-                                <div key={`nr-uploaded-${index}`} className="min-h-[40px] text-sm flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-md shadow-sm">
-                                    ✅ {file}
+                    <div className="grid gap-2">
+                        {nrUploadedFiles.map((file, index) => (
+                            <div
+                                key={`nr-uploaded-${index}`}
+                                className="relative min-h-[40px] text-sm md:text-xs flex items-center bg-green-100 text-green-800 p-2 rounded-md shadow-sm group"
+                            >
+                                ✅ {file.file_name}
+                                <div className="absolute top-full mt-1 hidden group-hover:block p-2 bg-gray-800 text-white text-xs rounded-lg shadow-md z-10">
+                                    <p><strong>Update Date:</strong> {new Date(file.update_date).toLocaleString()}</p>
+                                    <p><strong>User ID:</strong> {file.user_id}</p>
+                                    <p><strong>File Size:</strong> {file.file_size} bytes</p>
                                 </div>
-                            ))}
-                            {nrMissingFiles.map((file, index) => (
-                                <div key={`nr-missing-${index}`} className="min-h-[40px] text-sm flex items-center bg-red-100 text-red-800 px-4 py-2 rounded-md shadow-sm">
-                                    ❌ {file}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                            </div>
+                        ))}
+                        {nrMissingFiles.map((file, index) => (
+                            <div key={`nr-missing-${index}`} className="min-h-[40px] text-sm md:text-xs flex items-center bg-red-100 text-red-800 p-2 rounded-md shadow-sm">
+                                ❌ {file}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

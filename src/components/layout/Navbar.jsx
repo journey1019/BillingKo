@@ -50,8 +50,8 @@ const Navbar = () => {
                     isSidebarOpen ? 'left-48' : 'left-16'
                 }`}
             >
-                <div className="flex items-center justify-between px-6 pt-3 pb-4">
-                    <Link to="/" className="text-2xl font-bold hover:underline">
+                <div className="flex items-center justify-between px-6 py-3 md:py-3">
+                    <Link to="/" className="text-lg md:text-2xl font-bold hover:underline">
                         KOREA ORBCOMM
                     </Link>
                     <ul className="flex space-x-8">
@@ -64,24 +64,6 @@ const Navbar = () => {
                                 <span>청구서 전 데이터</span>
                             </Link>
                         </li>
-                        {/*<li>*/}
-                        {/*    <Link*/}
-                        {/*        to="/orders"*/}
-                        {/*        className="flex items-center space-x-2 p-2 transition hover:text-blue-400"*/}
-                        {/*    >*/}
-                        {/*        <FaShoppingCart />*/}
-                        {/*        <span>단말기 관리</span>*/}
-                        {/*    </Link>*/}
-                        {/*</li>*/}
-                        {/*<li>*/}
-                        {/*    <Link*/}
-                        {/*        to="/reports"*/}
-                        {/*        className="flex items-center space-x-2 p-2 transition hover:text-blue-400"*/}
-                        {/*    >*/}
-                        {/*        <FaChartBar />*/}
-                        {/*        <span>요금제 관리</span>*/}
-                        {/*    </Link>*/}
-                        {/*</li>*/}
                         <li>
                             <Link
                                 to="/file"
