@@ -6,6 +6,7 @@ import { PriceTableOptions } from '@/options/PriceTableOptions.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
+import Modal from '@/components/common/Modal.jsx';
 
 import { FiPlus } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -28,7 +29,10 @@ const PricePage = () => {
     const [pricePartData, setPricePartData] = useState(null);
     const [partDataLoading, setPartDataLoading] = useState(false);
     const [partDataError, setPartDataError] = useState(null);
-    
+
+    // Modal
+    const [showModal, setShowModal] = useState(false);
+
     // 선택된 ppid 변경 시만 이력 데이터 가져오기
     useEffect(() => {
         const fetchParticular = async () => {
@@ -78,7 +82,7 @@ const PricePage = () => {
 
     return (
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-4' : 'grid-cols-2'}`}>
-            <div className="col-span-4 border-b pb-3 mb-2 border-gray-400">
+            <div className="col-span-4 justify-between border-b pb-3 mb-2 border-gray-400">
                 <h1 className="text-2xl font-base">Price</h1>
             </div>
 
@@ -174,7 +178,7 @@ const PricePage = () => {
                                 ) : partDataError ? (
                                     <p className="text-red-500">Error loading history: {historyError}</p>
                                 ) : pricePartData ? (
-                                    <PricePartForm pricePartData={pricePartData}/>
+                                    <PricePartForm pricePartData={pricePartData} />
                                 ) : (
                                     <p>Select an price to view details</p>
                                 )}
@@ -213,6 +217,20 @@ const PricePage = () => {
                     </div>
                 </div>
             )}
+
+            <div className="col-span-4 justify-between border-b pb-3 mb-2 border-gray-400">
+                <button
+                    onClick={() => setShowModal(true)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                >
+                    Open Modal
+                </button>
+
+                <Modal show={showModal} onClose={() => setShowModal(false)}>
+                    <p>This is the content inside the modal.</p>
+                </Modal>
+            </div>
+
         </div>
     );
 };

@@ -4,7 +4,6 @@ import { fetchFileUpdateHistory } from '@/service/fileService.js';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
-// 필수 CDR 파일 리스트 생성
 const generateCDRFiles = (yearMonth) => [
     `122123_${yearMonth}_CDRv3.csv`,
     `122693_${yearMonth}_CDRv3.csv`,
@@ -66,7 +65,7 @@ const FileStatusForm = () => {
     return (
         <div className="p-5 bg-white rounded-lg shadow-md">
             <div className="flex flex-col md:flex-row justify-between items-center mb-2">
-                <h2 className="text-lg font-bold">File Upload Status for {selectedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</h2>
+                <h2 className="text-xl font-bold">File Upload Status for {selectedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</h2>
                 <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
             </div>
 
@@ -78,13 +77,21 @@ const FileStatusForm = () => {
                         {cdrUploadedFiles.map((file, index) => (
                             <div
                                 key={`cdr-uploaded-${index}`}
-                                className="relative min-h-[40px] text-sm md:text-xs flex items-center bg-green-100 text-green-800 p-2 rounded-md shadow-sm group"
+                                className="relative min-h-[40px] text-sm md:text-xs flex items-center bg-green-100 text-green-800 p-2 rounded-md shadow-sm"
+                                onMouseEnter={(e) => e.currentTarget.querySelector('[data-popover]').classList.remove('invisible', 'opacity-0')}
+                                onMouseLeave={(e) => e.currentTarget.querySelector('[data-popover]').classList.add('invisible', 'opacity-0')}
                             >
                                 ✅ {file.file_name}
-                                <div className="absolute top-full mt-1 hidden group-hover:block p-2 bg-gray-800 text-white text-xs rounded-lg shadow-md z-10">
-                                    <p><strong>Update Date:</strong> {new Date(file.update_date).toLocaleString()}</p>
-                                    <p><strong>User ID:</strong> {file.user_id}</p>
-                                    <p><strong>File Size:</strong> {file.file_size} bytes</p>
+                                {/* Popover */}
+                                <div data-popover id={`popover-${index}`} role="tooltip" className="absolute z-10 invisible opacity-0 transition-opacity duration-300 max-w-xs w-72 text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-xs dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 top-full mt-2">
+                                    <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{file.file_name}</p>
+                                    </div>
+                                    <div className="px-3 py-2 break-words">
+                                        <p><strong>Update Date:</strong> {new Date(file.update_date).toLocaleString()}</p>
+                                        <p><strong>User ID:</strong> {file.user_id}</p>
+                                        <p><strong>File Size:</strong> {file.file_size} bytes</p>
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -103,13 +110,21 @@ const FileStatusForm = () => {
                         {nrUploadedFiles.map((file, index) => (
                             <div
                                 key={`nr-uploaded-${index}`}
-                                className="relative min-h-[40px] text-sm md:text-xs flex items-center bg-green-100 text-green-800 p-2 rounded-md shadow-sm group"
+                                className="relative min-h-[40px] text-sm md:text-xs flex items-center bg-green-100 text-green-800 p-2 rounded-md shadow-sm"
+                                onMouseEnter={(e) => e.currentTarget.querySelector('[data-popover]').classList.remove('invisible', 'opacity-0')}
+                                onMouseLeave={(e) => e.currentTarget.querySelector('[data-popover]').classList.add('invisible', 'opacity-0')}
                             >
                                 ✅ {file.file_name}
-                                <div className="absolute top-full mt-1 hidden group-hover:block p-2 bg-gray-800 text-white text-xs rounded-lg shadow-md z-10">
-                                    <p><strong>Update Date:</strong> {new Date(file.update_date).toLocaleString()}</p>
-                                    <p><strong>User ID:</strong> {file.user_id}</p>
-                                    <p><strong>File Size:</strong> {file.file_size} bytes</p>
+                                {/* Popover */}
+                                <div data-popover id={`popover-nr-${index}`} role="tooltip" className="absolute z-10 invisible opacity-0 transition-opacity duration-300 max-w-xs w-72 text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-xs dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 top-full mt-2">
+                                    <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{file.file_name}</p>
+                                    </div>
+                                    <div className="px-3 py-2 break-words">
+                                        <p><strong>Update Date:</strong> {new Date(file.update_date).toLocaleString()}</p>
+                                        <p><strong>User ID:</strong> {file.user_id}</p>
+                                        <p><strong>File Size:</strong> {file.file_size} bytes</p>
+                                    </div>
                                 </div>
                             </div>
                         ))}
