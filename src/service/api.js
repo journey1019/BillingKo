@@ -21,26 +21,6 @@ const handleError = (error) => {
     return Promise.reject(error);
 };
 
-// POST 요청을 Query String로 전송
-export const postWithQueryString = async (url, params) => {
-    const response = await axios.post(`${API_URL}${url}`, null, {
-        params, // Query String으로 전송
-    });
-    return response.data;
-};
-
-// POST 요청을 JSON Body로 전송
-export const postWithBody = async (url, body) => {
-    const token = localStorage.getItem("token");
-
-    const response = await api.post(url, body, {
-        headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-    });
-    return response.data;
-};
 
 // 요청 인터셉터
 api.interceptors.request.use(
@@ -97,6 +77,40 @@ export const post = async (url, body) => {
     const response = await api.post(url, body);
     return response.data;
 };
+
+// POST 요청을 Query String로 전송
+export const postWithQueryString = async (url, params) => {
+    const response = await axios.post(`${API_URL}${url}`, null, {
+        params, // Query String으로 전송
+    });
+    return response.data;
+};
+
+// POST 요청을 JSON Body로 전송
+export const postWithBody = async (url, body) => {
+    const token = localStorage.getItem("token");
+
+    const response = await api.post(url, body, {
+        headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+    });
+    return response.data;
+};
+
+export const postWithBodyFile = async (url, body) => {
+    const token = localStorage.getItem("token");
+
+    const response = await api.post(url, body, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+    });
+    return response.data;
+};
+
 
 // PUT 요청
 export const put = async (url, body) => {

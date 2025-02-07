@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchFileUpdateHistory, fetchCDRFileUpdate, fetchNetworkReportFileUpdate } from '@/service/fileService.js';
+import { fetchCDRFileUpdate, fetchNetworkReportFileUpdate } from '@/service/fileService.js';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
 import MonthPicker from '@/components/time/MonthPicker.jsx';
@@ -13,6 +13,8 @@ import { CDRTableOptions } from '@/options/CDRTableOptions.jsx';
 import { NetworkReportTableColumns } from '@/columns/NetworkReportTableColumns.jsx';
 import { NetworkReportTableOptions } from '@/options/NetworkReportTableOptions.jsx';
 import FileStatusForm from '@/components/form/FileStatusForm.jsx'
+import Modal from '@/components/common/Modal.jsx';
+import UploadFileModal from '@/components/layout/File/UploadFileModal.jsx';
 
 const FilePage = () => {
     const navigate = useNavigate();
@@ -28,7 +30,7 @@ const FilePage = () => {
         setSelectedDate(date);
     };
 
-    const { data: fileHistoryData, loading: fileHistoryLoading, error: fileHistoryError, refetch: fileHistoryRefetch } = useApiFetch(fetchFileUpdateHistory);
+
     const { data: cdrData, loading: cdrLoading, error: cdrError, refetch: cdrRefetch } = useApiFetch(fetchCDRFileUpdate, yearMonth);
     const { data: nrData, loading: nrLoading, error: nrError, refetch: nrRefetch } = useApiFetch(fetchNetworkReportFileUpdate, yearMonth);
 
@@ -54,14 +56,7 @@ const FilePage = () => {
 
     return(
         <div className="grid grid-cols-4 2xl:grid-cols-3">
-            <div className="grid col-span-4 2xl:col-span-3">
-                <div>
-                    <button onClick={() => navigate('/file/upload')} className="flex flex-row items-center space-x-2 p-2 rounded-md bg-blue-500 text-sm text-white hover:bg-blue-600 transition mr-4">
-                        <FiPlus />
-                        <span>Upload</span>
-                    </button>
-                </div>
-            </div>
+
             {/* File Uploaded Table */}
             {/*<div className="grid col-span-1">*/}
             {/*    <h1 className="py-1 text-lg font-bold">File Updated History</h1>*/}

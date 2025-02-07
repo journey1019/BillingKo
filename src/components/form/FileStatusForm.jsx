@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
 import { fetchFileUpdateHistory } from '@/service/fileService.js';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
+import UploadFileModal from '@/components/layout/File/UploadFileModal.jsx';
 
 const generateCDRFiles = (yearMonth) => [
     `122123_${yearMonth}_CDRv3.csv`,
@@ -69,8 +69,12 @@ const FileStatusForm = () => {
                 <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
             </div>
 
+            <div className="flex flex-col md:flex-row justify-between items-center mb-2">
+                <UploadFileModal />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {/* CDR Files Section */}
+            {/* CDR Files Section */}
                 <div>
                     <h3 className="text-base font-semibold text-blue-600">CDR Files</h3>
                     <div className="grid gap-2">
@@ -96,8 +100,9 @@ const FileStatusForm = () => {
                             </div>
                         ))}
                         {cdrMissingFiles.map((file, index) => (
-                            <div key={`cdr-missing-${index}`} className="min-h-[40px] text-sm md:text-xs flex items-center bg-red-100 text-red-800 p-2 rounded-md shadow-sm">
-                                ❌ {file}
+                            <div key={`cdr-missing-${index}`}
+                                 className="min-h-[40px] text-sm md:text-xs flex items-center bg-red-100 text-red-800 p-2 rounded-md shadow-sm justify-between">
+                                <span className="group-hover:text-red-900">❌ {file}</span>
                             </div>
                         ))}
                     </div>
@@ -107,7 +112,7 @@ const FileStatusForm = () => {
                 <div>
                     <h3 className="text-base font-semibold text-blue-600">Network Report Files</h3>
                     <div className="grid gap-2">
-                        {nrUploadedFiles.map((file, index) => (
+                    {nrUploadedFiles.map((file, index) => (
                             <div
                                 key={`nr-uploaded-${index}`}
                                 className="relative min-h-[40px] text-sm md:text-xs flex items-center bg-green-100 text-green-800 p-2 rounded-md shadow-sm"
@@ -129,8 +134,11 @@ const FileStatusForm = () => {
                             </div>
                         ))}
                         {nrMissingFiles.map((file, index) => (
-                            <div key={`nr-missing-${index}`} className="min-h-[40px] text-sm md:text-xs flex items-center bg-red-100 text-red-800 p-2 rounded-md shadow-sm">
-                                ❌ {file}
+                            <div
+                                key={`nr-missing-${index}`}
+                                className="min-h-[40px] text-sm md:text-xs flex items-center bg-red-100 text-red-800 p-2 rounded-md shadow-sm justify-between"
+                            >
+                                <span className="group-hover:text-red-900">❌ {file}</span>
                             </div>
                         ))}
                     </div>

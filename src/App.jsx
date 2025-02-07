@@ -13,7 +13,6 @@ import PriceNewPage from '@/pages/Price/PriceNewPage.jsx';
 import PriceEditPage from '@/pages/Price/PriceEditPage.jsx';
 import DeviceNewPage from '@/pages/Device/DeviceNewPage.jsx';
 import DeviceEditPage from '@/pages/Device/DeviceEditPage.jsx';
-import UploadFilePage from '@/pages/File/UploadFilePage.jsx';
 import FilePage from '@/pages/File/FilePage.jsx';
 import CDRPage from '@/pages/File/CDRPage.jsx';
 import MonthlyPage from '@/pages/Monthly/MonthlyPage.jsx';
@@ -84,9 +83,6 @@ const App = () => {
                                 <Route path="/price" element={<PricePage />} />
                                 <Route path="/monthly" element={<MonthlyPage />} />
 
-                                <Route path="/file/upload" element={<UploadFilePage />} />
-                                <Route path="/file/upload/cdr" element={<UploadFilePage />} />
-                                <Route path="/file/upload/accounts" element={<UploadFilePage />} />
                                 <Route path="/file/cdr" element={<CDRPage />} />
                                 <Route path="/file/accounts" element={<CDRPage />} />
 
