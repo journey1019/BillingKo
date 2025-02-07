@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useApiFetch from "@/hooks/useApiFetch.js";
-import { fetchMonthlyData } from "@/service/monthlyService.js"; // API 호출 함수
+import { fetchMonthlyData, saveMonthlyData } from '@/service/monthlyService.js'; // API 호출 함수
 import { MonthlyTableColumns } from "@/columns/MonthlyTableColumns.jsx";
 import { MonthlyTableOptions } from "@/options/MonthlyTableOptions.jsx";
 import ReusableTable from "@/components/table/ReusableTable.jsx";
@@ -10,6 +10,8 @@ import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import { useNavigate } from 'react-router-dom';
 
 import { FiPlus } from 'react-icons/fi';
+import { FaSave } from "react-icons/fa";
+import ConfirmModal from '@/components/common/ConfirmModal.jsx';
 
 const MonthlyPage = () => {
     // 기본값: 현재 날짜 기준 한 달 전
@@ -18,6 +20,31 @@ const MonthlyPage = () => {
     const [selectedDate, setSelectedDate] = useState(oneMonthAgo);
     const yearMonth = selectedDate.toISOString().slice(0, 7).replace("-", "") // YYYYMM 형식
     const navigate = useNavigate();
+
+    // Monthly Save Button
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [message, setMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const handleSave = async () => {
+        setShowConfirmModal(false);  // 모달 닫기
+        setSuccessMessage('');  // 이전 메시지 초기화
+        setErrorMessage('');
+
+        try {
+            // 저장할 데이터 예시 (필요에 따라 확장 가능)
+            const data = {
+                summary: "월별 데이터 저장 요청",
+                timestamp: new Date().toISOString(),
+            };
+            await saveMonthlyData(yearMonth, data);
+            setSuccessMessage(`Data for ${yearMonth} saved successfully.`);
+        } catch (error) {
+            setErrorMessage(error.message || 'Failed to save data.');
+        }
+    };
+
 
     // API 호출: useApiFetch를 활용
     const { data, loading, error } = useApiFetch(fetchMonthlyData, yearMonth);
@@ -53,6 +80,17 @@ const MonthlyPage = () => {
 
     return (
         <div className="grid gap-0 grid-cols-1">
+            <div className="flex flex-row justify-between pb-4">
+                <h1>Monthly Data Save</h1>
+                <button
+                    className="flex flex-row items-center p-2 bg-blue-500 rounded-md text-white"
+                    onClick={() => setShowConfirmModal(true)}
+                >
+                    <FaSave />
+                    <span className="pl-2">SAVE</span>
+                </button>
+            </div>
+
             <div className="flex flex-row items-center justify-between mb-3">
                 <h1 className="text-lg font-bold">
                     Selected Month:{" "}
@@ -114,6 +152,24 @@ const MonthlyPage = () => {
                     </button>
                 </div>
             </div>
+
+
+            {/* 성공 메시지 */}
+            {successMessage && (
+                <p className="text-green-600 font-semibold">{successMessage}</p>
+            )}
+            {/* 에러 메시지 */}
+            {errorMessage && (
+                <p className="text-red-600 font-semibold">{errorMessage}</p>
+            )}
+            {/* Confirm Modal */}
+            <ConfirmModal
+                show={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={handleSave}
+                message={`Are you sure you want to save data for ${yearMonth}?`}
+                status="save"
+            />
         </div>
     );
 };

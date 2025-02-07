@@ -47,10 +47,6 @@ api.interceptors.request.use(
 
 
 // 응답 인터셉터
-// api.interceptors.response.use(
-//     (response) => response,
-//     handleError
-// );
 api.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -63,6 +59,10 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+// api.interceptors.response.use(
+//     (response) => response,
+//     handleError
+// );
 
 // 공통 메서드
 // GET 요청
