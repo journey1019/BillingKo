@@ -57,7 +57,7 @@ const Navbar = () => {
                     <ul className="flex space-x-8">
                         <li>
                             <Link
-                                to="/user"
+                                to="/ko_monthly"
                                 className="flex items-center space-x-2 p-2 transition hover:text-blue-400"
                             >
                                 <FaChalkboard />

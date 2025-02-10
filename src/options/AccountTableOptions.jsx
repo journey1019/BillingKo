@@ -7,7 +7,7 @@ export const AccountTableOptions = {
     enableMultiRowSelection: false,
     enablePagination: true,
     enableFilters: true,
-    positionToolbarAlertBanner: 'head-overlay',
+    positionToolbarAlertBanner: 'none',
 
 
     muiTableBodyRowProps: ({ row, table }) => ({

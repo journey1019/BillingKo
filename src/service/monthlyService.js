@@ -18,3 +18,26 @@ export const saveMonthlyData = async (yearMonth, data = {}) => {
     const endpoint = `/monthly/saveData/${yearMonth}`;
     return await postWithBody(endpoint, data);
 };
+
+
+/**
+ * 저장된 Monthly 조회
+ * @returns {Promise<object>} 서버 응답 데이터
+ */
+export const fetchKOMonthlyData = async (yearMonth) => {
+    try {
+        return await get(`/monthly/saveData/${yearMonth}`);
+    } catch (error) {
+        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+export const fetchKOMonthlyDetailIndexData = async (data_index) => {
+    try {
+        return await get(`/monthly/saveData/detail/${data_index}`);
+    } catch (error) {
+        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        throw error;
+    }
+};

@@ -1,11 +1,15 @@
 /** MonthlyTableColumns.jsx */
 export const MonthlyTableColumns = [
+    // {
+    //     accessorKey: 'data_index',
+    //     header: 'Profile ID',
+    // },
     {
         accessorKey: 'profile_id',
         header: 'Profile ID',
     },
     {
-        accessorKey: 'account_no',
+        accessorKey: 'acct_num',
         header: 'Account Number',
     },
     {

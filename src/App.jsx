@@ -16,6 +16,7 @@ import DeviceEditPage from '@/pages/Device/DeviceEditPage.jsx';
 import FilePage from '@/pages/File/FilePage.jsx';
 import CDRPage from '@/pages/File/CDRPage.jsx';
 import MonthlyPage from '@/pages/Monthly/MonthlyPage.jsx';
+import KOMonthlyPage from '@/pages/Monthly/KOMonthlyPage.jsx';
 
 // ProtectedRoute 컴포넌트
 const ProtectedRoute = ({ isAuthenticated, children }) => {
@@ -82,6 +83,7 @@ const App = () => {
                                 <Route path="/devices" element={<DevicePage />} />
                                 <Route path="/price" element={<PricePage />} />
                                 <Route path="/monthly" element={<MonthlyPage />} />
+                                <Route path="/ko_monthly" element={<KOMonthlyPage />} />
 
                                 <Route path="/file/cdr" element={<CDRPage />} />
                                 <Route path="/file/accounts" element={<CDRPage />} />

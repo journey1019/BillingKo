@@ -43,6 +43,21 @@ export const fetchPricePart = async (ppid) => {
 };
 
 /**
+ * 조정 이력 조회
+ * @param {string} adjustment_index - 조회할 가격의 adjustment_index
+ * @returns {Promise<object>} 서버 응답 데이터
+ */
+export const fetchAdjustment = async () => {
+    try {
+        return await get(`/adjustment`);
+    } catch (error) {
+        console.error("Failed to fetch price History:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
+/**
  * 새로운 가격 생성
  * @param {object} priceData 가격 정보
  * @returns {Promise<object>} 생성된 가격 데이터

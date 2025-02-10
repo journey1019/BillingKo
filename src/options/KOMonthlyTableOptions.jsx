@@ -1,6 +1,6 @@
-export const MonthlyTableOptions = {
+export const KOMonthlyTableOptions = {
     initialState: {
-        sorting: [{ id: "profile_id", desc: false }], // 기본 정렬 설정
+        sorting: [{ id: "data_index", desc: false }], // 기본 정렬 설정
         showColumnFilters: true // 렌더링시 각 컬럼의 필터가 보여지도록 설정
     },
     enableRowSelection: true, // 행 선택 활성화
