@@ -36,8 +36,11 @@ const AccountPage = () => {
     const [partDataLoading, setPartDataLoading] = useState(false);
     const [partDataError, setPartDataError] = useState(null);
 
-    const { data: adjustData, loading: adjustLoading, error: adjustError, refetch: adjustRefetch } = useApiFetch(fetchAdjustmentPart);
-    console.log(adjustData)
+    // 조정 데이터 상태
+    const [adjustData, setAdjustData] = useState(null);
+    const [adjustLoading, setAdjustLoading] = useState(false);
+    const [adjustError, setAdjustError] = useState(null);
+
     // 선택된 acct_num 변경 시만 이력 데이터 가져오기
     useEffect(() => {
         const fetchAccountDetails = async () => {
@@ -65,6 +68,17 @@ const AccountPage = () => {
                 setPartDataError(error.message || 'Failed to fetch account details');
             } finally {
                 setPartDataLoading(false);
+            }
+
+            setAdjustLoading(true);
+            setAdjustError(null);
+            try {
+                const adjustResponse = await fetchAdjustmentPart(selectedAccountId.acct_num);
+                setAdjustData(adjustResponse);
+            } catch (error) {
+                setAdjustError(error.message || 'Failed to fetch account details');
+            } finally {
+                setAdjustLoading(false);
             }
         };
 
@@ -128,30 +142,27 @@ const AccountPage = () => {
     }
     const TransactionTab = () => {
         return(
-            <>
-                <span>저장된 Monthly Data에서 해당 Acct_Num 변경 이력 Version들</span>
-                <div>
-                    {adjustLoading ? (
-                        <LoadingSpinner/>
-                    ) : adjustError ? (
-                        <p className="text-red-500">{adjustError}</p>
-                    ) : (
-                        <div>
-                            <ReusableTable
-                                columns={AdjustmentTableColumns}
-                                data={adjustData}
-                                options={{
-                                    ...AdjustmentTableOptions,
-                                }}
-                            />
-                        </div>
-                    )}
-                </div>
-            </>
+            <div>
+                {adjustLoading ? (
+                    <LoadingSpinner />
+                ) : adjustError ? (
+                    <p className="text-red-500">{adjustError}</p>
+                ) : (
+                    <div>
+                        <ReusableTable
+                            columns={AdjustmentTableColumns}
+                            data={adjustData}
+                            options={{
+                                ...AdjustmentTableOptions,
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
         )
     }
     const HistoryTab = () => {
-        return(
+        return (
             <>
                 {isExpanded && selectedAccountId && (
                     <div>
