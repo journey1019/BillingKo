@@ -7,6 +7,7 @@ import DevicePage from "@/pages/Device/DevicePage.jsx";
 import PricePage from "@/pages/Price/PricePage.jsx";
 import Login from "@/pages/Login.jsx";
 import Logout from "@/pages/Logout.jsx";
+import SignUp from '@/pages/SignUp.jsx';
 import AccountNewPage from '@/pages/Account/AccountNewPage.jsx';
 import AccountEditPage from '@/pages/Account/AccountEditPage.jsx';
 import PriceNewPage from '@/pages/Price/PriceNewPage.jsx';
@@ -17,6 +18,8 @@ import FilePage from '@/pages/File/FilePage.jsx';
 import CDRPage from '@/pages/File/CDRPage.jsx';
 import MonthlyPage from '@/pages/Monthly/MonthlyPage.jsx';
 import KOMonthlyPage from '@/pages/Monthly/KOMonthlyPage.jsx';
+import AdjustmentPage from '@/pages/Adjustment/AdjustmentPage.jsx';
+import AdjustmentNewPage from '@/pages/Adjustment/AdjustmentNewPage.jsx';
 
 // ProtectedRoute 컴포넌트
 const ProtectedRoute = ({ isAuthenticated, children }) => {
@@ -69,6 +72,7 @@ const App = () => {
 
             {/* Logout 페이지 */}
             <Route path="/logout" element={<Logout setAuth={setIsAuthenticated} />} />
+            <Route path="/signup" element={<SignUp/>} />
 
             {/* RootLayout 경로 */}
             <Route
@@ -84,6 +88,7 @@ const App = () => {
                                 <Route path="/price" element={<PricePage />} />
                                 <Route path="/monthly" element={<MonthlyPage />} />
                                 <Route path="/ko_monthly" element={<KOMonthlyPage />} />
+                                <Route path="/adjustment" element={<AdjustmentPage />} />
 
                                 <Route path="/file/cdr" element={<CDRPage />} />
                                 <Route path="/file/accounts" element={<CDRPage />} />
@@ -96,6 +101,8 @@ const App = () => {
 
                                 <Route path="/devices/new" element={<DeviceNewPage />} />
                                 <Route path="/devices/:serial_number/edit" element={<DeviceEditPage />} />
+
+                                <Route path="/adjustment/new" element={<AdjustmentNewPage />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>

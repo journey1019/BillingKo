@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
 import { fetchAccounts, deleteAccount, fetchAccountHistory, fetchAccountPart } from '@/service/accountService.js';
-import { fetchAdjustmentPart } from '@/service/adjustmentService.js';
+import { fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
 import { AccountTableColumns } from '@/columns/AccountTableColumns.jsx';
 import { AccountTableOptions } from '@/options/AccountTableOptions.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
@@ -15,12 +15,12 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiSettings3Fill } from 'react-icons/ri';
 import AccountPartForm from '@/components/form/AccountPartForm.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
-import { AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
+import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
 import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
-
+import AccountOverviewTab from '@/components/form/Account/AccountOverviewTab.jsx';
 
 const AccountPage = () => {
-    const { data, loading, error, refetch } = useApiFetch(fetchAccounts);
+    const { data: accountData, loading: accountLoading, error: accountError, refetch: accountRefetch } = useApiFetch(fetchAccounts);
     const [selectedAccountId, setSelectedAccountId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
     const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
@@ -40,6 +40,25 @@ const AccountPage = () => {
     const [adjustData, setAdjustData] = useState(null);
     const [adjustLoading, setAdjustLoading] = useState(false);
     const [adjustError, setAdjustError] = useState(null);
+
+    // FilterSelectOptions
+    const [classificationOptions, setClassificationOptions] = useState([]);
+    useEffect(() => {
+        if (accountData) {
+            const uniqueClassifiactions = Array.from(
+                new Set(accountData.map((item) => item.classification))
+            ).filter(Boolean);
+            setClassificationOptions(uniqueClassifiactions);
+        }
+    }, [accountData]);
+
+    const dynamicColumns = AccountTableColumns.map((col) => {
+        if (col.accessorKey === 'classification') {
+            return { ...col, filterSelectOptions: classificationOptions };
+        }
+        return col;
+    });
+
 
     // 선택된 acct_num 변경 시만 이력 데이터 가져오기
     useEffect(() => {
@@ -73,7 +92,7 @@ const AccountPage = () => {
             setAdjustLoading(true);
             setAdjustError(null);
             try {
-                const adjustResponse = await fetchAdjustmentPart(selectedAccountId.acct_num);
+                const adjustResponse = await fetchAdjustmentValueHistory(selectedAccountId.acct_num);
                 setAdjustData(adjustResponse);
             } catch (error) {
                 setAdjustError(error.message || 'Failed to fetch account details');
@@ -109,7 +128,7 @@ const AccountPage = () => {
 
     // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
     const handleDeleteSuccess = () => {
-        refetch();  // 데이터 새로고침
+        accountRefetch();  // 데이터 새로고침
         setSelectedAccountId(null);  // 선택 해제
         setIsExpanded(false); // Grid 초기 화면 복구
     };
@@ -118,8 +137,8 @@ const AccountPage = () => {
     const toggleDropdown = () => setIsOpenDropdown(!isOpenDropdown);
     const closeDropdown = () => setIsOpenDropdown(false);
 
-    if (loading) return <LoadingSpinner />;
-    if (error) return <p>Error: {error}</p>;
+    if (accountLoading) return <LoadingSpinner />;
+    if (accountError) return <p>Error: {accountError}</p>;
 
 
     const OverviewTab = () => {
@@ -150,7 +169,7 @@ const AccountPage = () => {
                 ) : (
                     <div>
                         <ReusableTable
-                            columns={AdjustmentTableColumns}
+                            columns={AdjustmentHistoryTableColumns}
                             data={adjustData}
                             options={{
                                 ...AdjustmentTableOptions,
@@ -189,7 +208,8 @@ const AccountPage = () => {
         )
     }
     const tabs = [
-        { id: 1, label: 'Overview', content: <OverviewTab /> },
+        { id: 1, label: 'Overview', content: <OverviewTab/>},
+        // { id: 1, label: 'Overview', content: <AccountOverviewTab partDataLoading={partDataLoading} partDataError={partDataError} accountPartData={accountPartData}/> },
         { id: 2, label: 'Transaction', content: <TransactionTab /> },
         { id: 3, label: 'History', content: <HistoryTab /> },
     ];
@@ -223,7 +243,7 @@ const AccountPage = () => {
                                 onMouseLeave={closeDropdown}>
                                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                                     <li>
-                                        <a href="#"
+                                        <a href={`accounts/{selectedAccountId.acct_num}/edit`}
                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Modify</a>
                                     </li>
                                     <li>
@@ -241,8 +261,8 @@ const AccountPage = () => {
                 </div>
                 {/* Bottom */}
                 <ReusableTable
-                    columns={AccountTableColumns}
-                    data={data}
+                    columns={dynamicColumns}
+                    data={accountData}
                     options={{
                         ...AccountTableOptions,
                         meta: {
@@ -283,42 +303,11 @@ const AccountPage = () => {
                             />
                         </div>
 
+                        {/* Tab */}
                         <TabComponent tabs={tabs} />
-
                     </div>
-
                 </div>
             )}
-
-            {/* Under Section (Only visible when expanded) */}
-            {/*{isExpanded && selectedAccountId && (*/}
-            {/*    <div className="p-2 col-span-6">*/}
-            {/*        <div className="flex flex-col">*/}
-            {/*            <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">*/}
-            {/*                <div className="p-2">*/}
-            {/*                    <h2 className="text-xl font-medium pl-2 pb-2">{selectedAccountId.acct_num} History</h2>*/}
-            {/*                    {historyLoading ? (*/}
-            {/*                        <LoadingSpinner />*/}
-            {/*                    ) : historyError ? (*/}
-            {/*                        <p>Error loading history: {historyError}</p>*/}
-            {/*                    ) : (*/}
-            {/*                        <div className="px-3">*/}
-            {/*                            <ReusableTable*/}
-            {/*                                columns={AccountTableColumns}*/}
-            {/*                                data={historyData ? historyData : []}*/}
-            {/*                                options={{*/}
-            {/*                                    initialState: { sorting: [{ id: 'acct_num', desc: true }] },*/}
-            {/*                                    enablePagination: false,*/}
-            {/*                                    enableSorting: false,*/}
-            {/*                                }}*/}
-            {/*                            />*/}
-            {/*                        </div>*/}
-            {/*                    )}*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*)}*/}
         </div>
     );
 };

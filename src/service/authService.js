@@ -1,4 +1,4 @@
-import api from "./api"; // Axios 인스턴스 사용
+import api, { API_URL } from './api'; // Axios 인스턴스 사용
 
 /**
  * 사용자 로그인
@@ -19,5 +19,29 @@ export const login = async (userId, userPw) => {
         throw new Error(
             error.response?.data?.detail || "Failed to log in. Please try again."
         );
+    }
+};
+
+export const register = async (userId, userPw, userNm) => {
+    try {
+        const response = await fetch(`${API_URL}/user/${userId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                user_pw: userPw,
+                user_nm: userNm,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error("회원가입 실패");
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw new Error(error.message);
     }
 };

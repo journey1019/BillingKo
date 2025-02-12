@@ -59,6 +59,11 @@ const FileStatusForm = () => {
         refetch();
     };
 
+    const handleUploadComplete = () => {
+        // 업로드 완료 시 데이터 갱신
+        refetch();
+    }
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p className="text-red-500">Failed to fetch file status: {error}</p>;
 
@@ -70,7 +75,7 @@ const FileStatusForm = () => {
             </div>
 
             <div className="flex flex-col md:flex-row justify-between items-center mb-2">
-                <UploadFileModal />
+                <UploadFileModal onUploadComplete={handleUploadComplete}/>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

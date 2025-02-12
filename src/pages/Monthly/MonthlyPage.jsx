@@ -80,8 +80,8 @@ const MonthlyPage = () => {
 
     return (
         <div className="grid gap-0 grid-cols-1">
-            <div className="flex flex-row justify-between pb-4">
-                <h1>Monthly Data Save</h1>
+            <div className="flex flex-row justify-between col-span-1 border-b pb-3 mb-2 border-gray-400">
+                <h1 className="text-2xl font-base">Monthly Data Save</h1>
                 <button
                     className="flex flex-row items-center p-2 bg-blue-500 rounded-md text-white"
                     onClick={() => setShowConfirmModal(true)}

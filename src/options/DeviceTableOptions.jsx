@@ -7,7 +7,8 @@ export const DeviceTableOptions = {
     enableMultiRowSelection: false,
     enablePagination: true, // 페이지네이션 활성화
     enableFilters: true, // 전체 테이블에 필터링을 활성화
-    positionToolbarAlertBanner: 'head-overlay',
+    positionToolbarAlertBanner: 'none',
+    // positionToolbarAlertBanner: 'head-overlay',
     // enableClickToCopy: true, // 열 달 각 셀 데이터 값 복사
 
     muiTableBodyRowProps: ({ row, table }) => ({

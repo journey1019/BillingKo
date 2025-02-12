@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { login } from "@/service/authService";
+
 
 const Login = ({ setAuth }) => {
     const [userId, setUserId] = useState("");
@@ -119,6 +120,15 @@ const Login = ({ setAuth }) => {
                         Login
                     </button>
                 </form>
+
+                <div className="text-center mt-4">
+                    <p className="text-sm text-gray-600">
+                        계정이 없으신가요?{" "}
+                        <Link to="/signup" className="text-blue-500 hover:underline">
+                            회원가입
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

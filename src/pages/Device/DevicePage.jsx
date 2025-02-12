@@ -13,6 +13,10 @@ import { useNavigate } from "react-router-dom";
 import { FiPlus } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiSettings3Fill } from 'react-icons/ri';
+import TabComponent from '@/components/layout/TabComponent.jsx';
+import { fetchAdjustmentPart } from '@/service/adjustmentService.js';
+import { AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
+import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 
 const DevicePage = () => {
     const { data: deviceData, loading: deviceLoading, error: deviceError, refetch: deviceRefetch } = useApiFetch(fetchDevices);
@@ -30,6 +34,12 @@ const DevicePage = () => {
     const [devicePartData, setDevicePartData] = useState(null);
     const [partDataLoading, setPartDataLoading] = useState(false);
     const [partDataError, setPartDataError] = useState(null);
+
+    // 조정 데이터 상태
+    const [adjustData, setAdjustData] = useState(null);
+    const [adjustLoading, setAdjustLoading] = useState(false);
+    const [adjustError, setAdjustError] = useState(null);
+
 
     // 선택된 serial_number 변경 시만 이력 데이터 가져오기
     useEffect(() => {
@@ -59,6 +69,17 @@ const DevicePage = () => {
             } finally {
                 setPartDataLoading(false);
             }
+
+            setAdjustLoading(true);
+            setAdjustError(null);
+            try {
+                const adjustResponse = await fetchAdjustmentPart(selectedDeviceId.serial_number);
+                setAdjustData(adjustResponse);
+            } catch (error) {
+                setAdjustError(error.message || 'Failed to fetch device details');
+            } finally {
+                setAdjustLoading(false);
+            }
         };
 
         fetchHistory();
@@ -75,14 +96,74 @@ const DevicePage = () => {
     const toggleDropdown = () => setIsOpenDropdown(!isOpenDropdown);
     const closeDropdown = () => setIsOpenDropdown(false);
 
+
+    const OverviewTab = () => {
+        return(
+            <>
+                {partDataLoading ? (
+                    <LoadingSpinner />
+                ) : partDataError ? (
+                    <p className="text-red-500">Error loading history: {historyError}</p>
+                ) : devicePartData ? (
+                    <DevicePartForm devicePartData={devicePartData} />
+                ) : (
+                    <p>Select an device to view details</p>
+                )}
+            </>
+        )
+    }
+    const TransactionTab = () => {
+        return(
+            <div>
+                {adjustLoading ? (
+                    <LoadingSpinner />
+                ) : adjustError ? (
+                    <p className="text-red-500">{adjustError}</p>
+                ) : (
+                    <div>
+                        <ReusableTable
+                            columns={AdjustmentTableColumns}
+                            data={adjustData}
+                            options={{
+                                ...AdjustmentTableOptions,
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
+        )
+    }
+    const HistoryTab = () => {
+        return(
+            <div>
+                <ReusableTable
+                    columns={DeviceTableColumns}
+                    data={historyData ? historyData : []}
+                    //data={Array.isArray(historyData) ? historyData : [historyData].filter(Boolean)}  // 배열로 변환하여 전달
+                    options={{
+                        initialState: { sorting: [{ id: 'serial_number', desc: true }] },
+                        enablePagination: false,
+                        enableSorting: false,
+                    }}
+                    isLoading={historyDataLoading}
+                    error={historyDataError}
+                />
+            </div>
+        )
+    }
+    const tabs = [
+        { id: 1, label: 'Overview', content: <OverviewTab /> },
+        { id: 2, label: 'Transaction', content: <TransactionTab /> },
+        { id: 3, label: 'History', content: <HistoryTab /> },
+    ];
     return (
-        <div className={`grid gap-0 ${isExpanded ? 'grid-cols-4' : 'grid-cols-2'}`}>
-            <div className="col-span-4 border-b pb-3 mb-2 border-gray-400">
+        <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
+            <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
                 <h1 className="text-2xl font-base">Device</h1>
             </div>
 
             {/* Left Section */}
-            <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-4'}`}>
+            <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
 
                 {/* Top */}
                 <div className="flex flex-row justify-between mb-3">
@@ -149,7 +230,7 @@ const DevicePage = () => {
 
             {/* Right Section (Only visible when expanded) */}
             {isExpanded && selectedDeviceId && (
-                <div className="p-2 col-span-2">
+                <div className="p-2 col-span-4">
                     <div className="flex flex-col">
                         {/* Top */}
                         <div className="flex flex-row justify-between mb-3">
@@ -165,57 +246,8 @@ const DevicePage = () => {
                             />
                         </div>
 
-                        {/* Bottom */}
-                        <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">
-                            <div className="p-3">
-                                <h2 className="text-xl font-bold">단말 세부 정보</h2>
-
-                                {partDataLoading ? (
-                                    <LoadingSpinner />
-                                ) : partDataError ? (
-                                    <p className="text-red-500">Error loading history: {historyError}</p>
-                                ) : devicePartData ? (
-                                    <DevicePartForm devicePartData={devicePartData} />
-                                ) : (
-                                    <p>Select an device to view details</p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Under Section (Only visible when expanded) */}
-            {isExpanded && selectedDeviceId && (
-                <div className="p-2 col-span-4">
-                    <div className="flex flex-col">
-                        <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">
-                            <div className="p-2">
-                                <h2 className="text-xl font-medium pl-2 pb-2">{selectedDeviceId.serial_number} History</h2>
-                                <div className="px-3">
-                                    <ReusableTable
-                                        columns={DeviceTableColumns}
-                                        data={historyData ? historyData : []}
-                                        //data={Array.isArray(historyData) ? historyData : [historyData].filter(Boolean)}  // 배열로 변환하여 전달
-                                        options={{
-                                            initialState: { sorting: [{ id: 'serial_number', desc: true }] },
-                                            enablePagination: false,
-                                            enableSorting: false,
-                                        }}
-                                        isLoading={historyDataLoading}
-                                        error={historyDataError}
-                                    />
-                                </div>
-
-                                {/*{historyLoading ? (*/}
-                                {/*    <LoadingSpinner />*/}
-                                {/*) : historyError ? (*/}
-                                {/*    <p>Error loading history: {historyError}</p>*/}
-                                {/*) : (*/}
-
-                                {/*)}*/}
-                            </div>
-                        </div>
+                        {/* Tab */}
+                        <TabComponent tabs={tabs} />
                     </div>
                 </div>
             )}

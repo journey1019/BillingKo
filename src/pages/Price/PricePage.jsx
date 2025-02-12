@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchPrice, deletePrice, fetchPriceHistory, fetchPricePart, fetchAdjustment } from '@/service/priceService.js';
+import { fetchPrice, deletePrice, fetchPriceHistory, fetchPricePart } from '@/service/priceService.js';
 import { PriceTableColumns } from '@/columns/PriceTableColumns.jsx';
 import { PriceTableOptions } from '@/options/PriceTableOptions.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
@@ -15,20 +15,22 @@ import { IoIosArrowDown } from "react-icons/io";
 import PricePartForm from '@/components/form/PricePartForm.jsx';
 import Tooltip from '@/components/common/Tooltip.jsx';
 import AdditionButtons from '@/components/common/AdditionButtons.jsx';
-import { AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
+import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
 import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
+import TabComponent from '@/components/layout/TabComponent.jsx';
+import { fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
 
 const PricePage = () => {
     const { data, loading, error, refetch } = useApiFetch(fetchPrice);
-    const { data: adjustmentData, loading: adjustmentLoading, error: adjustmentError, refetch: adjustmentRefetch } = useApiFetch(fetchAdjustment);
     const [selectedPriceId, setSelectedPriceId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
+
 
     const [isOpenNewDropdown, setIsOpenNewDropdown] = useState(false); // New icon Drop
     const navigate = useNavigate();
 
     const [historyData, setHistoryData] = useState(null);
-    const [historyLoading, ssetHistoryLoading] = useState(false);
+    const [historyLoading, setHistoryLoading] = useState(false);
     const [historyError, setHistoryError] = useState(null);
 
     // 부분 단말 데이터 상태
@@ -36,12 +38,13 @@ const PricePage = () => {
     const [partDataLoading, setPartDataLoading] = useState(false);
     const [partDataError, setPartDataError] = useState(null);
 
+    // 조정 데이터 상태
+    const [adjustData, setAdjustData] = useState(null);
+    const [adjustLoading, setAdjustLoading] = useState(false);
+    const [adjustError, setAdjustError] = useState(null);
+
     // Modal
     const [showModal, setShowModal] = useState(false);
-
-    // New Button Tooltip
-    const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-
 
     // 선택된 ppid 변경 시만 이력 데이터 가져오기
     useEffect(() => {
@@ -49,7 +52,7 @@ const PricePage = () => {
             if (!selectedPriceId) return;  // 선택된 값이 없으면 호출하지 않음
 
             // 이력 데이터 가져오기
-            ssetHistoryLoading(true);
+            setHistoryLoading(true);
             setHistoryError(null);
             try {
                 const response = await fetchPriceHistory(selectedPriceId.ppid);
@@ -57,7 +60,7 @@ const PricePage = () => {
             } catch (error) {
                 setHistoryError(error.message || 'Failed to fetch price particular');
             } finally {
-                ssetHistoryLoading(false);
+                setHistoryLoading(false);
             }
 
             // 부분 계정 데이터 가져오기
@@ -70,6 +73,18 @@ const PricePage = () => {
                 setPartDataError(error.message || 'Failed to fetch price details');
             } finally {
                 setPartDataLoading(false);
+            }
+
+            // 조정 데이터 가져오기
+            setAdjustLoading(true);
+            setAdjustError(null);
+            try {
+                const adjustResponse = await fetchAdjustmentValueHistory(selectedPriceId.ppid);
+                setAdjustData(adjustResponse);
+            } catch (error) {
+                setAdjustError(error.message || 'Failed to fetch account details');
+            } finally {
+                setAdjustLoading(false);
             }
         };
 
@@ -84,20 +99,85 @@ const PricePage = () => {
     };
 
 
-
     // New Button Toggle
     const toggleNewDropdown = () => setIsOpenNewDropdown(!isOpenNewDropdown);
     const closeNewDropdown = () => setIsOpenNewDropdown(false);
 
 
+    const OverviewTab = () => {
+        return(
+            <div>
+                {partDataLoading ? (
+                    <LoadingSpinner />
+                ) : partDataError ? (
+                    <p className="text-red-500">Error loading history: {historyError}</p>
+                ) : pricePartData ? (
+                    <PricePartForm pricePartData={pricePartData} />
+                ) : (
+                    <p>Select an price to view details</p>
+                )}
+            </div>
+        )
+    }
+    const TransactionTab = () => {
+        return(
+            <div>
+                {adjustLoading ? (
+                    <LoadingSpinner />
+                ) : adjustError ? (
+                    <p className="text-red-500">{adjustError}</p>
+                ) : (
+                    <div>
+                        <ReusableTable
+                            columns={AdjustmentHistoryTableColumns}
+                            data={adjustData}
+                            options={{
+                                ...AdjustmentTableOptions,
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
+        )
+    }
+    const HistoryTab = () => {
+        return (
+            <div>
+                {historyLoading ? (
+                    <LoadingSpinner />
+                ) : historyError ? (
+                    <p>Error loading particular: {historyError}</p>
+                ) : (
+                    <div>
+                        <ReusableTable
+                            columns={PriceTableColumns}
+                            data={historyData}
+                            options={{
+                                initialState: { sorting: [{ id: 'ppid', desc: true }] },
+                                enablePagination: false,
+                                enableSorting: false,
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
+        )
+    }
+    const tabs = [
+        { id: 1, label: 'Overview', content: <OverviewTab/>},
+        // { id: 1, label: 'Overview', content: <AccountOverviewTab partDataLoading={partDataLoading} partDataError={partDataError} accountPartData={accountPartData}/> },
+        { id: 2, label: 'Transaction', content: <TransactionTab /> },
+        { id: 3, label: 'History', content: <HistoryTab /> },
+    ];
+
     return (
-        <div className={`grid gap-0 ${isExpanded ? 'grid-cols-5' : 'grid-cols-2'}`}>
-            <div className="col-span-4 justify-between border-b pb-3 mb-2 border-gray-400">
+        <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
+            <div className="col-span-6 justify-between border-b pb-3 mb-2 border-gray-400">
                 <h1 className="text-2xl font-base">Price</h1>
             </div>
 
             {/* Left Section - Recent Table */}
-            <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-5'}`}>
+            <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
 
                 {/* Top */}
                 <div className="flex flex-row justify-between mb-3">
@@ -125,18 +205,18 @@ const PricePage = () => {
                                     onMouseLeave={closeNewDropdown}>
                                     <div className="p-2 text-sm text-gray-700">
                                         <button onClick={() => navigate('/price/new')}
-                                                className="block px-4 py-2 hover:bg-blue-500 hover:text-white rounded-md transition">
+                                                className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">
                                             New PPID
                                         </button>
                                     </div>
                                     <ul className="p-2 text-sm text-gray-700">
                                         <li>
                                             <button onClick={() => console.log('adjustment')}
-                                               className="block px-4 py-2 hover:bg-blue-500 hover:text-white rounded-md transition">Modify</button>
+                                               className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">Modify</button>
                                         </li>
                                         <li>
                                             <a href="#"
-                                               className="block px-4 py-2 hover:bg-blue-500 hover:text-white rounded-md transition">Delete</a>
+                                               className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">Delete</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -176,13 +256,13 @@ const PricePage = () => {
 
             {/* Right Section - Drawer Form */}
             {isExpanded && selectedPriceId && (
-                <div className="p-2 col-span-3">
+                <div className="p-2 col-span-4">
                     <div className="flex flex-col">
                         {/* Top */}
                         <div className="flex flex-row justify-between mb-3">
                             {/* Acct_Num */}
-                            <h2 className="py-1 text-lg font-bold">PPID Detail Form</h2>
-                            {/*<h2 className="py-1 text-lg font-bold text-red-600">{selectedPriceId.ppid}</h2>*/}
+                            {/*<h2 className="py-1 text-lg font-bold">PPID Detail Form <span className="text-red-500 pl-3">{pricePartData.ppid}</span></h2>*/}
+                            <h2 className="py-1 text-lg font-bold text-red-600">{selectedPriceId.ppid}</h2>
 
                             {/* Buttons - Edit & Mail & . */}
                             <ButtonGroup
@@ -193,109 +273,11 @@ const PricePage = () => {
                             />
                         </div>
 
-                        {/* Bottom */}
-                        <div>
-                            {partDataLoading ? (
-                                <LoadingSpinner />
-                            ) : partDataError ? (
-                                <p className="text-red-500">Error loading history: {historyError}</p>
-                            ) : pricePartData ? (
-                                <PricePartForm pricePartData={pricePartData} />
-                            ) : (
-                                <p>Select an price to view details</p>
-                            )}
-                        </div>
+                        {/* Tab */}
+                        <TabComponent tabs={tabs}/>
                     </div>
                 </div>
             )}
-
-            {/* Under Section - History Table */}
-            {isExpanded && selectedPriceId && (
-                <div className="p-2 col-span-5">
-                    <div className="flex flex-col">
-                        <div className="col-span-2 bg-gray-50 rounded-lg shadow-lg">
-                            <div className="p-2">
-                                <h2 className="text-xl font-bold">Price Particular</h2>
-
-                                {historyLoading ? (
-                                    <LoadingSpinner />
-                                ) : historyError ? (
-                                    <p>Error loading particular: {historyError}</p>
-                                ) : (
-                                    <div className="px-3">
-                                        <ReusableTable
-                                            columns={PriceTableColumns}
-                                            data={historyData ? [historyData] : []}
-                                            options={{
-                                                initialState: { sorting: [{ id: 'ppid', desc: true }] },
-                                                enablePagination: false,
-                                                enableSorting: false,
-                                            }}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            <div className="col-span-5 p-2">
-                {/* Top */}
-                <div className="flex flex-row justify-between mb-3">
-                    <h1 className="py-1 text-lg font-bold">Adjustment Data</h1>
-                    <div className="flex space-x-2 items-center">
-                        <div className="inline-flex rounded-md shadow-xs" role="group">
-                            <Tooltip message="Create Price Plan">
-                                <button type="button"
-                                        className="inline-flex items-center space-x-2 px-4 py-2 text-sm text-white font-medium bg-blue-500 border border-gray-200 rounded-s-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
-                                        onClick={() => navigate('/price/new')}
-                                >
-                                    <FiPlus />
-                                    <span>New</span>
-                                </button>
-                            </Tooltip>
-                            <button type="button"
-                                    className="inline-flex items-center px-1 py-2 text-sm font-medium text-white bg-blue-500 border border-gray-200 rounded-e-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
-                                    onClick={toggleNewDropdown}
-                            >
-                                <IoIosArrowDown />
-                            </button>
-                            {isOpenNewDropdown && (
-                                <div
-                                    className="absolute z-10 mt-10 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"
-                                    onMouseLeave={closeNewDropdown}>
-                                    <div className="p-2 text-sm text-gray-700">
-                                        <button onClick={() => navigate('/price/new')}
-                                                className="block px-4 py-2 hover:bg-blue-500 hover:text-white rounded-md transition">
-                                            New PPID
-                                        </button>
-                                    </div>
-                                    <ul className="p-2 text-sm text-gray-700">
-                                        <li>
-                                            <button onClick={() => console.log('adjustment')}
-                                                    className="block px-4 py-2 hover:bg-blue-500 hover:text-white rounded-md transition">Modify</button>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                               className="block px-4 py-2 hover:bg-blue-500 hover:text-white rounded-md transition">Delete</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-                <ReusableTable
-                    columns={AdjustmentTableColumns}
-                    data={adjustmentData || []}
-                    options={{
-                        ...AdjustmentTableOptions,
-                    }}
-                    isLoading={adjustmentLoading}
-                    error={adjustmentError}
-                />
-            </div>
 
             <div className="col-span-5 justify-between border-b pb-3 mb-2 border-gray-400">
                 <button

@@ -28,6 +28,7 @@ export const AccountTableColumns = [
     {
         accessorKey: 'classification',
         header: '분류(Alias)',
+        filterVariant: 'select',
     },
     {
         accessorKey: 'invoice_postcode',

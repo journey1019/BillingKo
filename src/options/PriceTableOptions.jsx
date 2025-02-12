@@ -7,7 +7,8 @@ export const PriceTableOptions = {
     enableMultiRowSelection: false,
     enablePagination: true, // 페이지네이션 활성화
     enableFilters: true, // 전체 테이블에 필터링을 활성화
-    positionToolbarAlertBanner: 'head-overlay', // 경고를 표시하되, Column 제목 가림
+    positionToolbarAlertBanner: 'none', // 경고를 표시하되, Column 제목 가림
+    // positionToolbarAlertBanner: 'head-overlay', // 경고를 표시하되, Column 제목 가림
 
     muiTableBodyRowProps: ({ row, table }) => ({
         onClick: (event) => {

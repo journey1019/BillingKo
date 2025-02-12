@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://127.0.0.1:8000"; // Django API URL
+export const API_URL = "http://127.0.0.1:8000"; // Django API URL
 
 // Axios 인스턴스 생성
 const api = axios.create({
