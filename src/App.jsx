@@ -20,6 +20,7 @@ import MonthlyPage from '@/pages/Monthly/MonthlyPage.jsx';
 import KOMonthlyPage from '@/pages/Monthly/KOMonthlyPage.jsx';
 import AdjustmentPage from '@/pages/Adjustment/AdjustmentPage.jsx';
 import AdjustmentNewPage from '@/pages/Adjustment/AdjustmentNewPage.jsx';
+import AdjustmentEditPage from '@/pages/Adjustment/AdjustmentEditPage.jsx';
 
 // ProtectedRoute 컴포넌트
 const ProtectedRoute = ({ isAuthenticated, children }) => {
@@ -103,6 +104,7 @@ const App = () => {
                                 <Route path="/devices/:serial_number/edit" element={<DeviceEditPage />} />
 
                                 <Route path="/adjustment/new" element={<AdjustmentNewPage />} />
+                                <Route path="/adjustment/:adjustment_index/edit" element={<AdjustmentEditPage />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>

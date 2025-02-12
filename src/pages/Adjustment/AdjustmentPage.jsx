@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchAdjustment, fetchAdjustmentPart, deleteAdjustment } from '@/service/adjustmentService.js';
-import { AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
-import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
+import { fetchAdjustment, fetchAdjustmentPart, deleteAdjustment, fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
+import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
+import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import AdjustmentPartForm from '@/components/form/AdjustmentPartForm.jsx';
@@ -23,6 +23,11 @@ const AdjustmentPage = () => {
     const [adjustPartLoading, setAdjustPartLoading] = useState(false);
     const [adjustPartError, setAdjustPartError] = useState(null);
 
+    // 이력 데이터 상태
+    const [adjustHistoryData, setAdjustHistoryData] = useState(null);
+    const [adjustHistoryLoading, setAdjustHistoryLoading] = useState(false);
+    const [adjustHistoryError, setAdjustHistoryError] = useState(null);
+
 
     useEffect(()=> {
         const fetchParticular = async () => {
@@ -39,8 +44,20 @@ const AdjustmentPage = () => {
             } finally {
                 setAdjustPartLoading(false);
             }
+
+            // 조정 데이터 가져오기
+            setAdjustHistoryLoading(true);
+            setAdjustHistoryError(null);
+            try {
+                const adjustResponse = await fetchAdjustmentValueHistory(selectedAdjustId.adjustment_code_value);
+                setAdjustHistoryData(adjustResponse);
+            } catch (error) {
+                setAdjustHistoryError(error.message || 'Failed to fetch account details');
+            } finally {
+                setAdjustHistoryLoading(false);
+            }
         }
-        console.log(selectedAdjustId)
+
         fetchParticular();
     }, [selectedAdjustId]);
 
@@ -57,27 +74,38 @@ const AdjustmentPage = () => {
                     <LoadingSpinner/>
                 ) : adjustPartError ? (
                     <p className="text-red-500">Error loading history: {adjustPartError}</p>
-                ) : <AdjustmentPartForm adjustPartData={adjustPartData}/>}
-            </div>
-        )
-    }
-    const TransactionTab = () => {
-        return(
-            <div>
+                ) : adjustPartData ? (
+                    <AdjustmentPartForm adjustPartData={adjustPartData}/>
+                ) : (
+                    <p>Select an price to view details</p>
+                )}
             </div>
         )
     }
     const HistoryTab = () => {
         return(
             <div>
+                {adjustHistoryLoading ? (
+                    <LoadingSpinner/>
+                ) : adjustHistoryError ? (
+                    <p className="text-red-500">Error loading history: {adjustHistoryError}</p>
+                ) : adjustHistoryData ? (
+                    <ReusableTable
+                        data={adjustHistoryData}
+                        columns={AdjustmentHistoryTableColumns}
+                        options={AdjustmentHistoryTableOptions}
+                    />
+                ) : (
+                    <p>Select an price to view details</p>
+                )}
             </div>
         )
     }
     const tabs = [
         { id: 1, label: 'Overview', content: <OverviewTab/>},
-        { id: 2, label: 'Transaction', content: <TransactionTab /> },
-        { id: 3, label: 'History', content: <HistoryTab /> },
+        { id: 2, label: 'History', content: <HistoryTab /> },
     ];
+
 
     return(
         <div className={`grid gap-0 ${isAdjustExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>

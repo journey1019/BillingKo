@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { createAdjustment } from '@/service/adjustmentService.js';
 import { useNavigate } from 'react-router-dom';
-import { createAccount } from '@/service/accountService.js';
 import { IoMdClose } from 'react-icons/io';
 
 
@@ -29,13 +28,26 @@ const AdjustmentNewPage = () => {
     }
 
     const validateFormData = () => {
-        for (const key in formData) {
+        const requiredFields = [
+            "adjustment_code",
+            "adjustment_code_value",
+            "adjustment_category",
+            "adjustment_type",
+            "mount_type",
+            "mount_value",
+            "adjustment_cycle",
+            "date_index",
+            "use_yn",
+        ]; // ✅ `description`을 필수 필드에서 제외
+
+        for (const key of requiredFields) {
             if (!formData[key]) {
                 return `The field "${key}" is required.`;
             }
         }
         return null;
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -46,18 +58,24 @@ const AdjustmentNewPage = () => {
             return;
         }
 
+        // description이 비어 있으면 null로 설정
+        const submissionData = {
+            ...formData,
+            description: formData.description.trim() === "" ? null : formData.description,
+        };
+
         const confirmMessage = `
             Please confirm the following details:
-            Adjustment Code: ${formData.adjustment_code}
-            Adjustment Code Value: ${formData.adjustment_code_value}
-            Adjustment Category: ${formData.adjustment_category}
-            Adjustment Type: ${formData.adjustment_type}
-            Mount Type: ${formData.mount_type}
-            Mount Value: ${formData.mount_value}
-            Description: ${formData.description}
-            Adjustment Cycle: ${formData.adjustment_cycle}
-            Date Index: ${formData.date_index}
-            Use: ${formData.use_yn}
+            Adjustment Code: ${submissionData.adjustment_code}
+            Adjustment Code Value: ${submissionData.adjustment_code_value}
+            Adjustment Category: ${submissionData.adjustment_category}
+            Adjustment Type: ${submissionData.adjustment_type}
+            Mount Type: ${submissionData.mount_type}
+            Mount Value: ${submissionData.mount_value}
+            Description: ${submissionData.description || "N/A"}
+            Adjustment Cycle: ${submissionData.adjustment_cycle}
+            Date Index: ${submissionData.date_index}
+            Use: ${submissionData.use_yn}
         `;
 
         if (!window.confirm(confirmMessage)) {
@@ -65,11 +83,11 @@ const AdjustmentNewPage = () => {
         }
 
         try {
-            await createAccount(formData);
-            alert("Account successfully created.");
+            await createAdjustment(submissionData);
+            alert("Adjustment successfully created.");
             navigate("/adjustment");
         } catch (err) {
-            setError(err.response?.data?.detail || "Failed to create account.");
+            setError(err.response?.data?.detail || "Failed to create adjustment.");
         }
     }
 

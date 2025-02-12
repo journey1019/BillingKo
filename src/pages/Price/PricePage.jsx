@@ -19,6 +19,7 @@ import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns
 import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import { fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
+import AdjustmentPage from '@/pages/Adjustment/AdjustmentPage.jsx';
 
 const PricePage = () => {
     const { data, loading, error, refetch } = useApiFetch(fetchPrice);
@@ -278,6 +279,10 @@ const PricePage = () => {
                     </div>
                 </div>
             )}
+
+            <div className="col-span-6 justify-between border-b pb-3 mb-2 border-gray-400">
+                <AdjustmentPage />
+            </div>
 
             <div className="col-span-5 justify-between border-b pb-3 mb-2 border-gray-400">
                 <button

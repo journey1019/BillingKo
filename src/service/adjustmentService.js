@@ -71,6 +71,20 @@ export const createAdjustment = async (adjustData) => {
     }
 }
 
+/**
+ * 조정 수정
+ * @param {string} id 수정할 조정 Index
+ * @param {object} adjustmentData 수정할 데이터
+ * @returns {Promise<object>} 수정된 조정 데이터
+ */
+export const updateAdjustment = async (adjustment_index, adjustmentData) => {
+    try {
+        return await put(`/adjustment/${adjustment_index}`, adjustmentData);
+    } catch (error) {
+        console.error("Failed to update adjustment:", error.response?.data || error.message);
+        throw error;
+    }
+};
 
 /**
  * 조정 삭제
@@ -81,7 +95,7 @@ export const deleteAdjustment = async (adjustment_index) => {
     try {
         return await del(`/adjustment/${adjustment_index}`);
     } catch (error) {
-        console.error("Failed to delete price:", error.response?.data || error.message);
+        console.error("Failed to delete adjustment:", error.response?.data || error.message);
         throw error;
     }
 };
