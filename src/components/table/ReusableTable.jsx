@@ -49,16 +49,24 @@ const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, er
                         animation: 'pulse',
                         height: 28,
                     }}
-                    getRowProps={(row) => ({
-                        onClick: () => options?.onRowClick && options.onRowClick(row), // Row 클릭 이벤트
-                        style: { cursor: "pointer" }, // 포인터 커서 추가
+                    getRowProps={({ row }) => ({  // Row 클릭 이벤트
+                        onClick: (event) => {
+                            event.stopPropagation(); // 이벤트 전파 차단
+                            console.log("Row Clicked:", row.original);
+                            options?.meta?.onRowSelect?.(row.original);
+                        },
+                        style: { cursor: "pointer" },
                     })}
                     renderRowActions={({ row }) => (
                         <div>
                             <input
                                 type="radio"
                                 name="rowSelect"
-                                onClick={() => options?.onRowClick && options.onRowClick(row)}
+                                onClick={(event) => {
+                                    event.stopPropagation(); // 이벤트 전파 차단
+                                    console.log("Row Selected:", row.original);
+                                    options?.meta?.onRowSelect?.(row.original);
+                                }}
                             />
                         </div>
                     )}
@@ -84,7 +92,9 @@ ReusableTable.propTypes = {
         enablePagination: PropTypes.bool,
         enableRowSelection: PropTypes.bool,
         renderDetailPanel: PropTypes.func, // renderDetailPanel 함수 정의
-        onRowClick: PropTypes.func, // Row 클릭 이벤트 PropTypes 정의
+        meta: PropTypes.shape({ // Row 클릭 이벤트 PropTypes 정의
+            onRowSelect: PropTypes.func,
+        }),
     }),
     isLoading: PropTypes.bool,
     error: PropTypes.string,
@@ -92,10 +102,10 @@ ReusableTable.propTypes = {
 
 
 // 기본 props 설정
-ReusableTable.defaultProps = {
-    options: {}, // 기본값은 빈 객체
-    isLoading: false,
-    error: null,
-};
+// ReusableTable.defaultProps = {
+//     options: {}, // 기본값은 빈 객체
+//     isLoading: false,
+//     error: null,
+// };
 
 export default ReusableTable;

@@ -9,16 +9,16 @@ export const AdjustmentTableOptions = {
     enableFilters: true, // 전체 테이블에 필터링을 활성화
     positionToolbarAlertBanner: 'none', // 경고를 표시하되, Column 제목 가림
 
-    muiTablBodyRowProps: ({ row, table }) => ({
+    muiTableBodyRowProps: ({ row, table }) => ({
         onClick: (event) => {
             console.log("Row Click:", row.original);
 
-            row.getToggleSelectedHandler()(event);
-
+            event.stopPropagation(); // 이벤트 전파 차단
+            row.getToggleSelectedHandler()(event); // 선택 핸들러 호출
             table.options.meta?.onRowSelect?.(row.original);
         },
         sx: {
-            cursor: 'pointer'
-        }
-    })
+            cursor: "pointer",
+        },
+    }),
 };

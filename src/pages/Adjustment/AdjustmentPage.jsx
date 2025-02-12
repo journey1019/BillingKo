@@ -112,7 +112,7 @@ const AdjustmentPage = () => {
                         ...AdjustmentTableOptions,
                         meta: {
                             onRowSelect: (selectedRow) => {
-                                console.log('onRowselect called with id: ', selectedRow);
+                                console.log("onRowSelect called with id: ", selectedRow);
 
                                 if (selectedAdjustId && selectedAdjustId.adjustment_index === selectedRow.adjustment_index) {
                                     setSelectedAdjustId(null);
@@ -124,8 +124,8 @@ const AdjustmentPage = () => {
                             },
                         },
                     }}
-                    isLoading={adjustmentLoading}
                     error={adjustmentError}
+                    isLoading={adjustmentLoading}
                 />
             </div>
 
