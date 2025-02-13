@@ -16,7 +16,7 @@ import PricePartForm from '@/components/form/PricePartForm.jsx';
 import Tooltip from '@/components/common/Tooltip.jsx';
 import AdditionButtons from '@/components/common/AdditionButtons.jsx';
 import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
-import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
+import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import { fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
 import AdjustmentPage from '@/pages/Adjustment/AdjustmentPage.jsx';
@@ -40,9 +40,9 @@ const PricePage = () => {
     const [partDataError, setPartDataError] = useState(null);
 
     // 조정 데이터 상태
-    const [adjustData, setAdjustData] = useState(null);
-    const [adjustLoading, setAdjustLoading] = useState(false);
-    const [adjustError, setAdjustError] = useState(null);
+    const [adjustHistoryData, setAdjustHistoryData] = useState(null);
+    const [adjustHistoryLoading, setAdjustHistoryLoading] = useState(false);
+    const [adjustHistoryError, setAdjustHistoryError] = useState(null);
 
     // Modal
     const [showModal, setShowModal] = useState(false);
@@ -77,15 +77,15 @@ const PricePage = () => {
             }
 
             // 조정 데이터 가져오기
-            setAdjustLoading(true);
-            setAdjustError(null);
+            setAdjustHistoryLoading(true);
+            setAdjustHistoryError(null);
             try {
                 const adjustResponse = await fetchAdjustmentValueHistory(selectedPriceId.ppid);
-                setAdjustData(adjustResponse);
+                setAdjustHistoryData(adjustResponse);
             } catch (error) {
-                setAdjustError(error.message || 'Failed to fetch account details');
+                setAdjustHistoryError(error.message || 'Failed to fetch account details');
             } finally {
-                setAdjustLoading(false);
+                setAdjustHistoryLoading(false);
             }
         };
 
@@ -123,18 +123,16 @@ const PricePage = () => {
     const TransactionTab = () => {
         return(
             <div>
-                {adjustLoading ? (
+                {adjustHistoryLoading ? (
                     <LoadingSpinner />
-                ) : adjustError ? (
-                    <p className="text-red-500">{adjustError}</p>
+                ) : adjustHistoryError ? (
+                    <p className="text-red-500">{adjustHistoryError}</p>
                 ) : (
                     <div>
                         <ReusableTable
                             columns={AdjustmentHistoryTableColumns}
-                            data={adjustData}
-                            options={{
-                                ...AdjustmentTableOptions,
-                            }}
+                            data={adjustHistoryData}
+                            options={AdjustmentHistoryTableOptions}
                         />
                     </div>
                 )}
@@ -263,7 +261,10 @@ const PricePage = () => {
                         <div className="flex flex-row justify-between mb-3">
                             {/* Acct_Num */}
                             {/*<h2 className="py-1 text-lg font-bold">PPID Detail Form <span className="text-red-500 pl-3">{pricePartData.ppid}</span></h2>*/}
-                            <h2 className="py-1 text-lg font-bold text-red-600">{selectedPriceId.ppid}</h2>
+                            <div className="flex flex-row items-center">
+                                <span className="pr-2 font-bold">PPID : </span>
+                                <h2 className="py-1 text-lg font-bold text-red-600">{selectedPriceId.ppid}</h2>
+                            </div>
 
                             {/* Buttons - Edit & Mail & . */}
                             <ButtonGroup
@@ -275,7 +276,7 @@ const PricePage = () => {
                         </div>
 
                         {/* Tab */}
-                        <TabComponent tabs={tabs}/>
+                        <TabComponent tabs={tabs} />
                     </div>
                 </div>
             )}

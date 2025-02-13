@@ -1,4 +1,8 @@
 const DevicePartForm = ({ devicePartData }) => {
+    const formatDisplayValue = (value) => {
+        return !value || value === "null" ? "-" : value;
+    };
+
     return (
         <form className="grid grid-cols-2 gap-3">
             {/* Serial Number */}
@@ -10,13 +14,13 @@ const DevicePartForm = ({ devicePartData }) => {
             {/* Account Number */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Account Number</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.acct_num || ''}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.acct_num}</span>
             </div>
 
             {/* Profile ID */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Profile ID</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.profile_id || ''}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.profile_id}</span>
             </div>
 
             {/* Activated Date */}
@@ -57,25 +61,25 @@ const DevicePartForm = ({ devicePartData }) => {
             {/* Model Name */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Model Name</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.model_name || 'N/A'}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.model_name)}</span>
             </div>
 
             {/* Internet Mail ID */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Internet Mail ID</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.internet_mail_id || 'N/A'}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.internet_mail_id)}</span>
             </div>
 
             {/* Alias */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Alias</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.alias || 'N/A'}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.alias)}</span>
             </div>
 
             {/* Remarks */}
             <div className="col-span-2">
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Remarks</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.remarks || 'N/A'}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.remarks)}</span>
                 {/*<textarea*/}
                 {/*    value={devicePartData.remarks || 'N/A'}*/}
                 {/*    readOnly*/}

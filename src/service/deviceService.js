@@ -89,3 +89,50 @@ export const deleteDevice = async (serial_number) => {
         throw error;
     }
 };
+
+
+
+/**
+ * 특정 단말 Account 변경 이력 조회
+ * @ChangeLog
+ * @param {string} serial_number - 조회할 단말의 serial_number
+ * @returns {Promise<object>} 서버 응답 데이터
+ */
+export const fetchDeviceHistoryLog = async (serial_number) => {
+    try {
+        return await get(`/devices/changed/${serial_number}`);
+    } catch (error) {
+        console.error("Failed to fetch device History:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+/**
+ * 특정 단말 Account 변경
+ * @param {string} id 수정할 단말 ID
+ * @param {object} deviceData 수정할 데이터
+ * @returns {Promise<object>} 수정된 단말 데이터
+ */
+export const updateDeviceHistoryLog = async (deviceData) => {
+    try {
+        return await put(`/devices/changed/`, deviceData);
+    } catch (error) {
+        console.error("Failed to update device:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
+/**
+ * 변경 이력 삭제
+ * @param {string} id 삭제할 단말 ID
+ * @returns {Promise<void>} 삭제 완료
+ */
+export const deleteDeviceHistoryLog = async () => {
+    try {
+        return await del(`/devices/changed/`);
+    } catch (error) {
+        console.error("Failed to delete device:", error.response?.data || error.message);
+        throw error;
+    }
+};

@@ -1,36 +1,5 @@
-import { get, put, del, postWithBodyFile } from './api';
-import axios from 'axios';
+import { get, put, del, postWithBody, postWithBodyFile } from './api';
 
-const API_URL_CDR = 'http://127.0.0.1:8000/file/acctFiles';
-
-/**
- * CDR 파일 업로드
- * @param {File} file 업로드할 파일 객체
- * @returns {Promise<object>} 서버 응답 데이터
- */
-// export const uploadCdrFile = async (file) => {
-//     const formData = new FormData();
-//     formData.append('file', file); // 'file'은 서버에서 인식하는 필드 이름
-//
-//     // 로컬 스토리지에서 토큰 가져오기
-//     const token = localStorage.getItem('token');
-//
-//     try {
-//         const response = await axios.post(API_URL_CDR, formData, {
-//             headers: {
-//                 'Content-Type': 'multipart/form-data',
-//                 Authorization: `Bearer ${token}`,
-//             },
-//         });
-//         return response.data;
-//     } catch (error) {
-//         const errorDetail = error.response?.data?.error || '파일 업로드 중 문제가 발생했습니다.';
-//
-//         // 에러 메시지 변환 로직
-//         const userFriendlyMessage = mapErrorToUserMessage(errorDetail);
-//         throw new Error(userFriendlyMessage);
-//     }
-// };
 
 /**
  * 여러 CDR 파일 업로드
@@ -120,4 +89,26 @@ const mapErrorToUserMessage = (errorDetail) => {
         return 'CSV 파일에 중복된 데이터가 포함되어 있습니다. 중복 데이터를 제거한 후 다시 업로드하세요.';
     }
     return '알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.';
+};
+
+
+
+/**
+ * Device 파일과 변경 이력을 업로드하는 함수
+ * @param {File} file 업로드할 파일 객체
+ * @param {object[]} splitInfo 변경 이력 JSON 데이터 배열
+ * @returns {Promise<object>} 서버 응답 데이터
+ */
+export const uploadFileDevice = async (file, splitInfo) => {
+    if (!file) throw new Error("⚠ 파일이 필요합니다.");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    // ✅ Postman과 동일하게 `split_info`를 문자열(JSON Text)로 추가
+    formData.append("split_info", JSON.stringify(splitInfo));
+
+    console.log("📤 FormData 확인:", Object.fromEntries(formData.entries())); // ✅ FormData 로그 확인
+
+    return await postWithBodyFile("http://127.0.0.1:8000/file/byteUse/igws", formData);
 };

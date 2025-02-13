@@ -21,6 +21,7 @@ import KOMonthlyPage from '@/pages/Monthly/KOMonthlyPage.jsx';
 import AdjustmentPage from '@/pages/Adjustment/AdjustmentPage.jsx';
 import AdjustmentNewPage from '@/pages/Adjustment/AdjustmentNewPage.jsx';
 import AdjustmentEditPage from '@/pages/Adjustment/AdjustmentEditPage.jsx';
+import CodePage from '@/pages/Adjustment/CodePage.jsx';
 
 // ProtectedRoute 컴포넌트
 const ProtectedRoute = ({ isAuthenticated, children }) => {
@@ -105,6 +106,7 @@ const App = () => {
 
                                 <Route path="/adjustment/new" element={<AdjustmentNewPage />} />
                                 <Route path="/adjustment/:adjustment_index/edit" element={<AdjustmentEditPage />} />
+                                <Route path="/code/new" element={<CodePage />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>

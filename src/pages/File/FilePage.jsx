@@ -15,6 +15,7 @@ import { NetworkReportTableOptions } from '@/options/NetworkReportTableOptions.j
 import FileStatusForm from '@/components/form/FileStatusForm.jsx'
 import Modal from '@/components/common/Modal.jsx';
 import UploadFileModal from '@/components/layout/File/UploadFileModal.jsx';
+import FileDeviceForm from '@/components/form/FileDeviceForm.jsx';
 
 const FilePage = () => {
     const navigate = useNavigate();
@@ -72,6 +73,9 @@ const FilePage = () => {
             {/*</div>*/}
             <div className="grid col-span-2 2xl:col-span-1">
                 <FileStatusForm />
+            </div>
+            <div className="grid col-span-2 2xl:col-span-1">
+                <FileDeviceForm/>
             </div>
             {/* 'CDR' & 'Network Report' Table */}
             <div className="grid col-span-4 2xl:col-span-3 space-y-3">

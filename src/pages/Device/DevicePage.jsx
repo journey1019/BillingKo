@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchDevices, deleteDevice, fetchDeviceHistory, fetchDevicePart } from '@/service/deviceService.js';
+import {
+    fetchDevices,
+    deleteDevice,
+    fetchDeviceHistory,
+    fetchDevicePart,
+    fetchDeviceHistoryLog, deleteDeviceHistoryLog,
+} from '@/service/deviceService.js';
 import { DeviceTableColumns } from '@/columns/DeviceTableColumns.jsx';
 import { DeviceTableOptions } from '@/options/DeviceTableOptions.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
@@ -14,9 +20,11 @@ import { FiPlus } from 'react-icons/fi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiSettings3Fill } from 'react-icons/ri';
 import TabComponent from '@/components/layout/TabComponent.jsx';
-import { fetchAdjustmentPart } from '@/service/adjustmentService.js';
-import { AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
-import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
+import { fetchAdjustmentPart, fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
+import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
+import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
+import { DeviceHistoryLogTableColumns } from '@/columns/DeviceHistoryLogTableColumns.jsx';
+import Buttons from '@/components/common/Buttons.jsx';
 
 const DevicePage = () => {
     const { data: deviceData, loading: deviceLoading, error: deviceError, refetch: deviceRefetch } = useApiFetch(fetchDevices);
@@ -36,9 +44,14 @@ const DevicePage = () => {
     const [partDataError, setPartDataError] = useState(null);
 
     // 조정 데이터 상태
-    const [adjustData, setAdjustData] = useState(null);
-    const [adjustLoading, setAdjustLoading] = useState(false);
-    const [adjustError, setAdjustError] = useState(null);
+    const [adjustHistoryData, setAdjustHistoryData] = useState(null);
+    const [adjustHistoryLoading, setAdjustHistoryLoading] = useState(false);
+    const [adjustHistoryError, setAdjustHistoryError] = useState(null);
+
+    // Account 변경 이력 데이터 상태
+    const [deviceHistoryLogData, setDeviceHistoryLogData] = useState(null);
+    const [deviceHistoryLogLoading, setDeviceHistoryLogLoading] = useState(false);
+    const [deviceHistoryLogError, setDeviceHistoryLogError] = useState(null);
 
 
     // 선택된 serial_number 변경 시만 이력 데이터 가져오기
@@ -70,15 +83,26 @@ const DevicePage = () => {
                 setPartDataLoading(false);
             }
 
-            setAdjustLoading(true);
-            setAdjustError(null);
+            setAdjustHistoryLoading(true);
+            setAdjustHistoryError(null);
             try {
-                const adjustResponse = await fetchAdjustmentPart(selectedDeviceId.serial_number);
-                setAdjustData(adjustResponse);
+                const adjustResponse = await fetchAdjustmentValueHistory(selectedDeviceId.serial_number);
+                setAdjustHistoryData(adjustResponse);
             } catch (error) {
-                setAdjustError(error.message || 'Failed to fetch device details');
+                setAdjustHistoryError(error.message || 'Failed to fetch device details');
             } finally {
-                setAdjustLoading(false);
+                setAdjustHistoryLoading(false);
+            }
+
+            setDeviceHistoryLogLoading(true);
+            setDeviceHistoryLogError(null);
+            try {
+                const adjustResponse = await fetchDeviceHistoryLog(selectedDeviceId.serial_number);
+                setDeviceHistoryLogData(adjustResponse);
+            } catch (error) {
+                setDeviceHistoryLogError(error.message || 'Failed to fetch device details');
+            } finally {
+                setDeviceHistoryLogLoading(false);
             }
         };
 
@@ -115,27 +139,29 @@ const DevicePage = () => {
     const TransactionTab = () => {
         return(
             <div>
-                {adjustLoading ? (
+                {adjustHistoryLoading ? (
                     <LoadingSpinner />
-                ) : adjustError ? (
-                    <p className="text-red-500">{adjustError}</p>
-                ) : (
-                    <div>
-                        <ReusableTable
-                            columns={AdjustmentTableColumns}
-                            data={adjustData}
-                            options={{
-                                ...AdjustmentTableOptions,
-                            }}
-                        />
-                    </div>
-                )}
+                ) : adjustHistoryError ? (
+                    <p className="text-red-500">Error loading history: {adjustHistoryError}</p>
+                ) : adjustHistoryData ? (
+                    <ReusableTable
+                        data={adjustHistoryData}
+                        columns={AdjustmentHistoryTableColumns}
+                        options={AdjustmentHistoryTableOptions}
+                    />
+                ) : <p>Select an price to view details</p>}
             </div>
         )
     }
+
+    const highestRowData = deviceHistoryLogData?.length
+        ? deviceHistoryLogData.sort((a, b) => b.row_number - a.row_number)[0]
+        : null;
+    console.log(highestRowData);
     const HistoryTab = () => {
         return(
             <div>
+                <h1 className="font-bold mb-2">기본 정보 변경 이력</h1>
                 <ReusableTable
                     columns={DeviceTableColumns}
                     data={historyData ? historyData : []}
@@ -147,6 +173,29 @@ const DevicePage = () => {
                     }}
                     isLoading={historyDataLoading}
                     error={historyDataError}
+                />
+                <div className="flex flex-row justify-between">
+                    <h1 className="font-bold my-2">Account 정보 변경 이력</h1>
+                    <div>
+                        <Buttons
+                            entityType="devices/changed"
+                            id={selectedDeviceId.row_index}
+                        />
+                    </div>
+                </div>
+                <ReusableTable
+                    columns={DeviceHistoryLogTableColumns}
+                    data={deviceHistoryLogData ? deviceHistoryLogData : []}
+                    options={{
+                        initialState: {
+                            sorting: [{ id: 'row_number', desc: true }],
+                            columnVisibility: { row_number: false, row_index: false },
+                        },
+                        enablePagination: false,
+                        enableSorting: false,
+                    }}
+                    isLoading={deviceHistoryLogLoading}
+                    error={deviceHistoryLogError}
                 />
             </div>
         )

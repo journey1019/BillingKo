@@ -11,6 +11,11 @@ const AccountPartForm = ({ accountPartData }) => {
         return new Date(dateString).toLocaleDateString('ko-KR', options);
     };
 
+    const formatDisplayValue = (value) => {
+        return !value || value === "null" ? "-" : value;
+    };
+
+
     return (
         <form className="grid grid-cols-2 gap-3">
             {/* Section: 기본 정보 */}
@@ -57,63 +62,63 @@ const AccountPartForm = ({ accountPartData }) => {
 
 
             {/* Section: 주소 정보 */}
-            <h2 className="col-span-2 text-md  2xl:text-lgfont-semibold text-gray-800">주소 정보</h2>
+            <h2 className="col-span-2 text-md 2xl:text-lg font-semibold text-gray-800">주소 정보</h2>
 
             {/* Invoice Address */}
             <div className="col-span-2">
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">청구지 주소</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.invoice_address === 'null' ? 'Null' : accountPartData.invoice_address}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.invoice_address)}</span>
             </div>
 
             {/* Invoice Address 2 */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">추가 주소</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.invoice_address2 === 'null' ? 'Null' : accountPartData.invoice_address2}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.invoice_address2)}</span>
             </div>
 
             {/* Invoice Postcode */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">우편번호</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.invoice_postcode === 'null' ? 'Null' : accountPartData.invoice_postcode}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.invoice_postcode)}</span>
             </div>
 
             {/* Section: 회사 정보 */}
-            <h2 className="col-span-2 text-md  2xl:text-lgfont-semibold text-gray-800">회사 정보</h2>
+            <h2 className="col-span-2 text-md 2xl:text-lg font-semibold text-gray-800">회사 정보</h2>
 
             {/* 회사명 */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">회사명</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.company_name  === 'null' ? 'Null' : accountPartData.company_name}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.company_name)}</span>
             </div>
 
             {/* 팀명 */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">팀명</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.company_team === 'null' ? 'Null' : accountPartData.company_team}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.company_team)}</span>
             </div>
 
             {/* 담당자 */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">담당자</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.company_director === 'null' ? 'Null' : accountPartData.company_director}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.company_director)}</span>
             </div>
 
             {/* 담당자 이메일 */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">담당자 이메일</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.director_email === 'null' ? 'Null' : accountPartData.director_email}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.director_email)}</span>
             </div>
 
             {/* 담당자 전화번호 */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">담당자 전화번호</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.director_tel === 'null' ? 'Null' : accountPartData.director_tel}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.director_tel)}</span>
             </div>
 
             {/* 세금 비율 */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">부가세율 (%)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.tax_percent === 'null' ? 'Null' : accountPartData.tax_percent}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.tax_percent)}</span>
             </div>
         </form>
     );

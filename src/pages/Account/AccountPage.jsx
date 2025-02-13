@@ -16,7 +16,7 @@ import { RiSettings3Fill } from 'react-icons/ri';
 import AccountPartForm from '@/components/form/AccountPartForm.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
-import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
+import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import AccountOverviewTab from '@/components/form/Account/AccountOverviewTab.jsx';
 
 const AccountPage = () => {
@@ -37,9 +37,9 @@ const AccountPage = () => {
     const [partDataError, setPartDataError] = useState(null);
 
     // 조정 데이터 상태
-    const [adjustData, setAdjustData] = useState(null);
-    const [adjustLoading, setAdjustLoading] = useState(false);
-    const [adjustError, setAdjustError] = useState(null);
+    const [adjustHistoryData, setAdjustHistoryData] = useState(null);
+    const [adjustHistoryLoading, setAdjustHistoryLoading] = useState(false);
+    const [adjustHistoryError, setAdjustHistoryError] = useState(null);
 
     // FilterSelectOptions
     const [classificationOptions, setClassificationOptions] = useState([]);
@@ -89,15 +89,15 @@ const AccountPage = () => {
                 setPartDataLoading(false);
             }
 
-            setAdjustLoading(true);
-            setAdjustError(null);
+            setAdjustHistoryLoading(true);
+            setAdjustHistoryError(null);
             try {
                 const adjustResponse = await fetchAdjustmentValueHistory(selectedAccountId.acct_num);
-                setAdjustData(adjustResponse);
+                setAdjustHistoryData(adjustResponse);
             } catch (error) {
-                setAdjustError(error.message || 'Failed to fetch account details');
+                setAdjustHistoryError(error.message || 'Failed to fetch account details');
             } finally {
-                setAdjustLoading(false);
+                setAdjustHistoryLoading(false);
             }
         };
 
@@ -162,20 +162,18 @@ const AccountPage = () => {
     const TransactionTab = () => {
         return(
             <div>
-                {adjustLoading ? (
+                {adjustHistoryLoading ? (
                     <LoadingSpinner />
-                ) : adjustError ? (
-                    <p className="text-red-500">{adjustError}</p>
+                ) : adjustHistoryError ? (
+                    <p className="text-red-500">{adjustHistoryError}</p>
+                ) : adjustHistoryData ? (
+                    <ReusableTable
+                        columns={AdjustmentHistoryTableColumns}
+                        data={adjustHistoryData}
+                        options={AdjustmentHistoryTableOptions}
+                    />
                 ) : (
-                    <div>
-                        <ReusableTable
-                            columns={AdjustmentHistoryTableColumns}
-                            data={adjustData}
-                            options={{
-                                ...AdjustmentTableOptions,
-                            }}
-                        />
-                    </div>
+                    <p>Select an account to view details</p>
                 )}
             </div>
         )

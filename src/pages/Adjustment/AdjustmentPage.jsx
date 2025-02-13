@@ -11,11 +11,13 @@ import { FiPlus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
+import { IoIosArrowDown } from 'react-icons/io';
 
 const AdjustmentPage = () => {
     const { data: adjustmentData, loading: adjustmentLoading, error: adjustmentError, refetch: adjustmentRefetch } = useApiFetch(fetchAdjustment);
     const [selectedAdjustId, setSelectedAdjustId] = useState(null);
     const [isAdjustExpanded, setIsAdjustExpanded] = useState(false); // Drawer 확장
+    const [isOpenNewDropdown, setIsOpenNewDropdown] = useState(false); // New icon Drop
     const navigate = useNavigate();
 
     // 부분 데이터 상태
@@ -66,6 +68,10 @@ const AdjustmentPage = () => {
         setSelectedAdjustId(null);
         setIsAdjustExpanded(false);
     }
+
+    // New Button Toggle
+    const toggleNewDropdown = () => setIsOpenNewDropdown(!isOpenNewDropdown);
+    const closeNewDropdown = () => setIsOpenNewDropdown(false);
 
     const OverviewTab = () => {
         return(
@@ -122,13 +128,38 @@ const AdjustmentPage = () => {
                         <div className="inline-flex rounded-md shadow-xs" role="group">
                             <Tooltip message="Create Price Plan">
                                 <button type="button"
-                                        className="inline-flex items-center space-x-2 px-4 py-2 text-sm text-white font-medium bg-blue-500 border border-gray-200 rounded-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
+                                        className="inline-flex items-center space-x-2 px-4 py-2 text-sm text-white font-medium bg-blue-500 border border-gray-200 rounded-s-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
                                         onClick={() => navigate('/adjustment/new')}
                                 >
                                     <FiPlus />
                                     <span>New</span>
                                 </button>
                             </Tooltip>
+                            <button type="button"
+                                    className="inline-flex items-center px-1 py-2 text-sm font-medium text-white bg-blue-500 border border-gray-200 rounded-e-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
+                                    onClick={toggleNewDropdown}
+                            >
+                                <IoIosArrowDown />
+                            </button>
+                            {isOpenNewDropdown && (
+                                <div
+                                    className="absolute z-10 mt-10 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"
+                                    onMouseLeave={closeNewDropdown}>
+                                    <div className="p-2 text-sm text-gray-700">
+                                        <button onClick={() => navigate('/adjustmenr/new')}
+                                                className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">
+                                            Adjustment
+                                        </button>
+                                    </div>
+                                    <ul className="p-2 text-sm text-gray-700">
+                                        <li>
+                                            <button onClick={() => navigate('/code/new')}
+                                                    className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">New Code
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -140,7 +171,7 @@ const AdjustmentPage = () => {
                         ...AdjustmentTableOptions,
                         meta: {
                             onRowSelect: (selectedRow) => {
-                                console.log("onRowSelect called with id: ", selectedRow);
+                                console.log('onRowSelect called with id: ', selectedRow);
 
                                 if (selectedAdjustId && selectedAdjustId.adjustment_index === selectedRow.adjustment_index) {
                                     setSelectedAdjustId(null);
@@ -162,7 +193,11 @@ const AdjustmentPage = () => {
                 <div className="p-2 col-span-4">
                     <div className="flex flex-col">
                         <div className="flex flex-row justify-between mb-3">
-                            <h2 className="py-1 text-lg font-bold text-red-600">{selectedAdjustId.adjustment_index}</h2>
+                            <div className="flex flex-row items-center">
+                                <span className="pr-2 font-bold">Adjustment Index : </span>
+                                <h2 className="py-1 text-lg font-bold text-red-600">{selectedAdjustId.adjustment_index}</h2>
+                            </div>
+
 
                             <ButtonGroup
                                 entityType="adjustment"
@@ -172,7 +207,7 @@ const AdjustmentPage = () => {
                             />
                         </div>
 
-                        <TabComponent tabs={tabs}/>
+                        <TabComponent tabs={tabs} />
                     </div>
                 </div>
             )}

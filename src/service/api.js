@@ -104,12 +104,13 @@ export const postWithBodyFile = async (url, body) => {
 
     const response = await api.post(url, body, {
         headers: {
-            'Content-Type': 'multipart/form-data',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}), // ✅ Content-Type 제거
         },
     });
+
     return response.data;
 };
+
 
 
 // PUT 요청
