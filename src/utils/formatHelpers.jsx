@@ -20,6 +20,8 @@ export const formatDate = (datetime) => {
 
 // 날짜 T 제거 포맷팅 함수
 export const formatDateTime = (dateTimeString) => {
+    if(!dateTimeString) return '-';
+
     const date = new Date(dateTimeString);
     return date.toISOString().replace("T", " ").slice(0, 19);
 };

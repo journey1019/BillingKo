@@ -1,3 +1,5 @@
+import { formatDateTime } from '@/utils/formatHelpers.jsx';
+
 const DevicePartForm = ({ devicePartData }) => {
     const formatDisplayValue = (value) => {
         return !value || value === "null" ? "-" : value;
@@ -23,16 +25,22 @@ const DevicePartForm = ({ devicePartData }) => {
                 <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.profile_id}</span>
             </div>
 
+            {/* PPID */}
+            <div>
+                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">PPID</label>
+                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.ppid}</span>
+            </div>
+
             {/* Activated Date */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Activated Date</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{new Date(devicePartData.activated).toISOString().split('T')[0]}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDateTime(devicePartData.activated)}</span>
             </div>
 
             {/* Deactivated Date */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Deactivated Date</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{new Date(devicePartData.deactivated).toISOString().split('T')[0]}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDateTime(devicePartData.deactivated)}</span>
             </div>
 
             {/* Use Y/N (Toggle) */}
@@ -88,16 +96,28 @@ const DevicePartForm = ({ devicePartData }) => {
                 {/*/>*/}
             </div>
 
-            {/* Registration Date */}
+            {/* Register User ID */}
             <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Registration Date</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{new Date(devicePartData.regist_date).toISOString().split('T')[0]}</span>
+                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Register User ID</label>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.regist_user_id)}</span>
+            </div>
+
+            {/* Update User ID */}
+            <div>
+                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Update User ID</label>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.update_user_id)}</span>
+            </div>
+
+            {/* Register Date */}
+            <div>
+                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Register Date</label>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDateTime(devicePartData.regist_date)}</span>
             </div>
 
             {/* Update Date */}
             <div>
                 <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Update Date</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{new Date(devicePartData.update_date).toISOString().split('T')[0]}</span>
+                <span className="mt-1 block text-sm 2xl:text-md">{formatDateTime(devicePartData.update_date)}</span>
             </div>
         </form>
     );

@@ -7,12 +7,18 @@ import { Switch } from "@mui/material";
 const AccountNewPage = () => {
     const navigate = useNavigate();
 
+    // ✅ 오늘 날짜 구하기 (YYYY-MM-DD 형식)
+    const getTodayDate = () => {
+        const today = new Date();
+        return today.toISOString().split("T")[0]; // "YYYY-MM-DD" 형식
+    };
+
     // ✅ 기존 계정 데이터 불러오기 (중복 체크용)
     const [accountData, setAccountData] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetchAccounts();  // API 호출
+                const response = await fetchAccounts();
                 setAccountData(response);
             } catch (error) {
                 console.error("계정 데이터를 불러오는 중 오류 발생", error);
@@ -24,31 +30,31 @@ const AccountNewPage = () => {
     // ✅ 폼 데이터 상태 관리
     const [formData, setFormData] = useState({
         acct_num: "",
-        account_type: "",
         acct_name: "",
         acct_resident_num: "",
-        regist_date: "",
-        use_yn: "N",
+        regist_date: getTodayDate(), // 오늘 날짜를 초기값으로 설정
         classification: "",
-        invoice_postcode: "",
         invoice_address: "",
-        invoice_address2: "",
-        recognize_id: "",
-        company_tel: "",
-        tax_percent: "",
-        business_num: "",
-        company_name: "",
-        company_team: "",
-        company_director: "",
-        director_email: "",
-        director_tel: "",
-        company_postcode: "",
-        company_address: "",
-        company_address2: "",
+        invoice_postcode: "",
+        use_yn: "N",
+        account_type: null,
+        invoice_address2: null,
+        recognize_id: null,
+        company_tel: null,
+        tax_percent: null,
+        business_num: null,
+        company_name: null,
+        company_team: null,
+        company_director: null,
+        director_email: null,
+        director_tel: null,
+        company_postcode: null,
+        company_address: null,
+        company_address2: null,
     });
 
     const [error, setError] = useState(null);
-    const [acctNumError, setAcctNumError] = useState(""); // 중복 오류 메시지
+    const [acctNumError, setAcctNumError] = useState("");
 
     // ✅ 중복 체크 함수
     const isDuplicateAccountNum = (acctNum) => {
@@ -58,13 +64,13 @@ const AccountNewPage = () => {
     // ✅ 입력 변경 핸들러 (중복 검사 포함)
     const handleInputChange = (e) => {
         const { id, value } = e.target;
-        setFormData({ ...formData, [id]: value });
+        setFormData({ ...formData, [id]: value || null });
 
         if (id === "acct_num") {
             if (isDuplicateAccountNum(value)) {
                 setAcctNumError("이미 존재하는 계정 번호입니다.");
             } else {
-                setAcctNumError("");  // 중복 없으면 초기화
+                setAcctNumError("");
             }
         }
     };
@@ -74,22 +80,32 @@ const AccountNewPage = () => {
         setFormData({ ...formData, use_yn: e.target.checked ? "Y" : "N" });
     };
 
-    // ✅ 폼 검증 함수
+    // ✅ 필수 필드 검증 함수
     const validateFormData = () => {
-        if (acctNumError) return acctNumError; // 중복 오류 있으면 제출 방지
-        for (const key in formData) {
-            if (!formData[key]) {
-                return `필수 입력 항목: ${key}`;
+        const requiredFields = [
+            "acct_num",
+            "acct_name",
+            "acct_resident_num",
+            "regist_date",
+            "classification",
+            "invoice_address",
+            "invoice_postcode",
+            "use_yn",
+        ];
+
+        for (const field of requiredFields) {
+            if (!formData[field]) {
+                return `필수 입력 항목: ${field}`;
             }
         }
+
         return null;
     };
 
-    // ✅ 폼 제출 핸들러 (최종 중복 검사 포함)
+    // ✅ 폼 제출 핸들러
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // ❗ API 요청 전 중복 검사 다시 실행
         if (isDuplicateAccountNum(formData.acct_num)) {
             setAcctNumError("이미 존재하는 계정 번호입니다.");
             return;
@@ -101,18 +117,6 @@ const AccountNewPage = () => {
             return;
         }
 
-        const confirmMessage = `
-            계정 번호: ${formData.acct_num}
-            계정 유형: ${formData.account_type}
-            고객명: ${formData.acct_name}
-            등록번호: ${formData.acct_resident_num}
-            등록일: ${formData.regist_date}
-            사용 여부: ${formData.use_yn === "Y" ? "사용 중" : "미사용"}
-            주소: (${formData.invoice_postcode}) ${formData.invoice_address}, ${formData.invoice_address2}
-        `;
-
-        if (!window.confirm(confirmMessage)) return;
-
         try {
             await createAccount(formData);
             alert("계정이 성공적으로 생성되었습니다.");
@@ -122,8 +126,24 @@ const AccountNewPage = () => {
         }
     };
 
+    const renderInputField = (id, label, type, required, errorMessage, extraProps = {}) => (
+        <div className="flex items-center space-x-4" key={id}>
+            <label htmlFor={id} className="w-32 text-sm font-medium text-gray-900">
+                {label} {required && <span className="text-red-500">*</span>}
+            </label>
+            <div className="flex-1">
+                <input id={id} type={type} value={formData[id]} onChange={handleInputChange}
+                       className={`w-full bg-gray-50 border ${errorMessage ? "border-red-500" : "border-gray-300"} text-gray-900 text-sm rounded-lg p-2.5`}
+                       {...extraProps} required={required}/>
+                {errorMessage && <p className="text-red-500 text-xs mt-1">{errorMessage}</p>}
+            </div>
+        </div>
+    );
+
+
     return (
         <div className="container mx-auto">
+            {/* ✅ 상단 타이틀 및 닫기 버튼 */}
             <div className="flex flex-row justify-between mb-3">
                 <h1 className="py-1 text-lg font-bold">신규 계정 등록</h1>
                 <button onClick={() => navigate("/accounts")}
@@ -132,470 +152,85 @@ const AccountNewPage = () => {
                 </button>
             </div>
 
-            <form className="bg-white p-5 rounded-xl space-y-6" onSubmit={handleSubmit}>
-                {/* ✅ 중복 검사 추가된 계정 번호 필드 */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label htmlFor="acct_num" className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 truncate">
-                        고객번호
-                    </label>
-                    <div className="md:col-span-2 md:col-start-2">
-                        <input
-                            type="text"
-                            id="acct_num"
-                            value={formData.acct_num}
-                            onChange={handleInputChange}
-                            className={`w-full bg-gray-50 border ${acctNumError ? "border-red-500" : "border-gray-300"} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5`}
-                            placeholder="KO_99999"
-                            required
-                        />
-                        {acctNumError && <p className="text-red-500 text-xs mt-1">{acctNumError}</p>}
-                    </div>
-                </div>
+            {/* ✅ 입력 폼 */}
+            <form className="bg-white p-5 rounded-xl space-y-4" onSubmit={handleSubmit}>
+                {/* ✅ 고객번호 (중복 검사 포함) */}
+                {renderInputField("acct_num", "고객번호", "text", true, acctNumError)}
 
                 {/* ✅ 사용 여부 (토글) */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 truncate">
-                        사용 여부
-                    </label>
-                    <div className="col-span-2 col-start-2 flex items-center space-x-4">
-                        <Switch checked={formData.use_yn === "Y"} onChange={handleToggleChange} />
-                        <span className="text-sm text-gray-700">{formData.use_yn === "Y" ? "Yes" : "No"}</span>
-                    </div>
+                <div className="flex items-center space-x-4">
+                    <label className="w-32 text-sm font-medium text-gray-900">사용 여부 *</label>
+                    <Switch checked={formData.use_yn === "Y"} onChange={handleToggleChange} />
+                    <span className="text-sm text-gray-700">{formData.use_yn === "Y" ? "Yes" : "No"}</span>
                 </div>
 
-                {/* Account_Type */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="account_type"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        고객구분
-                    </label>
-                    <input
-                        type="text"
-                        id="account_type"
-                        value={formData.account_type}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="법인"
-                    />
-                </div>
+                {/* ✅ 나머지 입력 필드 자동 생성 */}
+                {[
+                    { id: "acct_name", label: "고객명", type: "text", required: true },
+                    { id: "acct_resident_num", label: "등록번호", type: "number", required: true },
+                    { id: "regist_date", label: "등록일", type: "date", required: true },
+                    { id: "classification", label: "분류", type: "text", required: true },
+                    { id: "invoice_address", label: "청구 주소", type: "text", required: true },
+                    { id: "invoice_postcode", label: "우편번호", type: "number", required: true },
+                    { id: "invoice_address2", label: "상세 주소", type: "text", required: true },
+                    { id: "account_type", label: "계정 유형", type: "text", required: true },
+                    { id: "recognize_id", label: "사업자 등록번호", type: "text", required: true },
+                    {
+                        id: "company_tel",
+                        label: "직장전화",
+                        type: "tel",
+                        pattern: "[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}",
+                        placeholder: "00-0000-0000",
+                        required: true
+                    },
+                    {
+                        id: "tax_percent",
+                        label: "부가세율 (%)",
+                        type: "number",
+                        min: "0",
+                        max: "100",
+                        step: "0.1",
+                        required: false
+                    },
+                    { id: "business_num", label: "법인번호", type: "number", required: false },
+                    { id: "company_name", label: "직장명", type: "text", required: false },
+                    { id: "company_team", label: "부서/팀", type: "text", required: false },
+                    { id: "company_director", label: "담당자", type: "text", required: false },
+                    {
+                        id: "director_email",
+                        label: "담당 이메일",
+                        type: "email",
+                        placeholder: "example@gmail.com",
+                        required: false
+                    },
+                    {
+                        id: "director_tel",
+                        label: "담당 전화",
+                        type: "tel",
+                        pattern: "[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}",
+                        placeholder: "000-0000-0000",
+                        required: false
+                    },
+                    { id: "company_postcode", label: "회사 우편번호", type: "number", required: false },
+                    { id: "company_address", label: "회사 주소", type: "text", required: false },
+                    { id: "company_address2", label: "회사 상세주소", type: "text", required: false },
+                ].map(({
+                           id,
+                           label,
+                           type,
+                           required,
+                           ...rest
+                       }) => renderInputField(id, label, type, required, "", rest))}
 
-                {/* Account_Name */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="acct_name"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        고객명
-                    </label>
-                    <input
-                        type="text"
-                        id="acct_name"
-                        value={formData.acct_name}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="코리아오브컴"
-                        required
-                    />
-                </div>
-
-                {/* Account_Resident_Number */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="acct_resident_num"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        등록번호
-                    </label>
-                    <input
-                        type="number"
-                        id="acct_resident_num"
-                        value={formData.acct_resident_num}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="0"
-                        required
-                    />
-                </div>
-
-                {/* Registration_Date */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="regist_date"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        등록일
-                    </label>
-                    <input
-                        type="date"
-                        id="regist_date"
-                        value={formData.regist_date}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="0"
-                        required
-                    />
-                </div>
-
-                {/* Use_yn */}
-                {/*<div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">*/}
-                {/*    <label*/}
-                {/*        htmlFor="use_yn"*/}
-                {/*        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"*/}
-                {/*    >*/}
-                {/*        사용*/}
-                {/*    </label>*/}
-                {/*    <div className="col-span-2 col-start-2 flex items-center space-x-4">*/}
-                {/*        /!* Toggle 버튼 *!/*/}
-                {/*        <label className="relative inline-flex items-center cursor-pointer">*/}
-                {/*            <input*/}
-                {/*                type="checkbox"*/}
-                {/*                id="use_yn"*/}
-                {/*                checked={formData.use_yn === 'Y'} // Y일 경우 체크*/}
-                {/*                onChange={(e) =>*/}
-                {/*                    handleInputChange({*/}
-                {/*                        target: { id: 'use_yn', value: e.target.checked ? 'Y' : 'N' },*/}
-                {/*                    })*/}
-                {/*                }*/}
-                {/*                className="sr-only peer"*/}
-                {/*            />*/}
-                {/*            <div*/}
-                {/*                className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer dark:bg-gray-700 peer-checked:bg-blue-600"></div>*/}
-                {/*            <div*/}
-                {/*                className="absolute w-5 h-5 bg-white rounded-full shadow-lg transform peer-checked:translate-x-5 transition-all"></div>*/}
-                {/*        </label>*/}
-                {/*        <span className="text-sm text-gray-700">*/}
-                {/*                {formData.use_yn === 'Y' ? 'Yes' : 'No'}*/}
-                {/*            </span>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-
-                {/* Classification */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="classification"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        분류
-                    </label>
-                    <input
-                        type="text"
-                        id="classification"
-                        value={formData.classification}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="내부"
-                        required
-                    />
-                </div>
-
-                {/* invoice_postcode */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="invoice_postcode"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        우편번호
-                    </label>
-                    <input
-                        type="number"
-                        id="invoice_postcode"
-                        value={formData.invoice_postcode}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="0"
-                        required
-                    />
-                </div>
-
-                {/* invoice_address */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="invoice_address"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        주소
-                    </label>
-                    <input
-                        type="text"
-                        id="invoice_address"
-                        value={formData.invoice_address}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="서울특별시 서초구 강남대로 525, 15층"
-                        required
-                    />
-                </div>
-
-                {/* invoice_address2 */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="invoice_address2"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        주소2
-                    </label>
-                    <input
-                        type="text"
-                        id="invoice_address2"
-                        value={formData.invoice_address2}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder=""
-                        required
-                    />
-                </div>
-
-                {/* recognize_id */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="recognize_id"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        사업자 등록번호
-                    </label>
-                    <input
-                        type="text"
-                        id="recognize_id"
-                        value={formData.recognize_id}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="000-0000"
-                        required
-                    />
-                </div>
-
-                {/* company_tel */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="company_tel"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        직장전화
-                    </label>
-                    <input
-                        type="tel"
-                        id="company_tel"
-                        value={formData.company_tel}
-                        onChange={handleInputChange}
-                        pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}"  // 패턴 추가 (형식: 000-0000-0000)
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="000-0000-0000"
-                        required
-                    />
-                </div>
-
-                {/* tax_percent */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="tax_percent"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        적용부가세율(%)
-                    </label>
-                    <input
-                        type="number"
-                        id="tax_percent"
-                        value={formData.tax_percent}
-                        onChange={handleInputChange}
-                        min="0"  // 최소값 설정
-                        max="100"  // 최대값 설정 (0% ~ 100%)
-                        step="0.1"  // 소수점 단위 허용 (예: 10.5%)
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="1.0"
-                        required
-                    />
-                </div>
-
-                {/* business_num */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="business_num"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        법인번호
-                    </label>
-                    <input
-                        type="number"
-                        id="business_num"
-                        value={formData.business_num}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="000-0000"
-                        required
-                    />
-                </div>
-
-                {/* company_name */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="company_name"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        직장명
-                    </label>
-                    <input
-                        type="text"
-                        id="company_name"
-                        value={formData.company_name}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="코리아오브컴"
-                        required
-                    />
-                </div>
-
-                {/* company_team */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="company_team"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        부서/팀
-                    </label>
-                    <input
-                        type="text"
-                        id="company_team"
-                        value={formData.company_team}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="OO부"
-                        required
-                    />
-                </div>
-
-                {/* company_director */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="company_director"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        담당자
-                    </label>
-                    <input
-                        type="text"
-                        id="company_director"
-                        value={formData.company_director}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="홍길동"
-                        required
-                    />
-                </div>
-
-                {/* director_email */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="director_email"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        담당메일
-                    </label>
-                    <input
-                        type="email"
-                        id="director_email"
-                        value={formData.director_email}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="example@gmail.com"
-                        required
-                    />
-                </div>
-
-                {/* director_tel */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="director_tel"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        담당전화
-                    </label>
-                    <input
-                        type="tel"
-                        id="director_tel"
-                        value={formData.director_tel}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="000-0000-0000"
-                        pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}"  // 패턴 추가 (형식: 000-0000-0000)
-                        required
-                    />
-                </div>
-
-                {/* company_postcode */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="company_postcode"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        우편번호
-                    </label>
-                    <input
-                        type="number"
-                        id="company_postcode"
-                        value={formData.company_postcode}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="00000"
-                        required
-                    />
-                </div>
-
-                {/* company_address */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="company_address"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        청구소 주소
-                    </label>
-                    <input
-                        type="text"
-                        id="company_address"
-                        value={formData.company_address}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="주소"
-                        required
-                    />
-                </div>
-
-                {/* company_address2 */}
-                <div className="block space-y-2 md:grid md:grid-cols-6 items-center md:space-x-4">
-                    <label
-                        htmlFor="company_address2"
-                        className="block md:col-start-1 md:col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                    >
-                        청구소 주소2
-                    </label>
-                    <input
-                        type="text"
-                        id="company_address2"
-                        value={formData.company_address2}
-                        onChange={handleInputChange}
-                        className="md:col-span-2 md:col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                        placeholder="주소2"
-                        required
-                    />
-                </div>
-
-                <div className="flex space-x-4">
-                    <button type="submit"
-                            className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-                            disabled={!!acctNumError}> {/* 중복이면 버튼 비활성화 */}
-                        저장
-                    </button>
-                    <button type="button"
-                            onClick={() => navigate("/accounts")}
-                            className="text-gray-700 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
-                        취소
-                    </button>
-                </div>
+                {/* ✅ 저장 버튼 */}
+                <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-lg">
+                    저장
+                </button>
 
                 {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
             </form>
         </div>
+
     );
 };
 

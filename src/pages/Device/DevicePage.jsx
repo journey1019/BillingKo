@@ -157,6 +157,7 @@ const DevicePage = () => {
     const highestRowData = deviceHistoryLogData?.length
         ? deviceHistoryLogData.sort((a, b) => b.row_number - a.row_number)[0]
         : null;
+    console.log('deviceData :', deviceData)
     console.log(highestRowData);
     const HistoryTab = () => {
         return(
