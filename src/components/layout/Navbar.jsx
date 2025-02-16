@@ -15,6 +15,8 @@ import { FiPlus } from 'react-icons/fi';
 import { FaFileCsv } from "react-icons/fa";
 import Sidebar from '@/components/layout/Sidebar.jsx';
 import { FaPrint } from "react-icons/fa";
+import { BiSolidUserAccount } from "react-icons/bi";
+
 
 const Navbar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -66,7 +68,16 @@ const Navbar = () => {
                         </li>
                         <li>
                             <Link
-                                to="/file"
+                                to="/ko_monthly/account"
+                                className="flex items-center space-x-2 p-2 transition hover:text-blue-400"
+                            >
+                                <BiSolidUserAccount />
+                                <span>고객별 데이터</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to="/ko_monthly/account/save"
                                 className="flex items-center space-x-2 p-2 transition hover:text-blue-400"
                             >
                                 <FaPrint />

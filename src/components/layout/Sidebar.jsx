@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from 'react-router-dom';
 import { useState } from "react";
 import { FaFileCsv, FaAddressCard, FaChalkboard, FaCalculator } from "react-icons/fa";
 import { FaSackDollar } from "react-icons/fa6";
@@ -6,6 +6,8 @@ import { FaSackDollar } from "react-icons/fa6";
 
 const Sidebar = ({ isSidebarOpen }) => {
     const [tooltip, setTooltip] = useState("");
+    const location = useLocation(); // 현재 경로 가져오기
+    const [activaePath, setActivaePath] = useState(location.pathname); // 활성화된 경로 상태
 
     const menuItems = [
         { path: "/file", icon: <FaFileCsv size={20} />, label: "파일 관리" },
@@ -20,7 +22,9 @@ const Sidebar = ({ isSidebarOpen }) => {
             {menuItems.map((item, index) => (
                 <Link to={item.path} key={index} className="block">
                     <li
-                        className="relative flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition hover:bg-gray-700 hover:text-blue-400 hover:underline"
+                        className={`relative flex cursor-pointer items-center space-x-4 px-4 py-2 text-white transition 
+                        ${activaePath === item.path ? "text-blue-400 bg-gray-800" : "text-white hover:text-blue-400 hover:bg-gray-700 hover:underline"}`}
+                        onClick={() => setActivaePath(item.path)}
                         onMouseEnter={() => setTooltip(item.label)}
                         onMouseLeave={() => setTooltip("")}
                     >

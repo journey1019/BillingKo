@@ -1,11 +1,15 @@
 import axios from "axios";
 
-export const API_URL = "http://127.0.0.1:8000"; // Django API URL
+// export const API_URL = "http://127.0.0.1:8000"; // Django API URL
+export const API_URL = "http://112.168.252.12:29455";
 
 // Axios 인스턴스 생성
 const api = axios.create({
     baseURL: API_URL,
-    timeout: 5000, // 요청 타임아웃 설정 (5초)
+    timeout: 10000, // 요청 타임아웃 설정 (5초)
+    headers: {
+        "Content-Type": "application/json",
+    },
 });
 
 // 공통 에러 처리 함수
@@ -71,6 +75,30 @@ export const get = async (url, params = {}) => {
     return response.data;
 };
 
+// ✅ 인증된 GET 요청 (Authorization 헤더 추가)
+export const getWithAuth = async (url, params = {}) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("❌ 인증이 필요합니다. 로그인 후 다시 시도하세요.");
+    }
+
+    try {
+        const response = await api.get(url, {
+            params,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            redirect: "follow", // 🚀 자동 리다이렉트 처리
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("❌ API 요청 실패:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
 // POST 요청
 export const post = async (url, body) => {
     console.log("POST Body:", body); // POST 요청 데이터 확인
@@ -105,6 +133,24 @@ export const postWithBodyFile = async (url, body) => {
     const response = await api.post(url, body, {
         headers: {
             ...(token ? { Authorization: `Bearer ${token}` } : {}), // ✅ Content-Type 제거
+        },
+    });
+
+    return response.data;
+};
+
+// 인증이 필요한 POST 요청 (토큰 포함)
+export const postWithAuth = async (url, body = null) => {
+    const token = localStorage.getItem("token"); // 로컬스토리지에서 토큰 가져오기
+
+    if (!token) {
+        throw new Error("Authentication token is missing.");
+    }
+
+    const response = await api.post(url, body, {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`, // 인증 헤더 추가
         },
     });
 

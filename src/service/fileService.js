@@ -1,4 +1,4 @@
-import { get, put, del, postWithBody, postWithBodyFile } from './api';
+import { get, put, del, postWithBody, postWithBodyFile, API_URL } from './api';
 
 
 /**
@@ -110,5 +110,71 @@ export const uploadFileDevice = async (file, splitInfo) => {
 
     console.log("📤 FormData 확인:", Object.fromEntries(formData.entries())); // ✅ FormData 로그 확인
 
-    return await postWithBodyFile("http://127.0.0.1:8000/file/byteUse/igws", formData);
+    return await postWithBodyFile(`${API_URL}/file/byteUse/igws`, formData);
+};
+
+
+export const postByteUpdateHist = async (changeResult) => {
+    if (!changeResult || !Array.isArray(changeResult)) {
+        throw new Error("유효한 change_result 데이터가 필요합니다.");
+    }
+
+    try {
+        const response = await postWithBody("/file/byteUpdateHist", changeResult);
+        console.log("✅ Byte Update Success:", response);
+        return response; // 성공한 경우 데이터 반환
+    } catch (error) {
+        console.error("❌ Byte Update API Error:", error);
+
+        // ✅ 에러 메시지를 안전하게 변환
+        const errorMessage = error.response?.data?.error
+            ? error.response.data.error // API에서 제공한 에러 메시지
+            : error.response?.data || "❌ Byte Update API 호출 실패";
+
+        throw new Error(errorMessage); // React에서 안전하게 처리할 수 있도록 문자열 반환
+    }
+};
+
+export const fetchByteUpdateHistory = async (serialNumber, dateIndex) => {
+    if (!serialNumber || !dateIndex) {
+        throw new Error("❌ serial_number와 date_index가 필요합니다.");
+    }
+
+    // ✅ 인증 토큰 가져오기
+    const token = localStorage.getItem("token");
+    if (!token) {
+        throw new Error("❌ 인증이 필요합니다. 로그인 후 다시 시도하세요.");
+    }
+
+    try {
+        // ✅ 요청 데이터 확인 (콘솔 로그)
+        console.log("📡 요청 데이터:", {
+            serial_number: serialNumber,
+            date_index: dateIndex,
+        });
+
+        // ✅ API 요청
+        const response = await postWithBody(
+            "/file/byteUpdateHist",
+            {
+                serial_number: serialNumber,
+                date_index: dateIndex,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`, // ✅ 인증 추가
+                    "Content-Type": "application/json", // ✅ JSON 형식 명시
+                },
+            }
+        );
+
+        console.log("✅ GET Byte Update Hist Success:", response);
+        return response; // 성공 시 데이터 반환
+    } catch (error) {
+        console.error("❌ GET Byte Update Hist Error:", error);
+
+        // ✅ API에서 반환한 에러 메시지를 JSON 변환 후 출력
+        const errorMessage = JSON.stringify(error.response?.data || "❌ Byte Update 데이터 조회 실패", null, 2);
+        throw new Error(errorMessage);
+    }
 };

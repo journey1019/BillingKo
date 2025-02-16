@@ -1,4 +1,4 @@
-import { get, postWithBody } from "./api";
+import { get, postWithBody, postWithAuth } from "./api";
 
 /**
  * 월별 데이터 가져오기
@@ -14,9 +14,15 @@ export const fetchMonthlyData = (yearMonth) => get(`/monthly/ko/${yearMonth}`);
  * @param {object} data 저장할 데이터 (필요에 따라 확장 가능)
  * @returns {Promise<object>} 서버 응답 데이터
  */
-export const saveMonthlyData = async (yearMonth, data = {}) => {
+// 인증 포함하여 saveMonthlyData 호출 (body 없이 요청)
+export const saveMonthlyData = async (yearMonth) => {
     const endpoint = `/monthly/saveData/${yearMonth}`;
-    return await postWithBody(endpoint, data);
+    try {
+        return await postWithAuth(endpoint); // 인증 포함된 POST 요청
+    } catch (error) {
+        console.log("Failed to fetch", error.response?.data || error.message);
+        throw error;
+    }
 };
 
 
@@ -38,6 +44,25 @@ export const fetchKOMonthlyDetailIndexData = async (data_index) => {
         return await get(`/monthly/saveData/detail/${data_index}`);
     } catch (error) {
         console.error("Failed to fetch account History:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+export const fetchKOMonthlyDetailVersionIndexData = async (serial_number, version_index) => {
+    try {
+        return await get(`/monthly/saveData/version/${serial_number}/${version_index}`);
+    } catch (error) {
+        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        throw error;
+    }
+}
+
+export const saveKOMonthlyDetailData = async (detailData) => {
+    const endpoint = `/monthly/saveData/detail/${detailData.date_index}`;
+    try {
+        return await postWithAuth(endpoint); // 인증 포함된 POST 요청
+    } catch (error) {
+        console.log("Failed to fetch", error.response?.data || error.message);
         throw error;
     }
 };

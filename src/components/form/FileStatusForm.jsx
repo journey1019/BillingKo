@@ -70,7 +70,10 @@ const FileStatusForm = () => {
     return (
         <div className="p-5 bg-white rounded-lg shadow-md">
             <div className="flex flex-col md:flex-row justify-between items-center mb-2">
-                <h2 className="text-xl font-bold">File Upload Status for {selectedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</h2>
+                <div className="flex flex-col">
+                    <h2 className="text-xl font-bold">File Upload Status for</h2>
+                    <h2 className="text-xl font-bold text-gray-700">{selectedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</h2>
+                </div>
                 <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
             </div>
 

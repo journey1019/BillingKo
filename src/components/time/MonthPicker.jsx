@@ -28,13 +28,28 @@ const MonthPicker = ({ value, onDateChange, placeholder = "Select month" }) => {
     ));
 
     return (
-        <DatePicker
-            selected={value}
-            onChange={onDateChange}
-            dateFormat="yyyy-MM" // 연도-월 형식
-            showMonthYearPicker // 월과 연도만 선택
-            customInput={<CustomInput />} // 사용자 정의 Input 사용
-        />
+        <div className="relative z-10"> {/* ✅ z-index 수정 */}
+            <DatePicker
+                selected={value}
+                onChange={onDateChange}
+                dateFormat="yyyy-MM" // 연도-월 형식
+                showMonthYearPicker // 월과 연도만 선택
+                customInput={<CustomInput />} // 사용자 정의 Input 사용
+                popperPlacement="bottom-start" // ✅ 달력 위치 고정
+                popperProps={{
+                    modifiers: [
+                        {
+                            name: "preventOverflow",
+                            options: {
+                                boundary: "window",
+                            },
+                        },
+                    ],
+                }}
+                containerClassName="react-datepicker-container" // ✅ popper 위치 조정
+                portalId="month-picker-portal" // ✅ 포털을 사용하여 달력이 최상위에 위치
+            />
+        </div>
     );
 };
 

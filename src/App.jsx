@@ -17,11 +17,14 @@ import DeviceEditPage from '@/pages/Device/DeviceEditPage.jsx';
 import FilePage from '@/pages/File/FilePage.jsx';
 import CDRPage from '@/pages/File/CDRPage.jsx';
 import MonthlyPage from '@/pages/Monthly/MonthlyPage.jsx';
-import KOMonthlyPage from '@/pages/Monthly/KOMonthlyPage.jsx';
+import KOMonthlyPage from '@/pages/Monthly/koMonthly/KOMonthlyPage.jsx';
 import AdjustmentPage from '@/pages/Adjustment/AdjustmentPage.jsx';
 import AdjustmentNewPage from '@/pages/Adjustment/AdjustmentNewPage.jsx';
 import AdjustmentEditPage from '@/pages/Adjustment/AdjustmentEditPage.jsx';
 import CodePage from '@/pages/Adjustment/CodePage.jsx';
+import KOMonthlyEditPage from '@/pages/Monthly/koMonthly/KOMonthlyEditPage.jsx';
+import KOMonthlyAccountPage from '@/pages/Monthly/account/KOMonthlyAccountPage.jsx';
+import KOMonthlyAccountSavePage from '@/pages/Monthly/account/KOMonthlyAccountSavePage.jsx';
 
 // ProtectedRoute 컴포넌트
 const ProtectedRoute = ({ isAuthenticated, children }) => {
@@ -91,6 +94,8 @@ const App = () => {
                                 <Route path="/monthly" element={<MonthlyPage />} />
                                 <Route path="/ko_monthly" element={<KOMonthlyPage />} />
                                 <Route path="/adjustment" element={<AdjustmentPage />} />
+                                <Route path="/ko_monthly/account" element={<KOMonthlyAccountPage />} />
+                                <Route path="/ko_monthly/account/save" element={<KOMonthlyAccountSavePage />} />
 
                                 <Route path="/file/cdr" element={<CDRPage />} />
                                 <Route path="/file/accounts" element={<CDRPage />} />
@@ -107,6 +112,8 @@ const App = () => {
                                 <Route path="/adjustment/new" element={<AdjustmentNewPage />} />
                                 <Route path="/adjustment/:adjustment_index/edit" element={<AdjustmentEditPage />} />
                                 <Route path="/code/new" element={<CodePage />} />
+
+                                <Route path="/ko_monthly/edit" element={<KOMonthlyEditPage />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>

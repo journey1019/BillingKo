@@ -212,6 +212,8 @@ const AccountPage = () => {
         { id: 3, label: 'History', content: <HistoryTab /> },
     ];
 
+    console.log('accountData: ', accountData)
+
 
     return (
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>

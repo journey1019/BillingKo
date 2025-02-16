@@ -1,5 +1,5 @@
 import { postWithBody } from "./api"; // Body
-import { get, post, put, del } from "./api";
+import { get, getWithAuth, post, put, del } from "./api";
 
 /**
  * 모든 조정 조회
@@ -7,12 +7,26 @@ import { get, post, put, del } from "./api";
  */
 export const fetchAdjustment = async () => {
     try {
-        return await get(`/adjustment`);
+        return await getWithAuth(`/adjustment`);
     } catch (error) {
-        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        console.error("❌ Failed to fetch adjustment data:", error.response?.data || error.message);
         throw error;
     }
 };
+
+// export const fetchAdjustment = async () => {
+//     const token = localStorage.getItem("token");
+//     if (!token) {
+//         throw new Error("❌ 인증이 필요합니다. 로그인 후 다시 시도하세요.");
+//     }
+//
+//     try {
+//         return await get(`/adjustment`);
+//     } catch (error) {
+//         console.error("Failed to fetch account History:", error.response?.data || error.message);
+//         throw error;
+//     }
+// };
 
 /**
  * 모든 조정 조회
