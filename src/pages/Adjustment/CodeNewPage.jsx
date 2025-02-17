@@ -48,7 +48,7 @@ const CodeNewPage = () => {
         try {
             await createCode(formData);
             alert("Account successfully created.");
-            navigate("/code/new");
+            navigate(0);  // ✅ 현재 페이지(`/code/new`)를 리프레시
         } catch (err) {
             setError(err.response?.data?.detail || "Failed to create account.");
         }

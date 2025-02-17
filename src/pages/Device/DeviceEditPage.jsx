@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateDevice, fetchDeviceHistory } from "@/service/deviceService.js";
+import { updateDevice, fetchDevicePart } from '@/service/deviceService.js';
 import { IoMdClose } from 'react-icons/io';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 
@@ -37,7 +37,7 @@ const DeviceEditPage = () => {
     useEffect(() => {
         const loadDeviceData = async () => {
             try {
-                const device = await fetchDeviceHistory(serial_number);
+                const device = await fetchDevicePart(serial_number);
                 setFormData({
                     ...device,
                     activated: formatDate(device.activated),
@@ -71,6 +71,7 @@ const DeviceEditPage = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Yes / No
     const handleToggleChange = () => {
         setFormData((prev) => ({ ...prev, use_yn: prev.use_yn === 'Y' ? 'N' : 'Y' }));
     };
@@ -93,6 +94,7 @@ const DeviceEditPage = () => {
     if (loading) return <LoadingSpinner />;
     if (error) return <p>Error: {error}</p>;
 
+    console.log(formData)
     return (
         <>
             <div className="container mx-auto">
@@ -201,7 +203,6 @@ const DeviceEditPage = () => {
                             value={formData.model_name}
                             onChange={handleChange}
                             className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                            required
                         />
                     </div>
 
@@ -272,6 +273,7 @@ const DeviceEditPage = () => {
                         <input
                             type="date"
                             id="regist_date"
+                            name="regist_date"
                             value={formData.regist_date}
                             onChange={handleChange}
                             className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
@@ -286,6 +288,7 @@ const DeviceEditPage = () => {
                         <input
                             type="date"
                             id="update_date"
+                            name="update_date"
                             value={formData.update_date}
                             onChange={handleChange}
                             className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"

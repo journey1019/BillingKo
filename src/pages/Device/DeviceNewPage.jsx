@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createDevice } from '@/service/deviceService.js';
 
 import { IoMdClose } from 'react-icons/io';
+import { getTodayDate } from '@/utils/formatHelpers.jsx';
 
 const DeviceNewPage = () => {
     const navigate = useNavigate();
@@ -20,8 +21,8 @@ const DeviceNewPage = () => {
         alias: "",
         remarks: "",
         use_yn: "",
-        regist_date: "",
-        update_date: "",
+        regist_date: getTodayDate(), // 기본값: 오늘날짜
+        update_date: getTodayDate(),
         regist_user_id: "",
         update_user_id: ""
     });
@@ -42,11 +43,20 @@ const DeviceNewPage = () => {
                 updatedData[field] = null;
             }
         });
+
+        // 날짜 필드가 없으면 기본값(오늘 날짜) 설정
+        if (!updatedData.regist_date) {
+            updatedData.regist_date = getTodayDate();
+        }
+        if (!updatedData.update_date) {
+            updatedData.update_date = getTodayDate();
+        }
+
         return updatedData;
     };
 
     const validateFormData = () => {
-        const requiredFields = ["serial_number", "acct_num", "profile_id", "activated", "ppid", "model_name"];
+        const requiredFields = ["serial_number", "acct_num", "profile_id", "activated", "ppid"];
 
         for (const field of requiredFields) {
             if (!formData[field]) {
@@ -221,7 +231,6 @@ const DeviceNewPage = () => {
                             onChange={handleInputChange}
                             className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                             placeholder="ST6100"
-                            required
                         />
                     </div>
 
@@ -311,6 +320,7 @@ const DeviceNewPage = () => {
                         <input
                             type="date"
                             id="regist_date"
+                            name="regist_date"
                             value={formData.regist_date}
                             onChange={handleInputChange}
                             className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
@@ -319,12 +329,13 @@ const DeviceNewPage = () => {
 
                     {/* Update Date */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="regist_dateupdate_date" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
+                        <label htmlFor="update_date" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
                             Update Date
                         </label>
                         <input
                             type="date"
                             id="update_date"
+                            name="update_date"
                             value={formData.update_date}
                             onChange={handleInputChange}
                             className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
