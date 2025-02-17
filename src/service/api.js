@@ -132,12 +132,14 @@ export const postWithBodyFile = async (url, body) => {
 
     const response = await api.post(url, body, {
         headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}), // ✅ Content-Type 제거
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            "Content-Type": "multipart/form-data",  // ✅ Content-Type 설정 추가
         },
     });
 
     return response.data;
 };
+
 
 // 인증이 필요한 POST 요청 (토큰 포함)
 export const postWithAuth = async (url, body = null) => {

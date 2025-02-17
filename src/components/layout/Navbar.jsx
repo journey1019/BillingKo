@@ -63,7 +63,7 @@ const Navbar = () => {
                                 className="flex items-center space-x-2 p-2 transition hover:text-blue-400"
                             >
                                 <FaChalkboard />
-                                <span>청구서 전 데이터</span>
+                                <span>단말별 데이터</span>
                             </Link>
                         </li>
                         <li>

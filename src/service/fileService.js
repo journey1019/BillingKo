@@ -10,6 +10,7 @@ export const uploadCdrFiles = async (files) => {
     const uploadPromises = Array.from(files).map((file) => {
         const formData = new FormData();
         formData.append('file', file);  // 서버에서 인식할 필드 이름
+        console.log("FormData 확인:", formData);  // 디버깅용 로그 추가
         return postWithBodyFile("/file/acctFiles", formData);
     });
 

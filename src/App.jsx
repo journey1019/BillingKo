@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from "react";
+import ProtectedRoute from '@/module/ProtectedRoute.jsx';
 import RootLayout from "@/components/layout/RootLayout.jsx";
 import Homepage from "@/pages/Homepage.jsx";
 import AccountPage from "@/pages/Account/AccountPage.jsx";
@@ -26,28 +27,30 @@ import KOMonthlyEditPage from '@/pages/Monthly/koMonthly/KOMonthlyEditPage.jsx';
 import KOMonthlyAccountPage from '@/pages/Monthly/account/KOMonthlyAccountPage.jsx';
 import KOMonthlyAccountSavePage from '@/pages/Monthly/account/KOMonthlyAccountSavePage.jsx';
 
-// ProtectedRoute 컴포넌트
-const ProtectedRoute = ({ isAuthenticated, children }) => {
-    const location = useLocation();
+const checkAuth = () => {
+    const token = localStorage.getItem("token");
+    const tokenExpired = localStorage.getItem("token_expired");
 
-    // 로그인되지 않은 상태에서 보호 경로에 접근 시 로그인 페이지로 이동
-    if (!isAuthenticated) {
-        return <Navigate to="/login" state={{ from: location }} />;
+    if (!token || !tokenExpired) return false;
+
+    // 현재 시간이 토큰 만료 시간보다 크면 유효하지 않음
+    if (new Date().getTime() > Number(tokenExpired)) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("token_expired");
+        return false;
     }
 
-    return children;
+    return true;
 };
 
 const App = () => {
     // 로그인 상태 확인
-    const [isAuthenticated, setIsAuthenticated] = useState(
-        !!localStorage.getItem("token")
-    );
+    const [isAuthenticated, setIsAuthenticated] = useState(checkAuth());
 
     // 로그인 상태 변경 감지
     useEffect(() => {
         const handleStorageChange = () => {
-            setIsAuthenticated(!!localStorage.getItem("token"));
+            setIsAuthenticated(checkAuth());
         };
 
         window.addEventListener("storage", handleStorageChange);
@@ -70,16 +73,16 @@ const App = () => {
             {/* Login 페이지 */}
             <Route
                 path="/login"
-                element={
-                    isAuthenticated ? <Navigate to="/" /> : <Login setAuth={setIsAuthenticated} />
-                }
+                element={isAuthenticated ? <Navigate to="/" replace /> : <Login setAuth={setIsAuthenticated} />}
             />
+
+            {/* 회원가입 페이지 */}
+            <Route path="/signup" element={<SignUp/>} />
 
             {/* Logout 페이지 */}
             <Route path="/logout" element={<Logout setAuth={setIsAuthenticated} />} />
-            <Route path="/signup" element={<SignUp/>} />
 
-            {/* RootLayout 경로 */}
+            {/* 보호된 페이지: 인증되지 않으면 자동으로 /login 이동 */}
             <Route
                 path="/*"
                 element={
