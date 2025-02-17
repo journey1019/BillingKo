@@ -187,43 +187,43 @@ const PricePage = () => {
                         <div className="inline-flex rounded-md shadow-xs" role="group">
                             <Tooltip message="Create Price Plan">
                                 <button type="button"
-                                        className="inline-flex items-center space-x-2 px-4 py-2 text-sm text-white font-medium bg-blue-500 border border-gray-200 rounded-s-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
+                                        className="inline-flex items-center space-x-2 px-4 py-2 text-sm text-white font-medium bg-blue-500 border border-gray-200 rounded-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
                                         onClick={() => navigate('/price/new')}
                                 >
                                     <FiPlus />
                                     <span>New</span>
                                 </button>
                             </Tooltip>
-                            <button type="button"
-                                    className="inline-flex items-center px-1 py-2 text-sm font-medium text-white bg-blue-500 border border-gray-200 rounded-e-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
-                                    onClick={toggleNewDropdown}
-                            >
-                                <IoIosArrowDown />
-                            </button>
-                            {isOpenNewDropdown && (
-                                <div
-                                    className="absolute z-10 mt-10 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"
-                                    onMouseLeave={closeNewDropdown}>
-                                    <div className="p-2 text-sm text-gray-700">
-                                        <button onClick={() => navigate('/price/new')}
-                                                className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">
-                                            New PPID
-                                        </button>
-                                    </div>
-                                    <ul className="p-2 text-sm text-gray-700">
-                                        <li>
-                                            <button onClick={() => console.log('adjustment')}
-                                               className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">Modify</button>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                               className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">Delete</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
+                            {/*<button type="button"*/}
+                            {/*        className="inline-flex items-center px-1 py-2 text-sm font-medium text-white bg-blue-500 border border-gray-200 rounded-e-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"*/}
+                            {/*        onClick={toggleNewDropdown}*/}
+                            {/*>*/}
+                            {/*    <IoIosArrowDown />*/}
+                            {/*</button>*/}
+                            {/*{isOpenNewDropdown && (*/}
+                            {/*    <div*/}
+                            {/*        className="absolute z-10 mt-10 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"*/}
+                            {/*        onMouseLeave={closeNewDropdown}>*/}
+                            {/*        <div className="p-2 text-sm text-gray-700">*/}
+                            {/*            <button onClick={() => navigate('/price/new')}*/}
+                            {/*                    className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">*/}
+                            {/*                New PPID*/}
+                            {/*            </button>*/}
+                            {/*        </div>*/}
+                            {/*        <ul className="p-2 text-sm text-gray-700">*/}
+                            {/*            <li>*/}
+                            {/*                <button onClick={() => console.log('adjustment')}*/}
+                            {/*                   className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">Modify</button>*/}
+                            {/*            </li>*/}
+                            {/*            <li>*/}
+                            {/*                <a href="#"*/}
+                            {/*                   className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">Delete</a>*/}
+                            {/*            </li>*/}
+                            {/*        </ul>*/}
+                            {/*    </div>*/}
+                            {/*)}*/}
                         </div>
-                        <AdditionButtons/>
+                        {/*<AdditionButtons/>*/}
 
                     </div>
                 </div>

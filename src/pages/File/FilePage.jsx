@@ -74,9 +74,9 @@ const FilePage = () => {
             <div className="grid col-span-2 2xl:col-span-1">
                 <FileStatusForm />
             </div>
-            <div className="grid col-span-2 2xl:col-span-1">
-                <FileDeviceForm/>
-            </div>
+            {/*<div className="grid col-span-2 2xl:col-span-1">*/}
+            {/*    <FileDeviceForm/>*/}
+            {/*</div>*/}
             {/* 'CDR' & 'Network Report' Table */}
             <div className="grid col-span-4 2xl:col-span-3 space-y-3">
                 <div className="flex flex-row items-center justify-between">
@@ -117,11 +117,11 @@ const FilePage = () => {
                 />
             </div>
 
-            <div>
-                <p>Account Table</p>
-                <p>Device Table</p>
-                <p>PPlan Table</p>
-            </div>
+            {/*<div>*/}
+            {/*    <p>Account Table</p>*/}
+            {/*    <p>Device Table</p>*/}
+            {/*    <p>PPlan Table</p>*/}
+            {/*</div>*/}
         </div>
     )
 }
