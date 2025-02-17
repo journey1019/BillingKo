@@ -73,6 +73,9 @@ const KOMonthlyPage = () => {
     };
 
     console.log(detailData)
+    useEffect(() => {
+        console.log("Fetched Data:", data);
+    }, [data]); // ✅ data가 변경될 때마다 실행
 
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
@@ -98,7 +101,9 @@ const KOMonthlyPage = () => {
                         <p className="text-red-500">{error}</p>
                     ) : (
                         <ReusableTable
-                            data={data}
+                            data={data || []}
+                            exportFileName="KO_Monthly_Report"
+                            showExportButton={true} // ✅ 이 테이블에서는 CSV 버튼 활성화
                             columns={[{ accessorKey: "data_index", header: "Data Index" }, ...MonthlyTableColumns]}
                             options={{
                                 ...KOMonthlyTableOptions,

@@ -32,6 +32,8 @@ const KOMonthlyAccountPage = () => {
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <ReusableTable
                         data={monthlyAcctData || []} // 데이터가 null이면 빈 배열로 설정
+                        exportFileName="KO_Monthly_Account_Report"
+                        showExportButton={true}
                         columns={KOMonthlyAccountTableColumns}
                         isLoading={loading}
                         error={error}

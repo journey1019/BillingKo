@@ -1,7 +1,53 @@
 import PropTypes from "prop-types"; // PropTypes 추가
 import { MaterialReactTable } from "material-react-table";
+import { Box, Button } from "@mui/material";
+import { saveAs } from "file-saver";
 
-const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, error = null }) => {
+
+const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, error = null, exportFileName = "exported_file_name", showExportButton = false, }) => {
+    const exportToCSV = () => {
+        if (!data || data.length === 0) {
+            console.error("No data available for export");
+            return;
+        }
+
+        console.log("Exporting data:", data);
+
+        // 모든 필드 가져오기 (첫 번째 객체 기준)
+        const allFields = Object.keys(data[0] || {});
+        if (allFields.length === 0) {
+            console.error("No valid fields found in data");
+            return;
+        }
+
+        // CSV 헤더 생성
+        const csvHeaders = allFields.join(",");
+
+        // CSV 데이터 변환
+        const csvRows = data.map((row) =>
+            allFields
+                .map((field) => {
+                    const value = row[field];
+
+                    // ✅ 객체 또는 배열이면 JSON 문자열로 변환
+                    if (typeof value === "object" && value !== null) {
+                        return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+                    }
+                    // 일반 값이면 그대로 반환
+                    return `"${value}"`;
+                })
+                .join(",")
+        );
+
+        // 최종 CSV 내용
+        const csvContent = [csvHeaders, ...csvRows].join("\n");
+
+        // CSV 파일 저장
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        saveAs(blob, `${exportFileName}.csv`);
+    };
+
+
     // 공통 스타일 설정
     const defaultOptions = {
         initialState: {
@@ -27,6 +73,18 @@ const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, er
             ...defaultOptions.defaultColumn,
             ...options?.defaultColumn, // 외부 기본 컬럼 병합
         },
+        // enableRowSelection: true, // Row 선택 가능
+        // enableRowActions: true, // Row 액션 추가
+        renderTopToolbarCustomActions: () => (
+            <Box>
+                {/* ✅ showExportButton이 true일 때만 Export 버튼 표시 */}
+                {showExportButton && (
+                    <Button variant="outlined" color="primary" onClick={exportToCSV}>
+                        Export to CSV
+                    </Button>
+                )}
+            </Box>
+        ),
     };
 
     return (
@@ -86,6 +144,9 @@ ReusableTable.propTypes = {
         })
     ).isRequired,
     data: PropTypes.arrayOf(PropTypes.object).isRequired,
+    // data: PropTypes.arrayOf(PropTypes.object), // ✅ 전체 데이터 PropTypes 추가
+    showExportButton: PropTypes.bool, // ✅ Export 버튼을 표시할지 여부
+    exportFileName: PropTypes.string, // ✅ Export 파일명 Prop 추가
     options: PropTypes.shape({
         initialState: PropTypes.object,
         defaultColumn: PropTypes.object,
