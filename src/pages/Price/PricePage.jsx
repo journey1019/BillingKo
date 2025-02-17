@@ -169,6 +169,8 @@ const PricePage = () => {
         { id: 3, label: 'History', content: <HistoryTab /> },
     ];
 
+    console.log('price data: ', data)
+
     return (
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             <div className="col-span-6 justify-between border-b pb-3 mb-2 border-gray-400">
