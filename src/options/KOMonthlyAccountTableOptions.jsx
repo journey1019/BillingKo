@@ -52,7 +52,7 @@ export const KOMonthlyAccountTableOptions = {
                     <div className="bg-white p-3 rounded-md border border-gray-300">
                         {[
                             ["기본료", `${formatNumber(row.original.basic_fee_total)} 원 (${row.original.basic_fee_count}개)`],
-                            ["부가세", formatNumber(row.original.tax_fee) + " 원"],
+                            ["부가세", `${formatNumber(row.original.tax_fee)}원 (${accountInfo.tax_percent}%)`],
                             ["추가 사용료", `${formatNumber(row.original.add_use_fee_total)} 원 (${row.original.add_use_fee_count}개)`],
                             ["절사 금액", formatNumber(row.original.cut_off_fee) + " 원"],
                             ["조정 금액", `${formatNumber(row.original.modification_fee_total)} 원 (${row.original.modification_fee_count}개)`],
@@ -75,7 +75,7 @@ export const KOMonthlyAccountTableOptions = {
                             <table className="w-full text-sm text-center">
                                 <thead className="bg-gray-200">
                                 <tr>
-                                    {["번호", "단말기", "사용 기간", "기본 요금", "가입비", "추가 사용료", "조정 금액", "총 요금"].map((header, index) => (
+                                    {["번호", "Alias", "단말기", "사용 기간", "기본 요금", "가입비", "추가 사용료", "조정 금액", "사용 바이트 수","총 요금"].map((header, index) => (
                                         <th key={index} className="p-2 border">{header}</th>
                                     ))}
                                 </tr>
@@ -86,12 +86,14 @@ export const KOMonthlyAccountTableOptions = {
                                     .map((device, index) => (
                                         <tr key={index} className="text-center">
                                             <td className="p-2 border">{index + 1}</td>
+                                            <td className="p-2 border">{device.alias}</td>
                                             <td className="p-2 border">{device.serial_number}</td>
                                             <td className="p-2 border">{device.period_data}일</td>
                                             <td className="p-2 border">{formatNumber(device.basic_fee)} 원</td>
                                             <td className="p-2 border">{formatNumber(device.subscribe_fee)} 원</td>
                                             <td className="p-2 border">{formatNumber(device.add_use_fee)} 원</td>
                                             <td className="p-2 border">{formatNumber(device.modification_fee)} 원</td>
+                                            <td className="p-2 border">{formatNumber(device.use_byte_total)} byte </td>
                                             <td className="p-2 border font-bold">{formatNumber(device.total_fee)} 원</td>
                                         </tr>
                                     ))}

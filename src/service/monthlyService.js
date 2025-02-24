@@ -7,6 +7,14 @@ import { get, postWithBody, postWithAuth } from "./api";
  */
 export const fetchMonthlyData = (yearMonth) => get(`/monthly/ko/${yearMonth}`);
 
+export const fetchMonthlyDetailData = async (data_index, serial_number) => {
+    try {
+        return await get(`/monthly/ko/sn/${data_index}/${serial_number}`);
+    } catch (error) {
+        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        throw error;
+    }
+};
 
 /**
  * 월별 데이터 저장

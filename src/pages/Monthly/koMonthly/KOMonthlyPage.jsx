@@ -27,6 +27,7 @@ const KOMonthlyPage = () => {
     // Detail Data
     const [version, setVersion] = useState(0);
     const [latestVersion, setLatestVersion] = useState(0); // 최신 버전 저장
+
     const [detailData, setDetailData] = useState(null);
     const [detailLoading, setDetailLoading] = useState(false);
     const [detailError, setDetailError] = useState(null);
@@ -76,6 +77,7 @@ const KOMonthlyPage = () => {
     useEffect(() => {
         console.log("Fetched Data:", data);
     }, [data]); // ✅ data가 변경될 때마다 실행
+    console.log(selectedMonthlyIndex)
 
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>

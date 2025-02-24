@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import useApiFetch from "@/hooks/useApiFetch.js";
-import { fetchMonthlyData, saveMonthlyData } from '@/service/monthlyService.js'; // API 호출 함수
+import { fetchMonthlyData, saveMonthlyData, fetchMonthlyDetailData } from '@/service/monthlyService.js'; // API 호출 함수
 import { MonthlyTableColumns } from "@/columns/MonthlyTableColumns.jsx";
 import { MonthlyTableOptions } from "@/options/MonthlyTableOptions.jsx";
 import ReusableTable from "@/components/table/ReusableTable.jsx";
@@ -14,13 +14,12 @@ import ConfirmModal from '@/components/common/ConfirmModal.jsx';
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import useYearMonth from '@/hooks/useYearMonth.js';
+import KOMonthlyForm from '@/components/form/Monthly/KOMonthlyForm.jsx';
+import MonthlyForm from '@/components/form/Monthly/MonthlyForm.jsx';
 
 const MonthlyPage = () => {
-    // 기본값: 현재 날짜 기준 한 달 전
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-    const [selectedDate, setSelectedDate] = useState(oneMonthAgo);
-    const yearMonth = selectedDate.toISOString().slice(0, 7).replace("-", "") // YYYYMM 형식
+    const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
     const navigate = useNavigate();
 
     // Monthly Save Button
@@ -91,35 +90,32 @@ const MonthlyPage = () => {
     const [selectedRowData, setSelectedRowData] = useState(null); // 선택된 Row의 데이터 저장
     const [isExpanded, setIsExpanded] = useState(false);
 
-    // 날짜 변경 핸들러
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-    };
+    const [detailData, setDetailData] = useState(null);
+    const [detailLoading, setDetailLoading] = useState(false);
+    const [detailError, setDetailError] = useState(null);
 
-    // Row 클릭 핸들러
-    const handleRowClick = (row) => {
-        if (selectedRowData && selectedRowData === row.original) {
-            // ✅ 이미 선택된 Row를 다시 클릭하면 닫기
-            setIsExpanded(false);
-            setSelectedRowData(null);
-        } else {
-            // ✅ 새 Row를 선택하면 열기
-            setIsExpanded(true);
-            setSelectedRowData(row.original);
-        }
 
-        // const drawer = document.getElementById("drawer-body-scrolling");
-        // if (drawer) {
-        //     drawer.classList.remove("hidden", "-translate-x-full");
-        // }
-    };
-    console.log(selectedRowData)
-
+    console.log(yearMonth)
     useEffect(() => {
-        if (selectedRowData) {
-            setIsExpanded(true);
+        const fetchMonthlyDetail = async () => {
+            if(!selectedRowData) return;
+
+            console.log(selectedRowData)
+            setDetailLoading(true);
+            setDetailError(null);
+            try{
+                const response = await fetchMonthlyDetailData(yearMonth, selectedRowData.serial_number);
+                setDetailData(response);
+            } catch (error) {
+                setDetailError(error.message || "Failed to fetch detail data");
+            } finally {
+                setDetailLoading(false);
+            }
         }
+
+        fetchMonthlyDetail();
     }, [selectedRowData]);
+    console.log('detail monthly data', detailData)
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
@@ -138,23 +134,12 @@ const MonthlyPage = () => {
         };
     }, [isExpanded]);
 
-    // Drawer 닫기
-    const closeDrawer = () => {
-        setSelectedRowData(null);
-        const drawer = document.getElementById("drawer-body-scrolling");
-        if (drawer) {
-            drawer.classList.add("hidden", "-translate-x-full");
-        }
-    };
-
-    // if (loading) return <LoadingSpinner/>;
-    if (error) return <p className="text-red-500">Error: {error}</p>;
-
 
     console.log('monthly data: ', data)
     console.log(isExpanded)
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
+            {/* Save */}
             <div className="col-span-6 flex flex-row justify-between border-b pb-3 mb-2 border-gray-400">
                 <h1 className="text-2xl font-base">Monthly Data Save</h1>
                 <button
@@ -184,7 +169,8 @@ const MonthlyPage = () => {
                 </div>
             )}
 
-            <div className={`${isExpanded && selectedRowData ? "col-span-2" : "col-span-6"}`}>
+            {/* Table */}
+            <div className={`${isExpanded ? "col-span-2" : "col-span-6"}`}>
                 <div className="flex flex-row items-center justify-between mb-3">
                     <h1 className="text-lg font-bold">
                         Selected Month:{" "}
@@ -197,27 +183,28 @@ const MonthlyPage = () => {
                         <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
                     </div>
                 </div>
-                {loading ? <LoadingSpinner /> : (
-                    <ReusableTable
-                        columns={MonthlyTableColumns}
-                        data={data}
-                        options={{
-                            ...MonthlyTableOptions,
+                <ReusableTable
+                    columns={MonthlyTableColumns}
+                    data={data || []}
+                    options={{
+                        ...MonthlyTableOptions,
+                        meta: {
                             onRowSelect: (selectedRow) => {
-                                console.log(selectedRow)
-                                if (selectedRowData && selectedRowData === selectedRow.original) {
+                                if (selectedRowData && selectedRowData.serial_number === selectedRow.serial_number) {
                                     // ✅ 이미 선택된 Row를 다시 클릭하면 닫기
                                     setIsExpanded(false);
                                     setSelectedRowData(null);
                                 } else {
                                     // ✅ 새 Row를 선택하면 열기
+                                    setSelectedRowData(selectedRow);
                                     setIsExpanded(true);
-                                    setSelectedRowData(selectedRow.original);
                                 }
                             }
-                        }}
-                    />
-                )}
+                        }
+                    }}
+                    isLoading={detailLoading}
+                    error={detailError}
+                />
             </div>
 
             {isExpanded && selectedRowData && (
@@ -240,50 +227,19 @@ const MonthlyPage = () => {
                         </div>
                         <div className="p-4 bg-gray-100 rounded-lg">
                             <pre className="text-sm text-gray-700">{JSON.stringify(selectedRowData, null, 2)}</pre>
+                            {detailLoading ? (
+                                <LoadingSpinner/>
+                            ) : detailError ? (
+                                <p className="text-red-500">Error loading detail data: {detailError}</p>
+                            ) : (
+                                <MonthlyForm
+                                    detailData={detailData}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
             )}
-
-
-            {/* Drawer */}
-            {/*<div*/}
-            {/*    id="drawer-body-scrolling"*/}
-            {/*    className="fixed top-0 right-0 z-40 h-screen w-1/3 p-4 bg-white shadow-lg hidden transition-transform transform translate-x-full"*/}
-            {/*    role="dialog"*/}
-            {/*    tabIndex="-1"*/}
-            {/*>*/}
-            {/*    <div className="drawer-header p-4 border-b">*/}
-            {/*        <h3 className="drawer-title text-lg font-semibold">Row Details</h3>*/}
-            {/*        <button*/}
-            {/*            type="button"*/}
-            {/*            className="btn btn-text btn-circle btn-sm absolute right-3 top-3"*/}
-            {/*            aria-label="Close"*/}
-            {/*            onClick={closeDrawer}*/}
-            {/*        >*/}
-            {/*            <span>✕</span>*/}
-            {/*        </button>*/}
-            {/*    </div>*/}
-            {/*    <div className="drawer-body p-4">*/}
-            {/*        {selectedRow ? (*/}
-            {/*            <>*/}
-            {/*                <h2 className="text-lg font-bold">Details</h2>*/}
-            {/*                <pre>{JSON.stringify(selectedRow, null, 2)}</pre>*/}
-            {/*            </>*/}
-            {/*        ) : (*/}
-            {/*            <p>No row selected.</p>*/}
-            {/*        )}*/}
-            {/*    </div>*/}
-            {/*    <div className="drawer-footer p-4 border-t">*/}
-            {/*        <button type="button" className="btn btn-soft btn-secondary" onClick={closeDrawer}>*/}
-            {/*            Close*/}
-            {/*        </button>*/}
-            {/*        <button type="button" className="btn btn-primary">*/}
-            {/*            Save changes*/}
-            {/*        </button>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-
 
             {/* 성공 메시지 */}
             {successMessage && (
