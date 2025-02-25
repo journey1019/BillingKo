@@ -53,6 +53,7 @@ const KOMonthlyAccountSavePage = () => {
             </div>
 
             <InvoicePreview invoiceBasicData={invoiceBasicData} />
+            <InvoicePDFGenerator invoiceBasicData={invoiceBasicData} />
 
         </div>
     )
