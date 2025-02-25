@@ -203,7 +203,7 @@ export const generateInvoicePDF = (invoiceBasicData) => {
     // doc.text(paymentAccount, tableX + leftLabelWidth + cellMarginX, currentRowY);
 
 
-    /** 표 시작 Y 좌표 및 좌우 패딩 설정 */
+    /** 첫 번째 표: 기본 Account 표 */
     const tableY = 120;
     const marginLeft = 18;
     const marginRight = 18;
@@ -282,6 +282,110 @@ export const generateInvoicePDF = (invoiceBasicData) => {
             lineColor: [0, 0, 0]
         },
     });
+
+    /** ---두 번째 표: 요금 내역 표--- */
+    const secondTableY = 160; // 표 시작 Y 좌표
+    const secondMarginLeft = 18;
+    const secondMarginRight = 18;
+    const secondTableWidth = pageWidth - (secondMarginLeft + secondMarginRight);
+
+    // 표 전체 행 수: 헤더 1행 + body 15행 = 16행. (rowHeight 약 7.3로 가정)
+    const secondRowHeight = 7.3;
+    const totalRows = 12.9;
+    const secondTableHeight = secondRowHeight * totalRows;
+
+    // 그림자 효과 적용 (표보다 약간 오른쪽, 아래로 오프셋)
+    doc.setFillColor(200, 200, 200); // 연한 회색
+    doc.rect(secondMarginLeft + shadowOffset, secondTableY + shadowOffset, secondTableWidth, secondTableHeight, 'F');
+
+    // 표 위에 "● 당월 내역" 텍스트(필요 시)
+    doc.setFont("NanumGothic", "bold");
+    doc.setFontSize(8);
+    doc.text('● 당월 요금내역', secondMarginLeft, secondTableY - 3);
+
+    // Header 정의
+    const feeTableHead = [
+        [
+            { content: "요금 내역", styles: { halign: 'center' } },
+            { content: "금액(원)", styles: { halign: 'center' } },
+            { content: "계산내역", styles: { halign: 'center' } },
+        ]
+    ];
+
+    // Body 데이터 정의
+    const feeTableBody = [
+        // 1행
+        // ["당월 요금내역", "", ""],
+        // 2행
+        ["기본료", "16,000", "1대"],
+        // 3행
+        ["통신료", "932.123", "36, 300,360 Byte(s)"],
+        // 4행
+        ["수수료(변경, 휴지 등)", "0", ""],
+        // 5행
+        ["부가서비스료", "33,000", ""],
+        // 6행
+        ["기타사용료", "0", ""],
+        // 7행 ~ 10행: 빈 행
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        // 11행
+        ["공급가액", "49,000", ""],
+        // 12행
+        ["부가가치세", "4,900", ""],
+        // 13행
+        ["합계금액", "53,900", ""],
+        // 14행
+        ["10원미만 절사금액", "-5", ""],
+        // 15행
+        ["당월납부액", "53,900", ""],
+    ];
+
+    doc.autoTable({
+        startY: secondTableY,
+        margin: { left: secondMarginLeft, right: secondMarginRight },
+        head: feeTableHead,
+        body: feeTableBody,
+        styles: {
+            font: "NanumGothic",
+            fontStyle: "bold",
+            fontSize: 8,
+            cellPadding: { top: 1.5, right: 1.5, bottom: 1.5, left: 3 }, // 왼쪽 패딩 증가
+            // cellPadding: 1.5,
+            textColor: [0, 0, 0],
+            lineWidth: 0.2,
+            lineColor: [0, 0, 0],
+        },
+        headStyles: {
+            fillColor: [255, 255, 255],
+            textColor: [0, 0, 0],
+            fontStyle: 'bold',
+            halign: 'center',
+            lineWidth: 0.3,
+            lineColor: [0, 0, 0],
+        },
+        bodyStyles: {
+            lineWidth: 0.3,
+            lineColor: [0, 0, 0],
+        },
+        alternateRowStyles: {
+            fillColor: [240, 240, 240],
+        },
+        didDrawCell: function (data) {
+            // "공급가액" 행(인덱스 9)의 첫 번째 셀 위쪽에 굵은 선을 그립니다.
+            if (data.section === 'body' && data.row.index === 9 && data.column.index === 0) {
+                // 해당 셀의 상단에 굵은 선을 그립니다.
+                const posY = data.cell.y; // 셀 상단 좌표
+                doc.setLineWidth(0.7); // 굵은 선을 0.5로 설정
+                doc.setDrawColor(0, 0, 0);
+                doc.line(secondMarginLeft, posY, secondMarginLeft + secondTableWidth, posY);
+            }
+        },
+    });
+
+
 
 
     return doc;
