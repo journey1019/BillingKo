@@ -1,11 +1,11 @@
+import { useState, useEffect } from 'react';
 import useYearMonth from '@/hooks/useYearMonth.js';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchKOMonthlyAccountSaveIndexData } from '@/service/monthlyAccountService.js';
+import { fetchKOMonthlyAccountSaveIndexData, fetchKOMonthlyAccountSaveIndexDetailData } from '@/service/monthlyAccountService.js';
 import MonthPicker from '@/components/time/MonthPicker.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
 import KOMonthlyAccountTableColumns from '@/columns/KOMonthlyAccountTableColumns.jsx';
 import { KOMonthlyAccountTableOptions } from '@/options/KOMonthlyAccountTableOptions.jsx';
-import InvoicePDFGenerator from '@/components/InvoicePDFGenerator.jsx';
 import { fetchInvoicePrint } from '@/service/invoiceService.js';
 import InvoicePreview from '@/components/Invoice/InvoicePreview';
 
@@ -16,14 +16,40 @@ const KOMonthlyAccountSavePage = () => {
     const { data: monthlyAcctSaveData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountSaveIndexData, yearMonth);
     const { data: invoiceBasicData, loading: invoiceBasicLoading, error:invoiceBasicError } = useApiFetch(fetchInvoicePrint);
 
-    console.log(invoiceBasicData)
+    const [selectedRowData, setSelectedRowData] = useState('KO_99999');
+
+    const [monthlyAcctSaveDetailData, setMonthlyAcctSaveDetailData] = useState(null);
+    const [monthlyAcctSaveDetailLoading, setMonthlyAcctSaveDetailLoading] = useState(null);
+    const [monthlyAcctSaveDetailError, setMonthlyAcctSaveDetailError] = useState(null);
+
+
+    // useEffect(() => {
+    //     setSelectedRowData('KO_99999');
+    //     const fetchMonthlyDetails = async () => {
+    //         if (!selectedRowData) return ;
+    //
+    //         setMonthlyAcctSaveDetailLoading(true);
+    //         setMonthlyAcctSaveDetailError(null);
+    //         try {
+    //             const response = await fetchKOMonthlyAccountSaveIndexDetailData(yearMonth, selectedRowData);
+    //             setMonthlyAcctSaveDetailData(response);
+    //         } catch (error) {
+    //             setMonthlyAcctSaveDetailError(error.message || 'Failed to fetch monthly detail');
+    //         } finally {
+    //             setMonthlyAcctSaveDetailLoading(false);
+    //         }
+    //     }
+    //     return fetchMonthlyDetails();
+    // }, [selectedRowData])
 
     console.log("monthlyAcctSaveData: ", monthlyAcctSaveData); // 🔍 Debugging
+    console.log(invoiceBasicData)
+    console.log(monthlyAcctSaveDetailData)
+
+
 
     if (invoiceBasicLoading) return <div>로딩중...</div>;
     if (invoiceBasicError) return <div>에러 발생: {invoiceBasicError.message}</div>;
-
-
 
     return(
         <div className={`grid gap-0 grid-cols-6`}>
@@ -53,8 +79,6 @@ const KOMonthlyAccountSavePage = () => {
             </div>
 
             <InvoicePreview invoiceBasicData={invoiceBasicData} />
-            <InvoicePDFGenerator invoiceBasicData={invoiceBasicData} />
-
         </div>
     )
 }
