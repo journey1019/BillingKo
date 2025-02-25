@@ -103,7 +103,7 @@ export const generateInvoicePDF = (invoiceBasicData) => {
     const paddingX = 60;        // 좌우 패딩 60px
     const paddingY = 10;        // 상하 패딩 10px
     const boxX = paddingX;
-    const boxY = 105;           // 원하는 y 좌표
+    const boxY = 95;           // 원하는 y 좌표
     const boxWidth = pageWidth - paddingX * 2;
     const boxHeight = paddingY; // 텍스트 높이(10px) + 상하 패딩
 
@@ -126,85 +126,8 @@ export const generateInvoicePDF = (invoiceBasicData) => {
     const yearMonthText = `${`2025년 2월`} 통신요금 청구서`
     doc.text(yearMonthText, textX, textY, { align: 'center' });
 
-    /** [표 생성 시작] */
-    // // 표는 헤더 영역 아래 10px 떨어진 위치에 생성
-    // const tableY = 120;
-    // const tableX = 36; // 좌우 패딩 72px
-    // const tableWidth = pageWidth - 72; // 전체 너비 - (72*2)
-    // const rowHeight = 10;
-    // const numRows = 4;
-    // const tableHeight = rowHeight * numRows;
-    //
-    // // 표에 들어갈 내용 (예시 값; 실제 값은 invoiceBasicData에서 추출하거나 API에서 받아옴)
-    // const billingNumber = "2025-01-A_10915";
-    // const writeDate = "2025-02-05";
-    // const customerNumber = "A_10915";
-    // const customerName = "(주)태화산업";
-    // const usagePeriod = "2025-01-01 ~ 2025-01-31";
-    // const paymentDue = "2025-02-28 까지";
-    // const paymentAccount = invoiceBasicData.find(item => item.code_name === 'ko_payment_account')?.code_value || '';
-    //
-    // // 표 셀 배치를 위한 계산
-    // const leftHalfWidth = tableWidth / 2;
-    // const rightHalfWidth = tableWidth / 2;
-    // const leftLabelWidth = leftHalfWidth * 0.3;
-    // const leftValueWidth = leftHalfWidth * 0.7;
-    // const rightLabelWidth = rightHalfWidth * 0.3;
-    // const rightValueWidth = rightHalfWidth * 0.7;
-    //
-    // doc.setFontSize(8);
-    //
-    // // 표 외곽선 그리기
-    // doc.setLineWidth(0.3);
-    // doc.setDrawColor(31, 41, 55);
-    // doc.rect(tableX, tableY, tableWidth, tableHeight);
-    //
-    // // 행 구분 선 그리기 (수평선)
-    // for (let i = 1; i < numRows; i++) {
-    //     doc.line(tableX, tableY + i * rowHeight, tableX + tableWidth, tableY + i * rowHeight);
-    // }
-    //
-    // // 열 구분 선 그리기 (수직선)
-    // // 왼쪽 그룹과 오른쪽 그룹을 구분하는 선
-    // doc.line(tableX + leftHalfWidth, tableY, tableX + leftHalfWidth, tableY + tableHeight);
-    // // 왼쪽 그룹 내: 라벨과 값 구분 선 (행 1~3)
-    // doc.line(tableX + leftLabelWidth, tableY, tableX + leftLabelWidth, tableY + rowHeight * 3);
-    // // 오른쪽 그룹 내: 라벨과 값 구분 선 (행 1~3)
-    // doc.line(tableX + leftHalfWidth + rightLabelWidth, tableY, tableX + leftHalfWidth + rightLabelWidth, tableY + rowHeight * 3);
-    //
-    // // 표 내부 텍스트 출력: 텍스트 여백
-    // const cellMarginX = 2;
-    // const cellTextYOffset = rowHeight / 2 + 1; // 텍스트의 수직 위치 보정
-    //
-    // let currentRowY = tableY + cellTextYOffset;
-    // // 행 1: 청구번호 | billingNumber || 작성일자 | writeDate
-    // doc.text("청구번호", tableX + cellMarginX, currentRowY);
-    // doc.text(billingNumber, tableX + leftLabelWidth + cellMarginX, currentRowY);
-    // doc.text("작성일자", tableX + leftHalfWidth + cellMarginX, currentRowY);
-    // doc.text(writeDate, tableX + leftHalfWidth + rightLabelWidth + cellMarginX, currentRowY);
-    //
-    // // 행 2: 고객번호 | customerNumber || 고객성명 | customerName
-    // currentRowY += rowHeight;
-    // doc.text("고객번호", tableX + cellMarginX, currentRowY);
-    // doc.text(customerNumber, tableX + leftLabelWidth + cellMarginX, currentRowY);
-    // doc.text("고객성명", tableX + leftHalfWidth + cellMarginX, currentRowY);
-    // doc.text(customerName, tableX + leftHalfWidth + rightLabelWidth + cellMarginX, currentRowY);
-    //
-    // // 행 3: 사용기간 | usagePeriod || 납부기한 | paymentDue
-    // currentRowY += rowHeight;
-    // doc.text("사용기간", tableX + cellMarginX, currentRowY);
-    // doc.text(usagePeriod, tableX + leftLabelWidth + cellMarginX, currentRowY);
-    // doc.text("납부기한", tableX + leftHalfWidth + cellMarginX, currentRowY);
-    // doc.text(paymentDue, tableX + leftHalfWidth + rightLabelWidth + cellMarginX, currentRowY);
-    //
-    // // 행 4: 납입은행 | paymentAccount (오른쪽 그룹은 비워둠)
-    // currentRowY += rowHeight;
-    // doc.text("납입은행", tableX + cellMarginX, currentRowY);
-    // doc.text(paymentAccount, tableX + leftLabelWidth + cellMarginX, currentRowY);
-
-
     /** 첫 번째 표: 기본 Account 표 */
-    const tableY = 120;
+    const tableY = 110;
     const marginLeft = 18;
     const marginRight = 18;
     const tableWidth = pageWidth - (marginLeft + marginRight);
@@ -283,14 +206,14 @@ export const generateInvoicePDF = (invoiceBasicData) => {
         },
     });
 
-    /** ---두 번째 표: 요금 내역 표--- */
-    const secondTableY = 160; // 표 시작 Y 좌표
+    /** ----- 두 번째 표: 요금 내역 표 ----- */
+    const secondTableY = 148; // 표 시작 Y 좌표
     const secondMarginLeft = 18;
     const secondMarginRight = 18;
     const secondTableWidth = pageWidth - (secondMarginLeft + secondMarginRight);
 
     // 표 전체 행 수: 헤더 1행 + body 15행 = 16행. (rowHeight 약 7.3로 가정)
-    const secondRowHeight = 7.3;
+    const secondRowHeight = 7.3; // 그림자
     const totalRows = 12.9;
     const secondTableHeight = secondRowHeight * totalRows;
 
@@ -300,9 +223,10 @@ export const generateInvoicePDF = (invoiceBasicData) => {
 
     // 표 위에 "● 당월 내역" 텍스트(필요 시)
     doc.setFont("NanumGothic", "bold");
-    doc.setFontSize(8);
-    doc.text('● 당월 요금내역', secondMarginLeft, secondTableY - 3);
+    doc.setFontSize(10);
+    doc.text('● 당월 요금내역', secondMarginLeft, secondTableY - 2);
 
+    doc.setFontSize(8);
     // Header 정의
     const feeTableHead = [
         [
@@ -375,10 +299,10 @@ export const generateInvoicePDF = (invoiceBasicData) => {
         },
         didDrawCell: function (data) {
             // "공급가액" 행(인덱스 9)의 첫 번째 셀 위쪽에 굵은 선을 그립니다.
-            if (data.section === 'body' && data.row.index === 9 && data.column.index === 0) {
+            if (data.section === 'body' && data.row.index === 9) {
                 // 해당 셀의 상단에 굵은 선을 그립니다.
                 const posY = data.cell.y; // 셀 상단 좌표
-                doc.setLineWidth(0.7); // 굵은 선을 0.5로 설정
+                doc.setLineWidth(0.5); // 굵은 선을 0.5로 설정
                 doc.setDrawColor(0, 0, 0);
                 doc.line(secondMarginLeft, posY, secondMarginLeft + secondTableWidth, posY);
             }
@@ -386,6 +310,82 @@ export const generateInvoicePDF = (invoiceBasicData) => {
     });
 
 
+    /** ----- 세 번째 표: 미납 요금 내역 표 ----- */
+    const thirdTableY = secondTableY + secondTableHeight + 8; // 두 번째 표와 동일 간격(10px) 아래에 시작
+    const thirdMarginLeft = secondMarginLeft; // 좌우 패딩 동일
+    const thirdMarginRight = secondMarginRight;
+    const thirdTableWidth = pageWidth - (thirdMarginLeft + thirdMarginRight);
+
+    // 세 번째 표의 행 높이 및 행 수 (헤더 1행 + body 5행)
+    const thirdRowHeight = 5.3;
+    const thirdTotalRows = 1 + 5; // 6행
+    const thirdTableHeight = thirdRowHeight * thirdTotalRows;
+
+    // 그림자 효과 적용 (표보다 1px 오른쪽, 아래로 오프셋)
+    doc.setFillColor(200, 200, 200); // 연한 회색
+    doc.rect(thirdMarginLeft + shadowOffset, thirdTableY + shadowOffset, thirdTableWidth, thirdTableHeight, 'F');
+
+    doc.setFontSize(10);
+    doc.text('● 미납 요금내역', thirdMarginLeft, thirdTableY - 2);
+
+    // 세 번째 표 Body 데이터 정의
+    const koNonpayNotice = invoiceBasicData.find(item => item.code_name === 'ko_nonpay_notice')?.code_value || "";
+    const thirdTableBody = [
+        // 1행
+        ["2024-12-A_10915", "434,020", koNonpayNotice],
+        // 2행 (빈)
+        ["", "", ""],
+        // 3행 (빈)
+        ["", "", ""],
+        // 4행
+        ["연체가산금", "8,680", ""],
+        // 5행
+        ["미납요금계", "442,700", ""],
+    ];
+
+    doc.autoTable({
+        startY: thirdTableY,
+        margin: { left: thirdMarginLeft, right: thirdMarginRight },
+        body: thirdTableBody,
+        styles: {
+            font: "NanumGothic",
+            fontStyle: "bold",
+            fontSize: 8,
+            cellPadding: { top: 1.5, right: 1.5, bottom: 1.5, left: 3 },
+            textColor: [0, 0, 0],
+            lineWidth: 0.2,
+            lineColor: [0, 0, 0],
+        },
+        headStyles: {
+            fillColor: [255, 255, 255],
+            textColor: [0, 0, 0],
+            fontStyle: 'bold',
+            halign: 'center',
+            lineWidth: 0.3,
+            lineColor: [0, 0, 0],
+        },
+        bodyStyles: {
+            lineWidth: 0.3,
+            lineColor: [0, 0, 0],
+        },
+        alternateRowStyles: {
+            fillColor: [240, 240, 240], // 홀수 행에 회색 배경 적용 (전체 열)
+        },
+        columnStyles: {
+            // 세 번째 열은 항상 흰색 배경 (배경 스타일 적용하지 않음)
+            2: { fillColor: [255, 255, 255] }
+        },
+        didDrawCell: function (data) {
+            // "공급가액" 행(인덱스 9)의 첫 번째 셀 위쪽에 굵은 선을 그립니다.
+            if (data.section === 'body' && data.row.index === 4) {
+                // 해당 셀의 상단에 굵은 선을 그립니다.
+                const posY = data.cell.y; // 셀 상단 좌표
+                doc.setLineWidth(0.5); // 굵은 선을 0.5로 설정
+                doc.setDrawColor(0, 0, 0);
+                doc.line(thirdMarginLeft, posY, thirdMarginLeft + thirdTableWidth, posY);
+            }
+        },
+    });
 
 
     return doc;
