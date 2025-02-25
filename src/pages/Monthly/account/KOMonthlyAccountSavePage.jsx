@@ -7,6 +7,8 @@ import KOMonthlyAccountTableColumns from '@/columns/KOMonthlyAccountTableColumns
 import { KOMonthlyAccountTableOptions } from '@/options/KOMonthlyAccountTableOptions.jsx';
 import InvoicePDFGenerator from '@/components/InvoicePDFGenerator.jsx';
 import { fetchInvoicePrint } from '@/service/invoiceService.js';
+import InvoicePreview from '@/components/Invoice/InvoicePreview';
+
 
 
 const KOMonthlyAccountSavePage = () => {
@@ -17,6 +19,10 @@ const KOMonthlyAccountSavePage = () => {
     console.log(invoiceBasicData)
 
     console.log("monthlyAcctSaveData: ", monthlyAcctSaveData); // 🔍 Debugging
+
+    if (invoiceBasicLoading) return <div>로딩중...</div>;
+    if (invoiceBasicError) return <div>에러 발생: {invoiceBasicError.message}</div>;
+
 
 
     return(
@@ -46,9 +52,7 @@ const KOMonthlyAccountSavePage = () => {
                 </div>
             </div>
 
-            {invoiceBasicData && !invoiceBasicLoading && !invoiceBasicError && (
-                <InvoicePDFGenerator invoiceBasicData={invoiceBasicData} />
-            )}
+            <InvoicePreview invoiceBasicData={invoiceBasicData} />
 
         </div>
     )

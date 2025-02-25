@@ -1,4 +1,5 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+// src/utils/pdfGenerator.js
+import { PDFDocument, rgb } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 
 export async function generateInvoicePDF(invoiceBasicData) {
@@ -12,18 +13,12 @@ export async function generateInvoicePDF(invoiceBasicData) {
     const topY = height - margin;
     const columnWidth = (width - 2 * margin) / 3;
 
-    let customFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    // try {
-    //     // 정적 TTF 파일 사용: 반드시 변수형이 아닌 정적 버전을 사용해야 합니다.
-    //     const fontBytes = await fetch('@/assets/fonts/NotoSansKR-VariableFont_wght.ttf').then(res => res.arrayBuffer());
-    //     customFont = await pdfDoc.embedFont(fontBytes);
-    // } catch (error) {
-    //     console.error("Custom font embedding failed, falling back to Helvetica", error);
-    //     // 폰트 임베딩에 실패하면 내장 Helvetica 폰트로 대체
-    //     customFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    // }
+    // 정적 TTF 파일 직접 불러오기 (public 폴더에 위치)
+    const fontUrl = '/assets/fonts/NotoSansKR-Regular.ttf';
+    const fontBytes = await fetch(fontUrl).then((res) => res.arrayBuffer());
+    const customFont = await pdfDoc.embedFont(fontBytes, { subset: false }); // 필요 시 subsetting 비활성화
 
-    // invoiceBasicData에서 필요한 값 추출
+    // invoiceBasicData에서 필요한 항목 추출
     const addressData = invoiceBasicData.find(item => item.code_name === "ko_address");
     const postCodeData = invoiceBasicData.find(item => item.code_name === "ko_post_code");
     const companyNameData = invoiceBasicData.find(item => item.code_name === "ko_company_name");
@@ -32,7 +27,7 @@ export async function generateInvoicePDF(invoiceBasicData) {
     const postCodeText = postCodeData ? postCodeData.code_value : "";
     const companyNameText = companyNameData ? companyNameData.code_value : "";
 
-    // PDF 상단에 세 컬럼으로 텍스트 삽입 (커스텀 폰트 또는 fallback 폰트 사용)
+    // PDF 상단에 세 컬럼 텍스트 삽입 (커스텀 폰트 사용)
     page.drawText(addressText, {
         x: margin,
         y: topY,
