@@ -206,14 +206,17 @@ export const generateInvoicePDF = (invoiceBasicData) => {
         },
     });
 
-    /** ----- 두 번째 표: 요금 내역 표 ----- */
-    const secondTableY = 148; // 표 시작 Y 좌표
+
+    // ------------------------------
+    // 두 번째 표: 미납 요금 내역 표
+    // ------------------------------
+    const secondTableY = 146; // 표 시작 Y 좌표
     const secondMarginLeft = 18;
     const secondMarginRight = 18;
     const secondTableWidth = pageWidth - (secondMarginLeft + secondMarginRight);
 
     // 표 전체 행 수: 헤더 1행 + body 15행 = 16행. (rowHeight 약 7.3로 가정)
-    const secondRowHeight = 7.3; // 그림자
+    const secondRowHeight = 6.8; // 그림자
     const totalRows = 12.9;
     const secondTableHeight = secondRowHeight * totalRows;
 
@@ -223,10 +226,9 @@ export const generateInvoicePDF = (invoiceBasicData) => {
 
     // 표 위에 "● 당월 내역" 텍스트(필요 시)
     doc.setFont("NanumGothic", "bold");
-    doc.setFontSize(10);
+    doc.setFontSize(8);
     doc.text('● 당월 요금내역', secondMarginLeft, secondTableY - 2);
 
-    doc.setFontSize(8);
     // Header 정의
     const feeTableHead = [
         [
@@ -275,7 +277,7 @@ export const generateInvoicePDF = (invoiceBasicData) => {
         styles: {
             font: "NanumGothic",
             fontStyle: "bold",
-            fontSize: 8,
+            fontSize: 7,
             cellPadding: { top: 1.5, right: 1.5, bottom: 1.5, left: 3 }, // 왼쪽 패딩 증가
             // cellPadding: 1.5,
             textColor: [0, 0, 0],
@@ -310,14 +312,16 @@ export const generateInvoicePDF = (invoiceBasicData) => {
     });
 
 
-    /** ----- 세 번째 표: 미납 요금 내역 표 ----- */
-    const thirdTableY = secondTableY + secondTableHeight + 8; // 두 번째 표와 동일 간격(10px) 아래에 시작
+    // ------------------------------
+    // 세 번째 표: 미납 요금 내역 표
+    // ------------------------------
+    const thirdTableY = secondTableY + secondTableHeight + 6; // 두 번째 표와 동일 간격(10px) 아래에 시작
     const thirdMarginLeft = secondMarginLeft; // 좌우 패딩 동일
     const thirdMarginRight = secondMarginRight;
     const thirdTableWidth = pageWidth - (thirdMarginLeft + thirdMarginRight);
 
     // 세 번째 표의 행 높이 및 행 수 (헤더 1행 + body 5행)
-    const thirdRowHeight = 5.3;
+    const thirdRowHeight = 4.9;
     const thirdTotalRows = 1 + 5; // 6행
     const thirdTableHeight = thirdRowHeight * thirdTotalRows;
 
@@ -325,7 +329,7 @@ export const generateInvoicePDF = (invoiceBasicData) => {
     doc.setFillColor(200, 200, 200); // 연한 회색
     doc.rect(thirdMarginLeft + shadowOffset, thirdTableY + shadowOffset, thirdTableWidth, thirdTableHeight, 'F');
 
-    doc.setFontSize(10);
+    doc.setFontSize(8);
     doc.text('● 미납 요금내역', thirdMarginLeft, thirdTableY - 2);
 
     // 세 번째 표 Body 데이터 정의
@@ -350,11 +354,12 @@ export const generateInvoicePDF = (invoiceBasicData) => {
         styles: {
             font: "NanumGothic",
             fontStyle: "bold",
-            fontSize: 8,
+            fontSize: 7,
             cellPadding: { top: 1.5, right: 1.5, bottom: 1.5, left: 3 },
             textColor: [0, 0, 0],
             lineWidth: 0.2,
             lineColor: [0, 0, 0],
+            overflow: 'linebreak',  // 텍스트 여러 줄 허용
         },
         headStyles: {
             fillColor: [255, 255, 255],
@@ -384,6 +389,48 @@ export const generateInvoicePDF = (invoiceBasicData) => {
                 doc.setDrawColor(0, 0, 0);
                 doc.line(thirdMarginLeft, posY, thirdMarginLeft + thirdTableWidth, posY);
             }
+        },
+    });
+
+
+    // ------------------------------
+    // 네 번째 표: 총 납부액 표 (한 행)
+    // ------------------------------
+    const fourthTableY = thirdTableY + thirdTableHeight + 1; // 세 번째 표 아래 1px 간격
+    const fourthMarginLeft = thirdMarginLeft;
+    const fourthMarginRight = thirdMarginRight;
+    const fourthTableWidth = pageWidth - (fourthMarginLeft + fourthMarginRight);
+    const fourthRowHeight = 5.3; // 세 번째 표와 동일한 행 높이
+    const fourthTableHeight = fourthRowHeight * 1; // 1행
+
+    // 그림자 효과 적용 (네 번째 표)
+    doc.setFillColor(200, 200, 200); // 연한 회색
+    doc.rect(fourthMarginLeft + shadowOffset, fourthTableY + shadowOffset + 1, fourthTableWidth, fourthTableHeight, 'F');
+
+    const fourthTableBody = [
+        ["총 납부액", "53,900", ""]
+    ];
+
+    doc.autoTable({
+        startY: fourthTableY,
+        margin: { left: fourthMarginLeft, right: fourthMarginRight },
+        // 헤더는 없으므로 body만 지정합니다.
+        body: fourthTableBody,
+        styles: {
+            font: "NanumGothic",
+            fontStyle: "bold",
+            fontSize: 8,
+            cellPadding: { top: 1.5, right: 1.5, bottom: 1.5, left: 3 },
+            textColor: [0, 0, 0],
+            lineWidth: 0.2,
+            lineColor: [0, 0, 0],
+            overflow: 'linebreak',
+            fillColor: [255, 255, 255]  // 셀 배경 흰색
+        },
+        bodyStyles: {
+            lineWidth: 0.5,
+            lineColor: [0, 0, 0],
+            fillColor: [255, 255, 255]  // 셀 배경 흰색
         },
     });
 

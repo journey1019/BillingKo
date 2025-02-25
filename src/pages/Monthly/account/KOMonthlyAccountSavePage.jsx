@@ -54,8 +54,10 @@ const KOMonthlyAccountSavePage = () => {
     return(
         <div className={`grid gap-0 grid-cols-6`}>
             {/* 상단 제목 및 월 선택 */}
-            <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
+            <div className="flex flex-row col-span-6 border-b pb-3 mb-2 border-gray-400 justify-between">
                 <h1 className="text-2xl font-base">KO Monthly Account Data</h1>
+
+                <InvoicePreview invoiceBasicData={invoiceBasicData} />
             </div>
 
             <div className={`p-2 col-span-6`}>
@@ -78,7 +80,6 @@ const KOMonthlyAccountSavePage = () => {
                 </div>
             </div>
 
-            <InvoicePreview invoiceBasicData={invoiceBasicData} />
         </div>
     )
 }

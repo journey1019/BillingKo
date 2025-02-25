@@ -1,5 +1,6 @@
 import React from 'react';
 import { generateInvoicePDF } from './InvoiceGenerator';
+import { FaPrint } from "react-icons/fa";
 
 const InvoicePreview = ({ invoiceBasicData }) => {
     const handleGeneratePdf = () => {
@@ -13,7 +14,13 @@ const InvoicePreview = ({ invoiceBasicData }) => {
 
     return (
         <div>
-            <button onClick={handleGeneratePdf}>PDF 생성 및 새창 미리보기</button>
+            <button
+                className="flex flex-row items-center p-2 rounded-md border-gray-700 border-2 space-x-2 transition duration-200 ease-in-out hover:bg-gray-200 hover:border-gray-900 hover:text-gray-900"
+                onClick={handleGeneratePdf}
+            >
+                <FaPrint />
+                <span>청구서 출력</span>
+            </button>
         </div>
     );
 };
