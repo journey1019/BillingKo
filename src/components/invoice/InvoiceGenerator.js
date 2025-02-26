@@ -214,22 +214,19 @@ export const generateInvoicePDF = (invoiceBasicData) => {
     const secondMarginLeft = 18;
     const secondMarginRight = 18;
     const secondTableWidth = pageWidth - (secondMarginLeft + secondMarginRight);
+    const fixedColWidthSecond = secondTableWidth / 3; // 3열로 고정
 
-    // 표 전체 행 수: 헤더 1행 + body 15행 = 16행. (rowHeight 약 7.3로 가정)
-    const secondRowHeight = 6.8; // 그림자
+    const secondRowHeight = 5.28; // 행 높이
     const totalRows = 12.9;
     const secondTableHeight = secondRowHeight * totalRows;
 
-    // 그림자 효과 적용 (표보다 약간 오른쪽, 아래로 오프셋)
-    doc.setFillColor(200, 200, 200); // 연한 회색
+    doc.setFillColor(200, 200, 200); // 그림자 색
     doc.rect(secondMarginLeft + shadowOffset, secondTableY + shadowOffset, secondTableWidth, secondTableHeight, 'F');
 
-    // 표 위에 "● 당월 내역" 텍스트(필요 시)
     doc.setFont("NanumGothic", "bold");
     doc.setFontSize(8);
     doc.text('● 당월 요금내역', secondMarginLeft, secondTableY - 2);
 
-    // Header 정의
     const feeTableHead = [
         [
             { content: "요금 내역", styles: { halign: 'center' } },
@@ -238,34 +235,19 @@ export const generateInvoicePDF = (invoiceBasicData) => {
         ]
     ];
 
-    // Body 데이터 정의
     const feeTableBody = [
-        // 1행
-        // ["당월 요금내역", "", ""],
-        // 2행
         ["기본료", "16,000", "1대"],
-        // 3행
         ["통신료", "932.123", "36, 300,360 Byte(s)"],
-        // 4행
         ["수수료(변경, 휴지 등)", "0", ""],
-        // 5행
         ["부가서비스료", "33,000", ""],
-        // 6행
         ["기타사용료", "0", ""],
-        // 7행 ~ 10행: 빈 행
         ["", "", ""],
         ["", "", ""],
         ["", "", ""],
-        ["", "", ""],
-        // 11행
         ["공급가액", "49,000", ""],
-        // 12행
         ["부가가치세", "4,900", ""],
-        // 13행
         ["합계금액", "53,900", ""],
-        // 14행
         ["10원미만 절사금액", "-5", ""],
-        // 15행
         ["당월납부액", "53,900", ""],
     ];
 
@@ -278,8 +260,7 @@ export const generateInvoicePDF = (invoiceBasicData) => {
             font: "NanumGothic",
             fontStyle: "bold",
             fontSize: 7,
-            cellPadding: { top: 1.5, right: 1.5, bottom: 1.5, left: 3 }, // 왼쪽 패딩 증가
-            // cellPadding: 1.5,
+            cellPadding: { top: 1, right: 1.5, bottom: 1, left: 3 },
             textColor: [0, 0, 0],
             lineWidth: 0.2,
             lineColor: [0, 0, 0],
@@ -296,70 +277,101 @@ export const generateInvoicePDF = (invoiceBasicData) => {
             lineWidth: 0.3,
             lineColor: [0, 0, 0],
         },
-        alternateRowStyles: {
-            fillColor: [240, 240, 240],
+        didParseCell: function (data) {
+            // 반대로 적용: 짝수 행에 배경색 적용 (0-indexed: row.index % 2 === 0)
+            if (data.section === 'body') {
+                if (data.row.index % 2 === 0) {
+                    data.cell.styles.fillColor = [240, 240, 240];
+                } else {
+                    data.cell.styles.fillColor = [255, 255, 255];
+                }
+            }
         },
         didDrawCell: function (data) {
-            // "공급가액" 행(인덱스 9)의 첫 번째 셀 위쪽에 굵은 선을 그립니다.
-            if (data.section === 'body' && data.row.index === 9) {
-                // 해당 셀의 상단에 굵은 선을 그립니다.
-                const posY = data.cell.y; // 셀 상단 좌표
-                doc.setLineWidth(0.5); // 굵은 선을 0.5로 설정
+            // "공급가액" 행(인덱스 9) 위쪽에 굵은 선을 그립니다.
+            if (data.section === 'body' && data.row.index === 8) {
+                const posY = data.cell.y;
+                doc.setLineWidth(0.5);
                 doc.setDrawColor(0, 0, 0);
                 doc.line(secondMarginLeft, posY, secondMarginLeft + secondTableWidth, posY);
             }
         },
+        // 열 폭을 고정하여 모든 열이 동일하게 나오도록 설정
+        columnStyles: {
+            0: { cellWidth: fixedColWidthSecond },
+            1: { cellWidth: fixedColWidthSecond },
+            2: { cellWidth: fixedColWidthSecond }
+        }
     });
 
 
     // ------------------------------
-    // 세 번째 표: 미납 요금 내역 표
+    // 세 번째 표: 미납 요금 내역 표 (2열 autoTable + 예약된 3열 별도 출력)
     // ------------------------------
-    const thirdTableY = secondTableY + secondTableHeight + 6; // 두 번째 표와 동일 간격(10px) 아래에 시작
+    const thirdTableY = secondTableY + secondTableHeight + 6; // 두 번째 표 아래 6px 간격
     const thirdMarginLeft = secondMarginLeft; // 좌우 패딩 동일
     const thirdMarginRight = secondMarginRight;
     const thirdTableWidth = pageWidth - (thirdMarginLeft + thirdMarginRight);
 
-    // 세 번째 표의 행 높이 및 행 수 (헤더 1행 + body 5행)
-    const thirdRowHeight = 4.9;
-    const thirdTotalRows = 1 + 5; // 6행
+    // 전체 세 번째 표 폭을 3등분
+    const reservedThirdColWidth = thirdTableWidth / 3;         // 예약된 3열 영역 (1/3)
+    const autoTableWidth = thirdTableWidth - reservedThirdColWidth; // autoTable 영역 (2/3)
+    const fixedColWidthForAuto = autoTableWidth / 2;             // autoTable의 두 열 폭
+
+    const thirdRowHeight = 4.1;
+    const thirdTotalRows = 6; // 헤더 1행 + body 5행 = 6행
     const thirdTableHeight = thirdRowHeight * thirdTotalRows;
 
-    // 그림자 효과 적용 (표보다 1px 오른쪽, 아래로 오프셋)
-    doc.setFillColor(200, 200, 200); // 연한 회색
+    // 그림자 효과 적용 (표보다 1px 오른쪽/아래 오프셋)
+    doc.setFillColor(200, 200, 200);
     doc.rect(thirdMarginLeft + shadowOffset, thirdTableY + shadowOffset, thirdTableWidth, thirdTableHeight, 'F');
 
     doc.setFontSize(8);
     doc.text('● 미납 요금내역', thirdMarginLeft, thirdTableY - 2);
 
-    // 세 번째 표 Body 데이터 정의
-    const koNonpayNotice = invoiceBasicData.find(item => item.code_name === 'ko_nonpay_notice')?.code_value || "";
-    const thirdTableBody = [
-        // 1행
-        ["2024-12-A_10915", "434,020", koNonpayNotice],
-        // 2행 (빈)
-        ["", "", ""],
-        // 3행 (빈)
-        ["", "", ""],
-        // 4행
-        ["연체가산금", "8,680", ""],
-        // 5행
-        ["미납요금계", "442,700", ""],
+    // autoTable 헤더 (2열)
+    const thirdTableHead = [
+        [
+            { content: "요금 내역", styles: { halign: 'center' } },
+            { content: "금액(원)", styles: { halign: 'center' } }
+        ]
     ];
 
-    doc.autoTable({
+    const koNonpayNotice = invoiceBasicData.find(item => item.code_name === 'ko_nonpay_notice')?.code_value || "";
+    // autoTable Body 데이터 (2열)
+    const thirdTableBodyAuto = [
+        ["2024-12-A_10915", "434,020"],
+        ["", ""],
+        ["", ""],
+        ["연체가산금", "8,680"],
+        ["미납요금계", "442,700"],
+    ];
+
+    // 예약된 3열 데이터 (koNonpayNotice 등)
+    // 여기서는 첫 행에만 값이 있고, 나머지는 빈 문자열로 처리합니다.
+    const reservedThirdColumnData = [
+        koNonpayNotice, // 첫 행
+        "",             // 두 번째 행
+        "",             // 세 번째 행
+        "",             // 네 번째 행
+        "",             // 다섯 번째 행
+    ];
+
+    // autoTable 생성 (2열 영역)
+    const thirdTableConfig = doc.autoTable({
         startY: thirdTableY,
         margin: { left: thirdMarginLeft, right: thirdMarginRight },
-        body: thirdTableBody,
+        // head: thirdTableHead,
+        body: thirdTableBodyAuto,
         styles: {
             font: "NanumGothic",
             fontStyle: "bold",
             fontSize: 7,
-            cellPadding: { top: 1.5, right: 1.5, bottom: 1.5, left: 3 },
+            cellPadding: { top: 1, right: 1.5, bottom: 1, left: 3 },
             textColor: [0, 0, 0],
             lineWidth: 0.2,
             lineColor: [0, 0, 0],
-            overflow: 'linebreak',  // 텍스트 여러 줄 허용
+            overflow: 'linebreak'
         },
         headStyles: {
             fillColor: [255, 255, 255],
@@ -373,39 +385,68 @@ export const generateInvoicePDF = (invoiceBasicData) => {
             lineWidth: 0.3,
             lineColor: [0, 0, 0],
         },
-        alternateRowStyles: {
-            fillColor: [240, 240, 240], // 홀수 행에 회색 배경 적용 (전체 열)
-        },
-        columnStyles: {
-            // 세 번째 열은 항상 흰색 배경 (배경 스타일 적용하지 않음)
-            2: { fillColor: [255, 255, 255] }
-        },
-        didDrawCell: function (data) {
-            // "공급가액" 행(인덱스 9)의 첫 번째 셀 위쪽에 굵은 선을 그립니다.
-            if (data.section === 'body' && data.row.index === 4) {
-                // 해당 셀의 상단에 굵은 선을 그립니다.
-                const posY = data.cell.y; // 셀 상단 좌표
-                doc.setLineWidth(0.5); // 굵은 선을 0.5로 설정
-                doc.setDrawColor(0, 0, 0);
-                doc.line(thirdMarginLeft, posY, thirdMarginLeft + thirdTableWidth, posY);
+        didParseCell: function(data) {
+            if (data.section === 'body') {
+                // 첫 두 열: alternate 배경 적용 (짝수 행에 회색)
+                if (data.column.index < 2) {
+                    if (data.row.index % 2 === 0) {
+                        data.cell.styles.fillColor = [255, 255, 255];
+                    } else {
+                        // data.cell.styles.cellPadding = {top: 1, right: 1.5, bottom: thirdRowHeight, left: 3}
+                        data.cell.styles.fillColor = [240, 240, 240];
+                    }
+                }
             }
         },
+        columnStyles: {
+            0: { cellWidth: fixedColWidthForAuto },
+            1: { cellWidth: fixedColWidthForAuto }
+        }
     });
+
+    // 예약된 3열 영역: autoTable의 오른쪽 1/3 영역에 대해 별도로 텍스트 출력
+    const reservedColX = thirdMarginLeft + autoTableWidth; // 예약 영역의 x 좌표
+    const reservedPadding = 2; // 예약 영역 내 여백
+    const availableReservedWidth = reservedThirdColWidth - reservedPadding * 2;
+
+    // autoTable의 각 행은 autoTableConfig.body[i].y (row의 y 좌표)로 계산할 수 있습니다.
+    // 여기서는 첫 행(인덱스 0)에 해당하는 예약 영역만 처리합니다.
+    if (thirdTableBodyAuto.length > 0) {
+        // 첫 행의 y 좌표: autoTableConfig.body[0].y가 없다면 헤더 높이를 사용
+        const firstRowY = (thirdTableConfig.body && thirdTableConfig.body[0] && thirdTableConfig.body[0].y)
+            || thirdTableY + (thirdTableConfig.headHeight || 0);
+        // 행 높이는 autoTableConfig.body[0].height(존재하면) 아니면 thirdRowHeight 사용
+        const cellHeight = (thirdTableConfig.body && thirdTableConfig.body[0] && thirdTableConfig.body[0].height)
+            || thirdRowHeight;
+
+        // 예약 영역에 흰색 배경과 테두리를 그려 테이블 셀처럼 만듭니다.
+        doc.setFillColor(255, 255, 255);   // 흰색 배경
+        doc.setDrawColor(0, 0, 0);         // 검정 테두리
+        doc.setLineWidth(0.3);             // 테두리 두께 0.5
+        doc.rect(reservedColX, firstRowY, reservedThirdColWidth, cellHeight + 20.1, 'FD');
+
+        // 예약 영역에 koNonpayNotice 텍스트 출력 (여백 적용)
+        const lines = doc.splitTextToSize(reservedThirdColumnData[0], availableReservedWidth);
+        doc.setFont("NanumGothic", "bold");
+        doc.setFontSize(7);
+        doc.text(lines, reservedColX + reservedPadding, firstRowY + reservedPadding, { baseline: 'top' });
+    }
+
 
 
     // ------------------------------
     // 네 번째 표: 총 납부액 표 (한 행)
     // ------------------------------
-    const fourthTableY = thirdTableY + thirdTableHeight + 1; // 세 번째 표 아래 1px 간격
+    const fourthTableY = thirdTableY + thirdTableHeight + 1;
     const fourthMarginLeft = thirdMarginLeft;
     const fourthMarginRight = thirdMarginRight;
     const fourthTableWidth = pageWidth - (fourthMarginLeft + fourthMarginRight);
-    const fourthRowHeight = 5.3; // 세 번째 표와 동일한 행 높이
-    const fourthTableHeight = fourthRowHeight * 1; // 1행
+    const fixedColWidthFourth = fourthTableWidth / 3;
+    const fourthRowHeight = 5.3;
+    const fourthTableHeight = fourthRowHeight * 1;
 
-    // 그림자 효과 적용 (네 번째 표)
-    doc.setFillColor(200, 200, 200); // 연한 회색
-    doc.rect(fourthMarginLeft + shadowOffset, fourthTableY + shadowOffset + 1, fourthTableWidth, fourthTableHeight, 'F');
+    doc.setFillColor(200, 200, 200);
+    doc.rect(fourthMarginLeft + shadowOffset, fourthTableY + shadowOffset, fourthTableWidth, fourthTableHeight, 'F');
 
     const fourthTableBody = [
         ["총 납부액", "53,900", ""]
@@ -414,7 +455,6 @@ export const generateInvoicePDF = (invoiceBasicData) => {
     doc.autoTable({
         startY: fourthTableY,
         margin: { left: fourthMarginLeft, right: fourthMarginRight },
-        // 헤더는 없으므로 body만 지정합니다.
         body: fourthTableBody,
         styles: {
             font: "NanumGothic",
@@ -430,9 +470,43 @@ export const generateInvoicePDF = (invoiceBasicData) => {
         bodyStyles: {
             lineWidth: 0.5,
             lineColor: [0, 0, 0],
-            fillColor: [255, 255, 255]  // 셀 배경 흰색
+            fillColor: [255, 255, 255]
         },
+        columnStyles: {
+            0: { cellWidth: fixedColWidthFourth },
+            1: { cellWidth: fixedColWidthFourth },
+            2: { cellWidth: fixedColWidthFourth }
+        }
     });
+
+
+    /** ----- 다섯 번째 블록: 공급자 정보 ----- */
+    const fifthMarginLeft = 36;
+    const fifthMarginRight = 36;
+    const fifthBlockWidth = pageWidth - (fifthMarginLeft + fifthMarginRight);
+    const fifthBlockY = fourthTableY + fourthTableHeight + 10; // 네 번째 표 아래 5px 간격
+
+    // 왼쪽 영역: 이미지 (크기 및 위치 고정)
+    const leftImageWidth = 40;  // 원하는 너비
+    const leftImageHeight = 10; // 원하는 높이
+    doc.addImage(companyLogoBase64, 'PNG', fifthMarginLeft, fifthBlockY, leftImageWidth, leftImageHeight);
+
+    // 오른쪽 영역: 텍스트
+    const rightBlockX = fifthMarginLeft + leftImageWidth; // 이미지 오른쪽 시작
+    const rightBlockWidth = fifthBlockWidth - leftImageWidth;
+
+    // 공급자 등록번호 추출
+    const ko_regist_number = invoiceBasicData.find(item => item.code_name === 'ko_regist_number')?.code_value || "";
+
+    // "코리아오브컴 주식회사" 텍스트: 큰 글씨, 좌우 간격을 위해 maxWidth를 약간 줄임
+    doc.setFont("NanumGothic", "bold");
+    doc.setFontSize(20);
+    doc.text("코리아오브컴 주식회사", rightBlockX, fifthBlockY + 10, { maxWidth: rightBlockWidth - 10 });
+
+    // "공급자 등록번호 : {ko_regist_number}" 텍스트: extrabold 스타일
+    doc.setFont("NanumGothic", "extrabold");
+    doc.setFontSize(10);
+    doc.text("공급자 등록번호 : " + ko_regist_number, rightBlockX, fifthBlockY + 20, { maxWidth: rightBlockWidth });
 
 
     return doc;
