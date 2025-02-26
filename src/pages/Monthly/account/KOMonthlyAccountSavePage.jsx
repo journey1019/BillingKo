@@ -9,47 +9,41 @@ import { KOMonthlyAccountTableOptions } from '@/options/KOMonthlyAccountTableOpt
 import { fetchInvoicePrint } from '@/service/invoiceService.js';
 import InvoicePreview from '@/components/Invoice/InvoicePreview';
 
-
-
 const KOMonthlyAccountSavePage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
-    const { data: monthlyAcctSaveData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountSaveIndexData, yearMonth);
-    const { data: invoiceBasicData, loading: invoiceBasicLoading, error:invoiceBasicError } = useApiFetch(fetchInvoicePrint);
+    const { data: invoiceBasicData, loading: invoiceBasicLoading, error:invoiceBasicError } = useApiFetch(fetchInvoicePrint); // 청구서 필요 양식
+    const { data: monthlyAcctSaveData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountSaveIndexData, yearMonth); // 청구서 양식에 삽입될 데이터
 
-    const [selectedRowData, setSelectedRowData] = useState('KO_99999');
+    const [selectedRowData, setSelectedRowData] = useState({});
 
     const [monthlyAcctSaveDetailData, setMonthlyAcctSaveDetailData] = useState(null);
     const [monthlyAcctSaveDetailLoading, setMonthlyAcctSaveDetailLoading] = useState(null);
     const [monthlyAcctSaveDetailError, setMonthlyAcctSaveDetailError] = useState(null);
 
+    useEffect(() => {
+        const fetchMonthlyDetail = async () => {
+            if (!selectedRowData?.acct_num) return;
 
-    // useEffect(() => {
-    //     setSelectedRowData('KO_99999');
-    //     const fetchMonthlyDetails = async () => {
-    //         if (!selectedRowData) return ;
-    //
-    //         setMonthlyAcctSaveDetailLoading(true);
-    //         setMonthlyAcctSaveDetailError(null);
-    //         try {
-    //             const response = await fetchKOMonthlyAccountSaveIndexDetailData(yearMonth, selectedRowData);
-    //             setMonthlyAcctSaveDetailData(response);
-    //         } catch (error) {
-    //             setMonthlyAcctSaveDetailError(error.message || 'Failed to fetch monthly detail');
-    //         } finally {
-    //             setMonthlyAcctSaveDetailLoading(false);
-    //         }
-    //     }
-    //     return fetchMonthlyDetails();
-    // }, [selectedRowData])
+            setMonthlyAcctSaveDetailLoading(true);
+            setMonthlyAcctSaveDetailError(null);
+            try {
+                const response = await fetchKOMonthlyAccountSaveIndexDetailData(yearMonth, selectedRowData.acct_num);
+                setMonthlyAcctSaveDetailData(response);
+            } catch (error) {
+                setMonthlyAcctSaveDetailError(error.message || 'Failed to fetch monthly detail');
+            } finally {
+                setMonthlyAcctSaveDetailLoading(false);
+            }
+        };
 
-    console.log("monthlyAcctSaveData: ", monthlyAcctSaveData); // 🔍 Debugging
-    console.log(invoiceBasicData)
-    console.log(monthlyAcctSaveDetailData)
-
-
+        fetchMonthlyDetail(); // `return fetchMonthlyDetail;`이 아니라 함수 실행!
+    }, [selectedRowData]);
 
     if (invoiceBasicLoading) return <div>로딩중...</div>;
     if (invoiceBasicError) return <div>에러 발생: {invoiceBasicError.message}</div>;
+
+    console.log('monthlyAcctSaveData : ', monthlyAcctSaveData)
+    console.log('monthlyAcctSaveDetailData : ', monthlyAcctSaveDetailData)
 
     return(
         <div className={`grid gap-0 grid-cols-6`}>
@@ -57,7 +51,7 @@ const KOMonthlyAccountSavePage = () => {
             <div className="flex flex-row col-span-6 border-b pb-3 mb-2 border-gray-400 justify-between">
                 <h1 className="text-2xl font-base">KO Monthly Account Data</h1>
 
-                <InvoicePreview invoiceBasicData={invoiceBasicData} />
+                <InvoicePreview yearMonth={yearMonth} invoiceBasicData={invoiceBasicData} accountDetailData={monthlyAcctSaveDetailData}/>
             </div>
 
             <div className={`p-2 col-span-6`}>
@@ -74,12 +68,21 @@ const KOMonthlyAccountSavePage = () => {
                         isLoading={loading}
                         error={error}
                         options={{
-                            ...KOMonthlyAccountTableOptions
+                            ...KOMonthlyAccountTableOptions,
+                            meta: {
+                                onRowSelect: (selectedRow) => {
+                                    console.log('Account Monthly Table Row Selected: ', selectedRow);
+                                    if (selectedRowData && selectedRow.acct_num === selectedRow.acct_num) {
+                                        setSelectedRowData(null);
+                                    } else {
+                                        setSelectedRowData(selectedRow);
+                                    }
+                                }
+                            }
                         }}
                     />
                 </div>
             </div>
-
         </div>
     )
 }

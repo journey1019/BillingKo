@@ -1,5 +1,14 @@
 export const formatNumber = (num) => num.toLocaleString();
 
+// 천 단위 ',' 설정
+export function formatNumberWithCommas(number) {
+    if (typeof number !== 'number' || isNaN(number)) {
+        return '-'; // 값이 없을 경우 안전한 기본값 반환
+    }
+    return number.toLocaleString('en-US'); // 'ko-KR' 사용 가능
+}
+
+
 export const formatValue = (value, defaultText = "-") => {
     if (
         value === null ||

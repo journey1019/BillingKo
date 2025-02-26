@@ -1,14 +1,23 @@
-export const generateInvoicePage2 = (doc, invoiceData) => {
+import companyLogoBase64 from '@/assets/images/companyLogoBase64';
+
+export const generateInvoicePage2 = (doc, formattedYearMonth, invoiceData, accountDetailData) => {
     // 2페이지 추가
     doc.addPage();
 
     // 2페이지의 상단 이미지 삽입 (첫 페이지와 동일하게)
     // 예시: 회사 로고 삽입
-    doc.addImage(invoiceData.companyLogoBase64, 'PNG', 15, 10, 30, 7);
+    doc.addImage(companyLogoBase64, 'PNG', 15, 10, 30, 7);
 
-    // 2페이지의 나머지 내용 작성 (예: 이미지 바로 아래에 표 등)
-    // 2페이지 표와 최종 텍스트 구성 (예시)
+    // 첫 번째 데이터 가져오기 (없으면 빈 객체)
+    const getSafeValue = (value) => value ?? '-';
+    const data = Array.isArray(accountDetailData) && accountDetailData.length > 0
+        ? accountDetailData[0]
+        : {};
 
+
+    /* ----------------------------
+       2페이지의 나머지 내용 작성
+    ---------------------------- */
     // 좌우 여백 설정
     const leftMargin = 20;
     const rightMargin = 20;
@@ -19,10 +28,10 @@ export const generateInvoicePage2 = (doc, invoiceData) => {
     const firstRowY = 25;
     doc.setFont("NanumGothic", "extrabold");
     doc.setFontSize(8);
-    const firstRowData = ["● ZIRCON1", "S/N: 819QWIKQ2100002234", "Bytes: 180", "합계: 49,000"];
+    const firstRowData = ["● ZIRCON1", `S/N: ${getSafeValue(data.serial_number)}`, "Bytes: 180", "합계: 1,213,549,000"];
 
 // gap 계산: 아이템 사이 간격 = availableWidth / (아이템 개수 - 1)
-    const gap = availableWidth / (firstRowData.length - 0.68);
+    const gap = availableWidth / (firstRowData.length - 0.3);
     firstRowData.forEach((text, index) => {
         const xPosition = leftMargin + index * gap;
         doc.text(text, xPosition, firstRowY);
@@ -33,6 +42,7 @@ export const generateInvoicePage2 = (doc, invoiceData) => {
     const tableStartY = firstRowY + 2;
     const tableHeaders = ["기본료", "통신료", "수수료", "VMS-Commtrace", "VMS 서비스"];
     const tableBody = [
+        // [[getSafeValue(data.total_fee), getSafeValue(data.tax_fee), getSafeValue(data.none_pay_fee), getSafeValue(data.monthly_final_fee)]]
         ["16,000", "0", "0", "33,000", "10,000"],
         ["", "", "", "", ""], // 빈 행
     ];
@@ -81,7 +91,9 @@ export const generateInvoicePage2 = (doc, invoiceData) => {
     const finalY = doc.autoTable.previous.finalY + 3;
     doc.setFont("NanumGothic", "bold");
     doc.setFontSize(7);
-    doc.text("2025-01-A_10915", pageWidth - rightMargin, finalY, { align: 'right' });
+
+    const yearMonthAccount = `${formattedYearMonth}-A_10915`
+    doc.text(yearMonthAccount, pageWidth - rightMargin, finalY, { align: 'right' });
 
 
     return doc;

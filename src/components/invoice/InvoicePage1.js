@@ -5,8 +5,15 @@ import nanumGothicFont from '@/assets/fonts/NanumGothic-normal';         // Base
 import nanumGothicBoldFont from '@/assets/fonts/NanumGothic-Bold';          // Base64 문자열 형태의 Bold 폰트
 import nanumGothicExtraBoldFont from '@/assets/fonts/NanumGothic-ExtraBold';// Base64 문자열 형태의 Extra Bold 폰트
 import companyLogoBase64 from '@/assets/images/companyLogoBase64';          // Base64 문자열 형태의 회사 로고 이미지
+import { formatNumberWithCommas } from '@/utils/formatHelpers.jsx';
+import { defaultAccountData, applyDefaultValues } from '@/components/invoice/helpers/dataHelpers.js';
 
-export const generateInvoicePage1 = (invoiceBasicData) => {
+/** ❓: 추후 확인해봐야 할 항목 */
+export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailData) => {
+    const year = Math.floor(yearMonth / 100);
+    const month = String(yearMonth % 100).padStart(2, '0');
+    const formattedYearMonth = `${year}-${month}`; // 2024-12
+
     const doc = new jsPDF();
     const shadowOffset = 1;
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -24,7 +31,41 @@ export const generateInvoicePage1 = (invoiceBasicData) => {
     doc.setFontSize(8);
 
     /* ----------------------------
-       데이터 추출
+       삽입 데이터 추출
+    ---------------------------- */
+    const accountData = applyDefaultValues(accountDetailData?.[0] || {}, defaultAccountData);
+
+    const acct_num = accountData.acct_num; // 없으면 '-'
+    const acct_name = accountData.account_info.acct_name;
+    const invoice_address = accountData.account_info.invoice_address; // 없으면 '-'
+    const invoice_postcode = String(accountData.account_info.invoice_postcode); // 없으면 '00000'
+    // Basic Table (First Table)
+    const billing_num = formattedYearMonth+"-"+acct_num; // 청구번호
+    const create_date = ''; // 작성일자
+    const period_of_use = "" // 사용기간
+    const due_date_of_payment = "" // 납부기한
+    // Current Month Table (Second Table)
+    const basic_fee_total = formatNumberWithCommas(accountData.basic_fee_total); // 기본료
+    const basic_fee_count = accountData.basic_fee_count+"대";
+    const add_use_fee_total = formatNumberWithCommas(accountData.add_use_fee_total); // 통신료
+    const account_use_byte_total = formatNumberWithCommas(accountData.account_use_byte_total) + "Byte(s)"; // 사용한 바이트 수
+    const modification_fee_total = formatNumberWithCommas(accountData.modification_fee_total); // 부가서비스료
+    const subscribe_fee_total = formatNumberWithCommas(accountData.subscribe_fee_total); // 기타사용료
+    const total_fee = formatNumberWithCommas(accountData.total_fee); // 공급가액
+    const tax_fee = formatNumberWithCommas(accountData.tax_fee); // 부가가치세
+    const monthly_final_fee = formatNumberWithCommas(accountData.monthly_final_fee); // 합계금액
+    const cut_off_fee = formatNumberWithCommas(accountData.cut_off_fee); // 10원미만 절사금액
+    const final_fee = formatNumberWithCommas(accountData.final_fee); // 당월납부액 ❓(당월납부액 == 총 납부액)
+    // Details of Unpaid Table (Third Table)
+    const one_unpaid_detail = ""; // 미납내역
+    const one_unpaid_amount = "" // 미납금액
+    const late_surcharge = ""; // 연체가산금
+    const none_pay_total = formatNumberWithCommas(accountData.none_pay_fee); // 미납요금계
+
+
+
+    /* ----------------------------
+       청구서 양식 추출
     ---------------------------- */
     const getData = (code) => invoiceBasicData.find(item => item.code_name === code)?.code_value || "";
     const companyName = getData('ko_company_name');
@@ -67,13 +108,13 @@ export const generateInvoicePage1 = (invoiceBasicData) => {
 
     doc.setFont("NanumGothic", "bold");
     doc.setFontSize(10);
-    doc.text('부산시 중구 충장대로5번길 63-1 (중앙동4가, 오션빌딩)', secondX, ySubject);
-    doc.text('(주)자운해운', 120, ySendPrecious);
+    doc.text(invoice_address, secondX, ySubject);
+    doc.text(acct_name, 120, ySendPrecious);
     const preciousPostcodeX = pageWidth - 25;
     doc.text('귀중', preciousPostcodeX, ySendPrecious, { align: 'right' });
     doc.setFont("NanumGothic", "extrabold");
     doc.setFontSize(15);
-    doc.text('00000', preciousPostcodeX, ySendPostCode, { align: 'right' });
+    doc.text(invoice_postcode, preciousPostcodeX, ySendPostCode, { align: 'right' });
 
     /* ----------------------------
        청구서 헤더 박스
@@ -90,7 +131,7 @@ export const generateInvoicePage1 = (invoiceBasicData) => {
     doc.setFontSize(10);
     const textX = pageWidth / 2;
     const textY = boxY + boxHeight / 2 + 1.5;
-    const yearMonthText = "2025년 2월 통신요금 청구서";
+    const yearMonthText = `${year}년 ${month}월 ${subjectHeader}`;
     doc.text(yearMonthText, textX, textY, { align: 'center' });
 
     /* ----------------------------
@@ -103,9 +144,9 @@ export const generateInvoicePage1 = (invoiceBasicData) => {
 
 // 표 데이터: 상단 3행은 4열, 마지막 행은 "납입은행"과 결제금액을 2셀로 처리 (두 번째 셀에 colSpan: 3)
     const firstTableBody = [
-        ["청구번호", "2025-01-A_10915", "작성일자", "2025-02-05"],
-        ["고객번호", customerNumber, "고객성명", companyName],
-        ["사용기간", "2025-01-01 ~ 2025-01-31", "납부기한", paymentDue],
+        ["청구번호", billing_num, "작성일자", create_date],
+        ["고객번호", acct_num, "고객성명", acct_name],
+        ["사용기간", period_of_use, "납부기한", due_date_of_payment],
         ["납입은행", { content: paymentAccount, colSpan: 3, styles: { halign: 'left' } }]
     ];
 
@@ -171,19 +212,19 @@ export const generateInvoicePage1 = (invoiceBasicData) => {
         ]
     ];
     const feeTableBody = [
-        ["기본료", "16,000", "1대"],
-        ["통신료", "932.123", "36, 300,360 Byte(s)"],
-        ["수수료(변경, 휴지 등)", "0", ""],
-        ["부가서비스료", "33,000", ""],
-        ["기타사용료", "0", ""],
+        ["기본료", basic_fee_total, basic_fee_count],
+        ["통신료", add_use_fee_total, account_use_byte_total],
+        ["수수료(변경, 휴지 등)", "-", ""],
+        ["부가서비스료", modification_fee_total, ""],
+        ["기타사용료", subscribe_fee_total, ""],
         ["", "", ""],
         ["", "", ""],
         ["", "", ""],
-        ["공급가액", "49,000", ""],
-        ["부가가치세", "4,900", ""],
-        ["합계금액", "53,900", ""],
-        ["10원미만 절사금액", "-5", ""],
-        ["당월납부액", "53,900", ""]
+        ["공급가액", total_fee, ""],
+        ["부가가치세", tax_fee, ""],
+        ["합계금액", monthly_final_fee, ""],
+        ["10원미만 절사금액", cut_off_fee, ""],
+        ["당월납부액", final_fee, ""]
     ];
     doc.autoTable({
         startY: secondTableY,
@@ -261,11 +302,11 @@ export const generateInvoicePage1 = (invoiceBasicData) => {
         ]
     ];
     const thirdTableBodyAuto = [
-        ["2024-12-A_10915", "434,020"],
+        [one_unpaid_detail, one_unpaid_amount], // ❓추후 데이터 넣어서 test해봐야 함
         ["", ""],
         ["", ""],
-        ["연체가산금", "8,680"],
-        ["미납요금계", "442,700"]
+        ["연체가산금", late_surcharge],
+        ["미납요금계", none_pay_total]
     ];
     const reservedThirdColumnData = [
         koNonpayNotice,
@@ -344,7 +385,7 @@ export const generateInvoicePage1 = (invoiceBasicData) => {
     doc.setFillColor(200, 200, 200);
     doc.rect(fourthMarginLeft + shadowOffset, fourthTableY + shadowOffset, fourthTableWidth, fourthTableHeight, 'F');
     const fourthTableBody = [
-        ["총 납부액", "53,900", ""]
+        ["총 납부액", final_fee, ""]
     ];
     doc.autoTable({
         startY: fourthTableY,
