@@ -1,4 +1,4 @@
-/** InvoiceGenerator.js */
+/** InvoicePage1.js */
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import nanumGothicFont from '@/assets/fonts/NanumGothic-normal';         // Base64 문자열 형태의 일반 폰트
@@ -6,7 +6,7 @@ import nanumGothicBoldFont from '@/assets/fonts/NanumGothic-Bold';          // B
 import nanumGothicExtraBoldFont from '@/assets/fonts/NanumGothic-ExtraBold';// Base64 문자열 형태의 Extra Bold 폰트
 import companyLogoBase64 from '@/assets/images/companyLogoBase64';          // Base64 문자열 형태의 회사 로고 이미지
 
-export const generateInvoicePDF = (invoiceBasicData) => {
+export const generateInvoicePage1 = (invoiceBasicData) => {
     const doc = new jsPDF();
     const shadowOffset = 1;
     const pageWidth = doc.internal.pageSize.getWidth();

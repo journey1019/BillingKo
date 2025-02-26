@@ -1,11 +1,20 @@
 import React from 'react';
-import { generateInvoicePDF } from './InvoiceGenerator';
+import { generateInvoicePage1 } from './InvoicePage1.js';
+import { generateInvoicePage2 } from './InvoicePage2.js';
+import companyLogoBase64 from '@/assets/images/companyLogoBase64';
 import { FaPrint } from "react-icons/fa";
+
 
 const InvoicePreview = ({ invoiceBasicData }) => {
     const handleGeneratePdf = () => {
-        // PDF 문서 생성
-        const doc = generateInvoicePDF(invoiceBasicData);
+        // 첫 페이지 생성
+        let doc = generateInvoicePage1(invoiceBasicData);
+        // 두 번째 페이지 생성 (doc 객체를 넘김)
+        doc = generateInvoicePage2(doc, {
+            ...invoiceBasicData,
+            companyLogoBase64,
+        })
+
         // jsPDF에서는 output('blob')을 이용해 Blob 생성
         const pdfBlob = doc.output('blob');
         const url = URL.createObjectURL(pdfBlob);
