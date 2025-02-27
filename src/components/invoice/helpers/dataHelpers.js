@@ -32,7 +32,9 @@ export const defaultAccountData = {
 };
 export function applyDefaultValues(target, defaults) {
     return Object.keys(defaults).reduce((acc, key) => {
-        if (typeof defaults[key] === 'object' && defaults[key] !== null) {
+        if (Array.isArray(defaults[key])) {
+            acc[key] = Array.isArray(target?.[key]) ? target[key] : []; // 배열 강제 변환
+        } else if (typeof defaults[key] === 'object' && defaults[key] !== null) {
             acc[key] = applyDefaultValues(target?.[key] ?? {}, defaults[key]);
         } else {
             acc[key] = target?.[key] ?? defaults[key];
