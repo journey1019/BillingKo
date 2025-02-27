@@ -20,7 +20,7 @@ export const generateInvoicePage2 = (doc, formattedYearMonth, invoiceData, accou
     doc.addImage(companyLogoBase64, 'PNG', 15, 10, 30, 7);
 
     /* ----------------------------
-       🔹 `device_detail` 별 반복하여 firstRowData & 표 생성
+       🔹 `device_detail` 별 반복하여 firstRowData & 표 & 마지막 행 생성
     ---------------------------- */
     const leftMargin = 20;
     const rightMargin = 20;
@@ -46,8 +46,8 @@ export const generateInvoicePage2 = (doc, formattedYearMonth, invoiceData, accou
             doc.text(`${item.label}: ${item.value}`, xPosition, currentY);
         });
 
-        // 📌 다음 줄을 위한 `currentY` 업데이트
-        currentY += 8;
+        // 📌 `firstRowData` 아래 간격 조정
+        currentY += 2;
 
         /* ----------------------------
            🔹 테이블 (각 device의 modification_detail 포함)
@@ -110,18 +110,21 @@ export const generateInvoicePage2 = (doc, formattedYearMonth, invoiceData, accou
             },
         });
 
-        // 📌 다음 `currentY` 값 업데이트
-        currentY = doc.autoTable.previous.finalY + 8;
+        // 📌 테이블과 마지막 행 사이 간격 조정
+        currentY = doc.autoTable.previous.finalY + 4;
+
+        /* ----------------------------
+           🔹 마지막 행 (각 device_detail 별)
+        ---------------------------- */
+        doc.setFont("NanumGothic", "bold");
+        doc.setFontSize(7);
+
+        const yearMonthAccount = `${formattedYearMonth}-${data.acct_num || "-"}`;
+        doc.text(yearMonthAccount, pageWidth - rightMargin, currentY, { align: 'right' });
+
+        // ✅ `device_detail` 간격 조정 (다음 device와 구분)
+        currentY += 5;
     });
-
-    /* ----------------------------
-       🔹 마지막 행 이후 여백 및 최종 텍스트 추가
-    ---------------------------- */
-    doc.setFont("NanumGothic", "bold");
-    doc.setFontSize(7);
-
-    const yearMonthAccount = `${formattedYearMonth}-A_10915`;
-    doc.text(yearMonthAccount, pageWidth - rightMargin, currentY, { align: 'right' });
 
     return doc;
 };
