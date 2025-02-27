@@ -16,6 +16,7 @@ import FileStatusForm from '@/components/form/FileStatusForm.jsx'
 import Modal from '@/components/common/Modal.jsx';
 import UploadFileModal from '@/components/layout/File/UploadFileModal.jsx';
 import FileDeviceForm from '@/components/form/FileDeviceForm.jsx';
+import FileUpload from '@/components/form/File/FileUpload.jsx';
 
 const FilePage = () => {
     const navigate = useNavigate();
@@ -73,6 +74,9 @@ const FilePage = () => {
             {/*</div>*/}
             <div className="grid col-span-2 2xl:col-span-1">
                 <FileStatusForm />
+            </div>
+            <div className="grid col-span-4 2xl:col-span-1 py-5">
+                <FileUpload />
             </div>
             {/*<div className="grid col-span-2 2xl:col-span-1">*/}
             {/*    <FileDeviceForm/>*/}

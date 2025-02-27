@@ -8,6 +8,9 @@ import KOMonthlyAccountTableColumns from '@/columns/KOMonthlyAccountTableColumns
 import { KOMonthlyAccountTableOptions } from '@/options/KOMonthlyAccountTableOptions.jsx';
 import { fetchInvoicePrint } from '@/service/invoiceService.js';
 import InvoicePreview from '@/components/Invoice/InvoicePreview';
+import { MdAttachMoney, MdMoneyOffCsred } from "react-icons/md";
+
+
 
 const KOMonthlyAccountSavePage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
@@ -17,7 +20,7 @@ const KOMonthlyAccountSavePage = () => {
     const [selectedRowData, setSelectedRowData] = useState({});
 
     const [monthlyAcctSaveDetailData, setMonthlyAcctSaveDetailData] = useState(null);
-    const [monthlyAcctSaveDetailLoading, setMonthlyAcctSaveDetailLoading] = useState(null);
+    const [monthlyAcctSaveDetailLoading, setMonthlyAcctSaveDetailLoading] = useState(false);
     const [monthlyAcctSaveDetailError, setMonthlyAcctSaveDetailError] = useState(null);
 
     useEffect(() => {
@@ -48,10 +51,34 @@ const KOMonthlyAccountSavePage = () => {
     return(
         <div className={`grid gap-0 grid-cols-6`}>
             {/* 상단 제목 및 월 선택 */}
-            <div className="flex flex-row col-span-6 border-b pb-3 mb-2 border-gray-400 justify-between">
-                <h1 className="text-2xl font-base">KO Monthly Account Data</h1>
+            <div className="flex flex-row col-span-6 border-b pb-3 mb-2 border-gray-400 justify-between items-center">
+                <h1 className="text-2xl font-base">All Invoices</h1>
 
-                <InvoicePreview yearMonth={yearMonth} invoiceBasicData={invoiceBasicData} accountDetailData={monthlyAcctSaveDetailData}/>
+                <InvoicePreview yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
+                                accountDetailData={monthlyAcctSaveDetailData} />
+            </div>
+
+            {/* 납부현황 */}
+            <div className="flex flex-row col-span-6 pb-3 mb-2 border-gray-400 justify-between items-center">
+                <div className="grid grid-cols-6 py-5 px-10 rounded-md bg-white w-full shadow-md">
+                    <div className="col-span-2">
+                        <span className="text-xs text-gray-500">Payment Summary</span>
+                        <div className="flex flex-row space-x-4 items-center py-2">
+                            <div className="p-2 rounded-full bg-blue-200 text-blue-500"><MdAttachMoney
+                                className="w-5 h-5" /></div>
+                            <span>$672.19</span>
+                        </div>
+                    </div>
+                    <div className="col-span-2">
+                        <span className="text-xs text-gray-500">Total Outstanding Receivables</span>
+                        <div className="flex flex-row space-x-4 items-center py-2">
+                            <div className="p-2 rounded-full bg-red-200 text-red-500"><MdMoneyOffCsred
+                                className="w-5 h-5" /></div>
+                            <span>$672.19</span>
+                        </div>
+                    </div>
+                    <div className="col-span-2 text-xs text-gray-500">평균 - 미납</div>
+                </div>
             </div>
 
             <div className={`p-2 col-span-6`}>
@@ -62,7 +89,7 @@ const KOMonthlyAccountSavePage = () => {
 
                 {/* 테이블 UI */}
                 <div className="bg-white shadow-md rounded-lg p-4">
-                    <ReusableTable
+                <ReusableTable
                         data={monthlyAcctSaveData || []} // 데이터가 null이면 빈 배열로 설정
                         columns={KOMonthlyAccountTableColumns}
                         isLoading={loading}

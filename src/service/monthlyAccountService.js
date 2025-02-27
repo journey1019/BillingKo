@@ -29,3 +29,13 @@ export const fetchKOMonthlyAccountSaveIndexDetailData = async (year_month, acct_
     }
 }
 
+
+/* Account Monthly Detail */
+export const fetchKOMonthlyAccountDetailData = async (year_month, acct_num) => {
+    try {
+        return await getWithAuth(`/monthly/account/acct/${year_month}/${acct_num}`);
+    } catch (error) {
+        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        throw error;
+    }
+}

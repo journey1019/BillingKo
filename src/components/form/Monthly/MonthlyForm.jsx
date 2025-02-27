@@ -3,10 +3,20 @@ const MonthlyForm = ({ detailData }) => {
 
 
     // 날짜 T 제거 포맷팅 함수
+    // const formatDateTime = (dateTimeString) => {
+    //     const date = new Date(dateTimeString);
+    //     return date.toISOString().replace("T", " ").slice(0, 19);
+    // };
     const formatDateTime = (dateTimeString) => {
+        // 값이 없거나 유효하지 않은 경우 기본값 반환
+        if (!dateTimeString || isNaN(new Date(dateTimeString).getTime())) {
+            return "-"; // 기본값 (또는 다른 처리)
+        }
+
         const date = new Date(dateTimeString);
         return date.toISOString().replace("T", " ").slice(0, 19);
     };
+
 
 
     // 천 단위 숫자 포맷팅 함수

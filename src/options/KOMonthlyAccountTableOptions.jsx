@@ -37,9 +37,9 @@ export const KOMonthlyAccountTableOptions = {
 
         return (
             <div className="grid grid-cols-2 p-4 bg-gray-50 rounded-lg">
-                {/* 기관 정보 */}
+                {/* 고객 정보 */}
                 <div className="pr-2">
-                    <h2 className="text-base font-semibold mb-2">기관 정보</h2>
+                    <h2 className="text-base font-semibold mb-2">고객 정보</h2>
                     <div className="bg-white p-3 rounded-md border border-gray-300">
                         {[
                             ["계정 번호", row.original.acct_num],

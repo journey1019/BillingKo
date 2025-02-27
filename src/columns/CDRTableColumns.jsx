@@ -1,4 +1,5 @@
 import DateStampCell from '@/columns/cellStyle/DateStampCell.jsx';
+import { CDRCell_Code } from '@/columns/cellStyle/CDRnNNCell.jsx';
 
 export const CDRTableColumns = [
     {
@@ -25,6 +26,7 @@ export const CDRTableColumns = [
     {
         accessorKey: 'd_product',
         header: 'D Product',
+        Cell: CDRCell_Code,
     },
     {
         accessorKey: 'msg_id',

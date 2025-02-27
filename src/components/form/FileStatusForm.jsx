@@ -3,6 +3,7 @@ import useApiFetch from '@/hooks/useApiFetch.js';
 import { fetchFileUpdateHistory } from '@/service/fileService.js';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import UploadFileModal from '@/components/layout/File/UploadFileModal.jsx';
+import useYearMonth from '@/hooks/useYearMonth.js';
 
 const generateCDRFiles = (yearMonth) => [
     `122123_${yearMonth}_CDRv3.csv`,
@@ -22,10 +23,7 @@ const generateNetworkReportFiles = (yearMonth) => [
 ];
 
 const FileStatusForm = () => {
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-    const [selectedDate, setSelectedDate] = useState(oneMonthAgo);
-    const yearMonth = selectedDate.toISOString().slice(0, 7).replace("-", "");
+    const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
 
     const { data: fileHistoryData, loading, error, refetch } = useApiFetch(() => fetchFileUpdateHistory(yearMonth));
 
@@ -53,11 +51,6 @@ const FileStatusForm = () => {
             setNrMissingFiles(nrMissing);
         }
     }, [fileHistoryData, yearMonth]);
-
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-        refetch();
-    };
 
     const handleUploadComplete = () => {
         // 업로드 완료 시 데이터 갱신

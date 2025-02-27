@@ -27,6 +27,7 @@ import KOMonthlyEditPage from '@/pages/Monthly/koMonthly/KOMonthlyEditPage.jsx';
 import KOMonthlyAccountPage from '@/pages/Monthly/account/KOMonthlyAccountPage.jsx';
 import KOMonthlyAccountSavePage from '@/pages/Monthly/account/KOMonthlyAccountSavePage.jsx';
 import FontConvertPage from '@/pages/FontConvert/FontConvertPage.jsx';
+import AccountMonthlyPage from '@/pages/Monthly/account/AccountMonthlyPage.jsx';
 
 const checkAuth = () => {
     const token = localStorage.getItem("token");
@@ -120,6 +121,9 @@ const App = () => {
                                 <Route path="/code/new" element={<CodePage />} />
 
                                 <Route path="/ko_monthly/edit" element={<KOMonthlyEditPage />} />
+
+                                {/* Account Monthly Page */}
+                                <Route path="/monthly/account" element={<AccountMonthlyPage />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>
