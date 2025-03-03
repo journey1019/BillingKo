@@ -8,8 +8,11 @@ import KOMonthlyAccountTableColumns from '@/columns/KOMonthlyAccountTableColumns
 import { KOMonthlyAccountTableOptions } from '@/options/KOMonthlyAccountTableOptions.jsx';
 import { fetchInvoicePrint } from '@/service/invoiceService.js';
 import InvoicePDFPrint from '@/components/invoice/InvoicePDFPrint.jsx';
+import InvoicePDFPrintView from '@/components/invoice/InvoicePDFPrintView.jsx';
 import InvoicePDFPreview from '@/components/invoice/InvoicePDFPreview.jsx';
+import InvoicePDFBatchDownload from '@/components/invoice/InvoicePDFBatchDownload.jsx';
 import { MdAttachMoney, MdMoneyOffCsred } from "react-icons/md";
+
 
 const KOMonthlyAccountSavePage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
@@ -54,8 +57,12 @@ const KOMonthlyAccountSavePage = () => {
             <div className="flex flex-row col-span-6 border-b pb-3 mb-2 border-gray-400 justify-between items-center">
                 <h1 className="text-2xl font-base">All Invoices</h1>
 
-                <InvoicePDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
-                                 accountDetailData={monthlyAcctSaveDetailData} />
+                {/* All PDF Save */}
+                <InvoicePDFBatchDownload
+                    yearMonth={yearMonth}
+                    invoiceBasicData={invoiceBasicData}
+                    monthlyAcctSaveData={monthlyAcctSaveData}
+                />
             </div>
 
             {/* 납부현황 */}
@@ -118,8 +125,8 @@ const KOMonthlyAccountSavePage = () => {
                     <div className="flex flex-row justify-between">
                         <h1 className="text-2xl p-2">{selectedRowData.customer_name || 'Customer'}</h1>
                         <div className="flex flex-row space-x-4">
-                            <span>수정</span>
-                            <span>삭제</span>
+                            <InvoicePDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
+                                             accountDetailData={monthlyAcctSaveDetailData} />
                         </div>
                     </div>
                     <div className="p-4 bg-white rounded-lg">
