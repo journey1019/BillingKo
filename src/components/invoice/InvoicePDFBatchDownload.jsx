@@ -51,9 +51,10 @@ const InvoicePDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveD
 
     return (
         <button
-            className="flex flex-row items-center p-2 rounded-md border-gray-700 border-2 space-x-2 transition duration-200 ease-in-out hover:bg-gray-200 hover:border-gray-900 hover:text-gray-900"
+            className={`flex flex-row items-center p-2 rounded-md border-gray-700 border-2 space-x-2 transition duration-200 ease-in-out 
+                        ${loading || !monthlyAcctSaveData.length ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "hover:bg-gray-200 hover:border-gray-900 hover:text-gray-900"}`}
             onClick={handleDownloadAll}
-            disabled={loading}
+            disabled={loading || !monthlyAcctSaveData.length} // monthlyAcctSaveData가 없거나 빈 배열이면 비활성화
         >
             <FaDownload />
             <span>{loading ? "Downloading..." : "Download All PDFs"}</span>
