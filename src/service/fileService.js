@@ -1,4 +1,4 @@
-import { get, put, del, postWithBody, postWithBodyFile, API_URL } from './api';
+import { get, put, del, postWithBody, postWithBodyFile, API_URL, getWithAuth } from './api';
 
 
 /**
@@ -37,18 +37,6 @@ export const fetchFileUpdateHistory = async () => {
     }
 };
 
-/**
- * 파일 업데이트 이력 가져오기
- * @returns {Promise<Array>} 서버에서 반환된 파일 이력 데이터
- */
-export const fetchFileUpdateMonthHistory = async (yearMonth) => {
-    try {
-        return await get(`/file/fileUpdateHistory/date/${yearMonth}`);
-    } catch (error) {
-        console.error('Failed to fetch file update history:', error.response?.data || error.message);
-        throw error;
-    }
-};
 
 /**
  * 업데이트 된 CDR Monthly 가져오기
@@ -179,3 +167,29 @@ export const fetchByteUpdateHistory = async (serialNumber, dateIndex) => {
         throw new Error(errorMessage);
     }
 };
+
+
+/**
+ * 파일 업데이트 이력 가져오기
+ * @returns {Promise<Array>} 서버에서 반환된 파일 이력 데이터
+ */
+export const fetchUploadFileMonthly = async (yearMonth) => {
+    try {
+        return await get(`/file/fileUpdateHistory/date/${yearMonth}`);
+    } catch (error) {
+        console.error('Failed to fetch file update history:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+/**
+ * @desc: 업로드 파일 전체 이력
+ * */
+export const fetchUploadHistoryAllFiles = async () => {
+    try {
+        return await getWithAuth(`/spInfo`);
+    } catch (error) {
+        console.error("Failed to fetch upload files: ", error.response?.data || error.message);
+        throw error;
+    }
+}
