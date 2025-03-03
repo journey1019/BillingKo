@@ -9,7 +9,7 @@ import { FaPrint } from "react-icons/fa";
  * @param invoiceBasicData = 청구서 양식을 위한 데이터
  * @param accountDetailData = 양식 기반 삽입될 데이터
  * */
-const InvoicePreview = ({ yearMonth, invoiceBasicData, accountDetailData }) => {
+const InvoicePDFPrint = ({ yearMonth, invoiceBasicData, accountDetailData }) => {
     // 2024 | 12
     const year = Math.floor(yearMonth / 100);
     const month = (yearMonth % 100).toString().padStart(2, '0'); // 01~09월일 경우 앞에 0 추가
@@ -42,4 +42,4 @@ const InvoicePreview = ({ yearMonth, invoiceBasicData, accountDetailData }) => {
     );
 };
 
-export default InvoicePreview;
+export default InvoicePDFPrint;

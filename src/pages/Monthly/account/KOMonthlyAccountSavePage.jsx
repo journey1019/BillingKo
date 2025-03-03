@@ -7,17 +7,17 @@ import ReusableTable from '@/components/table/ReusableTable.jsx';
 import KOMonthlyAccountTableColumns from '@/columns/KOMonthlyAccountTableColumns.jsx';
 import { KOMonthlyAccountTableOptions } from '@/options/KOMonthlyAccountTableOptions.jsx';
 import { fetchInvoicePrint } from '@/service/invoiceService.js';
-import InvoicePreview from '@/components/Invoice/InvoicePreview';
+import InvoicePDFPrint from '@/components/invoice/InvoicePDFPrint.jsx';
+import InvoicePDFPreview from '@/components/invoice/InvoicePDFPreview.jsx';
 import { MdAttachMoney, MdMoneyOffCsred } from "react-icons/md";
-
-
 
 const KOMonthlyAccountSavePage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
     const { data: invoiceBasicData, loading: invoiceBasicLoading, error:invoiceBasicError } = useApiFetch(fetchInvoicePrint); // 청구서 필요 양식
     const { data: monthlyAcctSaveData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountSaveIndexData, yearMonth); // 청구서 양식에 삽입될 데이터
 
-    const [selectedRowData, setSelectedRowData] = useState({});
+    const [selectedRowData, setSelectedRowData] = useState(null);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const [monthlyAcctSaveDetailData, setMonthlyAcctSaveDetailData] = useState(null);
     const [monthlyAcctSaveDetailLoading, setMonthlyAcctSaveDetailLoading] = useState(false);
@@ -49,13 +49,13 @@ const KOMonthlyAccountSavePage = () => {
     console.log('monthlyAcctSaveDetailData : ', monthlyAcctSaveDetailData)
 
     return(
-        <div className={`grid gap-0 grid-cols-6`}>
+        <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             {/* 상단 제목 및 월 선택 */}
             <div className="flex flex-row col-span-6 border-b pb-3 mb-2 border-gray-400 justify-between items-center">
                 <h1 className="text-2xl font-base">All Invoices</h1>
 
-                <InvoicePreview yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
-                                accountDetailData={monthlyAcctSaveDetailData} />
+                <InvoicePDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
+                                 accountDetailData={monthlyAcctSaveDetailData} />
             </div>
 
             {/* 납부현황 */}
@@ -81,7 +81,7 @@ const KOMonthlyAccountSavePage = () => {
                 </div>
             </div>
 
-            <div className={`p-2 col-span-6`}>
+            <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-xl font-bold">KO Monthly Account Data</h1>
                     <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
@@ -89,7 +89,7 @@ const KOMonthlyAccountSavePage = () => {
 
                 {/* 테이블 UI */}
                 <div className="bg-white shadow-md rounded-lg p-4">
-                <ReusableTable
+                    <ReusableTable
                         data={monthlyAcctSaveData || []} // 데이터가 null이면 빈 배열로 설정
                         columns={KOMonthlyAccountTableColumns}
                         isLoading={loading}
@@ -101,8 +101,10 @@ const KOMonthlyAccountSavePage = () => {
                                     console.log('Account Monthly Table Row Selected: ', selectedRow);
                                     if (selectedRowData && selectedRow.acct_num === selectedRow.acct_num) {
                                         setSelectedRowData(null);
+                                        setIsExpanded(false);
                                     } else {
                                         setSelectedRowData(selectedRow);
+                                        setIsExpanded(true);
                                     }
                                 }
                             }
@@ -110,6 +112,26 @@ const KOMonthlyAccountSavePage = () => {
                     />
                 </div>
             </div>
+
+            {isExpanded && selectedRowData && (
+                <div className="p-2 col-span-4">
+                    <div className="flex flex-row justify-between">
+                        <h1 className="text-2xl p-2">{selectedRowData.customer_name || 'Customer'}</h1>
+                        <div className="flex flex-row space-x-4">
+                            <span>수정</span>
+                            <span>삭제</span>
+                        </div>
+                    </div>
+                    <div className="p-4 bg-white rounded-lg">
+                        {/* PDF 미리보기 추가 */}
+                        <InvoicePDFPreview
+                            yearMonth={yearMonth}
+                            invoiceBasicData={invoiceBasicData}
+                            accountDetailData={monthlyAcctSaveDetailData}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
