@@ -54,7 +54,7 @@ const InvoicePDFPrint = ({ yearMonth, invoiceBasicData, accountDetailData }) => 
                 onClick={handleGeneratePdf}
             >
                 <IoMdDownload />
-                {/*<span>Download PDF</span>*/}
+                <span>Download PDF</span>
             </button>
         </div>
     );

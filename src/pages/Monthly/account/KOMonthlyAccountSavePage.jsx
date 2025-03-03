@@ -123,7 +123,7 @@ const KOMonthlyAccountSavePage = () => {
             {isExpanded && selectedRowData && (
                 <div className="p-2 col-span-4">
                     <div className="flex flex-row justify-between">
-                        <h1 className="text-2xl p-2">{selectedRowData.customer_name || 'Customer'}</h1>
+                        <h1 className="text-2xl p-2">{selectedRowData.acct_num}</h1>
                         <div className="flex flex-row space-x-4">
                             <InvoicePDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
                                              accountDetailData={monthlyAcctSaveDetailData} />
