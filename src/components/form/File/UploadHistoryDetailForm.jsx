@@ -1,14 +1,14 @@
 import React from 'react';
 import { MdDelete, MdModeEditOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import { deleteUpload } from '@/service/fileService.js';
+import useAlert from '@/hooks/useAlert'; // ✅ 커스텀 훅 사용
+import { confirmDelete, showSuccessAlert, showErrorAlert} from '@/utils/AlertService.js'; // ✅ 유틸리티 함수 사용
 
-/**
- * @param {object} detailData - 업로드 이력 상세 데이터
- */
 const UploadHistoryDetailForm = ({ detailData }) => {
     const navigate = useNavigate();
+    const { showConfirm, showSuccess, showError } = useAlert(); // ✅ 커스텀 훅 사용
+
     if (!detailData) return <p>No data available.</p>;
 
     // 날짜 포맷 변환 함수
@@ -35,50 +35,24 @@ const UploadHistoryDetailForm = ({ detailData }) => {
         return `${year}년 ${month}월`;
     };
 
-    // 삭제 이벤트 (SweetAlert2 적용)
+    // 삭제 이벤트
     const handleDelete = async () => {
         if (!detailData.sp_id) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'SP ID is required',
-                text: 'SP ID가 필요합니다.',
-            });
+            showError('SP ID가 필요합니다.');
             return;
         }
 
-        // SweetAlert2로 확인 모달 표시
-        const result = await Swal.fire({
-            title: '정말 삭제하시겠습니까?',
-            text: '삭제하면 복구할 수 없습니다!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: '네, 삭제합니다',
-            cancelButtonText: '취소'
-        });
-
+        // ✅ 커스텀 훅 사용 (모달)
+        const result = await showConfirm('정말 삭제하시겠습니까?', '삭제하면 복구할 수 없습니다!');
         if (!result.isConfirmed) return;
 
         try {
             await deleteUpload(detailData.sp_id);
-            Swal.fire({
-                icon: 'success',
-                title: '삭제 완료',
-                text: '업로드 항목이 성공적으로 삭제되었습니다!',
-                timer: 2000,
-                showConfirmButton: false
-            }).then(() => {
-                // 페이지 새로고침
-                window.location.reload();
-            });
+            showSuccess('삭제 완료!', '업로드 항목이 성공적으로 삭제되었습니다!');
+            setTimeout(() => window.location.reload(), 2000); // 2초 후 새로고침
         } catch (err) {
             console.error(err);
-            Swal.fire({
-                icon: 'error',
-                title: '삭제 실패',
-                text: '삭제 중 오류가 발생했습니다. 다시 시도해주세요.',
-            });
+            showError('삭제 중 오류가 발생했습니다.');
         }
     };
 
