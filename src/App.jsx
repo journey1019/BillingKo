@@ -28,6 +28,8 @@ import KOMonthlyAccountPage from '@/pages/Monthly/account/KOMonthlyAccountPage.j
 import KOMonthlyAccountSavePage from '@/pages/Monthly/account/KOMonthlyAccountSavePage.jsx';
 import FontConvertPage from '@/pages/FontConvert/FontConvertPage.jsx';
 import AccountMonthlyPage from '@/pages/Monthly/account/AccountMonthlyPage.jsx';
+import UploadNewPage from '@/pages/File/UploadNewPage.jsx';
+import UploadEditPage from '@/pages/File/UploadEditPage.jsx';
 
 const checkAuth = () => {
     const token = localStorage.getItem("token");
@@ -124,6 +126,10 @@ const App = () => {
 
                                 {/* Account Monthly Page */}
                                 <Route path="/monthly/account" element={<AccountMonthlyPage />} />
+
+                                {/* File Upload Page */}
+                                <Route path="/upload/new" element={<UploadNewPage />} />
+                                <Route path="/upload/:sp_id/edit" element={<UploadEditPage />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>

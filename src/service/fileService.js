@@ -193,3 +193,52 @@ export const fetchUploadHistoryAllFiles = async () => {
         throw error;
     }
 }
+
+
+/**
+ * @desc: Detail 조회
+ * */
+export const fetchUploadHistoryDetailFiles = async (sp_id) => {
+    try {
+        return await getWithAuth(`/spInfo/spId/${sp_id}`);
+    } catch (error) {
+        console.error("Failed to fetch upload files: ", error.response?.data || error.message);
+        throw error;
+    }
+}
+
+/**
+ * @desc: 수정
+ * */
+export const updateUpload = async (sp_id, uploadData) => {
+    try {
+        return await put(`/upload/${sp_id}/edit`, uploadData);
+    } catch (error) {
+        console.error("Failed to update account:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
+export const createUpload = async (uploadData) => {
+    // "null" 문자열이 아니라 실제 null로 변환
+    // if (!uploadData.invoice_address2 || uploadData.invoice_address2.trim() === "") {
+    //     uploadData.invoice_address2 = null;
+    // }
+
+    try {
+        return await postWithBody("/upload/", uploadData);
+    } catch (error) {
+        console.error("Failed to create account:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+export const deleteUpload = async (sp_id) => {
+    try {
+        return await del(`/spInfo/spId/${sp_id}`);
+    } catch (error) {
+        console.error("Failed to delete account:", error.response?.data || error.message);
+        throw error;
+    }
+};
