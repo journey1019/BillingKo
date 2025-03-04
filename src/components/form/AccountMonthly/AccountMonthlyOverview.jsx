@@ -3,6 +3,7 @@ import { formatNumber, formatValue } from '@/utils/formatHelpers.jsx';
 import clsx from 'clsx';
 import { MdEdit } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
+import Dropdown from '@/components/layout/button/Dropdown.jsx';
 
 
 const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accountDetailError }) => {
@@ -31,9 +32,9 @@ const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accou
     const nonePayInfo = accountData.none_pay_fee || [];
 
 
-    const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
-    const handleEdit = () => setIsOpenDropdown(!isOpenDropdown);
-    const closeDropdown = () => setIsOpenDropdown(false);
+    // const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
+    // const handleEdit = () => setIsOpenDropdown(!isOpenDropdown);
+    // const closeDropdown = () => setIsOpenDropdown(false);
 
     return (
         <div className="grid grid-cols-2 p-4 bg-gray-50 rounded-lg">
@@ -41,25 +42,34 @@ const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accou
                 <div className="flex flex-row justify-between">
                     <h2 className="text-base font-semibold mb-2">고객 정보</h2>
                     <div className="relative inline-block">
-                        {/* ✅ 버튼 */}
-                        <button onClick={handleEdit}><MdEdit /></button>
+                        {/* ✅ 드롭다운 사용 예제 */}
+                        <Dropdown trigger={<MdEdit />}>
+                            {/* ✅ 드롭다운 내부 컨텐츠 (동적으로 변경 가능) */}
+                            <div className="text-end space-x-2">
+                                <li className="p-2 hover:bg-gray-100 cursor-pointer">Edit Item</li>
+                                <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete Item</li>
+                            </div>
+                        </Dropdown>
+                        {/*/!* ✅ 버튼 *!/*/}
+                        {/*<button onClick={handleEdit}><MdEdit /></button>*/}
 
-                        {/* ✅ 드롭다운 메뉴 (애니메이션 효과 추가) */}
-                        <div
-                            className={clsx(
-                                'absolute left-0 top-full mt-1 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300',
-                                'transition-all duration-200 ease-in-out transform',
-                                isOpenDropdown ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none',
-                            )}
-                            onMouseLeave={closeDropdown}
-                        >
-                            <ul className="py-2 text-sm text-gray-700">
-                                <div className="text-end space-x-2">
-                                    <button className="p-1 rounded-md border border-gray-700">Save</button>
-                                    <button onClick={closeDropdown} className="p-1 rounded-md bg-blue-500 text-white">Close</button>
-                                </div>
-                            </ul>
-                        </div>
+                        {/*/!* ✅ 드롭다운 메뉴 (애니메이션 효과 추가) *!/*/}
+                        {/*<div*/}
+                        {/*    className={clsx(*/}
+                        {/*        'absolute left-0 top-full mt-1 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300',*/}
+                        {/*        'transition-all duration-200 ease-in-out transform',*/}
+                        {/*        isOpenDropdown ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none',*/}
+                        {/*    )}*/}
+                        {/*    onMouseLeave={closeDropdown}*/}
+                        {/*>*/}
+                        {/*    <ul className="py-2 text-sm text-gray-700">*/}
+                        {/*        /!* 재사용 컨텐츠 *!/*/}
+                        {/*        <div className="text-end space-x-2">*/}
+                        {/*            <button className="p-1 rounded-md border border-gray-700">Save</button>*/}
+                        {/*            <button onClick={closeDropdown} className="p-1 rounded-md bg-blue-500 text-white">Close</button>*/}
+                        {/*        </div>*/}
+                        {/*    </ul>*/}
+                        {/*</div>*/}
                     </div>
 
                 </div>

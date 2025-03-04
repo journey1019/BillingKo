@@ -6,7 +6,7 @@ export const KOMonthlyTableOptions = {
     enableRowSelection: true, // 행 선택 활성화
     enableMultiRowSelection: false, // 체크박스 -> 라디오 버튼
     enablePagination: true, // 페이지네이션 활성화
-    enableClickToCopy: true, // 모든 셀에 대해 복사 활성화
+    // enableClickToCopy: true, // 모든 셀에 대해 복사 활성화
     enableFilters: true, // 전체 테이블에 필터링을 활성화
     positionToolbarAlertBanner: 'none',
 

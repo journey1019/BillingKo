@@ -61,8 +61,11 @@ const FileUploadStatus = () => {
             <div>
                 <div className="flex flex-row justify-between pb-2">
                     <h3 className="text-base font-semibold text-blue-600">List of files to upload</h3>
+                    {/*<button className="p-1 border-2 border-gray-800 rounded-md hover:bg-gray-200"*/}
+                    {/*        onClick={() => navigator(`/upload/${uploadData.sp_id}/edit`)}><MdEdit />*/}
+                    {/*</button>*/}
                     <button className="p-1 border-2 border-gray-800 rounded-md hover:bg-gray-200"
-                            onClick={() => console.log('service provider 수정 페이지로 이동')}><MdEdit />
+                            onClick={() => alert('Modify Click')}><MdEdit />
                     </button>
                 </div>
                 <div className="">

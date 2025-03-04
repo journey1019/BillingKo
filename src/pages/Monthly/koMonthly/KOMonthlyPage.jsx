@@ -90,10 +90,14 @@ const KOMonthlyPage = () => {
                     <div className="flex flex-row items-center justify-between mb-3 relative z-10">
                         <h1 className="text-lg font-bold">
                             Selected Month:{" "}
-                            {selectedDate.toLocaleDateString("en-US", {
+                            {selectedDate.toLocaleDateString("ko-KR", {
                                 year: "numeric",
-                                month: "long",
+                                month: "short", // '1월' 대신 '01월'을 원하면 "2-digit" 사용
                             })}
+                            {/*{selectedDate.toLocaleDateString("en-US", {*/}
+                            {/*    year: "numeric",*/}
+                            {/*    month: "long",*/}
+                            {/*})}*/}
                         </h1>
                         <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
                     </div>
