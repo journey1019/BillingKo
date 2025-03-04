@@ -65,10 +65,14 @@ export const fetchKOMonthlyDetailVersionIndexData = async (serial_number, versio
     }
 }
 
-export const saveKOMonthlyDetailData = async (detailData) => {
-    const endpoint = `/monthly/saveData/detail/${detailData.date_index}`;
+/**
+ * @name: KO monthly save search Detail save (POST)
+ * @desc: KO Monthly Save Data - Version 증가
+ * */
+export const saveKOMonthlyDetailData = async (dataIndex, payload) => {
+    const endpoint = `/monthly/saveData/detail/${dataIndex}`;
     try {
-        return await postWithAuth(endpoint); // 인증 포함된 POST 요청
+        return await postWithAuth(endpoint, payload); // ✅ body로 payload 추가
     } catch (error) {
         console.log("Failed to fetch", error.response?.data || error.message);
         throw error;

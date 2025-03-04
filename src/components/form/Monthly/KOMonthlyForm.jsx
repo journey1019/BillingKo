@@ -53,9 +53,10 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
             </div>
         );
     };
-    const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
-    const handleEdit = () => setIsOpenDropdown(!isOpenDropdown);
-    const closeDropdown = () => setIsOpenDropdown(false);
+    // const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
+    // const handleEdit = () => setIsOpenDropdown(!isOpenDropdown);
+    // const closeDropdown = () => setIsOpenDropdown(false);
+
 
     return (
         <div className="bg-white p-4 rounded-lg shadow-md">
@@ -106,7 +107,7 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                 {/*        <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete Item</li>*/}
                 {/*    </Dropdown>*/}
                 {/*</div>*/}
-                <BasicDropdownForm/>
+                <BasicDropdownForm detailData={detailData}/>
 
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">Data Index:</div>
@@ -170,7 +171,7 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
             {/* 사용량 정보 */}
             <div className="mb-2">
                 <h3 className="text-lg font-semibold mb-2 text-gray-600">Usage Details</h3>
-                <div className="grid grid-cols-4 gap-4 text-sm">
+                <div className="grid grid-cols-4 gap-1 text-sm">
                     <div className="text-gray-500">Free Bytes:</div>
                     <div className=" col-span-1">{formatNumber(detailData.free_bytes)}</div>
                     <div className="text-gray-500">Total Used Bytes:</div>

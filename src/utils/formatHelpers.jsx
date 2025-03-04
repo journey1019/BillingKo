@@ -39,3 +39,11 @@ export const formatDateTime = (dateTimeString) => {
 export const getTodayDate = () => {
     return new Date().toISOString().slice(0, 10);
 }
+
+/**
+ * @desc: 'YYYY-MM-DD HH:mm' -> 'YYYY-MM-DD HH:mm:00'
+ * */
+export const formatDateAddTime = (dateString) => {
+    if (!dateString) return null;
+    return dateString.length === 16 ? `${dateString}:00` : dateString; // 초가 없으면 ":00" 추가
+};
