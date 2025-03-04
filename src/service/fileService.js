@@ -221,11 +221,6 @@ export const updateUpload = async (sp_id, uploadData) => {
 
 
 export const createUpload = async (uploadData) => {
-    // "null" 문자열이 아니라 실제 null로 변환
-    // if (!uploadData.invoice_address2 || uploadData.invoice_address2.trim() === "") {
-    //     uploadData.invoice_address2 = null;
-    // }
-
     try {
         return await postWithBody("/upload/", uploadData);
     } catch (error) {

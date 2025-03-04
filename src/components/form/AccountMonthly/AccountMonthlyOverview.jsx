@@ -3,7 +3,7 @@ import { formatNumber, formatValue } from '@/utils/formatHelpers.jsx';
 import clsx from 'clsx';
 import { MdEdit } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
-import Dropdown from '@/components/layout/button/Dropdown.jsx';
+import Dropdown from '@/components/dropdown/Dropdown.jsx';
 
 
 const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accountDetailError }) => {

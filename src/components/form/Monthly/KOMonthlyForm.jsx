@@ -1,8 +1,10 @@
 import { MdEdit } from "react-icons/md";
 import { useState } from 'react';
 import clsx from 'clsx';
-import Dropdown from '@/components/layout/button/Dropdown.jsx';
+import Dropdown from '@/components/dropdown/Dropdown.jsx';
 import BasicDropdownForm from '@/components/form/Monthly/Edit/BasicDropdownForm.jsx';
+import UsageDetailDropdownForm from '@/components/form/Monthly/Edit/UsageDetailDropdownForm.jsx';
+import PaymentDropdownForm from '@/components/form/Monthly/Edit/PaymentDropdownForm.jsx';
 
 
 const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData }) => {
@@ -98,7 +100,7 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                 className="text-gray-700 font-semibold">{formatDateTime(detailData.update_date) || '-'}</span>
             </div>
 
-            <div className="border rounded-lg px-4 py-2">
+            <div className="border rounded-lg px-4 py-2 mb-2">
                 {/*/!* ✅ 드롭다운 사용 예제 *!/*/}
                 {/*<div className="relative inline-block float-right">*/}
                 {/*    /!* ✅ 오른쪽 정렬 드롭다운 *!/*/}
@@ -167,19 +169,20 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
             {/*</div>*/}
             {/* 기본 정보 */}
 
-
-            {/* 사용량 정보 */}
-            <div className="mb-2">
-                <h3 className="text-lg font-semibold mb-2 text-gray-600">Usage Details</h3>
-                <div className="grid grid-cols-4 gap-1 text-sm">
-                    <div className="text-gray-500">Free Bytes:</div>
-                    <div className=" col-span-1">{formatNumber(detailData.free_bytes)}</div>
-                    <div className="text-gray-500">Total Used Bytes:</div>
-                    <div className=" col-span-1">{formatNumber(detailData.use_byte_total)}</div>
-                    <div className="text-gray-500">Use Period:</div>
-                    <div className=" col-span-1">{detailData.use_period} days</div>
-                    <div className="text-gray-500">Use Percent of Month:</div>
-                    <div className=" col-span-1">{detailData.use_percent_of_month}%</div>
+            <div className="border rounded-lg px-4 py-2">
+                <UsageDetailDropdownForm detailData={detailData} />
+                <div className="mb-2">
+                    <h3 className="text-lg font-semibold mb-2 text-gray-600">Usage Details</h3>
+                    <div className="grid grid-cols-4 gap-1 text-sm">
+                        <div className="text-gray-500">Free Bytes:</div>
+                        <div className=" col-span-1">{formatNumber(detailData.free_bytes)}</div>
+                        <div className="text-gray-500">Total Used Bytes:</div>
+                        <div className=" col-span-1">{formatNumber(detailData.use_byte_total)}</div>
+                        <div className="text-gray-500">Use Period:</div>
+                        <div className=" col-span-1">{detailData.use_period} days</div>
+                        <div className="text-gray-500">Use Percent of Month:</div>
+                        <div className=" col-span-1">{detailData.use_percent_of_month}%</div>
+                    </div>
                 </div>
             </div>
 
@@ -218,35 +221,39 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
             </div>
 
             {/* 결제 정보 */}
-            <div className="mb-2">
-                <h3 className="text-lg font-semibold mb-2 text-gray-600">Payment Details</h3>
-                <div className="grid grid-cols-4 gap-1 text-sm">
-                    <div className="text-gray-500">Basic Fee:</div>
-                    <div className=" col-span-1">{formatNumber(detailData.payment?.basic_fee)} 원</div>
-                    <div className="text-gray-500">Final Fee:</div>
-                    <div className=" col-span-1">{formatNumber(detailData.payment?.final_fee)} 원</div>
-                    <div className="text-gray-500">Total Fee:</div>
-                    <div className=" col-span-1">{formatNumber(detailData.payment?.total_fee)} 원</div>
-                    <div className="text-gray-500">Subscribe Fee:</div>
-                    <div className=" col-span-1">{formatNumber(detailData.payment?.subscribe_fee)} 원</div>
+            {/* 사용량 정보 */}
+            <div className="border rounded-lg px-4 py-2">
+                <PaymentDropdownForm detailData={detailData} />
+                <div className="mb-2">
+                    <h3 className="text-lg font-semibold mb-2 text-gray-600">Payment Details</h3>
+                    <div className="grid grid-cols-4 gap-1 text-sm">
+                        <div className="text-gray-500">Basic Fee:</div>
+                        <div className=" col-span-1">{formatNumber(detailData.payment?.basic_fee)} 원</div>
+                        <div className="text-gray-500">Final Fee:</div>
+                        <div className=" col-span-1">{formatNumber(detailData.payment?.final_fee)} 원</div>
+                        <div className="text-gray-500">Total Fee:</div>
+                        <div className=" col-span-1">{formatNumber(detailData.payment?.total_fee)} 원</div>
+                        <div className="text-gray-500">Subscribe Fee:</div>
+                        <div className=" col-span-1">{formatNumber(detailData.payment?.subscribe_fee)} 원</div>
+                    </div>
                 </div>
-            </div>
-            <div className="text-gray-500 border-b mb-2" />
-            {/* 기타 정보 */}
-            <div className="mb-2">
-                <div className="grid grid-cols-4 gap-1 text-sm">
-                    <div className="text-gray-500">Additional Usage Fee:</div>
-                    <div className="col-span-1">{formatNumber(detailData.payment?.add_use_fee)} 원</div>
-                    <div className="text-gray-500">Cut-off Fee:</div>
-                    <div className="col-span-1">{formatNumber(detailData.payment?.cut_off_fee)} 원</div>
-                    <div className="text-gray-500">Modification Fee:</div>
-                    <div className="col-span-1">{formatNumber(detailData.payment?.modification_fee)} 원</div>
+                <div className="text-gray-500 border-b mb-2" />
+                {/* 기타 정보 */}
+                <div className="mb-2">
+                    <div className="grid grid-cols-4 gap-1 text-sm">
+                        <div className="text-gray-500">Additional Usage Fee:</div>
+                        <div className="col-span-1">{formatNumber(detailData.payment?.add_use_fee)} 원</div>
+                        <div className="text-gray-500">Cut-off Fee:</div>
+                        <div className="col-span-1">{formatNumber(detailData.payment?.cut_off_fee)} 원</div>
+                        <div className="text-gray-500">Modification Fee:</div>
+                        <div className="col-span-1">{formatNumber(detailData.payment?.modification_fee)} 원</div>
+                    </div>
                 </div>
             </div>
 
             {/* 요금 상세 (Table) */}
             <div className="mb-2">
-                <h3 className="text-lg font-semibold mb-2 text-gray-600">Fee Breakdown</h3>
+                <h3 className="text-lg font-semibold mb-2 text-gray-600">Fee Detail</h3>
                 <table className="w-full border-collapse border border-gray-300 text-sm">
                     <thead className="bg-gray-100">
                     <tr>
@@ -254,6 +261,8 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                         <th className="border border-gray-300 px-2 py-1">Classification</th>
                         <th className="border border-gray-300 px-2 py-1">Billing Fee</th>
                         <th className="border border-gray-300 px-2 py-1">Period</th>
+                        <th className="border border-gray-300 px-2 py-1">Use / Def Byte</th>
+                        <th className="border border-gray-300 px-2 py-1">Note</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -263,9 +272,11 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                             <td className="border border-gray-300 px-2 py-1">{fee.classfication}</td>
                             <td className="border border-gray-300 px-2 py-1">{formatNumber(fee.billing_fee)} 원</td>
                             <td className="border border-gray-300 px-2 py-1">{fee.act_date_period}</td>
+                            <td className="border border-gray-300 px-2 py-1">{fee.use_byte}/{fee.default_byte}</td>
+                            <td className="border border-gray-300 px-2 py-1">{fee.note}</td>
                         </tr>
                     )) || <tr>
-                        <td colSpan="4" className="text-center p-2">No data available</td>
+                        <td colSpan="5" className="text-center p-2">No data available</td>
                     </tr>}
                     </tbody>
                 </table>
