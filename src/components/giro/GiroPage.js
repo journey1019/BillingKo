@@ -126,9 +126,9 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
     ---------------------------- */
     doc.setFontSize(13);
     const text = "267040";
-    const startX = 170; // 시작 X 좌표
-    const startY = 228; // 시작 Y 좌표
-    const spacing = 5.5; // 문자 간격 (픽셀)
+    const startX = 171; // 시작 X 좌표
+    const startY = 226; // 시작 Y 좌표
+    const spacing = 5.3; // 문자 간격 (픽셀)
 
     for (let i = 0; i < text.length; i++) {
         doc.text(text[i], startX + (i * spacing), startY);
@@ -144,21 +144,21 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
 
     doc.setFont("NanumGothic", "bold");
     doc.setFontSize(11);
-    doc.text("267,040", 37, 239);
+    doc.text("267,040", 37, 237);
 
     doc.setFontSize(10);
-    doc.text("대진해운(주)", 78, 245);
-    doc.text("2025년 02월 청구서", 78, 254);
+    doc.text("대진해운(주)", 78, 243);
+    doc.text("2025년 02월 청구서", 78, 252.5);
 
     doc.setFontSize(8);
-    doc.text("A_10302", 20, 250);
-    doc.text("대진해운(주)", 20, 256);
-    doc.text("2025년 02월 청구서", 20, 262);
-    doc.text("2025-02-28", 20, 268);
+    doc.text("A_10302", 20, 248);
+    doc.text("대진해운(주)", 20, 254.2);
+    doc.text("2025년 02월 청구서", 20, 260.7);
+    doc.text("2025-02-28", 20, 267);
 
     doc.setFontSize(10);
-    doc.text("A_10302", 138, 245);
-    doc.text("2025-02-28", 138, 254);
+    doc.text("A_10302", 138, 243);
+    doc.text("2025-02-28", 138, 252.5);
 
     return doc;
 };
