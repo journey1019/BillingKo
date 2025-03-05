@@ -42,7 +42,7 @@ const GiroPDFPrint = ({ yearMonth, invoiceBasicData, accountDetailData }) => {
                 onClick={handleGeneratePdf}
             >
                 <IoMdDownload />
-                <span>Download PDF</span>
+                <span>Download Giro PDF</span>
             </button>
         </div>
     );

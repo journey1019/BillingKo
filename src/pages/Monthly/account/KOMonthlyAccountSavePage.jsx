@@ -15,6 +15,7 @@ import { MdAttachMoney, MdMoneyOffCsred } from "react-icons/md";
 import GiroPDFBatchDownload from '@/components/giro/GiroPDFBatchDownload.jsx';
 import GiroPDFPrint from '@/components/giro/GiroPDFPrint.jsx';
 import GiroPDFPreview from '@/components/giro/GiroPDFPreview.jsx';
+import TabComponent from '@/components/layout/TabComponent.jsx';
 
 
 const KOMonthlyAccountSavePage = () => {
@@ -54,18 +55,35 @@ const KOMonthlyAccountSavePage = () => {
     console.log('monthlyAcctSaveData : ', monthlyAcctSaveData)
     console.log('monthlyAcctSaveDetailData : ', monthlyAcctSaveDetailData)
 
+    const tabs = [
+        { id: 1, label: 'Invoice PDF', content: <InvoicePDFPreview
+                yearMonth={yearMonth}
+                invoiceBasicData={invoiceBasicData}
+                accountDetailData={monthlyAcctSaveDetailData}
+            />},
+        { id: 2, label: 'Giro PDF', content: <GiroPDFPreview yearMonth={yearMonth}
+                                                                invoiceBasicData={invoiceBasicData}
+                                                                accountDetailData={monthlyAcctSaveDetailData} /> },
+    ];
     return(
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             {/* 상단 제목 및 월 선택 */}
             <div className="flex flex-row col-span-6 border-b pb-3 mb-2 border-gray-400 justify-between items-center">
                 <h1 className="text-2xl font-base">All Invoices</h1>
 
-                {/* All PDF Save */}
-                <InvoicePDFBatchDownload
-                    yearMonth={yearMonth}
-                    invoiceBasicData={invoiceBasicData}
-                    monthlyAcctSaveData={monthlyAcctSaveData}
-                />
+                <div className="flex flex-row space-x-4">
+                    {/* All PDF Save */}
+                    <InvoicePDFBatchDownload
+                        yearMonth={yearMonth}
+                        invoiceBasicData={invoiceBasicData}
+                        monthlyAcctSaveData={monthlyAcctSaveData}
+                    />
+                    <GiroPDFBatchDownload
+                        yearMonth={yearMonth}
+                        invoiceBasicData={invoiceBasicData}
+                        monthlyAcctSaveData={monthlyAcctSaveData}
+                    />
+                </div>
             </div>
 
             {/* 납부현황 */}
@@ -130,41 +148,11 @@ const KOMonthlyAccountSavePage = () => {
                         <div className="flex flex-row space-x-4">
                             <InvoicePDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
                                              accountDetailData={monthlyAcctSaveDetailData} />
+                            <GiroPDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
+                                          accountDetailData={monthlyAcctSaveDetailData} />
                         </div>
                     </div>
-                    <div className="p-4 bg-white rounded-lg">
-                        {/* PDF 미리보기 추가 */}
-                        <InvoicePDFPreview
-                            yearMonth={yearMonth}
-                            invoiceBasicData={invoiceBasicData}
-                            accountDetailData={monthlyAcctSaveDetailData}
-                        />
-                    </div>
-                </div>
-            )}
-
-
-            {isExpanded && selectedRowData && (
-                <div className="p-2 col-span-4">
-                    <div className="flex flex-row justify-between">
-                        <h1 className="text-2xl p-2">{selectedRowData.acct_num}</h1>
-                        <div className="flex flex-row space-x-4">
-                            {/* Button */}
-                        </div>
-                    </div>
-                    <div className="p-4 bg-white rounded-lg">
-                        {/* Giro 미리보기 추가 */}
-                        <GiroPDFBatchDownload
-                            yearMonth={yearMonth}
-                            invoiceBasicData={invoiceBasicData}
-                            monthlyAcctSaveData={monthlyAcctSaveData}
-                        />
-                        <GiroPDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
-                                         accountDetailData={monthlyAcctSaveDetailData} />
-                        <GiroPDFPreview yearMonth={yearMonth}
-                                        invoiceBasicData={invoiceBasicData}
-                                        accountDetailData={monthlyAcctSaveDetailData} />
-                    </div>
+                    <TabComponent tabs={tabs} />
                 </div>
             )}
         </div>

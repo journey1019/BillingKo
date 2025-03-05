@@ -3,11 +3,12 @@ import { GiroPage } from './GiroPage.js';
 import { fetchKOMonthlyAccountSaveIndexDetailData } from '@/service/monthlyAccountService.js';
 import { FaDownload } from "react-icons/fa";
 
-
-const GiroPDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveData }) => {
+const GiroPDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveData = [] }) => { // 기본값 설정
     const [loading, setLoading] = useState(false);
 
     const handleDownloadAll = async () => {
+        if (!monthlyAcctSaveData || monthlyAcctSaveData.length === 0) return; // 데이터가 없으면 실행 X
+
         setLoading(true);
         try {
             const pdfBlobs = [];
@@ -32,7 +33,7 @@ const GiroPDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveData
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `Invoice_${acctNum}_${yearMonth}.pdf`;
+                a.download = `Giro_${acctNum}_${yearMonth}.pdf`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -40,7 +41,7 @@ const GiroPDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveData
             });
 
         } catch (error) {
-            console.error("Error generating batch invoices:", error);
+            console.error("Error generating batch giros:", error);
         } finally {
             setLoading(false);
         }
@@ -49,12 +50,12 @@ const GiroPDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveData
     return (
         <button
             className={`flex flex-row items-center p-2 rounded-md border-gray-700 border-2 space-x-2 transition duration-200 ease-in-out 
-                        ${loading || !monthlyAcctSaveData.length ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "hover:bg-gray-200 hover:border-gray-900 hover:text-gray-900"}`}
+                        ${loading || !monthlyAcctSaveData?.length ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "hover:bg-gray-200 hover:border-gray-900 hover:text-gray-900"}`}
             onClick={handleDownloadAll}
-            disabled={loading || !monthlyAcctSaveData.length} // monthlyAcctSaveData가 없거나 빈 배열이면 비활성화
+            disabled={loading || !monthlyAcctSaveData?.length} // `?.`을 사용하여 `null` 체크
         >
             <FaDownload />
-            <span>{loading ? "Downloading..." : "Download All PDFs"}</span>
+            <span>{loading ? "Downloading..." : "Download All Giro PDFs"}</span>
         </button>
     );
 }
