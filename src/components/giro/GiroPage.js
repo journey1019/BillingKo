@@ -1,21 +1,28 @@
-/** InvoicePage1.js */
+/** GiroPage.js */
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import nanumGothicFont from '@/assets/fonts/NanumGothic-normal';         // Base64 문자열 형태의 일반 폰트
 import nanumGothicBoldFont from '@/assets/fonts/NanumGothic-Bold';          // Base64 문자열 형태의 Bold 폰트
 import nanumGothicExtraBoldFont from '@/assets/fonts/NanumGothic-ExtraBold';// Base64 문자열 형태의 Extra Bold 폰트
-import companyLogoBase64 from '@/assets/images/companyLogoBase64';          // Base64 문자열 형태의 회사 로고 이미지
-import { formatNumberWithCommas } from '@/utils/formatHelpers.jsx';
+import notoSansBoldFont from '@/assets/fonts/notoSansKR-Bold';
+import { formatNumberWithCommas, formatDateIndex } from '@/utils/formatHelpers.jsx';
 import { defaultAccountData, applyDefaultValues } from '@/components/invoice/helpers/dataHelpers.js';
 
 /** ❓: 추후 확인해봐야 할 항목 */
 export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
+    console.log(accountDetailData)
+    console.log(invoiceBasicData)
     const year = Math.floor(yearMonth / 100);
     const month = String(yearMonth % 100).padStart(2, '0');
-    const formattedYearMonth = `${year}-${month}`; // 2024-12
+
+    // 청구서 출력 다음달
+    const nextMonth = Number(month) + 1;
+    const nextYear = nextMonth > 12 ? year + 1 : year;
+    const formattedNextMonth = nextMonth > 12 ? 1 : nextMonth;
+    // 말일 계산 (for 'due_date_of_payment')
+    const lastDayOfMonth = new Date(nextYear, formattedNextMonth, 0).getDate();
 
     const doc = new jsPDF();
-    const shadowOffset = 1;
     const pageWidth = doc.internal.pageSize.getWidth();
 
     /* ----------------------------
@@ -28,6 +35,9 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
     doc.addFileToVFS("NanumGothic-ExtraBold.ttf", nanumGothicExtraBoldFont);
     doc.addFont("NanumGothic-ExtraBold.ttf", "NanumGothic", "extrabold");
 
+    doc.addFileToVFS("NotoSansKR-VariableFont_wght.ttf", notoSansBoldFont);
+    doc.addFont("NotoSansKR-VariableFont_wght.ttf", "NotoSansKR", "bold");
+
     /* ----------------------------
        삽입 데이터 추출
     ---------------------------- */
@@ -35,57 +45,28 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
 
     const acct_num = accountData.acct_num; // 없으면 '-'
     const acct_name = accountData.account_info.acct_name;
+    const utf8_acct_name = decodeURIComponent(encodeURIComponent(acct_name)); // `unescape()` 대체
     const invoice_address = accountData.account_info.invoice_address; // 없으면 '-'
+    const invoice_address2 = accountData.account_info.invoice_address2 || ""; // 없으면 '-'
     const invoice_postcode = String(accountData.account_info.invoice_postcode); // 없으면 '00000'
-    // Basic Table (First Table)
-    const billing_num = formattedYearMonth+"-"+acct_num; // 청구번호
-    const create_date = ''; // 작성일자
-    const period_of_use = "" // 사용기간
-    const due_date_of_payment = "" // 납부기한
-    // Current Month Table (Second Table)
-    const basic_fee_total = formatNumberWithCommas(accountData.basic_fee_total); // 기본료
-    const basic_fee_count = accountData.basic_fee_count+"대";
-    const add_use_fee_total = formatNumberWithCommas(accountData.add_use_fee_total); // 통신료
-    const account_use_byte_total = formatNumberWithCommas(accountData.account_use_byte_total) + "Byte(s)"; // 사용한 바이트 수
-    const modification_fee_total = formatNumberWithCommas(accountData.modification_fee_total); // 부가서비스료
-    const subscribe_fee_total = formatNumberWithCommas(accountData.subscribe_fee_total); // 기타사용료
-    const total_fee = formatNumberWithCommas(accountData.total_fee); // 공급가액
-    const tax_fee = formatNumberWithCommas(accountData.tax_fee); // 부가가치세
-    const monthly_final_fee = formatNumberWithCommas(accountData.monthly_final_fee); // 합계금액
-    const cut_off_fee = formatNumberWithCommas(accountData.cut_off_fee); // 10원미만 절사금액
-    const final_fee = formatNumberWithCommas(accountData.final_fee); // 당월납부액 ❓(당월납부액 == 총 납부액)
-    // Details of Unpaid Table (Third Table)
-    const one_unpaid_detail = ""; // 미납내역
-    const one_unpaid_amount = "" // 미납금액
-    const late_surcharge = ""; // 연체가산금
-    const none_pay_total = formatNumberWithCommas(accountData.none_pay_fee); // 미납요금계
-
+    const due_date_of_payment = `${nextYear}-${String(formattedNextMonth).padStart(2, '0')}-${String(lastDayOfMonth).padStart(2, '0')}`; // 납부기한
+    const monthly_final_fee = accountData.monthly_final_fee; // 합계금액
+    const billingMonth = `${nextYear}년 ${String(formattedNextMonth).padStart(2, '0')}월 청구서`
 
 
     /* ----------------------------
        청구서 양식 추출
     ---------------------------- */
     const getData = (code) => invoiceBasicData.find(item => item.code_name === code)?.code_value || "";
-    const companyName = getData('ko_company_name');
-    const paymentDue = invoiceBasicData.find(item => item.code_name === 'ko_payment_due')?.code_value || '';
-    const paymentAccount = invoiceBasicData.find(item => item.code_name === 'ko_payment_account')?.code_value || '';
     const postCode = getData('ko_post_code');
     const address = getData('ko_address');
     const telNumber = getData('ko_tel_number');
     const faxNumber = getData('ko_fax_number');
     const homepage = getData('ko_homepage');
-    const subjectHeader = getData('ko_subject_header');
-    const customerNumber = getData('ko_customer_number'); // 추가: 고객번호
-    // 필요한 다른 데이터
-    const ko_regist_number = getData('ko_regist_number');
-    const koNonpayNotice = getData('ko_nonpay_notice');
 
     /* ----------------------------
-       헤더 섹션 (회사 로고, 기본 회사 정보, 수신처)
+        헤더 섹션 1 (기본 회사 정보)
     ---------------------------- */
-    // 회사 로고 (페이지 1)
-    // doc.addImage(companyLogoBase64, 'PNG', 15, 10, 30, 7);
-
     // 기본 회사 정보 텍스트 (좌측)
     const firstX = 10.9, firstY = 39.5, firstHeight = 10, firstGap = 3.7;
     const yCompanyName1 = firstY + firstHeight;       // 20
@@ -96,75 +77,79 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
     doc.setFontSize(9);
     doc.setFont("NanumGothic", "bold");
 
-    doc.text(address+'(반포동 세영제이타워)', firstX, yCompanyName1);
-    doc.text(`고객센터 ${telNumber}, Fax ${faxNumber}`, firstX, yPostAddress1);
-    doc.text(`홈페이지: ${homepage}`, firstX, yTelFax1);
-    doc.text(`0`, firstX, yHomepage1);
-    doc.text(`6`, firstX + 2, yHomepage1);
-    doc.text(`536`, firstX + 4, yHomepage1);
+    doc.text(address+'(반포동 세영제이타워)', firstX, yCompanyName1); // '서울시 서초구 강남대로 525, 세영제이타워 15층(반포동 세영제이타워)'
+    doc.text(`고객센터: ${telNumber}, Fax ${faxNumber}`, firstX, yPostAddress1); // 고객센터: (02)344-7311, Fax(02)3444-7312
+    doc.text(`홈페이지: ${homepage}`, firstX, yTelFax1); // 홈페이지: https:www.orbcomm.co.kr
+    doc.text(postCode, firstX, yHomepage1); // 06536
 
-    // 수신처 정보 (오른쪽 영역)
+    /* ----------------------------
+        헤더 섹션 2 (수신처)
+    ---------------------------- */
     const secondX = 76, secondY = 65.5, secondGap = 20;
     const ySubject = secondY;
     const ySendPrecious = ySubject + secondGap + 2;
     const ySendPostCode = ySendPrecious + secondGap - 12;
 
+    // 주소
     doc.setFont("NanumGothic", "extrabold");
     doc.setFontSize(12);
-    doc.text('부산광역시 영도구 태종로 70, 3층 (대교동 1가)', secondX, ySubject); // 주소
-    // doc.text('(사무동 3층 해무과)', secondX, ySubject+13); // 상세주소
+    doc.text(invoice_address, secondX, ySubject); // 주소
+    doc.text(invoice_address2, secondX, ySubject+13); // 상세주소
+    // 고객
+    doc.setFont("NotoSansKR", "bold");
     doc.setFontSize(14);
-    doc.text('대진해운(주)', 119, ySendPrecious); // 회사명
-    const preciousPostcodeX = pageWidth - 35;
-
-    doc.text('49045', preciousPostcodeX, ySendPostCode, { align: 'right' }); // 우편번호
+    doc.text(utf8_acct_name, 119, ySendPrecious); // 회사명
+    // 우편번호
+    doc.setFont("NanumGothic", "extrabold");
+    doc.text(invoice_postcode, pageWidth - 35, ySendPostCode, { align: 'right' }); // 우편번호
 
 
     /* ----------------------------
-       다섯 번째 블록: 공급자 정보
+        지로 통지서 블록 (금액, 고객 정보 등)
     ---------------------------- */
     doc.setFontSize(13);
-    const text = "1267040";
+    const text = String(monthly_final_fee);
     const startY = 225.8; // 시작 Y 좌표
     const spacing = 5.2; // 문자 간격 (픽셀)
 
-// 전체 문자열 너비 계산
+    // 전체 문자열 너비 계산
     const totalWidth = (text.length - 1) * spacing;
 
-// 오른쪽 끝 정렬을 위한 X 좌표 조정
+    // 오른쪽 끝 정렬을 위한 X 좌표 조정
     const endX = 197 // 기존 우측 정렬 기준 X 좌표
     const startX = endX - totalWidth; // 문자열의 시작점 보정
 
+    // 금액 (오른쪽 정렬)
     for (let i = 0; i < text.length; i++) {
         doc.text(text[i], startX + (i * spacing), startY);
     }
 
 
-
-    const fifthMarginLeft = 36;
-    const fifthMarginRight = 36;
-    const fifthBlockWidth = pageWidth - (fifthMarginLeft + fifthMarginRight);
-    const fifthBlockY = 250;
-    const leftImageWidth = 40;
-    const leftImageHeight = 10;
-
+    // 금액(요금)
     doc.setFont("NanumGothic", "bold");
     doc.setFontSize(11);
-    doc.text("267,040", 37, 237);
+    doc.text(formatNumberWithCommas(monthly_final_fee), 37, 237);
 
+    // 첫 번째 열 (고객 번호, 고객, YYYY년 MM월 청구서, 납부기한)
     doc.setFontSize(10);
-    doc.text("대진해운(주)", 78, 243);
-    doc.text("2025년 02월 청구서", 78, 252.5);
+    doc.setFont("NotoSansKR", "bold");
+    doc.text(utf8_acct_name, 78, 243);
+    doc.setFont("NanumGothic", "bold");
+    doc.text(billingMonth, 78, 252.5);
 
+    // 두 번째 열 (고객, YYYY년 MM월 청구서)
     doc.setFontSize(8);
-    doc.text("A_10302", 20, 248);
-    doc.text("대진해운(주)", 20, 254.2);
-    doc.text("2025년 02월 청구서", 20, 260.7);
-    doc.text("2025-02-28", 20, 267);
+    doc.text(acct_num, 20, 248);
+    doc.setFont("NotoSansKR", "bold");
+    doc.text(utf8_acct_name, 20, 254.2);
+    doc.setFont("NanumGothic", "bold");
+    doc.text(billingMonth, 20, 260.7);
+    doc.text(due_date_of_payment, 20, 267);
 
+    // 세 번째 열 (고객 번호, 납부기한)
     doc.setFontSize(10);
-    doc.text("A_10302", 138, 243);
-    doc.text("2025-02-28", 138, 252.5);
+    doc.text(acct_num, 138, 243);
+    doc.text(due_date_of_payment, 138, 252.5);
 
     return doc;
 };

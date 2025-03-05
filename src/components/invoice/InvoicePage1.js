@@ -11,8 +11,6 @@ import { defaultAccountData, applyDefaultValues } from '@/components/invoice/hel
 
 /** ❓: 추후 확인해봐야 할 항목 */
 export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailData) => {
-    console.log(invoiceBasicData)
-    console.log(accountDetailData)
     const year = Math.floor(yearMonth / 100);
     const month = String(yearMonth % 100).padStart(2, '0');
     const formattedYearMonth = `${year}-${month}`; // 2024-12
@@ -24,15 +22,13 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
     // 말일 계산 (for 'due_date_of_payment')
     const lastDayOfMonth = new Date(nextYear, formattedNextMonth, 0).getDate();
 
-    console.log()
-
 
     const doc = new jsPDF();
     const shadowOffset = 1;
     const pageWidth = doc.internal.pageSize.getWidth();
 
     /* ----------------------------
-       폰트 초기화
+        폰트 초기화
     ---------------------------- */
     doc.addFileToVFS("NanumGothic.ttf", nanumGothicFont);
     doc.addFont("NanumGothic.ttf", "NanumGothic", "normal");
@@ -45,7 +41,7 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
     doc.addFont("NotoSansKR-VariableFont_wght.ttf", "NotoSansKR", "bold");
 
     /* ----------------------------
-       삽입 데이터 추출
+        삽입 데이터 추출
     ---------------------------- */
     const accountData = applyDefaultValues(accountDetailData?.[0] || {}, defaultAccountData);
 
@@ -73,17 +69,14 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
     const final_fee = formatNumberWithCommas(accountData.final_fee); // 당월납부액 ❓(당월납부액 == 총 납부액)
     // Details of Unpaid Table (Third Table)
     const nonePayInfos = Array.isArray(accountData.none_pay_info) ? accountData.none_pay_info : [];
-    const one_unpaid_detail = ""; // 미납내역
-    const one_unpaid_amount = "" // 미납금액
     const late_surcharge = ""; // 연체가산금
     const none_pay_total = formatNumberWithCommas(accountData.none_pay_fee); // 미납요금계
 
     /* ----------------------------
-       청구서 양식 추출
+        청구서 양식 추출
     ---------------------------- */
     const getData = (code) => invoiceBasicData.find(item => item.code_name === code)?.code_value || "";
     const companyName = getData('ko_company_name');
-    const paymentDue = invoiceBasicData.find(item => item.code_name === 'ko_payment_due')?.code_value || '';
     const paymentAccount = invoiceBasicData.find(item => item.code_name === 'ko_payment_account')?.code_value || '';
     const postCode = getData('ko_post_code');
     const address = getData('ko_address');
@@ -91,13 +84,12 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
     const faxNumber = getData('ko_fax_number');
     const homepage = getData('ko_homepage');
     const subjectHeader = getData('ko_subject_header');
-    const customerNumber = getData('ko_customer_number'); // 추가: 고객번호
     // 필요한 다른 데이터
     const ko_regist_number = getData('ko_regist_number');
     const koNonpayNotice = getData('ko_nonpay_notice');
 
     /* ----------------------------
-       헤더 섹션 (회사 로고, 기본 회사 정보, 수신처)
+        헤더 섹션 (회사 로고, 기본 회사 정보, 수신처)
     ---------------------------- */
     // 회사 로고 (페이지 1)
     doc.setFont("NanumGothic", "normal");
@@ -218,7 +210,7 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
 
 
     /* ----------------------------
-       두 번째 표: 당월 요금 내역 표
+        두 번째 표: 당월 요금 내역 표
     ---------------------------- */
     const secondTableY = 156;
     const secondMarginLeft = 18, secondMarginRight = 18;
@@ -252,7 +244,7 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
         ["공급가액", total_fee, ""],
         ["부가가치세", tax_fee, ""],
         ["10원미만 절사금액", `- ${cut_off_fee}`, ""],
-        ["당월납부액", final_fee, ""]
+        ["당월납부액", monthly_final_fee, ""]
     ];
     doc.autoTable({
         startY: secondTableY,
@@ -310,7 +302,7 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
 
 
     /* ----------------------------
-       세 번째 표: 미납 요금 내역 표 (2열 autoTable + 예약된 3열 별도 출력)
+        세 번째 표: 미납 요금 내역 표 (2열 autoTable + 예약된 3열 별도 출력)
     ---------------------------- */
     const thirdTableY = secondTableY + secondTableHeight + 6;
     const thirdMarginLeft = secondMarginLeft;
