@@ -143,8 +143,8 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
     const boxHeight = paddingY;
 
     // 1️⃣ 그림자 효과 추가 (연한 회색)
-    doc.setFillColor(209, 213, 219); // 회색 (#D1D5DB)
-    doc.setDrawColor(209, 213, 219); // 경계선도 회색
+    doc.setFillColor(200, 200, 200); // 회색 (#D1D5DB)
+    doc.setDrawColor(200, 200, 200); // 경계선도 회색
     doc.roundedRect(boxX + 1.2, boxY + 1.2, boxWidth, boxHeight, 2, 2, 'FD'); // 약간 아래 & 오른쪽으로 이동
 
     // 2️⃣ 원래 박스
