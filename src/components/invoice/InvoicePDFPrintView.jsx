@@ -21,7 +21,7 @@ const InvoicePDFPrintView = ({ yearMonth, invoiceBasicData, accountDetailData })
         let doc = generateInvoicePage1(yearMonth, invoiceBasicData, accountDetailData || []);
 
         // 두 번째 페이지 생성 (doc 객체를 넘김)
-        doc = generateInvoicePage2(doc, formattedYearMonth, invoiceBasicData, accountDetailData || [])
+        doc = generateInvoicePage2(doc, yearMonth, invoiceBasicData, accountDetailData || [])
 
         // jsPDF에서는 output('blob')을 이용해 Blob 생성
         const pdfBlob = doc.output('blob');

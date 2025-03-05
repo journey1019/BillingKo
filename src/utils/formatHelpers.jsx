@@ -8,6 +8,15 @@ export function formatNumberWithCommas(number) {
     return number.toLocaleString('en-US'); // 'ko-KR' 사용 가능
 }
 
+/**
+ * @method: '10000' -> '10.000'
+ * */
+const formatNumberWithCommasString = (number) => {
+    if (isNaN(number) || number === null) return "0";
+    return Number(number).toLocaleString();
+};
+
+
 
 export const formatValue = (value, defaultText = "-") => {
     if (
@@ -46,4 +55,12 @@ export const getTodayDate = () => {
 export const formatDateAddTime = (dateString) => {
     if (!dateString) return null;
     return dateString.length === 16 ? `${dateString}:00` : dateString; // 초가 없으면 ":00" 추가
+};
+
+/**
+ * @method: '202412' -> '2024-12'
+ * */
+export const formatDateIndex = (dateIndex) => {
+    if (!dateIndex || dateIndex.length !== 6) return "-"; // 유효성 검사
+    return `${dateIndex.substring(0, 4)}-${dateIndex.substring(4, 6)}`;
 };

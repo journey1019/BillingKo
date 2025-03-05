@@ -2,7 +2,11 @@ import companyLogoBase64 from '@/assets/images/companyLogoBase64';
 import { formatNumberWithCommas } from '@/utils/formatHelpers.jsx';
 import { defaultAccountData, applyDefaultValues } from '@/components/invoice/helpers/dataHelpers.js';
 
-export const generateInvoicePage2 = (doc, formattedYearMonth, invoiceData, accountDetailData) => {
+export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailData) => {
+    const year = Math.floor(yearMonth / 100);
+    const month = String(yearMonth % 100).padStart(2, '0');
+    const formattedYearMonth = `${year}-${month}`; // 2024-12
+
     // 📌 기본 데이터 설정
     const data = applyDefaultValues(accountDetailData?.[0] || {}, defaultAccountData);
     const deviceDetails = Array.isArray(data.device_detail) ? data.device_detail : [];
@@ -43,8 +47,15 @@ export const generateInvoicePage2 = (doc, formattedYearMonth, invoiceData, accou
         const gap = availableWidth / (firstRowData.length - 0.3);
         firstRowData.forEach((item, idx) => {
             const xPosition = leftMargin + idx * gap;
-            doc.text(`${item.label}: ${item.value}`, xPosition, currentY);
+
+            // '●' 항목만 `:` 없이 출력
+            if (item.label === "●") {
+                doc.text(`${item.label} ${item.value}`, xPosition, currentY); // `:` 없이 공백 사용
+            } else {
+                doc.text(`${item.label}: ${item.value}`, xPosition, currentY); // 기존 방식 유지
+            }
         });
+
 
         // 📌 `firstRowData` 아래 간격 조정
         currentY += 2;

@@ -2,6 +2,7 @@ import { BiBuildings } from "react-icons/bi";
 import Move from '@/components/layout/main/Move.jsx';
 import Stock from '@/components/layout/main/Stock.jsx';
 import HorizontalNonLinearStepper from '@/components/module/HorizontalNonLinearStepper.jsx';
+import PaymentStatus from '@/components/layout/main/PaymentStatus.jsx';
 
 
 const Homepage = () => {
@@ -20,6 +21,8 @@ const Homepage = () => {
             <Move />
 
             <Stock />
+
+            <PaymentStatus/>
 
             {/*<div className="flex flex-row w-1/2">*/}
             {/*    <HorizontalNonLinearStepper/>*/}

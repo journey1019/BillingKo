@@ -31,7 +31,7 @@ const InvoicePDFPrint = ({ yearMonth, invoiceBasicData, accountDetailData }) => 
         let doc = generateInvoicePage1(yearMonth, invoiceBasicData, accountDetailData || []);
 
         // 두 번째 페이지 추가
-        doc = generateInvoicePage2(doc, formattedYearMonth, invoiceBasicData, accountDetailData || []);
+        doc = generateInvoicePage2(doc, yearMonth, invoiceBasicData, accountDetailData || []);
 
         // PDF를 Blob으로 변환
         const pdfBlob = doc.output('blob');
