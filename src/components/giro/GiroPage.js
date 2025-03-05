@@ -97,10 +97,12 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
 
     doc.setFont("NanumGothic", "extrabold");
 
-    doc.text(companyName, firstX, yCompanyName1);
-    doc.text(`(우)${postCode}  ${address}`, firstX, yPostAddress1);
-    doc.text(`고객센터 ${telNumber}, Fax ${faxNumber}`, firstX, yTelFax1);
-    doc.text(`홈페이지: ${homepage}`, firstX, yHomepage1);
+    doc.text(address+'(반포동 세영제이타워)', firstX, yCompanyName1);
+    doc.text(`고객센터 ${telNumber}, Fax ${faxNumber}`, firstX, yPostAddress1);
+    doc.text(`홈페이지: ${homepage}`, firstX, yTelFax1);
+    doc.text(`0`, firstX, yHomepage1);
+    doc.text(`6`, firstX + 2, yHomepage1);
+    doc.text(`536`, firstX + 4, yHomepage1);
 
     // 수신처 정보 (오른쪽 영역)
     const secondX = 76, secondY = 65.5, secondGap = 20;
@@ -109,14 +111,14 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
     const ySendPostCode = ySendPrecious + secondGap - 12;
 
     doc.setFontSize(12);
-    doc.text(invoice_address, secondX, ySubject); // 주소
-    doc.text('(사무동 3층 해무과)', secondX, ySubject+13); // 상세주소
+    doc.text('부산광역시 영도구 태종로 70, 3층 (대교동 1가)', secondX, ySubject); // 주소
+    // doc.text('(사무동 3층 해무과)', secondX, ySubject+13); // 상세주소
     doc.setFontSize(13);
-    doc.text(acct_name, 119, ySendPrecious); // 회사명
+    doc.text('대진해운(주)', 119, ySendPrecious); // 회사명
     const preciousPostcodeX = pageWidth - 35;
 
     doc.setFontSize(14);
-    doc.text(invoice_postcode, preciousPostcodeX, ySendPostCode, { align: 'right' }); // 우편번호
+    doc.text('49045', preciousPostcodeX, ySendPostCode, { align: 'right' }); // 우편번호
 
 
     /* ----------------------------
