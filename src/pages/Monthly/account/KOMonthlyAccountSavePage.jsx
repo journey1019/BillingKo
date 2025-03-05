@@ -12,6 +12,9 @@ import InvoicePDFPrintView from '@/components/invoice/InvoicePDFPrintView.jsx';
 import InvoicePDFPreview from '@/components/invoice/InvoicePDFPreview.jsx';
 import InvoicePDFBatchDownload from '@/components/invoice/InvoicePDFBatchDownload.jsx';
 import { MdAttachMoney, MdMoneyOffCsred } from "react-icons/md";
+import GiroPDFBatchDownload from '@/components/giro/GiroPDFBatchDownload.jsx';
+import GiroPDFPrint from '@/components/giro/GiroPDFPrint.jsx';
+import GiroPDFPreview from '@/components/giro/GiroPDFPreview.jsx';
 
 
 const KOMonthlyAccountSavePage = () => {
@@ -136,6 +139,31 @@ const KOMonthlyAccountSavePage = () => {
                             invoiceBasicData={invoiceBasicData}
                             accountDetailData={monthlyAcctSaveDetailData}
                         />
+                    </div>
+                </div>
+            )}
+
+
+            {isExpanded && selectedRowData && (
+                <div className="p-2 col-span-4">
+                    <div className="flex flex-row justify-between">
+                        <h1 className="text-2xl p-2">{selectedRowData.acct_num}</h1>
+                        <div className="flex flex-row space-x-4">
+                            {/* Button */}
+                        </div>
+                    </div>
+                    <div className="p-4 bg-white rounded-lg">
+                        {/* Giro 미리보기 추가 */}
+                        <GiroPDFBatchDownload
+                            yearMonth={yearMonth}
+                            invoiceBasicData={invoiceBasicData}
+                            monthlyAcctSaveData={monthlyAcctSaveData}
+                        />
+                        <GiroPDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
+                                         accountDetailData={monthlyAcctSaveDetailData} />
+                        <GiroPDFPreview yearMonth={yearMonth}
+                                        invoiceBasicData={invoiceBasicData}
+                                        accountDetailData={monthlyAcctSaveDetailData} />
                     </div>
                 </div>
             )}

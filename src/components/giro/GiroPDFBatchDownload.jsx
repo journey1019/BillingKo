@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { generateInvoicePage1 } from './InvoicePage1.js';
-import { generateInvoicePage2 } from './InvoicePage2.js';
+import { GiroPage } from './GiroPage.js';
 import { fetchKOMonthlyAccountSaveIndexDetailData } from '@/service/monthlyAccountService.js';
 import { FaDownload } from "react-icons/fa";
 
-const InvoicePDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveData }) => {
+
+const GiroPDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveData }) => {
     const [loading, setLoading] = useState(false);
 
     const handleDownloadAll = async () => {
@@ -20,10 +20,7 @@ const InvoicePDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveD
                 const accountDetailData = await fetchKOMonthlyAccountSaveIndexDetailData(yearMonth, acctNum);
 
                 // 첫 번째 페이지 생성
-                let doc = generateInvoicePage1(yearMonth, invoiceBasicData, accountDetailData || []);
-
-                // 두 번째 페이지 추가
-                doc = generateInvoicePage2(doc, yearMonth, invoiceBasicData, accountDetailData || []);
+                let doc = GiroPage(yearMonth, invoiceBasicData, accountDetailData || []);
 
                 // PDF를 Blob으로 변환
                 const pdfBlob = doc.output('blob');
@@ -52,7 +49,7 @@ const InvoicePDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveD
     return (
         <button
             className={`flex flex-row items-center p-2 rounded-md border-gray-700 border-2 space-x-2 transition duration-200 ease-in-out 
-                        ${loading || !monthlyAcctSaveData?.length ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "hover:bg-gray-200 hover:border-gray-900 hover:text-gray-900"}`}
+                        ${loading || !monthlyAcctSaveData.length ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "hover:bg-gray-200 hover:border-gray-900 hover:text-gray-900"}`}
             onClick={handleDownloadAll}
             disabled={loading || !monthlyAcctSaveData.length} // monthlyAcctSaveData가 없거나 빈 배열이면 비활성화
         >
@@ -60,6 +57,6 @@ const InvoicePDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveD
             <span>{loading ? "Downloading..." : "Download All PDFs"}</span>
         </button>
     );
-};
+}
 
-export default InvoicePDFBatchDownload;
+export default GiroPDFBatchDownload;
