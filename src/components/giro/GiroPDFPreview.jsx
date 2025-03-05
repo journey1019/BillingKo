@@ -28,7 +28,7 @@ const GiroPDFPreview = ({ yearMonth, invoiceBasicData, accountDetailData }) => {
     if (!pdfUrl) return <div>Loading PDF Preview...</div>;
 
     return (
-        <div className="w-full h-[1500px] border-2 border-gray-300 rounded-lg overflow-hidden">
+        <div className="w-full h-[570px] border-2 border-gray-300 rounded-lg overflow-hidden">
             <iframe src={pdfUrl} className="w-full h-full" title="Invoice Preview"></iframe>
         </div>
     );

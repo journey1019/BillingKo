@@ -27,8 +27,6 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
     doc.addFont("NanumGothic-Bold.ttf", "NanumGothic", "bold");
     doc.addFileToVFS("NanumGothic-ExtraBold.ttf", nanumGothicExtraBoldFont);
     doc.addFont("NanumGothic-ExtraBold.ttf", "NanumGothic", "extrabold");
-    doc.setFont("NanumGothic", "normal");
-    doc.setFontSize(8);
 
     /* ----------------------------
        삽입 데이터 추출
@@ -95,7 +93,8 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
     const yTelFax1 = yPostAddress1 + firstGap;          // 27
     const yHomepage1 = yTelFax1 + firstGap;             // 30.5
 
-    doc.setFont("NanumGothic", "extrabold");
+    doc.setFontSize(9);
+    doc.setFont("NanumGothic", "bold");
 
     doc.text(address+'(반포동 세영제이타워)', firstX, yCompanyName1);
     doc.text(`고객센터 ${telNumber}, Fax ${faxNumber}`, firstX, yPostAddress1);
@@ -110,14 +109,14 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
     const ySendPrecious = ySubject + secondGap + 2;
     const ySendPostCode = ySendPrecious + secondGap - 12;
 
+    doc.setFont("NanumGothic", "extrabold");
     doc.setFontSize(12);
     doc.text('부산광역시 영도구 태종로 70, 3층 (대교동 1가)', secondX, ySubject); // 주소
     // doc.text('(사무동 3층 해무과)', secondX, ySubject+13); // 상세주소
-    doc.setFontSize(13);
+    doc.setFontSize(14);
     doc.text('대진해운(주)', 119, ySendPrecious); // 회사명
     const preciousPostcodeX = pageWidth - 35;
 
-    doc.setFontSize(14);
     doc.text('49045', preciousPostcodeX, ySendPostCode, { align: 'right' }); // 우편번호
 
 
@@ -125,14 +124,21 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
        다섯 번째 블록: 공급자 정보
     ---------------------------- */
     doc.setFontSize(13);
-    const text = "267040";
-    const startX = 171; // 시작 X 좌표
-    const startY = 226; // 시작 Y 좌표
-    const spacing = 5.3; // 문자 간격 (픽셀)
+    const text = "1267040";
+    const startY = 225.8; // 시작 Y 좌표
+    const spacing = 5.2; // 문자 간격 (픽셀)
+
+// 전체 문자열 너비 계산
+    const totalWidth = (text.length - 1) * spacing;
+
+// 오른쪽 끝 정렬을 위한 X 좌표 조정
+    const endX = 197 // 기존 우측 정렬 기준 X 좌표
+    const startX = endX - totalWidth; // 문자열의 시작점 보정
 
     for (let i = 0; i < text.length; i++) {
         doc.text(text[i], startX + (i * spacing), startY);
     }
+
 
 
     const fifthMarginLeft = 36;
