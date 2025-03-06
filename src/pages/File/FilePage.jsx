@@ -74,9 +74,9 @@ const FilePage = () => {
             {/*    />*/}
             {/*</div>*/}
 
-            {/*<div className="grid col-span-2 2xl:col-span-1">*/}
-            {/*    <FileStatusForm />*/}
-            {/*</div>*/}
+            <div className="grid col-span-2 2xl:col-span-1">
+                <FileStatusForm />
+            </div>
             <div className="grid col-span-2 2xl:col-span-1">
                 <FileUploadStatus />
             </div>

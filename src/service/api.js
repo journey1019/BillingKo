@@ -99,11 +99,16 @@ export const getWithAuth = async (url, params = {}) => {
     }
 };
 
-// POST 요청
-export const post = async (url, body) => {
-    console.log("POST Body:", body); // POST 요청 데이터 확인
-    const response = await api.post(url, body);
-    return response.data;
+// ✅ 공통 POST 함수 (재사용 가능)
+export const post = async (url, body = {}, headers = {}) => {
+    try {
+        console.log("POST Request:", { url, body, headers }); // 요청 데이터 로깅
+        const response = await axios.post(url, body, { headers });
+        return response.data;
+    } catch (error) {
+        console.error("POST Error:", error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
 
 // POST 요청을 Query String로 전송
@@ -115,16 +120,25 @@ export const postWithQueryString = async (url, params) => {
 };
 
 // POST 요청을 JSON Body로 전송
-export const postWithBody = async (url, body) => {
+// export const postWithBody = async (url, body) => {
+//     const token = localStorage.getItem("token");
+//
+//     const response = await api.post(url, body, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//             ...(token ? { Authorization: `Bearer ${token}` } : {}),
+//         },
+//     });
+//     return response.data;
+// };
+// ✅ `postWithBody` → `post` 함수 활용 (Authorization 포함)
+export const postWithBody = async (url, body = {}) => {
     const token = localStorage.getItem("token");
-
-    const response = await api.post(url, body, {
-        headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-    });
-    return response.data;
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+    return post(url, body, headers);
 };
 
 export const postWithBodyFile = async (url, body) => {

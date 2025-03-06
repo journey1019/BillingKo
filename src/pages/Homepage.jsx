@@ -1,8 +1,8 @@
 import { BiBuildings } from "react-icons/bi";
-import Move from '@/components/layout/main/Move.jsx';
-import Stock from '@/components/layout/main/Stock.jsx';
+import Move from '@/components/construct/main/Move.jsx';
+import Stock from '@/components/construct/main/Stock.jsx';
 import HorizontalNonLinearStepper from '@/components/module/HorizontalNonLinearStepper.jsx';
-import PaymentStatus from '@/components/layout/main/PaymentStatus.jsx';
+import PaymentStatus from '@/components/construct/main/PaymentStatus.jsx';
 
 
 const Homepage = () => {

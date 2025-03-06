@@ -1,4 +1,4 @@
-import { getWithAuth, postWithAuth } from './api';
+import { getWithAuth, postWithAuth, postWithBody } from './api';
 
 export const fetchKOMonthlyAccountIndexData = async (year_month) => {
     try {
@@ -36,6 +36,18 @@ export const fetchKOMonthlyAccountDetailData = async (year_month, acct_num) => {
         return await getWithAuth(`/monthly/account/acct/${year_month}/${acct_num}`);
     } catch (error) {
         console.error("Failed to fetch account History:", error.response?.data || error.message);
+        throw error;
+    }
+}
+
+
+
+export const fetchPaymentConfirm = async (yearMonth, confirmData) => {
+    try {
+        console.log("POST 데이터:", confirmData);
+        return await postWithBody(`/monthly/saveData/account_confirm/${yearMonth}`, confirmData);
+    } catch (error) {
+        console.error("Failed to create adjustment", error.response?.data || error.message);
         throw error;
     }
 }
