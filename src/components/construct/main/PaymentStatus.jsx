@@ -13,7 +13,7 @@ const PaymentStatus = () => {
     // ✅ 전체 데이터 상태
     const [paymentData, setPaymentData] = useState([]);
     // ✅ 선택된 Row 데이터만 저장하는 상태
-    const [selectedRowData, setSelectedRowData] = useState(null);
+    const [selectedRows, setSelectedRows] = useState([]);
     const [confirmDatas, setConfirmDatas] = useState([]);
 
     // ✅ `monthlyAcctSaveData` 변경 시 초기 데이터 설정
@@ -43,14 +43,23 @@ const PaymentStatus = () => {
         );
     };
 
-    // ✅ Row 클릭 시 `selectedRowData` 업데이트
-    const handleRowClick = (index) => {
-        const selectedAccount = paymentData[index];
-
-        // ✅ 클릭한 Row만 `confirmDatas`로 저장
-        setSelectedRowData(selectedAccount);
-        setConfirmDatas([selectedAccount]);
+    // ✅ Row 클릭 이벤트 핸들러
+    const handleRowClick = (account) => {
+        setSelectedRows((prevSelected) => {
+            if (prevSelected.some(item => item.acct_num === account.acct_num)) {
+                // ✅ 이미 선택된 Row이면 제거
+                const updatedSelected = prevSelected.filter(item => item.acct_num !== account.acct_num);
+                setConfirmDatas(updatedSelected);
+                return updatedSelected;
+            } else {
+                // ✅ 새로 선택한 Row 추가
+                const updatedSelected = [...prevSelected, account];
+                setConfirmDatas(updatedSelected);
+                return updatedSelected;
+            }
+        });
     };
+
 
     // ✅ 개별 체크박스 변경 핸들러
     const handleCheckboxChange = (index) => {
@@ -77,16 +86,13 @@ const PaymentStatus = () => {
             return;
         }
 
-        const modifiedData = confirmDatas.map(account => {
-            const postData = {
-                acct_num: account.acct_num,
-                confirm_yn: account.confirm_yn ? "Y" : "N",
-                confirm_payment_method: account.confirm_payment_method,
-            };
-            if (account.confirm_payment_bank) postData.confirm_payment_bank = account.confirm_payment_bank;
-            if (account.confirm_payment_desc) postData.confirm_payment_desc = account.confirm_payment_desc;
-            return postData;
-        });
+        const modifiedData = confirmDatas.map(account => ({
+            acct_num: account.acct_num,
+            confirm_yn: account.confirm_yn ? "Y" : "N",
+            confirm_payment_method: account.confirm_payment_method,
+            ...(account.confirm_payment_bank && { confirm_payment_bank: account.confirm_payment_bank }),
+            ...(account.confirm_payment_desc && { confirm_payment_desc: account.confirm_payment_desc }),
+        }));
 
         try {
             await fetchPaymentConfirm(yearMonth, modifiedData);
@@ -97,7 +103,8 @@ const PaymentStatus = () => {
         }
     };
 
-    console.log(selectedRowData)
+
+    console.log(selectedRows)
     console.log(confirmDatas)
     console.log(paymentData)
 
@@ -113,13 +120,70 @@ const PaymentStatus = () => {
                     <div className="grid grid-cols-11">
                         {monthlyAcctSaveData?.length > 0 ? (
                             <div
-                                className={`max-h-64 overflow-y-auto border border-gray-300 rounded-md ${selectedRowData ? 'col-span-5' : 'col-span-11'}`}>
+                                className={`max-h-64 overflow-y-auto border border-gray-300 rounded-md ${confirmDatas?.length > 0 ? 'col-span-5' : 'col-span-11'}`}>
 
                                 <table className="w-full text-sm text-center border-collapse">
                                     <thead className="bg-gray-200 sticky -top-0.5 z-10">
                                     <tr>
                                         {['번호', '고객 번호', '고객 이름', '최종 납부 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명'].map((header, index) => (
                                             <th key={index} className="p-2 border font-medium whitespace-nowrap">
+                                                {header}
+                                                {/*{header === '납부 확인' ? (*/}
+                                                {/*    <div className="flex justify-center items-center">*/}
+                                                {/*        <input*/}
+                                                {/*            type="checkbox"*/}
+                                                {/*            checked={isAllSelected}*/}
+                                                {/*            onChange={handleSelectAll}*/}
+                                                {/*            className="cursor-pointer"*/}
+                                                {/*            indeterminate={isPartialSelected ? 'true' : undefined} // 일부 선택 시 중간 상태*/}
+                                                {/*        />*/}
+                                                {/*    </div>*/}
+                                                {/*) : (*/}
+                                                {/*    header*/}
+                                                {/*)}*/}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {monthlyAcctSaveData.map((account, index) => (
+                                        <tr
+                                            key={index}
+                                            className={`text-center text-sm cursor-pointer ${selectedRows.some(item => item.acct_num === account.acct_num) ? 'bg-gray-100' : ''}`}
+                                            onClick={() => handleRowClick(index)}
+                                        >
+                                            <td className="py-2 border">{index + 1}</td>
+                                            <td className="py-2 border">{account.acct_num}</td>
+                                            <td className="py-2 border">{monthlyAcctSaveData[index].account_info.acct_name}</td>
+
+                                            {/* ✅ 최종 납부 금액 Cell + Popover */}
+                                            <Popover data={monthlyAcctSaveData[index]}>
+                                                {formatNumber(monthlyAcctSaveData[index].final_fee)}원
+                                            </Popover>
+
+                                            {/* ✅ 개별 체크박스 (납부 확인) */}
+                                            <td className="py-2 border">{monthlyAcctSaveData[index].confirm_yn}</td>
+
+                                            {/* ✅ Select (납부 방법) */}
+                                            <td className="p-2 border">{monthlyAcctSaveData[index].confirm_payment_method || '-' }</td>
+
+                                            {/* ✅ Select (납부 은행) */}
+                                            <td className="p-2 border">{monthlyAcctSaveData[index].confirm_payment_bank || '-'}</td>
+
+                                            {/* ✅ 설명 입력 */}
+                                            <td className="p-2 border">{monthlyAcctSaveData[index].confirm_payment_desc || '-'}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <div className="max-h-64 overflow-y-auto border border-gray-300 rounded-md col-span-11">
+                                <table className="w-full text-sm text-center border-collapse">
+                                    <thead className="bg-gray-200 sticky -top-0.5 z-10">
+                                    <tr>
+                                        {['번호', '고객 번호', '고객 이름', '최종 납부 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명'].map((header, index) => (
+                                            <th key={index} className="px-2 py-1 border font-medium">
                                                 {header === '납부 확인' ? (
                                                     <div className="flex justify-center items-center">
                                                         <input
@@ -138,86 +202,6 @@ const PaymentStatus = () => {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {paymentData.map((account, index) => (
-                                        <tr
-                                            key={index}
-                                            className={`text-center text-sm cursor-pointer ${selectedRowData?.acct_num === account.acct_num ? 'bg-gray-100' : ''}`}
-                                            onClick={() => handleRowClick(index)}
-                                        >
-                                            <td className="py-2 border">{index + 1}</td>
-                                            <td className="py-2 border">{account.acct_num}</td>
-                                            <td className="py-2 border">{monthlyAcctSaveData[index].account_info.acct_name}</td>
-
-                                            {/* ✅ 최종 납부 금액 Cell + Popover */}
-                                            <Popover data={monthlyAcctSaveData[index]}>
-                                                {formatNumber(monthlyAcctSaveData[index].final_fee)}원
-                                            </Popover>
-
-                                            {/* ✅ 개별 체크박스 (납부 확인) */}
-                                            <td className="py-2 border">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={account.confirm_yn}
-                                                    onChange={() => handleCheckboxChange(index)}
-                                                    className="cursor-pointer"
-                                                />
-                                            </td>
-
-                                            {/* ✅ Select (납부 방법) */}
-                                            <td className="p-2 border">
-                                                <select
-                                                    value={account.confirm_payment_method}
-                                                    onChange={(e) => handleSelectChange(index, 'confirm_payment_method', e.target.value)}
-                                                    className="border rounded-md px-1 py-1 text-sm"
-                                                >
-                                                    <option value="">선택</option>
-                                                    <option value="account">계좌이체</option>
-                                                    <option value="giro">지로</option>
-                                                    <option value="card">카드</option>
-                                                </select>
-                                            </td>
-
-                                            {/* ✅ Select (납부 은행) */}
-                                            <td className="p-2 border">
-                                                <select
-                                                    value={account.confirm_payment_bank}
-                                                    onChange={(e) => handleSelectChange(index, 'confirm_payment_bank', e.target.value)}
-                                                    className="border rounded-md px-1 py-1 text-sm"
-                                                >
-                                                    <option value="">선택</option>
-                                                    <option value="shinhan">신한은행</option>
-                                                    <option value="nh">농협은행</option>
-                                                    <option value="kb">국민은행</option>
-                                                    <option value="hana">하나은행</option>
-                                                </select>
-                                            </td>
-
-                                            {/* ✅ 설명 입력 */}
-                                            <td className="p-2 border">
-                                                <input
-                                                    type="text"
-                                                    value={account.confirm_payment_desc}
-                                                    onChange={(e) => handleSelectChange(index, 'confirm_payment_desc', e.target.value)}
-                                                    className="w-full border rounded-md px-2 py-1 text-sm text-center"
-                                                    placeholder="설명 입력"
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        ) : (
-                            <div className="max-h-64 overflow-y-auto border border-gray-300 rounded-md col-span-11">
-                                <table className="w-full text-sm text-center border-collapse">
-                                    <thead className="bg-gray-200 sticky -top-0.5 z-10">
-                                    <tr>
-                                        {['번호', '고객 번호', '고객 이름', '최종 납부 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명'].map((header, index) => (
-                                            <th key={index} className="px-2 py-1 border font-medium">{header}</th>
-                                        ))}
-                                    </tr>
-                                    </thead>
-                                    <tbody>
                                     <tr className="text-center text-sm">
                                         <td colSpan={8} className="py-4 border text-gray-500">디바이스 정보 없음</td>
                                     </tr>
@@ -226,15 +210,15 @@ const PaymentStatus = () => {
                             </div>
                         )}
 
-                        {/* ✅ 두 번째 블록 (1 비율, 중앙 아이콘) → `selectedRowData` 없을 때 숨김 */}
-                        {selectedRowData && confirmDatas && (
+                        {/* ✅ 두 번째 블록 (1 비율, 중앙 아이콘) → `selectedRows` 없을 때 숨김 */}
+                        {confirmDatas?.length > 0 && (
                             <div className="col-span-1 flex justify-center items-center">
                                 <span className="text-2xl">🔄</span> {/* 원하는 아이콘으로 변경 가능 */}
                             </div>
                         )}
 
-                        {/* ✅ 세 번째 블록 (4.5 비율) → `selectedRowData` 없을 때 숨김 */}
-                        {selectedRowData && (
+                        {/* ✅ 세 번째 블록 (4.5 비율) → `selectedRows` 없을 때 숨김 */}
+                        {confirmDatas?.length > 0 && (
                             <div
                                 className="max-h-64 overflow-y-auto border border-gray-300 rounded-md col-span-5">
                                 <table className="w-full text-sm text-center border-collapse">
@@ -250,7 +234,13 @@ const PaymentStatus = () => {
                                     {confirmDatas?.length > 0 ? (
                                         <>
                                             {confirmDatas.map((account, index) => (
-                                                <tr key={index} className="text-center text-sm">
+                                                <tr
+                                                    key={index}
+                                                    className={`text-center text-sm cursor-pointer ${
+                                                        selectedRows.some(item => item.acct_num === account.acct_num) ? 'bg-gray-200' : ''
+                                                    }`}
+                                                    onClick={() => handleRowClick(account)}
+                                                >
                                                     <td className="py-2 border">{index + 1}</td>
                                                     <td className="py-2 border">{account.acct_num}</td>
                                                     <td className="py-2 border">{monthlyAcctSaveData[index].account_info.acct_name}</td>
