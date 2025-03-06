@@ -122,7 +122,7 @@ const PaymentStatus = () => {
     const NotData = () => {
         return (
             <table className="w-full text-sm text-center border-collapse">
-                <thead className="bg-gray-200 sticky -top-0.5 z-10">
+                <thead className="bg-gray-200 sticky -top-0.5" style={{zIndex: 1}}>
                 <tr>
                     {['번호', '고객 번호', '고객 이름', '최종 납부 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명'].map((header, index) => (
                         <th key={index} className="px-2 py-1 border font-medium">{header}</th>
@@ -143,7 +143,9 @@ const PaymentStatus = () => {
             <div className="bg-white rounded-2xl shadow-md">
                 <div className="flex flex-row justify-between bg-neutral-200 rounded-t-2xl items-center px-4 py-2">
                     <h1 className="text-lg font-semibold">납부 현황</h1>
-                    <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                    <div className="relative z-10">
+                        <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                    </div>
                 </div>
 
                 <div className="px-4 pt-4">
@@ -154,9 +156,10 @@ const PaymentStatus = () => {
                     <div className="grid grid-cols-11">
                         {monthlyAcctSaveData?.length > 0 ? (
                             <div
-                                className={`max-h-64 overflow-y-auto border border-gray-300 rounded-md ${confirmDatas?.length > 0 ? 'col-span-5' : 'col-span-11'}`}>
+                                className={`max-h-64 overflow-y-auto border border-gray-300 rounded-md ${confirmDatas?.length > 0 ? 'col-span-5' : 'col-span-11'}`}
+                            >
                                 <table className="w-full text-sm text-center border-collapse">
-                                    <thead className="bg-gray-200 sticky -top-0.5 z-10">
+                                    <thead className="bg-gray-200 sticky -top-0.5" style={{ zIndex: 1 }}>
                                     <tr>
                                         {['번호', '고객 번호', '고객 이름', '납부 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명'].map((header, index) => (
                                             <th key={index} className="p-2 border font-medium whitespace-nowrap">
@@ -245,9 +248,9 @@ const PaymentStatus = () => {
                         {confirmDatas?.length > 0 && (
                             <div className="max-h-64 overflow-y-auto border border-gray-300 rounded-md col-span-5">
                                 <table className="w-full text-sm text-center border-collapse">
-                                    <thead className="bg-gray-200 sticky -top-0.5 z-10">
+                                    <thead className="bg-gray-200 sticky -top-0.5" style={{zIndex: 1}}>
                                     <tr>
-                                        {['고객 번호', '고객 이름', '최종 납부 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명', '선택 항목'].map((header, index) => (
+                                        {['고객 번호', '고객 이름', '납부 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명', '선택 항목'].map((header, index) => (
                                             <th key={index} className="p-2 border font-medium whitespace-nowrap">
                                                 {header}
                                             </th>
