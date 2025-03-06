@@ -3,9 +3,11 @@ import { fetchKOMonthlyAccountSaveIndexData, fetchPaymentConfirm } from '@/servi
 import useApiFetch from '@/hooks/useApiFetch.js';
 import useYearMonth from '@/hooks/useYearMonth.js';
 import MonthPicker from '@/components/time/MonthPicker.jsx';
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useMemo } from 'react';
 import Popover from '@/components/layout/Popover.jsx';
 import { formatNumber } from '@/utils/formatHelpers.jsx';
+import { FaExchangeAlt } from "react-icons/fa";
+
 
 const PaymentStatus = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
@@ -95,6 +97,38 @@ const PaymentStatus = () => {
         }
     };
 
+    // ✅ confirm_yn === "N" 인 항목만 전체 선택
+    const handleSelectUnconfirmedRows = () => {
+        const unconfirmedRows = monthlyAcctSaveData.filter(account => account.confirm_yn === "N");
+
+        if (isAllUnconfirmedSelected) {
+            // ✅ 이미 전체 선택된 경우 → 제거
+            setConfirmDatas(prevData =>
+                prevData.filter(account => account.confirm_yn !== "N")
+            );
+        } else {
+            // ✅ 선택되지 않은 `confirm_yn === "N"` 항목 추가
+            setConfirmDatas(prevData => {
+                const newSelection = unconfirmedRows.filter(account =>
+                    !prevData.some(selected => selected.acct_num === account.acct_num)
+                );
+                return [...prevData, ...newSelection];
+            });
+        }
+    };
+
+
+    // ✅ `isAllUnconfirmedSelected`를 useMemo로 계산
+    const isAllUnconfirmedSelected = useMemo(() => {
+        if (!monthlyAcctSaveData?.length) return false;
+
+        const unconfirmedRows = monthlyAcctSaveData.filter(account => account.confirm_yn === "N");
+        return unconfirmedRows.every(account =>
+            confirmDatas.some(selected => selected.acct_num === account.acct_num)
+        );
+    }, [confirmDatas, monthlyAcctSaveData]);
+
+
     console.log(confirmDatas)
     console.log(paymentData)
 
@@ -123,6 +157,10 @@ const PaymentStatus = () => {
                 <div className="flex flex-row justify-between bg-neutral-200 rounded-t-2xl items-center px-4 py-2">
                     <h1 className="text-lg font-semibold">납부 현황</h1>
                     <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                </div>
+
+                <div className="px-4 pt-4">
+                    <span className="text-red-500">납부현황을 체크할 데이터를 클릭해주세요.</span>
                 </div>
 
                 <div className="p-4 items-center text-center">
@@ -196,21 +234,38 @@ const PaymentStatus = () => {
                         {/* Y(이미 Y된 항목 제외) N인 항목 전체 선택 */}
                         {/* ✅ 두 번째 블록 (1 비율, 중앙 아이콘) → `selectedRows` 없을 때 숨김 */}
                         {confirmDatas?.length > 0 && (
-                            <div className="col-span-1 flex justify-center items-center">
-                                <span className="text-2xl">🔄</span> {/* 원하는 아이콘으로 변경 가능 */}
+                            <div className="col-span-1 flex flex-col justify-center items-center space-y-2">
+                                {/* ✅ 원하는 아이콘 */}
+                                <button
+                                    onClick={handleSelectUnconfirmedRows}
+                                    className={`px-2 py-1 bg-gray-300 text-black text-sm rounded-md hover:bg-gray-400 ${isAllUnconfirmedSelected ? 'bg-gray-500' : 'bg-gray-300'}`}
+                                >
+                                    <span className={`text-2xl `}><FaExchangeAlt /></span>
+                                </button>
+
+                                {/* ✅ 조건부 전체 선택/해제 버튼 */}
+                                {/*<button*/}
+                                {/*    onClick={handleSelectUnconfirmedRows}*/}
+                                {/*    className="px-2 py-1 bg-gray-300 text-black text-sm rounded-md hover:bg-gray-400"*/}
+                                {/*>*/}
+                                {/*    미확인 {isAllUnconfirmedSelected ? "해제" : "전체 선택"}*/}
+                                {/*</button>*/}
                             </div>
                         )}
+
 
                         {/* ✅ 세 번째 블록 (4.5 비율) → `selectedRows` 없을 때 숨김 */}
                         {confirmDatas?.length > 0 && (
                             <div className="max-h-64 overflow-y-auto border border-gray-300 rounded-md col-span-5">
                                 <table className="w-full text-sm text-center border-collapse">
                                     <thead className="bg-gray-200 sticky -top-0.5 z-10">
-                                    {['고객 번호', '고객 이름', '최종 납부 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명', '선택 항목'].map((header, index) => (
-                                        <th key={index} className="p-2 border font-medium whitespace-nowrap">
-                                            {header}
-                                        </th>
-                                    ))}
+                                    <tr>
+                                        {['고객 번호', '고객 이름', '최종 납부 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명', '선택 항목'].map((header, index) => (
+                                            <th key={index} className="p-2 border font-medium whitespace-nowrap">
+                                                {header}
+                                            </th>
+                                        ))}
+                                    </tr>
                                     </thead>
                                     <tbody>
                                     {confirmDatas.map((account, index) => (
@@ -238,7 +293,7 @@ const PaymentStatus = () => {
 
                                             <td className="p-2 border">
                                                 <select
-                                                    value={account.confirm_payment_method}
+                                                    value={account.confirm_payment_method || ""}
                                                     onChange={(e) => handleSelectChange(index, 'confirm_payment_method', e.target.value)}
                                                     className="border rounded-md px-1 py-1 text-sm"
                                                 >
@@ -251,7 +306,7 @@ const PaymentStatus = () => {
 
                                             <td className="p-2 border">
                                                 <select
-                                                    value={account.confirm_payment_bank}
+                                                    value={account.confirm_payment_bank || ""}
                                                     onChange={(e) => handleSelectChange(index, 'confirm_payment_bank', e.target.value)}
                                                     className="border rounded-md px-1 py-1 text-sm"
                                                 >
