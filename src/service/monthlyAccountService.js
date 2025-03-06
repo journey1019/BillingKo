@@ -1,4 +1,4 @@
-import { getWithAuth, postWithAuth, postWithBody } from './api';
+import { getWithAuth, post, postWithAuth, postWithBody } from './api';
 
 export const fetchKOMonthlyAccountIndexData = async (year_month) => {
     try {
@@ -44,6 +44,7 @@ export const fetchKOMonthlyAccountDetailData = async (year_month, acct_num) => {
 
 export const fetchPaymentConfirm = async (yearMonth, confirmData) => {
     try {
+        console.log("📦 전송 데이터:", { yearMonth, confirmData });
         console.log("POST 데이터:", confirmData);
         return await postWithBody(`/monthly/saveData/account_confirm/${yearMonth}`, confirmData);
     } catch (error) {

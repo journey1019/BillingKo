@@ -3,7 +3,6 @@ import { MdDelete, MdModeEditOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { deleteUpload } from '@/service/fileService.js';
 import useAlert from '@/hooks/useAlert'; // ✅ 커스텀 훅 사용
-import { confirmDelete, showSuccessAlert, showErrorAlert} from '@/utils/AlertService.js'; // ✅ 유틸리티 함수 사용
 
 const UploadHistoryDetailForm = ({ detailData }) => {
     const navigate = useNavigate();

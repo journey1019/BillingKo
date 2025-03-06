@@ -7,57 +7,36 @@ import { useState, useEffect,useMemo } from 'react';
 import Popover from '@/components/layout/Popover.jsx';
 import { formatNumber } from '@/utils/formatHelpers.jsx';
 import { FaExchangeAlt } from "react-icons/fa";
+import { showConfirmAlert, showSuccessAlert, showErrorAlert, showWarningAlert } from "@/utils/AlertService.js";
+
 
 
 const PaymentStatus = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
     const { data: monthlyAcctSaveData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountSaveIndexData, yearMonth);
 
-    // ✅ 전체 데이터 상태
-    const [paymentData, setPaymentData] = useState([]);
     // ✅ 선택된 Row 데이터만 저장하는 상태
     const [confirmDatas, setConfirmDatas] = useState([]);
-
-    // ✅ `monthlyAcctSaveData` 변경 시 초기 데이터 설정
-    useEffect(() => {
-        if (monthlyAcctSaveData?.length > 0) {
-            setPaymentData(
-                monthlyAcctSaveData.map(account => ({
-                    acct_num: account.acct_num,
-                    confirm_yn: account.confirm_yn === "Y",
-                    confirm_payment_method: account.confirm_payment_method || "",
-                    confirm_payment_bank: account.confirm_payment_bank || "",
-                    confirm_payment_desc: account.confirm_payment_desc || "",
-                }))
-            );
-        }
-    }, [monthlyAcctSaveData]);
-
-    // ✅ 전체 선택 상태 계산
-    const isAllSelected = paymentData.length > 0 && paymentData.every(account => account.confirm_yn);
-    const isPartialSelected = paymentData.some(account => account.confirm_yn) && !isAllSelected;
-
-    // ✅ 전체 선택 체크박스 핸들러
-    const handleSelectAll = () => {
-        const newStatus = !isAllSelected; // 전체 선택 여부 반전
-        setConfirmDatas(prevData =>
-            prevData.map(item => ({ ...item, confirm_yn: newStatus }))
-        );
-    };
 
     // ✅ Row 클릭 이벤트 핸들러 (선택/해제 로직 개선)
     const handleRowClick = (account) => {
         setConfirmDatas(prevData => {
             const isSelected = prevData.some(item => item.acct_num === account.acct_num);
-            return isSelected
-                ? prevData.filter(item => item.acct_num !== account.acct_num) // ✅ 선택 해제
-                : [...prevData, account]; // ✅ 선택 추가
+            if (isSelected) {
+                // ✅ 기존 선택된 항목 제거
+                return prevData.filter(item => item.acct_num !== account.acct_num);
+            } else {
+                // ✅ 최신 paymentData에서 해당 항목을 찾아 추가
+                const updatedItem = monthlyAcctSaveData.find(item => item.acct_num === account.acct_num);
+                return updatedItem ? [...prevData, updatedItem] : prevData;
+            }
         });
     };
 
     // ✅ 개별 체크박스 변경 핸들러
     const handleCheckboxChange = (index) => {
-        setPaymentData(prevData =>
+        // ✅ confirmDatas도 업데이트
+        setConfirmDatas(prevData =>
             prevData.map((item, i) =>
                 i === index ? { ...item, confirm_yn: !item.confirm_yn } : item
             )
@@ -66,7 +45,7 @@ const PaymentStatus = () => {
 
     // ✅ Select 및 Input 변경 핸들러
     const handleSelectChange = (index, field, value) => {
-        setPaymentData(prevData =>
+        setConfirmDatas(prevData =>
             prevData.map((item, i) =>
                 i === index ? { ...item, [field]: value } : item
             )
@@ -76,26 +55,35 @@ const PaymentStatus = () => {
     // ✅ 선택된 데이터만 필터링하여 POST 요청
     const handleSave = async () => {
         if (!confirmDatas.length) {
-            alert("선택된 데이터가 없습니다.");
+            showWarningAlert("선택된 데이터 없음", "저장할 데이터를 선택해주세요!");
             return;
         }
+
+        // ✅ 저장 확인 알람 재사용
+        const isConfirmed = await showConfirmAlert("저장 확인", "선택된 데이터를 저장하시겠습니까?");
+        if (!isConfirmed) return; // 사용자가 취소한 경우 종료
 
         const modifiedData = confirmDatas.map(account => ({
             acct_num: account.acct_num,
             confirm_yn: account.confirm_yn ? "Y" : "N",
-            confirm_payment_method: account.confirm_payment_method,
+            confirm_payment_method: account.confirm_payment_method || "",
             confirm_payment_bank: account.confirm_payment_bank || "",
             confirm_payment_desc: account.confirm_payment_desc || "",
         }));
 
+        console.log("yearMonth:", yearMonth);
+        console.log("modifiedData:", modifiedData);
+
         try {
-            await fetchPaymentConfirm(yearMonth, modifiedData);
-            alert("납부 정보가 성공적으로 저장되었습니다.");
+            const response = await fetchPaymentConfirm(yearMonth, modifiedData);
+            console.log("✅ API 응답:", response);
+            showSuccessAlert("저장 성공", "납부 정보가 성공적으로 저장되었습니다!");
         } catch (error) {
-            console.error("납부 정보 저장 실패:", error);
-            alert("납부 정보 저장 중 오류가 발생했습니다.");
+            console.error("❌ 납부 정보 저장 실패:", error);
+            showErrorAlert("저장 실패", "납부 정보 저장 중 오류가 발생했습니다.");
         }
     };
+
 
     // ✅ confirm_yn === "N" 인 항목만 전체 선택
     const handleSelectUnconfirmedRows = () => {
@@ -130,7 +118,6 @@ const PaymentStatus = () => {
 
 
     console.log(confirmDatas)
-    console.log(paymentData)
 
     const NotData = () => {
         return (
