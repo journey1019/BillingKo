@@ -130,9 +130,11 @@ const DeviceNewPage = () => {
 
                     {/* Serial Number */}
                     <div className="grid grid-cols-6 items-center space-x-4">
+                        {/* ✅ 1번째 칸 (Label) */}
                         <label htmlFor="serial_number" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
                             Serial Number
                         </label>
+                        {/* ✅ 2~3번째 칸 (Input) */}
                         <input
                             type="text"
                             id="serial_number"
@@ -142,8 +144,9 @@ const DeviceNewPage = () => {
                             placeholder="01680651SKYD374"
                             required
                         />
-                        <div className="">
-                            <DeviceNewFile/>
+                        {/* ✅ 6번째 칸 (DeviceNewFile) */}
+                        <div className="col-start-6 col-span-1">
+                            <DeviceNewFile />
                         </div>
                     </div>
 

@@ -1,23 +1,28 @@
 import { useState } from "react";
 import { uploadDevicesFile } from "@/service/deviceService.js";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const DeviceNewFile = () => {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadStatus, setUploadStatus] = useState(null);
+    const [alertType, setAlertType] = useState(""); // ✅ 성공 또는 실패 유형 저장
+    const [isUploading, setIsUploading] = useState(false); // ✅ 업로드 중 상태
 
     // ✅ 모달 열기
     const openModal = () => {
-        setSelectedFile(null); // 파일 선택 초기화
-        setUploadStatus(null); // 상태 초기화
+        setSelectedFile(null);
+        setUploadStatus(null);
+        setAlertType("");
         setIsModalOpen(true);
     };
 
     // ✅ 모달 닫기
     const closeModal = () => {
-        setIsModalOpen(false);
+        if (!isUploading) { // 업로드 중이 아닐 때만 닫기 허용
+            setIsModalOpen(false);
+        }
     };
 
     // ✅ 파일 선택 핸들러
@@ -31,18 +36,30 @@ const DeviceNewFile = () => {
     // ✅ 파일 업로드 핸들러
     const handleUpload = async () => {
         if (!selectedFile) {
-            alert("업로드할 파일을 선택하세요.");
+            setAlertType("error");
+            setUploadStatus("업로드할 파일을 선택하세요.");
             return;
         }
 
+        setIsUploading(true); // ✅ 업로드 시작
+        setUploadStatus("업로드 중...");
+        setAlertType("");
+
         try {
-            setUploadStatus("업로드 중...");
-            await uploadDevicesFile([selectedFile]); // ✅ 파일 업로드 함수 호출
-            setUploadStatus("업로드 성공!"); // ✅ 성공 메시지 표시
-            setTimeout(() => closeModal(), 3000); // 1초 후 모달 닫기
-            navigate("/devices");
+            await uploadDevicesFile([selectedFile]); // ✅ 파일 업로드 API 호출
+            setUploadStatus("업로드 성공!");
+            setAlertType("success");
+
+            // ✅ 모달을 닫고 "/devices"로 이동
+            setTimeout(() => {
+                setIsModalOpen(false);
+                navigate("/devices");
+            }, 1500);
         } catch (error) {
-            setUploadStatus(error.message || "파일 업로드 실패"); // ✅ 오류 메시지 표시
+            setAlertType("error");
+            setUploadStatus(error.message || "파일 업로드 실패");
+        } finally {
+            setIsUploading(false); // ✅ 업로드 완료 후 버튼 다시 활성화
         }
     };
 
@@ -66,10 +83,36 @@ const DeviceNewFile = () => {
                             <button
                                 onClick={closeModal}
                                 className="text-gray-500 hover:text-gray-700"
+                                disabled={isUploading} // ✅ 업로드 중일 때 닫기 방지
                             >
                                 ✖
                             </button>
                         </div>
+
+                        <div className="pb-2">
+                            <span className="text-sm text-gray-500">CSV 파일로 단말기 정보들을 추가할 수 있습니다.</span>
+                        </div>
+
+                        {/* ✅ Alert 메시지 */}
+                        {uploadStatus && (
+                            <div
+                                className={`flex items-center p-4 mb-4 text-sm rounded-lg 
+                                    ${alertType === "success"
+                                    ? "text-green-800 bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                                    : "text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                                }`
+                                }
+                                role="alert"
+                            >
+                                <svg className="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                </svg>
+                                <span className="sr-only">Info</span>
+                                <div>
+                                    <span className="font-medium">{alertType === "success" ? "업로드 성공!" : "업로드 실패!"}</span> {uploadStatus}
+                                </div>
+                            </div>
+                        )}
 
                         {/* ✅ 파일 선택 버튼 */}
                         <input
@@ -77,6 +120,7 @@ const DeviceNewFile = () => {
                             accept=".csv"
                             onChange={handleFileChange}
                             className="w-full border border-gray-300 p-2 rounded-md"
+                            disabled={isUploading} // ✅ 업로드 중 파일 선택 방지
                         />
 
                         {/* ✅ 선택된 파일명 표시 */}
@@ -89,15 +133,13 @@ const DeviceNewFile = () => {
                         {/* ✅ 업로드 버튼 */}
                         <button
                             onClick={handleUpload}
-                            className="mt-4 w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                            className={`mt-4 w-full px-4 py-2 rounded-md 
+                                ${isUploading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"}`
+                            }
+                            disabled={isUploading} // ✅ 업로드 중 버튼 비활성화
                         >
-                            파일 업로드
+                            {isUploading ? "업로드 중..." : "파일 업로드"}
                         </button>
-
-                        {/* ✅ 업로드 상태 메시지 */}
-                        {uploadStatus && (
-                            <p className="text-sm text-gray-600 mt-2">{uploadStatus}</p>
-                        )}
                     </div>
                 </div>
             )}
