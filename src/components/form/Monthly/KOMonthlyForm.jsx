@@ -5,11 +5,14 @@ import Dropdown from '@/components/dropdown/Dropdown.jsx';
 import BasicDropdownForm from '@/components/form/Monthly/Edit/BasicDropdownForm.jsx';
 import UsageDetailDropdownForm from '@/components/form/Monthly/Edit/UsageDetailDropdownForm.jsx';
 import PaymentDropdownForm from '@/components/form/Monthly/Edit/PaymentDropdownForm.jsx';
+import { IoExpandSharp } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
+
 
 
 const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData }) => {
     if (!detailData) return <p>No data available</p>;
-
+    const navigate = useNavigate();
 
     // 날짜 T 제거 포맷팅 함수
     const formatDateTime = (dateTimeString) => {
@@ -121,7 +124,13 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">Account Number:</div>
-                    <div className=" col-span-1">{detailData.acct_num}</div>
+                    <div className="flex flex-row items-center col-span-1">
+                        {detailData.acct_num}
+                        <button onClick={() => navigate('/accounts')}
+                            className="ml-4 rounded-full p-1 hover:bg-gray-300">
+                            <IoExpandSharp/>
+                        </button>
+                    </div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">Alias :</div>
@@ -129,8 +138,14 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">Serial Number:</div>
-                    <div className="flex flex-row col-span-1">{detailData.serial_number}<span
-                        className="pl-2 text-gray-500">({detailData.monthly_primary_key})</span></div>
+                    <div className="flex flex-row col-span-1">
+                        {detailData.serial_number}
+                        <span className="pl-2 text-gray-500">({detailData.monthly_primary_key})</span>
+                        <button onClick={() => navigate('/devices')}
+                                className="ml-4 rounded-full p-1 hover:bg-gray-300">
+                            <IoExpandSharp />
+                        </button>
+                    </div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">PPID:</div>

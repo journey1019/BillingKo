@@ -11,9 +11,9 @@ import { showConfirmAlert, showSuccessAlert, showErrorAlert, showWarningAlert } 
 
 
 
-const PaymentStatus = () => {
-    const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
-    const { data: monthlyAcctSaveData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountSaveIndexData, yearMonth);
+const PaymentStatus = ({ selectedDate, handleDateChange, yearMonth, monthlyAcctSaveData, loading, error }) => {
+    // const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
+    // const { data: monthlyAcctSaveData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountSaveIndexData, yearMonth);
 
     // ✅ 선택된 Row 데이터만 저장하는 상태
     const [confirmDatas, setConfirmDatas] = useState([]);

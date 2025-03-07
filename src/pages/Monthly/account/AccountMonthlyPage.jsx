@@ -104,10 +104,10 @@ const AccountMonthlyPage = () => {
                             <h1 className="text-2xl p-2">Salvador Toy</h1>
 
                             {/* Buttons */}
-                            <div className="flex flex-row space-x-4">
-                                <span>수정</span>
-                                <span>삭제</span>
-                            </div>
+                            {/*<div className="flex flex-row space-x-4">*/}
+                            {/*    <span>수정</span>*/}
+                            {/*    <span>삭제</span>*/}
+                            {/*</div>*/}
                         </div>
                         <TabComponent tabs={tabs} />
                     </div>

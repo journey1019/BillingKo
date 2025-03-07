@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.mrt-row-select {
+    display: none !important; /* ✅ Material React Table의 Row Selection (라디오 버튼) 숨기기 */
+}
+.css-5watp9-MuiTableCell-root{
+    display: none !important;
+}
+.css-1gorv86-MuiTableCell-root{
+    display: none !important;
+}

@@ -1,13 +1,20 @@
 import { BiBuildings } from "react-icons/bi";
 import Move from '@/components/construct/main/Move.jsx';
-import Stock from '@/components/construct/main/Stock.jsx';
+import Receivables from '@/components/construct/main/Receivables.jsx';
 import HorizontalNonLinearStepper from '@/components/module/HorizontalNonLinearStepper.jsx';
 import PaymentStatus from '@/components/construct/main/PaymentStatus.jsx';
 
+import useApiFetch from '@/hooks/useApiFetch.js';
+import useYearMonth from '@/hooks/useYearMonth.js';
+import { fetchKOMonthlyAccountSaveIndexData, fetchPaymentConfirm } from '@/service/monthlyAccountService.js';
 
 const Homepage = () => {
     const user_name = localStorage.getItem("user_name");
     console.log(localStorage.getItem("token"))
+
+    // ✅ 공통으로 사용할 상태 (yearMonth & monthlyAcctSaveData)
+    const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
+    const { data: monthlyAcctSaveData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountSaveIndexData, yearMonth);
 
     return (
         <div className="grid gap-0 grid-cols-1">
@@ -20,9 +27,19 @@ const Homepage = () => {
 
             <Move />
 
-            <Stock />
+            <Receivables
+                yearMonth={yearMonth}
+                monthlyAcctSaveData={monthlyAcctSaveData}
+            />
 
-            <PaymentStatus/>
+            <PaymentStatus
+                selectedDate={selectedDate}
+                handleDateChange={handleDateChange}
+                yearMonth={yearMonth}
+                monthlyAcctSaveData={monthlyAcctSaveData}
+                loading={loading}
+                error={error}
+            />
 
             {/*<div className="flex flex-row w-1/2">*/}
             {/*    <HorizontalNonLinearStepper/>*/}

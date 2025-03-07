@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { MdEdit } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
 import Dropdown from '@/components/dropdown/Dropdown.jsx';
+import DropdownMenu from "@/components/dropdown/DropdownMenu.jsx";
 
 
 const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accountDetailError }) => {
@@ -43,13 +44,14 @@ const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accou
                     <h2 className="text-base font-semibold mb-2">고객 정보</h2>
                     <div className="relative inline-block">
                         {/* ✅ 드롭다운 사용 예제 */}
-                        <Dropdown trigger={<MdEdit />}>
-                            {/* ✅ 드롭다운 내부 컨텐츠 (동적으로 변경 가능) */}
-                            <div className="text-end space-x-2">
-                                <li className="p-2 hover:bg-gray-100 cursor-pointer">Edit Item</li>
-                                <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete Item</li>
-                            </div>
-                        </Dropdown>
+                        {/*<Dropdown trigger={<MdEdit />}>*/}
+                        {/*    /!* ✅ 드롭다운 내부 컨텐츠 (동적으로 변경 가능) *!/*/}
+                        {/*    <div className="text-end space-x-2">*/}
+                        {/*        <li className="p-2 hover:bg-gray-100 cursor-pointer">Edit Item</li>*/}
+                        {/*        <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete Item</li>*/}
+                        {/*    </div>*/}
+                        {/*</Dropdown>*/}
+
                         {/*/!* ✅ 버튼 *!/*/}
                         {/*<button onClick={handleEdit}><MdEdit /></button>*/}
 
@@ -92,7 +94,6 @@ const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accou
             <div>
                 <div className="flex flex-row justify-between">
                     <h2 className="text-base font-semibold mb-2">요금 정보</h2>
-                    <button onClick={() => console.log('요금 정보 수정 버튼 클릭')}><MdEdit /></button>
                 </div>
                 <div className="text-sm bg-white p-3 rounded-md border border-gray-300">
                     {[
@@ -114,7 +115,7 @@ const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accou
 
             <div className="col-span-2 flex flex-row justify-between items-center">
                 <h2 className="text-base font-semibold col-span-2 mt-4">디바이스 상세 정보</h2>
-                <FaPlus/>
+                {/*<FaPlus/>*/}
             </div>
             <div className="col-span-2">
                 {deviceDetail.length > 0 ? (

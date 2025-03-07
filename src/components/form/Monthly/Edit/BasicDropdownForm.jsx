@@ -82,11 +82,11 @@ const BasicDropdownForm = ({ detailData }) => {
             <DropdownMenu isOpen={isOpen} closeDropdown={closeDropdown} title="Basic Info Modify">
                 <div className="px-4 py-2 space-y-3">
                     {[
-                        { label: "Profile ID", name: "profileId", type: "number" },
-                        { label: "Account Number", name: "accountNumber", type: "text" },
-                        { label: "Alias", name: "alias", type: "text" },
-                        { label: "Serial Number", name: "serialNumber", type: "text" },
-                        { label: "PPID", name: "ppid", type: "number" },
+                        // { label: "Profile ID", name: "profileId", type: "number" },
+                        // { label: "Account Number", name: "accountNumber", type: "text" },
+                        // { label: "Alias", name: "alias", type: "text" },
+                        // { label: "Serial Number", name: "serialNumber", type: "text" },
+                        // { label: "PPID", name: "ppid", type: "number" },
                         { label: "Activation Date", name: "activationDate", type: "datetime-local" },
                         { label: "Deactivation Date", name: "deactivationDate", type: "datetime-local" },
                     ].map((field, index) => (
