@@ -15,6 +15,9 @@ import { MdModeEditOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import useYearMonth from '@/hooks/useYearMonth.js';
 
+/**
+ * @desc: 단말별 데이터 페이지
+ * */
 const KOMonthlyPage = () => {
     const navigate = useNavigate();
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();

@@ -16,6 +16,7 @@ import GiroPDFBatchDownload from '@/components/giro/GiroPDFBatchDownload.jsx';
 import GiroPDFPrint from '@/components/giro/GiroPDFPrint.jsx';
 import GiroPDFPreview from '@/components/giro/GiroPDFPreview.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
+import PaymentSummary from '@/components/construct/monthly/PaymentSummary.jsx';
 
 
 const KOMonthlyAccountSavePage = () => {
@@ -89,23 +90,7 @@ const KOMonthlyAccountSavePage = () => {
             {/* 납부현황 */}
             <div className="flex flex-row col-span-6 pb-3 mb-2 border-gray-400 justify-between items-center">
                 <div className="grid grid-cols-6 py-5 px-10 rounded-md bg-white w-full shadow-md">
-                    <div className="col-span-2">
-                        <span className="text-xs text-gray-500">Payment Summary</span>
-                        <div className="flex flex-row space-x-4 items-center py-2">
-                            <div className="p-2 rounded-full bg-blue-200 text-blue-500"><MdAttachMoney
-                                className="w-5 h-5" /></div>
-                            <span>$672.19</span>
-                        </div>
-                    </div>
-                    <div className="col-span-2">
-                        <span className="text-xs text-gray-500">Total Outstanding Receivables</span>
-                        <div className="flex flex-row space-x-4 items-center py-2">
-                            <div className="p-2 rounded-full bg-red-200 text-red-500"><MdMoneyOffCsred
-                                className="w-5 h-5" /></div>
-                            <span>$672.19</span>
-                        </div>
-                    </div>
-                    <div className="col-span-2 text-xs text-gray-500">평균 - 미납</div>
+                    <PaymentSummary monthlyAcctSaveData={monthlyAcctSaveData}/>
                 </div>
             </div>
 

@@ -115,49 +115,52 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                 <BasicDropdownForm detailData={detailData}/>
 
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
-                    <div className="text-gray-500">Data Index:</div>
-                    <div className=" col-span-1 ml-1">{detailData.data_index}</div>
+                    <div className="px-2 text-gray-500">Data Index:</div>
+                    <div className="px-2 col-span-1 ml-1">{detailData.data_index}</div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">Profile ID:</div>
-                    <div className=" col-span-1">{detailData.profile_id}</div>
+                    <div className="px-2 col-span-1">{detailData.profile_id}</div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">Account Number:</div>
                     <div className="flex flex-row items-center col-span-1">
-                        {detailData.acct_num}
                         <button onClick={() => navigate('/accounts')}
-                            className="ml-4 rounded-full p-1 hover:bg-gray-300">
-                            <IoExpandSharp/>
+                            className="rounded-full px-2 py-1 hover:bg-gray-300 duration-300">
+                            {detailData.acct_num}
                         </button>
                     </div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">Alias :</div>
-                    <div className=" col-span-1">{detailData.alias}</div>
+                    <div className="px-2 col-span-1">{detailData.alias}</div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">Serial Number:</div>
                     <div className="flex flex-row col-span-1">
-                        {detailData.serial_number}
-                        <span className="pl-2 text-gray-500">({detailData.monthly_primary_key})</span>
                         <button onClick={() => navigate('/devices')}
-                                className="ml-4 rounded-full p-1 hover:bg-gray-300">
-                            <IoExpandSharp />
+                                className="rounded-full p-2 py-1 hover:bg-gray-300 duration-300">
+                            {detailData.serial_number}
+                            <span className="pl-2 text-gray-500">({detailData.monthly_primary_key})</span>
                         </button>
                     </div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">PPID:</div>
-                    <div className=" col-span-1">{detailData.ppid}</div>
+                    <div className="col-span-1">
+                        <button onClick={() => navigate('/price')}
+                                className="rounded-full p-2 py-1 hover:bg-gray-300 duration-300">
+                            {detailData.ppid}
+                        </button>
+                    </div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">Activation Date:</div>
-                    <div className=" col-span-1">{formatDateTime(detailData.activate_date)}</div>
+                    <div className="px-2 col-span-1">{formatDateTime(detailData.activate_date)}</div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 text-sm">
                     <div className="text-gray-500">Deactivation Date:</div>
-                    <div className=" col-span-1">{formatDateTime(detailData.deactivate_date) || '-'}</div>
+                    <div className="px-2 col-span-1">{formatDateTime(detailData.deactivate_date) || '-'}</div>
                 </div>
             </div>
 

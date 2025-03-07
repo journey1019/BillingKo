@@ -10,6 +10,10 @@ import AccountMonthlyOverview from '@/components/form/AccountMonthly/AccountMont
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import AccountMonthlyTransaction from '@/components/form/AccountMonthly/AccountMonthlyTransaction.jsx';
 
+
+/**
+ * @desc: 고객별 데이터 페이지
+ * */
 const AccountMonthlyPage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
     const { data: monthlyAcctData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountIndexData, yearMonth);
@@ -44,17 +48,9 @@ const AccountMonthlyPage = () => {
 
 
 
-    const HistoryTab = () => {
-        return(
-            <>
-                HistoryTab
-            </>
-        )
-    }
     const tabs = [
         { id: 1, label: 'Overview', content: <AccountMonthlyOverview accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError}/>},
         { id: 2, label: 'Transaction', content: <AccountMonthlyTransaction /> },
-        { id: 3, label: 'History', content: <HistoryTab /> },
     ];
 
     return(
@@ -101,7 +97,7 @@ const AccountMonthlyPage = () => {
                 {isExpanded && selectedRowId && (
                     <div className="p-2 col-span-4">
                         <div className="flex flex-row justify-between">
-                            <h1 className="text-2xl p-2">Salvador Toy</h1>
+                            <h1 className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</h1>
 
                             {/* Buttons */}
                             {/*<div className="flex flex-row space-x-4">*/}
@@ -109,7 +105,11 @@ const AccountMonthlyPage = () => {
                             {/*    <span>삭제</span>*/}
                             {/*</div>*/}
                         </div>
-                        <TabComponent tabs={tabs} />
+                        <div className="flex flex-col p-4 bg-white">
+                            {/*<span className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</span>*/}
+                            <AccountMonthlyOverview accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError}/>
+                        </div>
+                        {/*<TabComponent tabs={tabs} />*/}
                     </div>
                 )}
             </div>

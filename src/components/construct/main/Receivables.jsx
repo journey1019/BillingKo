@@ -36,15 +36,9 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
         <div className="flex flex-col py-4">
             <div className="bg-white rounded-2xl shadow-md">
                 <h1 className="p-4 bg-neutral-200 rounded-t-2xl text-lg font-semibold">총 미수금</h1>
+
                 <div className="p-4 items-center">
                     <div className="mb-2 text-sm text-gray-500 ">Total Receivables : {formatNumber(totalNonePayFee) || 0} 원</div>
-                    {/*<div className="w-full bg-gray-200 rounded-full h-2.5 text-center">*/}
-                    {/*    <div*/}
-                    {/*        className="bg-blue-600 h-2.5 rounded-full"*/}
-                    {/*        style={{ width: `${45}%` }}*/}
-                    {/*    />*/}
-                    {/*</div>*/}
-
                     {/* ✅ Popover가 Progress Bar를 감싸지 않고, Hover 시 Popover가 보이도록 설정 */}
                     <Popover
                         title={`총 미수금: ${formatNumber(totalNonePayFee)} 원`}
@@ -65,11 +59,11 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
                 <div className="px-4 pb-4 grid grid-cols-5 items-center space-x-4">
                     <div className="flex flex-col">
                         <span className="text-xs text-blue-500">CURRENT</span>
-                        <span className="text-base">0 원</span>
+                        <span className="text-lg">0 원</span>
                     </div>
                     <div className="flex flex-col">
                         <span className="text-xs text-orange-500">OVERDUE</span>
-                        <span className="text-base">{formatNumber(currentNonePayFee)} 원</span>
+                        <span className="text-lg">{formatNumber(currentNonePayFee)} 원</span>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import { postWithBody } from "./api"; // Body
+import { postWithBody, postWithBodyFile } from "./api"; // Body
 import { get, post, put, del } from "./api";
 
 /**
@@ -136,3 +136,41 @@ export const deleteDeviceHistoryLog = async () => {
         throw error;
     }
 };
+
+
+
+const mapErrorToUserMessage = (errorDetail) => {
+    if (errorDetail.includes('list index out of range')) {
+        return '파일 형식이 잘못되었습니다. 데이터가 누락되었거나 잘못된 구조일 수 있습니다.';
+    }
+    if (errorDetail.includes('duplicate key value violates unique constraint')) {
+        return '파일에 중복된 데이터가 포함되어 있습니다. 중복 데이터를 제거한 후 다시 업로드하세요.';
+    }
+    return '알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.';
+};
+
+/**
+ * @desc: Device Upload File
+ * */
+export const uploadDevicesFile = async (files) => {
+    const uploadPromises = Array.from(files).map((file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // ✅ FormData 값 디버깅 로그 추가
+        for (const pair of formData.entries()) {
+            console.log(`FormData Key: ${pair[0]}, Value:`, pair[1]);
+        }
+
+        return postWithBodyFile("/file/deviceUpload", formData);
+    });
+
+    try {
+        return await Promise.all(uploadPromises); // ✅ 모든 파일 업로드 완료 시까지 대기
+    } catch (error) {
+        const errorDetail = error.response?.data?.error || '파일 업로드 중 문제가 발생했습니다.';
+        const userFriendlyMessage = mapErrorToUserMessage(errorDetail);
+        throw new Error(userFriendlyMessage);
+    }
+};
+

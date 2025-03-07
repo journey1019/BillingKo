@@ -4,6 +4,7 @@ import { createDevice } from '@/service/deviceService.js';
 
 import { IoMdClose } from 'react-icons/io';
 import { getTodayDate } from '@/utils/formatHelpers.jsx';
+import DeviceNewFile from '@/pages/Device/DeviceNewFile.jsx';
 
 const DeviceNewPage = () => {
     const navigate = useNavigate();
@@ -141,6 +142,9 @@ const DeviceNewPage = () => {
                             placeholder="01680651SKYD374"
                             required
                         />
+                        <div className="">
+                            <DeviceNewFile/>
+                        </div>
                     </div>
 
                     {/* Account Number */}

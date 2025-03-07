@@ -7,6 +7,8 @@ import PaymentStatus from '@/components/construct/main/PaymentStatus.jsx';
 import useApiFetch from '@/hooks/useApiFetch.js';
 import useYearMonth from '@/hooks/useYearMonth.js';
 import { fetchKOMonthlyAccountSaveIndexData, fetchPaymentConfirm } from '@/service/monthlyAccountService.js';
+import Stock from '@/components/construct/main/Stock.jsx';
+import Sales from '@/components/construct/main/Sales.jsx';
 
 const Homepage = () => {
     const user_name = localStorage.getItem("user_name");
@@ -25,12 +27,23 @@ const Homepage = () => {
                 <div className="items-center text-xl font-semibold">Hello, {user_name}</div>
             </div>
 
-            <Move />
+            {/*<Move />*/}
 
-            <Receivables
-                yearMonth={yearMonth}
-                monthlyAcctSaveData={monthlyAcctSaveData}
-            />
+            <div className="grid gap-4 grid-cols-2">
+                <Receivables
+                    yearMonth={yearMonth}
+                    monthlyAcctSaveData={monthlyAcctSaveData}
+                />
+
+                <div className="grid gap-2 grid-cols-3">
+                    <div className="col-span-2">
+                        <Sales />
+                    </div>
+                    <div className="col-span-1">
+                        <Stock />
+                    </div>
+                </div>
+            </div>
 
             <PaymentStatus
                 selectedDate={selectedDate}
