@@ -45,6 +45,7 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
         const modificationDetails = Array.isArray(device.modification_detail) ? device.modification_detail : [];
         const hasModification = modificationDetails.length > 0;
 
+        // ✅ `modification_detail` 객체가 존재하면 컬럼 추가
         const dynamicHeaders = hasModification
             ? modificationDetails.map(detail => detail.adjustment_desc || "-")
             : [];
@@ -58,7 +59,7 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
         const tableBody = [
             [
                 formatNumberWithCommas(device.basic_fee || 0),
-                formatNumberWithCommas(device.subscribe_fee || 0),
+                formatNumberWithCommas(device.add_use_fee_total || 0),
                 "0",
                 ...dynamicValues
             ]
@@ -76,28 +77,33 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
             currentY = 25;
         }
 
-        // ✅ firstRowData 출력
+        // ✅ firstRowData 출력 (세로선 제거)
         doc.setFont("NanumGothic", "extrabold");
         doc.setFontSize(8);
         const cellWidth = availableWidth / firstRowData.length;
 
+        // ✅ 가로선만 그리기 (세로선 없음)
+        doc.setLineWidth(0.1);
+        doc.line(leftMargin, currentY, pageWidth - rightMargin, currentY); // 상단 선
         firstRowData.forEach((item, idx) => {
             const xPosition = leftMargin + idx * cellWidth;
-
-            // ✅ 테두리 추가
-            doc.setLineWidth(0.1);
-            doc.rect(xPosition, currentY, cellWidth, cellHeight);
-
             if (item.label === "●") {
                 doc.text(`${item.label} ${item.value}`, xPosition + 2, currentY + 4);
             } else {
                 doc.text(`${item.label}: ${item.value}`, xPosition + 2, currentY + 4);
             }
         });
+        doc.line(leftMargin, currentY + cellHeight, pageWidth - rightMargin, currentY + cellHeight); // 하단 선
+
+        // ✅ 맨 왼쪽 세로선 추가
+        doc.line(leftMargin, currentY, leftMargin, currentY + cellHeight);
+
+        // ✅ 맨 오른쪽 세로선 추가
+        doc.line(pageWidth - rightMargin, currentY, pageWidth - rightMargin, currentY + cellHeight);
 
         currentY += cellHeight; // ✅ 테이블과 바로 붙이기
 
-        // ✅ 테이블 생성 (라인 두께 0.2로 설정)
+        // ✅ 테이블 생성 (라인 두께 0.1로 설정)
         doc.autoTable({
             startY: currentY,
             margin: { left: leftMargin, right: rightMargin },
@@ -112,7 +118,7 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
                 fillColor: [255, 255, 255],
                 textColor: [0, 0, 0],
                 lineColor: [0, 0, 0],
-                lineWidth: 0.1,  // ✅ 모든 선 두께 0.2로 설정
+                lineWidth: 0.1,  // ✅ 모든 선 두께 0.1로 설정
             },
             headStyles: {
                 fillColor: [240, 240, 240],
