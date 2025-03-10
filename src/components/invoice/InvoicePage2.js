@@ -5,13 +5,12 @@ import { defaultAccountData, applyDefaultValues } from '@/components/invoice/hel
 export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailData) => {
     const year = Math.floor(yearMonth / 100);
     const month = String(yearMonth % 100).padStart(2, '0');
-    const formattedYearMonth = `${year}-${month}`; // 2024-12
+    const formattedYearMonth = `${year}-${month}`;
 
-    // 📌 기본 데이터 설정
+    // 기본 데이터 설정
     const data = applyDefaultValues(accountDetailData?.[0] || {}, defaultAccountData);
     const deviceDetails = Array.isArray(data.device_detail) ? data.device_detail : [];
 
-    // 📌 `device_detail`이 없으면 2페이지 생성하지 않음
     if (deviceDetails.length === 0) {
         console.log("❌ device_detail이 비어 있어 2페이지를 생성하지 않습니다.");
         return doc;
@@ -19,21 +18,18 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
 
     console.log("✅ device_detail이 존재하므로 2페이지를 생성합니다.");
     doc.addPage();
-
-    // 2페이지의 상단 이미지 삽입
     doc.addImage(companyLogoBase64, 'PNG', 15, 10, 30, 7);
 
-    /* ----------------------------
-       🔹 `device_detail` 별 반복하여 firstRowData & 표 & 마지막 행 생성
-    ---------------------------- */
     const leftMargin = 20;
     const rightMargin = 20;
     const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
     const availableWidth = pageWidth - leftMargin - rightMargin;
     let currentY = 25; // 초기 Y 위치
+    const bottomMargin = 15; // 페이지 하단 마진
 
     deviceDetails.forEach((device, index) => {
-        // ✅ `firstRowData` 동적 생성
+        // ✅ firstRowData 동적 생성
         const firstRowData = [
             { label: "●", value: device.alias || "-" },
             { label: "S/N", value: device.serial_number || "-" },
@@ -41,40 +37,20 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
             { label: "합계", value: formatNumberWithCommas(device.total_fee || 0) }
         ];
 
-        // ✅ `firstRowData`를 줄 단위로 배치
-        doc.setFont("NanumGothic", "extrabold");
-        doc.setFontSize(8);
-        const gap = availableWidth / (firstRowData.length - 0.3);
-        firstRowData.forEach((item, idx) => {
-            const xPosition = leftMargin + idx * gap;
+        // ✅ `firstRowData` 예상 높이 (테두리 포함)
+        const cellHeight = 6;
+        const estimatedFirstRowHeight = cellHeight;
 
-            // '●' 항목만 `:` 없이 출력
-            if (item.label === "●") {
-                doc.text(`${item.label} ${item.value}`, xPosition, currentY); // `:` 없이 공백 사용
-            } else {
-                doc.text(`${item.label}: ${item.value}`, xPosition, currentY); // 기존 방식 유지
-            }
-        });
-
-
-        // 📌 `firstRowData` 아래 간격 조정
-        currentY += 2;
-
-        /* ----------------------------
-           🔹 테이블 (각 device의 modification_detail 포함)
-        ---------------------------- */
+        // ✅ 테이블 데이터 준비
         const modificationDetails = Array.isArray(device.modification_detail) ? device.modification_detail : [];
-        const hasModification = modificationDetails.length > 0; // 수정 항목이 존재하는지 확인
+        const hasModification = modificationDetails.length > 0;
 
-        // ✅ `modification_detail`의 헤더 컬럼 동적 생성
         const dynamicHeaders = hasModification
             ? modificationDetails.map(detail => detail.adjustment_desc || "-")
             : [];
 
-        // ✅ 기본 헤더 + modification_detail 헤더
         const tableHeaders = ["기본료", "통신료", "수수료", ...dynamicHeaders];
 
-        // ✅ `modification_detail`의 데이터 동적 생성
         const dynamicValues = hasModification
             ? modificationDetails.map(detail => formatNumberWithCommas(detail.adjustment_fee || 0))
             : [];
@@ -83,12 +59,45 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
             [
                 formatNumberWithCommas(device.basic_fee || 0),
                 formatNumberWithCommas(device.subscribe_fee || 0),
-                "0", // 수수료 (고정값)
+                "0",
                 ...dynamicValues
             ]
         ];
 
-        // ✅ 테이블 생성
+        // ✅ `autoTable` 예상 높이
+        const estimatedTableHeight = 10 + (tableBody.length * 5);
+
+        // ✅ 전체 블록(FirstRowData + autoTable)의 예상 높이 계산
+        const totalBlockHeight = estimatedFirstRowHeight + estimatedTableHeight;
+
+        // ✅ 블록이 페이지를 넘는다면, 다음 페이지에서 시작
+        if (currentY + totalBlockHeight > pageHeight - bottomMargin) {
+            doc.addPage();
+            currentY = 25;
+        }
+
+        // ✅ firstRowData 출력
+        doc.setFont("NanumGothic", "extrabold");
+        doc.setFontSize(8);
+        const cellWidth = availableWidth / firstRowData.length;
+
+        firstRowData.forEach((item, idx) => {
+            const xPosition = leftMargin + idx * cellWidth;
+
+            // ✅ 테두리 추가
+            doc.setLineWidth(0.1);
+            doc.rect(xPosition, currentY, cellWidth, cellHeight);
+
+            if (item.label === "●") {
+                doc.text(`${item.label} ${item.value}`, xPosition + 2, currentY + 4);
+            } else {
+                doc.text(`${item.label}: ${item.value}`, xPosition + 2, currentY + 4);
+            }
+        });
+
+        currentY += cellHeight; // ✅ 테이블과 바로 붙이기
+
+        // ✅ 테이블 생성 (라인 두께 0.2로 설정)
         doc.autoTable({
             startY: currentY,
             margin: { left: leftMargin, right: rightMargin },
@@ -103,39 +112,37 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
                 fillColor: [255, 255, 255],
                 textColor: [0, 0, 0],
                 lineColor: [0, 0, 0],
-                lineWidth: 0.3,
+                lineWidth: 0.1,  // ✅ 모든 선 두께 0.2로 설정
             },
             headStyles: {
                 fillColor: [240, 240, 240],
                 textColor: [0, 0, 0],
                 fontStyle: 'bold',
                 halign: 'center',
+                lineWidth: 0.1,
             },
             bodyStyles: {
                 fillColor: [245, 245, 245],
                 textColor: [0, 0, 0],
                 halign: 'center',
+                lineWidth: 0.1,
             },
             alternateRowStyles: {
                 fillColor: [255, 255, 255],
             },
         });
 
-        // 📌 테이블과 마지막 행 사이 간격 조정
-        currentY = doc.autoTable.previous.finalY + 4;
+        currentY = doc.autoTable.previous.finalY; // ✅ 테이블 바로 아래 붙이기
 
-        /* ----------------------------
-           🔹 마지막 행 (각 device_detail 별)
-        ---------------------------- */
-        doc.setFont("NanumGothic", "bold");
-        doc.setFontSize(7);
-
-        const yearMonthAccount = `${formattedYearMonth}-${data.acct_num || "-"}`;
-        doc.text(yearMonthAccount, pageWidth - rightMargin, currentY, { align: 'right' });
-
-        // ✅ `device_detail` 간격 조정 (다음 device와 구분)
-        currentY += 5;
+        // ✅ deviceDetails 간격을 벌려 가독성 확보
+        currentY += 8;
     });
+
+    // ✅ `yearMonthAccount`을 마지막 한 번만 표시
+    doc.setFont("NanumGothic", "bold");
+    doc.setFontSize(7);
+    const yearMonthAccount = `${formattedYearMonth}-${data.acct_num || "-"}`;
+    doc.text(yearMonthAccount, pageWidth - rightMargin, currentY, { align: 'right' });
 
     return doc;
 };

@@ -3,6 +3,7 @@ import Move from '@/components/construct/main/Move.jsx';
 import Receivables from '@/components/construct/main/Receivables.jsx';
 import HorizontalNonLinearStepper from '@/components/module/HorizontalNonLinearStepper.jsx';
 import PaymentStatus from '@/components/construct/main/PaymentStatus.jsx';
+import NonPaymentStatus from '@/components/construct/main/NonPaymentStatus.jsx';
 
 import useApiFetch from '@/hooks/useApiFetch.js';
 import useYearMonth from '@/hooks/useYearMonth.js';
@@ -35,15 +36,26 @@ const Homepage = () => {
                     monthlyAcctSaveData={monthlyAcctSaveData}
                 />
 
-                <div className="grid gap-2 grid-cols-3">
-                    <div className="col-span-2">
-                        <Sales />
-                    </div>
-                    <div className="col-span-1">
-                        <Stock />
-                    </div>
-                </div>
+                {/*<div className="grid gap-2 grid-cols-3">*/}
+                {/*    <div className="col-span-2">*/}
+                {/*        <Sales />*/}
+                {/*    </div>*/}
+                {/*    <div className="col-span-1">*/}
+                {/*        <Stock />*/}
+                {/*    </div>*/}
+                {/*</div>*/}
             </div>
+
+
+            {/*<NonPaymentStatus*/}
+            {/*    selectedDate={selectedDate}*/}
+            {/*    handleDateChange={handleDateChange}*/}
+            {/*    yearMonth={yearMonth}*/}
+            {/*    monthlyAcctSaveData={monthlyAcctSaveData}*/}
+            {/*    loading={loading}*/}
+            {/*    error={error}*/}
+            {/*/>*/}
+
 
             <PaymentStatus
                 selectedDate={selectedDate}

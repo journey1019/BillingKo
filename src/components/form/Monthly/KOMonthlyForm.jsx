@@ -115,7 +115,7 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                 <BasicDropdownForm detailData={detailData}/>
 
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
-                    <div className="px-2 text-gray-500">Data Index:</div>
+                    <div className="text-gray-500">Data Index:</div>
                     <div className="px-2 col-span-1 ml-1">{detailData.data_index}</div>
                 </div>
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
@@ -193,13 +193,13 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                     <h3 className="text-lg font-semibold mb-2 text-gray-600">Usage Details</h3>
                     <div className="grid grid-cols-4 gap-1 text-sm">
                         <div className="text-gray-500">Free Bytes:</div>
-                        <div className=" col-span-1">{formatNumber(detailData.free_bytes)}</div>
+                        <div className="px-2 col-span-1">{formatNumber(detailData.free_bytes)}</div>
                         <div className="text-gray-500">Total Used Bytes:</div>
-                        <div className=" col-span-1">{formatNumber(detailData.use_byte_total)}</div>
+                        <div className="px-2 col-span-1">{formatNumber(detailData.use_byte_total)}</div>
                         <div className="text-gray-500">Use Period:</div>
-                        <div className=" col-span-1">{detailData.use_period} days</div>
+                        <div className="px-2 col-span-1">{detailData.use_period} days</div>
                         <div className="text-gray-500">Use Percent of Month:</div>
-                        <div className=" col-span-1">{detailData.use_percent_of_month}%</div>
+                        <div className="px-2 col-span-1">{detailData.use_percent_of_month}%</div>
                     </div>
                 </div>
             </div>
@@ -246,13 +246,13 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                     <h3 className="text-lg font-semibold mb-2 text-gray-600">Payment Details</h3>
                     <div className="grid grid-cols-4 gap-1 text-sm">
                         <div className="text-gray-500">Basic Fee:</div>
-                        <div className=" col-span-1">{formatNumber(detailData.payment?.basic_fee)} 원</div>
+                        <div className="px-2 col-span-1">{formatNumber(detailData.payment?.basic_fee)} 원</div>
                         <div className="text-gray-500">Final Fee:</div>
-                        <div className=" col-span-1">{formatNumber(detailData.payment?.final_fee)} 원</div>
+                        <div className="px-2 col-span-1">{formatNumber(detailData.payment?.final_fee)} 원</div>
                         <div className="text-gray-500">Total Fee:</div>
-                        <div className=" col-span-1">{formatNumber(detailData.payment?.total_fee)} 원</div>
+                        <div className="px-2 col-span-1">{formatNumber(detailData.payment?.total_fee)} 원</div>
                         <div className="text-gray-500">Subscribe Fee:</div>
-                        <div className=" col-span-1">{formatNumber(detailData.payment?.subscribe_fee)} 원</div>
+                        <div className="px-2 col-span-1">{formatNumber(detailData.payment?.subscribe_fee)} 원</div>
                     </div>
                 </div>
                 <div className="text-gray-500 border-b mb-2" />

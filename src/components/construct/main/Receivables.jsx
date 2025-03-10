@@ -58,11 +58,15 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
 
                 <div className="px-4 pb-4 grid grid-cols-5 items-center space-x-4">
                     <div className="flex flex-col">
-                        <span className="text-xs text-blue-500">CURRENT</span>
+                        <span className="text-xs text-blue-500">CURRENT PAYMENT</span>
                         <span className="text-lg">0 원</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs text-orange-500">OVERDUE</span>
+                        <span className="text-xs text-orange-500">TOTAL OVERDUE</span>
+                        <span className="text-lg">{formatNumber(currentNonePayFee)} 원</span>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-xs text-yellow-500">Payment - </span>
                         <span className="text-lg">{formatNumber(currentNonePayFee)} 원</span>
                     </div>
                 </div>

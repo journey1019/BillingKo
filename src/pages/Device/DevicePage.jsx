@@ -120,7 +120,6 @@ const DevicePage = () => {
     const toggleDropdown = () => setIsOpenDropdown(!isOpenDropdown);
     const closeDropdown = () => setIsOpenDropdown(false);
 
-
     const OverviewTab = () => {
         return(
             <>

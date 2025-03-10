@@ -161,7 +161,7 @@ const PaymentStatus = ({ selectedDate, handleDateChange, yearMonth, monthlyAcctS
                                 <table className="w-full text-sm text-center border-collapse">
                                     <thead className="bg-gray-200 sticky -top-0.5" style={{ zIndex: 1 }}>
                                     <tr>
-                                        {['번호', '고객 번호', '고객 이름', '납부 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명'].map((header, index) => (
+                                        {['번호', '고객 번호', '고객 이름', '미납 금액', '납부 확인', '납부 방법', '납부 은행', '납부 설명'].map((header, index) => (
                                             <th key={index} className="p-2 border font-medium whitespace-nowrap">
                                                 {header}
                                             </th>
@@ -196,7 +196,7 @@ const PaymentStatus = ({ selectedDate, handleDateChange, yearMonth, monthlyAcctS
                                             <td className="p-2 border">{account.account_info.acct_name}</td>
                                             <Popover data={account}>
                                                 <div className="float-right">
-                                                    {formatNumber(account.final_fee)}원
+                                                    {formatNumber(account.none_pay_fee)}원
                                                 </div>
                                             </Popover>
                                             {/*<td className="p-2 border">*/}
