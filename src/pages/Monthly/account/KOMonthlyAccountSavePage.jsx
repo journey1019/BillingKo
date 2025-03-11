@@ -62,9 +62,12 @@ const KOMonthlyAccountSavePage = () => {
                 invoiceBasicData={invoiceBasicData}
                 accountDetailData={monthlyAcctSaveDetailData}
             />},
-        { id: 2, label: 'Giro PDF', content: <GiroPDFPreview yearMonth={yearMonth}
-                                                                invoiceBasicData={invoiceBasicData}
-                                                                accountDetailData={monthlyAcctSaveDetailData} /> },
+        { id: 2, label: 'Giro PDF', content: <GiroPDFPreview
+                yearMonth={yearMonth}
+                invoiceBasicData={invoiceBasicData}
+                accountDetailData={monthlyAcctSaveDetailData}
+            />
+        },
     ];
     return(
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
@@ -112,10 +115,12 @@ const KOMonthlyAccountSavePage = () => {
                             meta: {
                                 onRowSelect: (selectedRow) => {
                                     console.log('Account Monthly Table Row Selected: ', selectedRow);
-                                    if (selectedRowData && selectedRow.acct_num === selectedRow.acct_num) {
+                                    if (selectedRowData && selectedRowData.acct_num === selectedRow.acct_num) {
+                                        // ✅ 같은 Row를 클릭한 경우 isExpanded를 false로 변경하여 닫기
                                         setSelectedRowData(null);
                                         setIsExpanded(false);
                                     } else {
+                                        // ✅ 다른 Row를 클릭한 경우 isExpanded 유지
                                         setSelectedRowData(selectedRow);
                                         setIsExpanded(true);
                                     }
