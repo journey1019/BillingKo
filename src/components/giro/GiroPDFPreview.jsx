@@ -1,5 +1,5 @@
-
 import React, { useEffect, useState } from 'react';
+import { jsPDF } from "jspdf";
 import { GiroPage } from './GiroPage.js';
 
 /**
@@ -13,8 +13,14 @@ const GiroPDFPreview = ({ yearMonth, invoiceBasicData, accountDetailData }) => {
     useEffect(() => {
         if (!invoiceBasicData || !accountDetailData) return;
 
+        // ✅ jsPDF 문서 생성 (문서 객체를 직접 생성)
+        let doc = new jsPDF({
+            unit: "mm",
+            format: "a4"
+        });
+
         // 첫 번째 페이지 생성
-        let doc = GiroPage(yearMonth, invoiceBasicData, accountDetailData || []);
+        doc = GiroPage(doc, yearMonth, invoiceBasicData, accountDetailData || []);
 
         // PDF를 Blob으로 변환
         const pdfBlob = doc.output('blob');
@@ -29,7 +35,7 @@ const GiroPDFPreview = ({ yearMonth, invoiceBasicData, accountDetailData }) => {
 
     return (
         <div className="w-full h-[570px] border-2 border-gray-300 rounded-lg overflow-hidden">
-            <iframe src={pdfUrl} className="w-full h-full" title="Invoice Preview"></iframe>
+            <iframe src={pdfUrl} className="w-full h-full" title="Giro Preview"></iframe>
         </div>
     );
 };

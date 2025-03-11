@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { jsPDF } from "jspdf";
 import { generateInvoicePage1 } from './InvoicePage1.js';
 import { generateInvoicePage2 } from './InvoicePage2.js';
 import { fetchKOMonthlyAccountSaveIndexDetailData } from '@/service/monthlyAccountService.js';
@@ -21,10 +22,16 @@ const InvoicePDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveD
                 // 계정 상세 데이터 요청
                 const accountDetailData = await fetchKOMonthlyAccountSaveIndexDetailData(yearMonth, acctNum);
 
-                // 첫 번째 페이지 생성
-                let doc = generateInvoicePage1(yearMonth, invoiceBasicData, accountDetailData || []);
+                // ✅ jsPDF 문서 생성 (문서 객체를 직접 생성)
+                let doc = new jsPDF({
+                    unit: "mm",
+                    format: "a4"
+                });
 
-                // 두 번째 페이지 추가
+                // ✅ 기존 doc을 넘겨서 첫 번째 페이지 생성
+                doc = generateInvoicePage1(doc, yearMonth, invoiceBasicData, accountDetailData || []);
+
+                // ✅ 기존 doc을 넘겨서 두 번째 페이지 생성
                 doc = generateInvoicePage2(doc, yearMonth, invoiceBasicData, accountDetailData || []);
 
                 // PDF를 Blob으로 변환

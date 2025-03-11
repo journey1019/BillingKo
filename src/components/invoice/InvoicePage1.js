@@ -10,7 +10,12 @@ import { formatNumberWithCommas, formatDateIndex } from '@/utils/formatHelpers.j
 import { defaultAccountData, applyDefaultValues } from '@/components/invoice/helpers/dataHelpers.js';
 
 /** ❓: 추후 확인해봐야 할 항목 */
-export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailData) => {
+export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDetailData) => {
+    if (!doc) {
+        console.error("❌ Error: doc is undefined in generateInvoicePage2");
+        return;
+    }
+
     const year = Math.floor(yearMonth / 100);
     const month = String(yearMonth % 100).padStart(2, '0');
     const formattedYearMonth = `${year}-${month}`; // 2024-12
@@ -23,9 +28,9 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
     const lastDayOfMonth = new Date(nextYear, formattedNextMonth, 0).getDate();
 
 
-    const doc = new jsPDF();
+    // const doc = new jsPDF();
     const shadowOffset = 1;
-    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageWidth = doc.internal.pageSize.getWidth(); // ✅ 이제 doc이 항상 존재하므로 에러 방지
 
     /* ----------------------------
         폰트 초기화
@@ -75,9 +80,15 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
     /* ----------------------------
         청구서 양식 추출
     ---------------------------- */
-    const getData = (code) => invoiceBasicData.find(item => item.code_name === code)?.code_value || "";
+    // ✅ `invoiceBasicData`가 배열인지 확인 후 `.find()` 실행
+    const getData = (code) => {
+        if (Array.isArray(invoiceBasicData)) {
+            return invoiceBasicData.find(item => item.code_name === code)?.code_value || "";
+        }
+        return ""; // 기본값 반환
+    };
     const companyName = getData('ko_company_name');
-    const paymentAccount = invoiceBasicData.find(item => item.code_name === 'ko_payment_account')?.code_value || '';
+    const paymentAccount = getData('ko_payment_account');
     const postCode = getData('ko_post_code');
     const address = getData('ko_address');
     const telNumber = getData('ko_tel_number');
@@ -361,6 +372,7 @@ export const generateInvoicePage1 = (yearMonth, invoiceBasicData, accountDetailD
         margin: { left: thirdMarginLeft, right: thirdMarginRight },
         head: thirdTableHead,
         body: thirdTableBodyAuto,
+        tableWidth: 'wrap',
         styles: {
             font: "NanumGothic",
             fontStyle: "bold",

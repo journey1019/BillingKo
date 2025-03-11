@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { jsPDF } from "jspdf";
 import { GiroPage } from './GiroPage.js';
 import { fetchKOMonthlyAccountSaveIndexDetailData } from '@/service/monthlyAccountService.js';
 import { FaDownload } from "react-icons/fa";
@@ -20,8 +21,14 @@ const GiroPDFBatchDownload = ({ yearMonth, invoiceBasicData, monthlyAcctSaveData
                 // 계정 상세 데이터 요청
                 const accountDetailData = await fetchKOMonthlyAccountSaveIndexDetailData(yearMonth, acctNum);
 
+                // ✅ jsPDF 문서 생성 (문서 객체를 직접 생성)
+                let doc = new jsPDF({
+                    unit: "mm",
+                    format: "a4"
+                });
+
                 // 첫 번째 페이지 생성
-                let doc = GiroPage(yearMonth, invoiceBasicData, accountDetailData || []);
+                doc = GiroPage(doc, yearMonth, invoiceBasicData, accountDetailData || []);
 
                 // PDF를 Blob으로 변환
                 const pdfBlob = doc.output('blob');

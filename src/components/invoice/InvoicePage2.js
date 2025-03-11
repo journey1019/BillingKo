@@ -2,10 +2,34 @@ import companyLogoBase64 from '@/assets/images/companyLogoBase64';
 import { formatNumberWithCommas } from '@/utils/formatHelpers.jsx';
 import { defaultAccountData, applyDefaultValues } from '@/components/invoice/helpers/dataHelpers.js';
 
+import nanumGothicFont from '@/assets/fonts/NanumGothic-normal';         // Base64 문자열 형태의 일반 폰트
+import nanumGothicBoldFont from '@/assets/fonts/NanumGothic-Bold';          // Base64 문자열 형태의 Bold 폰트
+import nanumGothicExtraBoldFont from '@/assets/fonts/NanumGothic-ExtraBold';// Base64 문자열 형태의 Extra Bold 폰트
+import notoSansBoldFont from '@/assets/fonts/notoSansKR-Bold';
+
 export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailData) => {
+    if (!doc) {
+        console.error("❌ Error: doc is undefined in generateInvoicePage2");
+        return;
+    }
+
     const year = Math.floor(yearMonth / 100);
     const month = String(yearMonth % 100).padStart(2, '0');
     const formattedYearMonth = `${year}-${month}`;
+
+    /* ----------------------------
+        폰트 초기화
+    ---------------------------- */
+    doc.addFileToVFS("NanumGothic.ttf", nanumGothicFont);
+    doc.addFont("NanumGothic.ttf", "NanumGothic", "normal");
+    doc.addFileToVFS("NanumGothic-Bold.ttf", nanumGothicBoldFont);
+    doc.addFont("NanumGothic-Bold.ttf", "NanumGothic", "bold");
+    doc.addFileToVFS("NanumGothic-ExtraBold.ttf", nanumGothicExtraBoldFont);
+    doc.addFont("NanumGothic-ExtraBold.ttf", "NanumGothic", "extrabold");
+
+    doc.addFileToVFS("NotoSansKR-VariableFont_wght.ttf", notoSansBoldFont);
+    doc.addFont("NotoSansKR-VariableFont_wght.ttf", "NotoSansKR", "bold");
+
 
     // 기본 데이터 설정
     const data = applyDefaultValues(accountDetailData?.[0] || {}, defaultAccountData);

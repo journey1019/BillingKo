@@ -9,7 +9,12 @@ import { formatNumberWithCommas, formatDateIndex } from '@/utils/formatHelpers.j
 import { defaultAccountData, applyDefaultValues } from '@/components/invoice/helpers/dataHelpers.js';
 
 /** ❓: 추후 확인해봐야 할 항목 */
-export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
+export const GiroPage = (doc, yearMonth, invoiceBasicData, accountDetailData) => {
+    if (!doc) {
+        console.error("❌ Error: doc is undefined in generateInvoicePage2");
+        return;
+    }
+
     console.log(accountDetailData)
     console.log(invoiceBasicData)
     const year = Math.floor(yearMonth / 100);
@@ -22,7 +27,6 @@ export const GiroPage = (yearMonth, invoiceBasicData, accountDetailData) => {
     // 말일 계산 (for 'due_date_of_payment')
     const lastDayOfMonth = new Date(nextYear, formattedNextMonth, 0).getDate();
 
-    const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
 
     /* ----------------------------

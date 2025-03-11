@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { jsPDF } from "jspdf";
 import { generateInvoicePage1 } from './InvoicePage1.js';
 import { generateInvoicePage2 } from './InvoicePage2.js';
 
@@ -13,8 +14,14 @@ const InvoicePDFPreview = ({ yearMonth, invoiceBasicData, accountDetailData }) =
     useEffect(() => {
         if (!invoiceBasicData || !accountDetailData) return;
 
+        // ✅ jsPDF 문서 생성 (문서 객체를 직접 생성)
+        let doc = new jsPDF({
+            unit: "mm",
+            format: "a4"
+        });
+
         // 첫 번째 페이지 생성
-        let doc = generateInvoicePage1(yearMonth, invoiceBasicData, accountDetailData || []);
+        doc = generateInvoicePage1(doc, yearMonth, invoiceBasicData, accountDetailData || []);
 
         // 두 번째 페이지 추가
         doc = generateInvoicePage2(doc, yearMonth, invoiceBasicData, accountDetailData || []);

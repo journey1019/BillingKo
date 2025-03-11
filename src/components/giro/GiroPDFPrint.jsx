@@ -1,4 +1,5 @@
 import React from 'react';
+import { jsPDF } from "jspdf";
 import { GiroPage } from './GiroPage.js';
 import { IoMdDownload } from "react-icons/io";
 
@@ -11,15 +12,22 @@ const GiroPDFPrint = ({ yearMonth, invoiceBasicData, accountDetailData }) => {
 
     const handleGeneratePdf = () => {
         if (!accountDetailData || accountDetailData.length === 0) {
-            alert("No data available for invoice.");
+            alert("No data available for giro.");
             return;
         }
 
         const acctNum = accountDetailData[0]?.acct_num || "Unknown"; // 계정 번호 추출 (첫 번째 데이터 기준)
-        const fileName = `Invoice_${acctNum}_${yearMonth}.pdf`; // 파일명 설정
+        const fileName = `Giro_${acctNum}_${yearMonth}.pdf`; // 파일명 설정
+
+
+        // ✅ jsPDF 문서 생성 (문서 객체를 직접 생성)
+        let doc = new jsPDF({
+            unit: "mm",
+            format: "a4"
+        });
 
         // 첫 페이지 생성
-        let doc = GiroPage(yearMonth, invoiceBasicData, accountDetailData || []);
+        doc = GiroPage(doc, yearMonth, invoiceBasicData, accountDetailData || []);
 
         // PDF를 Blob으로 변환
         const pdfBlob = doc.output('blob');

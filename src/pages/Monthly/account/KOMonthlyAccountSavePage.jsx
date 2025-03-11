@@ -17,6 +17,8 @@ import GiroPDFPrint from '@/components/giro/GiroPDFPrint.jsx';
 import GiroPDFPreview from '@/components/giro/GiroPDFPreview.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import PaymentSummary from '@/components/construct/monthly/PaymentSummary.jsx';
+import InvoicePDFMergedDownload from '@/components/invoice/InvoicePDFMergedDownload.jsx';
+import GiroPDFMergedDownload from '@/components/giro/GiroPDFMergedDownload.jsx';
 
 
 const KOMonthlyAccountSavePage = () => {
@@ -76,6 +78,16 @@ const KOMonthlyAccountSavePage = () => {
                 <h1 className="text-2xl font-base">All Invoices</h1>
 
                 <div className="flex flex-row space-x-4">
+                    <InvoicePDFMergedDownload
+                        yearMonth={yearMonth}
+                        invoiceBasicData={invoiceBasicData}
+                        monthlyAcctSaveData={monthlyAcctSaveData}
+                    />
+                    <GiroPDFMergedDownload
+                        yearMonth={yearMonth}
+                        invoiceBasicData={invoiceBasicData}
+                        monthlyAcctSaveData={monthlyAcctSaveData}
+                    />
                     {/* All PDF Save */}
                     <InvoicePDFBatchDownload
                         yearMonth={yearMonth}

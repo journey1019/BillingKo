@@ -1,4 +1,5 @@
 import React from 'react';
+import { jsPDF } from "jspdf";
 import { generateInvoicePage1 } from './InvoicePage1.js';
 import { generateInvoicePage2 } from './InvoicePage2.js';
 import { FaPrint } from "react-icons/fa";
@@ -12,7 +13,7 @@ import { IoMdDownload } from "react-icons/io";
  * @param accountDetailData = 양식 기반 삽입될 데이터
  */
 const InvoicePDFPrint = ({ yearMonth, invoiceBasicData, accountDetailData }) => {
-    console.log(accountDetailData);
+    console.log('accountDetailData: ', accountDetailData);
 
     const year = Math.floor(yearMonth / 100);
     const month = (yearMonth % 100).toString().padStart(2, '0'); // 01~09월일 경우 앞에 0 추가
@@ -27,8 +28,14 @@ const InvoicePDFPrint = ({ yearMonth, invoiceBasicData, accountDetailData }) => 
         const acctNum = accountDetailData[0]?.acct_num || "Unknown"; // 계정 번호 추출 (첫 번째 데이터 기준)
         const fileName = `Invoice_${acctNum}_${yearMonth}.pdf`; // 파일명 설정
 
+        // ✅ jsPDF 문서 생성 (문서 객체를 직접 생성)
+        let doc = new jsPDF({
+            unit: "mm",
+            format: "a4"
+        });
+
         // 첫 페이지 생성
-        let doc = generateInvoicePage1(yearMonth, invoiceBasicData, accountDetailData || []);
+        doc = generateInvoicePage1(doc, yearMonth, invoiceBasicData, accountDetailData || []);
 
         // 두 번째 페이지 추가
         doc = generateInvoicePage2(doc, yearMonth, invoiceBasicData, accountDetailData || []);
