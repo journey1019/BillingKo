@@ -22,7 +22,7 @@ const PaymentSummary = ({ monthlyAcctSaveData }) => {
         최종납부금액: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.final_fee ?? 0), 0),
     }), [monthlyAcctSaveData]);
 
-    // ✅ 그룹별 정리
+    // ✅ 그룹별 정리 (3열 구성)
     const summaryGroups = [
         {
             title: "기본 비용 항목",
@@ -61,22 +61,24 @@ const PaymentSummary = ({ monthlyAcctSaveData }) => {
 
     return (
         <div className="bg-white p-6 rounded-md shadow-md w-full">
-            {summaryGroups.map(({ title, items, bgColor, textColor }) => (
-                <div key={title} className="mb-4">
-                    <h3 className="text-lg font-semibold mb-2">{title}</h3>
-                    <div className="grid grid-cols-4 gap-4">
-                        {items.map(({ label, key, icon: Icon }) => (
-                            <div key={key} className={`p-4 rounded-lg ${bgColor} ${textColor} shadow-sm flex items-center`}>
-                                <Icon className="w-6 h-6 mr-3" />
-                                <div className="flex-grow text-right">
-                                    <p className="text-sm">{label}</p>
+            <div className="grid grid-cols-3 gap-6">
+                {summaryGroups.map(({ title, items, bgColor, textColor }) => (
+                    <div key={title} className={`p-4 rounded-lg ${bgColor} ${textColor} shadow-md`}>
+                        <h3 className="text-md font-semibold mb-2 text-center">{title}</h3>
+                        <div className="flex flex-col gap-3">
+                            {items.map(({ label, key, icon: Icon }) => (
+                                <div key={key} className="flex items-center justify-between p-3 bg-white rounded-md shadow-sm">
+                                    <div className="flex items-center">
+                                        <Icon className="w-6 h-6 mr-3" />
+                                        <span className="text-sm">{label}</span>
+                                    </div>
                                     <p className="font-semibold">{formatNumber(totalValues[key])} 원</p>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 };
