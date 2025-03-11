@@ -1,59 +1,84 @@
-import { MdAttachMoney, MdMoneyOffCsred } from 'react-icons/md';
-import { useMemo } from 'react';
-import { formatNumber } from '@/utils/formatHelpers.jsx';
-import { FaMountain } from "react-icons/fa6";
-
+import { useMemo } from "react";
+import { formatNumber } from "@/utils/formatHelpers.jsx";
+import { MdAttachMoney, MdMoneyOffCsred } from "react-icons/md";
+import { GiSatelliteCommunication, GiMoneyStack } from "react-icons/gi";
+import { FaRegCreditCard, FaPercentage, FaBalanceScale, FaFileInvoiceDollar, FaMinus } from "react-icons/fa";
+import { TbAdjustments, TbScriptPlus } from "react-icons/tb";
 
 const PaymentSummary = ({ monthlyAcctSaveData }) => {
-    console.log(monthlyAcctSaveData)
-    // 총 납부 금액
-    const totalAccountFinalFee = useMemo(() =>
-            (monthlyAcctSaveData ?? [])
-                .reduce((sum, item) => sum + (item.final_fee ?? 0), 0), // ✅ 총 미수금 합산
-        [monthlyAcctSaveData]
-    );
-    // 총 미수금
-    const totalAccountNoneFee = useMemo(() =>
-            (monthlyAcctSaveData ?? [])
-                .reduce((sum, item) => sum + (item.none_pay_fee ?? 0), 0), // ✅ 총 미수금 합산
-        [monthlyAcctSaveData]
-    );
-    // 총 바이트 사용량
-    const totalAccountUseBytes = useMemo(() =>
-            (monthlyAcctSaveData ?? [])
-                .reduce((sum, item) => sum + (item.account_use_byte_total ?? 0), 0), // ✅ 총 미수금 합산
-        [monthlyAcctSaveData]
-    );
+    // ✅ 금액 계산 (useMemo를 사용하여 최적화)
+    const totalValues = useMemo(() => ({
+        기본료: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.basic_fee_total ?? 0), 0),
+        통신료: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.add_use_fee_total ?? 0), 0),
+        부가서비스료: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.modification_fee_total ?? 0), 0),
+        기타사용료: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.subscribe_fee_total ?? 0), 0),
+        공급가액: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.total_fee ?? 0), 0),
+        부가가치세: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.tax_fee ?? 0), 0),
+        절사금액: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.cut_off_fee ?? 0), 0),
+        당월납부액: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.monthly_final_fee ?? 0), 0),
+        추가조정금: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.modification_tax_free_total ?? 0), 0),
+        연체가산금: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.late_payment_penalty_fee ?? 0), 0),
+        미납금: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.none_pay_fee ?? 0), 0),
+        최종납부금액: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.final_fee ?? 0), 0),
+    }), [monthlyAcctSaveData]);
 
-    console.log(totalAccountFinalFee)
+    // ✅ 그룹별 정리
+    const summaryGroups = [
+        {
+            title: "기본 비용 항목",
+            items: [
+                { label: "기본료", key: "기본료", icon: MdAttachMoney },
+                { label: "통신료", key: "통신료", icon: GiSatelliteCommunication },
+                { label: "부가서비스료", key: "부가서비스료", icon: FaRegCreditCard },
+                { label: "기타사용료", key: "기타사용료", icon: TbScriptPlus },
+            ],
+            bgColor: "bg-blue-100",
+            textColor: "text-blue-600",
+        },
+        {
+            title: "중간 합산 항목",
+            items: [
+                { label: "공급가액", key: "공급가액", icon: GiMoneyStack },
+                { label: "부가가치세", key: "부가가치세", icon: FaPercentage },
+                { label: "절사금액", key: "절사금액", icon: FaMinus },
+                { label: "당월납부액", key: "당월납부액", icon: FaFileInvoiceDollar },
+            ],
+            bgColor: "bg-gray-100",
+            textColor: "text-gray-700",
+        },
+        {
+            title: "최종 결제 항목",
+            items: [
+                { label: "추가조정금", key: "추가조정금", icon: TbAdjustments },
+                { label: "연체가산금", key: "연체가산금", icon: FaBalanceScale },
+                { label: "미납금", key: "미납금", icon: MdMoneyOffCsred },
+                { label: "최종납부금액", key: "최종납부금액", icon: FaFileInvoiceDollar },
+            ],
+            bgColor: "bg-red-100",
+            textColor: "text-red-600",
+        },
+    ];
 
-    return(
-        <>
-            <div className="col-span-2">
-                <span className="text-xs text-gray-500">Payment Summary</span>
-                <div className="flex flex-row space-x-4 items-center py-2">
-                    <div className="p-2 rounded-full bg-blue-200 text-blue-500"><MdAttachMoney
-                        className="w-5 h-5" /></div>
-                    <span className="font-semibold">{formatNumber(totalAccountFinalFee)} 원</span>
+    return (
+        <div className="bg-white p-6 rounded-md shadow-md w-full">
+            {summaryGroups.map(({ title, items, bgColor, textColor }) => (
+                <div key={title} className="mb-4">
+                    <h3 className="text-lg font-semibold mb-2">{title}</h3>
+                    <div className="grid grid-cols-4 gap-4">
+                        {items.map(({ label, key, icon: Icon }) => (
+                            <div key={key} className={`p-4 rounded-lg ${bgColor} ${textColor} shadow-sm flex items-center`}>
+                                <Icon className="w-6 h-6 mr-3" />
+                                <div className="flex-grow text-right">
+                                    <p className="text-sm">{label}</p>
+                                    <p className="font-semibold">{formatNumber(totalValues[key])} 원</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
-            <div className="col-span-2">
-                <span className="text-xs text-gray-500">Total Outstanding Receivables</span>
-                <div className="flex flex-row space-x-4 items-center py-2">
-                    <div className="p-2 rounded-full bg-red-200 text-red-500"><MdMoneyOffCsred
-                        className="w-5 h-5" /></div>
-                    <span className="font-semibold">{formatNumber(totalAccountNoneFee)} 원</span>
-                </div>
-            </div>
-            <div className="col-span-2">
-                <span className="text-xs text-gray-500">Total Bytes Usage</span>
-                <div className="flex flex-row space-x-4 items-center py-2">
-                    <div className="p-2 rounded-full bg-orange-200 text-orange-500"><FaMountain
-                        className="w-5 h-5" /></div>
-                    <span className="font-semibold">{formatNumber(totalAccountUseBytes)} bytes</span>
-                </div>
-            </div>
-        </>
-    )
-}
+            ))}
+        </div>
+    );
+};
+
 export default PaymentSummary;

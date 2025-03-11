@@ -8,11 +8,7 @@ import KOMonthlyAccountTableColumns from '@/columns/KOMonthlyAccountTableColumns
 import { KOMonthlyAccountTableOptions } from '@/options/KOMonthlyAccountTableOptions.jsx';
 import { fetchInvoicePrint } from '@/service/invoiceService.js';
 import InvoicePDFPrint from '@/components/invoice/InvoicePDFPrint.jsx';
-import InvoicePDFPrintView from '@/components/invoice/InvoicePDFPrintView.jsx';
 import InvoicePDFPreview from '@/components/invoice/InvoicePDFPreview.jsx';
-import InvoicePDFBatchDownload from '@/components/invoice/InvoicePDFBatchDownload.jsx';
-import { MdAttachMoney, MdMoneyOffCsred } from "react-icons/md";
-import GiroPDFBatchDownload from '@/components/giro/GiroPDFBatchDownload.jsx';
 import GiroPDFPrint from '@/components/giro/GiroPDFPrint.jsx';
 import GiroPDFPreview from '@/components/giro/GiroPDFPreview.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
@@ -75,7 +71,7 @@ const KOMonthlyAccountSavePage = () => {
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             {/* 상단 제목 및 월 선택 */}
             <div className="flex flex-row col-span-6 border-b pb-3 mb-2 border-gray-400 justify-between items-center">
-                <h1 className="text-2xl font-base">All Invoices</h1>
+                <h1 className="text-xl font-bold">Payment Summary</h1>
 
                 <div className="flex flex-row space-x-4">
                     <InvoicePDFMergedDownload
@@ -88,25 +84,14 @@ const KOMonthlyAccountSavePage = () => {
                         invoiceBasicData={invoiceBasicData}
                         monthlyAcctSaveData={monthlyAcctSaveData}
                     />
-                    {/* All PDF Save */}
-                    {/*<InvoicePDFBatchDownload*/}
-                    {/*    yearMonth={yearMonth}*/}
-                    {/*    invoiceBasicData={invoiceBasicData}*/}
-                    {/*    monthlyAcctSaveData={monthlyAcctSaveData}*/}
-                    {/*/>*/}
-                    {/*<GiroPDFBatchDownload*/}
-                    {/*    yearMonth={yearMonth}*/}
-                    {/*    invoiceBasicData={invoiceBasicData}*/}
-                    {/*    monthlyAcctSaveData={monthlyAcctSaveData}*/}
-                    {/*/>*/}
                 </div>
             </div>
 
             {/* 납부현황 */}
             <div className="flex flex-row col-span-6 pb-3 mb-2 border-gray-400 justify-between items-center">
-                <div className="grid grid-cols-6 py-5 px-10 rounded-md bg-white w-full shadow-md">
+
                     <PaymentSummary monthlyAcctSaveData={monthlyAcctSaveData}/>
-                </div>
+
             </div>
 
             <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
