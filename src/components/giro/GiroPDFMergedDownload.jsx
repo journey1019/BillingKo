@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { GiroPage } from './GiroPage.js';
 import { jsPDF } from "jspdf";
 import { fetchKOMonthlyAccountSaveIndexDetailData } from '@/service/monthlyAccountService.js';
-import { FaDownload } from "react-icons/fa";
+import { FaDownload } from 'react-icons/fa';
 
 /**
  * @param yearMonth = '202501' 선택한 Year Month
@@ -64,8 +64,18 @@ const GiroPDFMergedPrint = ({ yearMonth, invoiceBasicData, monthlyAcctSaveData }
             onClick={handleDownloadAll}
             disabled={loading || !monthlyAcctSaveData?.length} // 데이터가 없거나 로딩 중이면 비활성화
         >
-            <FaDownload />
-            <span>{loading ? "Downloading..." : "Download Merge Giro PDFs"}</span>
+            {loading ? (
+                <svg className="w-5 h-5 animate-spin text-gray-600"
+                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+            ) : (
+                <FaDownload />
+            )}
+            <span>{loading ? "일괄 저장중..." : "지로 일괄 저장"}</span>
         </button>
     );
 }

@@ -89,16 +89,16 @@ const KOMonthlyAccountSavePage = () => {
                         monthlyAcctSaveData={monthlyAcctSaveData}
                     />
                     {/* All PDF Save */}
-                    <InvoicePDFBatchDownload
-                        yearMonth={yearMonth}
-                        invoiceBasicData={invoiceBasicData}
-                        monthlyAcctSaveData={monthlyAcctSaveData}
-                    />
-                    <GiroPDFBatchDownload
-                        yearMonth={yearMonth}
-                        invoiceBasicData={invoiceBasicData}
-                        monthlyAcctSaveData={monthlyAcctSaveData}
-                    />
+                    {/*<InvoicePDFBatchDownload*/}
+                    {/*    yearMonth={yearMonth}*/}
+                    {/*    invoiceBasicData={invoiceBasicData}*/}
+                    {/*    monthlyAcctSaveData={monthlyAcctSaveData}*/}
+                    {/*/>*/}
+                    {/*<GiroPDFBatchDownload*/}
+                    {/*    yearMonth={yearMonth}*/}
+                    {/*    invoiceBasicData={invoiceBasicData}*/}
+                    {/*    monthlyAcctSaveData={monthlyAcctSaveData}*/}
+                    {/*/>*/}
                 </div>
             </div>
 
@@ -149,9 +149,9 @@ const KOMonthlyAccountSavePage = () => {
                         <h1 className="text-2xl p-2">{selectedRowData.acct_num}</h1>
                         <div className="flex flex-row space-x-4">
                             <InvoicePDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
-                                             accountDetailData={monthlyAcctSaveDetailData} />
+                                             accountDetailData={monthlyAcctSaveDetailData} monthlyAcctSaveData={monthlyAcctSaveData} />
                             <GiroPDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
-                                          accountDetailData={monthlyAcctSaveDetailData} />
+                                          accountDetailData={monthlyAcctSaveDetailData} monthlyAcctSaveData={monthlyAcctSaveData} />
                         </div>
                     </div>
                     <TabComponent tabs={tabs} />
