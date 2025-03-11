@@ -1,11 +1,33 @@
-import { useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { formatNumber } from "@/utils/formatHelpers.jsx";
 import { MdAttachMoney, MdMoneyOffCsred } from "react-icons/md";
 import { GiSatelliteCommunication, GiMoneyStack } from "react-icons/gi";
 import { FaRegCreditCard, FaPercentage, FaBalanceScale, FaFileInvoiceDollar, FaMinus } from "react-icons/fa";
 import { TbAdjustments, TbScriptPlus } from "react-icons/tb";
 
+// ✅ 스켈레톤 로딩 컴포넌트
+const SkeletonLoader = () => (
+    <div className="animate-pulse bg-gray-200 rounded-md h-5 w-20"></div>
+);
+
 const PaymentSummary = ({ monthlyAcctSaveData }) => {
+    // ✅ loading 상태를 판별하는 변수
+    const [isLoading, setIsLoading] = useState(true);
+    const [forceZero, setForceZero] = useState(false);
+
+    // ✅ 데이터가 있으면 즉시 loading 해제
+    useEffect(() => {
+        if (monthlyAcctSaveData && monthlyAcctSaveData.length > 0) {
+            setIsLoading(false);
+            setForceZero(false);
+        } else {
+            setIsLoading(true);
+            setTimeout(() => {
+                setForceZero(true); // 3초 이후에도 데이터가 없으면 0으로 표시
+            }, 3000);
+        }
+    }, [monthlyAcctSaveData]);
+
     // ✅ 금액 계산 (useMemo를 사용하여 최적화)
     const totalValues = useMemo(() => ({
         기본료: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.basic_fee_total ?? 0), 0),
@@ -72,7 +94,12 @@ const PaymentSummary = ({ monthlyAcctSaveData }) => {
                                         <Icon className="w-6 h-6 mr-3" />
                                         <span className="text-sm">{label}</span>
                                     </div>
-                                    <p className="font-semibold">{formatNumber(totalValues[key])} 원</p>
+                                    {/* ✅ 로딩 중이면 스켈레톤, 3초 지나도 데이터 없으면 0 표시 */}
+                                    {isLoading ? (
+                                        forceZero ? <p className="font-semibold">0 원</p> : <SkeletonLoader />
+                                    ) : (
+                                        <p className="font-semibold">{formatNumber(totalValues[key])} 원</p>
+                                    )}
                                 </div>
                             ))}
                         </div>

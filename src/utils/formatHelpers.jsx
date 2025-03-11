@@ -1,4 +1,7 @@
-export const formatNumber = (num) => num.toLocaleString();
+export const formatNumber = (num) => {
+    if (typeof num !== "number" || isNaN(num)) return "0";  // ❗ 숫자가 아니면 기본값 반환
+    return num.toLocaleString(); // 정상적인 숫자면 포맷 적용
+};
 
 // 천 단위 ',' 설정
 export function formatNumberWithCommas(number) {

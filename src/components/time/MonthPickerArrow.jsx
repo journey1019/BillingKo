@@ -8,8 +8,8 @@ const MonthPicker = ({ value, onDateChange, placeholder = "Select month" }) => {
 
     // Custom Input 컴포넌트
     const CustomInput = forwardRef(({ value, onClick }, ref) => (
-        <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center pl-3 pointer-events-none">
+        <div className="relative w-32"> {/* ✅ 너비를 제한 */}
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                 <svg
                     className="w-4 h-4 text-gray-500 dark:text-gray-400"
                     xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +25,7 @@ const MonthPicker = ({ value, onDateChange, placeholder = "Select month" }) => {
                 onClick={onClick}
                 placeholder={placeholder}
                 readOnly
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-11 p-2.5"
             />
         </div>
     ));
@@ -42,7 +42,6 @@ const MonthPicker = ({ value, onDateChange, placeholder = "Select month" }) => {
         const nextMonth = new Date(value);
         nextMonth.setMonth(nextMonth.getMonth() + 1);
 
-        // 다음 달이 현재 달보다 큰 경우 경고 알림
         if (nextMonth > today) {
             alert("You cannot select a future date.");
             return;
@@ -52,14 +51,14 @@ const MonthPicker = ({ value, onDateChange, placeholder = "Select month" }) => {
     };
 
     return (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1"> {/* ✅ 간격 축소 */}
             {/* 왼쪽 화살표 */}
             <button
                 type="button"
                 onClick={handlePreviousMonth}
-                className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full"
+                className="p-1.5 bg-gray-200 hover:bg-gray-300 rounded-full"
             >
-                <FiChevronLeft size={20} className="text-gray-700" />
+                <FiChevronLeft size={18} className="text-gray-700" />
             </button>
 
             {/* 월 선택기 */}
@@ -76,9 +75,9 @@ const MonthPicker = ({ value, onDateChange, placeholder = "Select month" }) => {
             <button
                 type="button"
                 onClick={handleNextMonth}
-                className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full"
+                className="p-1.5 bg-gray-200 hover:bg-gray-300 rounded-full"
             >
-                <FiChevronRight size={20} className="text-gray-700" />
+                <FiChevronRight size={18} className="text-gray-700" />
             </button>
         </div>
     );

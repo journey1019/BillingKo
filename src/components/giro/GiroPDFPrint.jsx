@@ -98,7 +98,7 @@ const GiroPDFPrint = ({ yearMonth, invoiceBasicData, accountDetailData, monthlyA
                     <button
                         onClick={handleGeneratePdf}
                         className="text-gray-800 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300
-                    font-medium text-sm px-5 py-2.5 text-center inline-flex items-center rounded-l-lg border border-2 border-gray-800 space-x-2"
+                    font-medium text-sm px-4 py-2 text-center inline-flex items-center rounded-l-lg border border-2 border-gray-800 space-x-2"
                         type="button"
                     >
                         <IoMdDownload className="w-4 h-4" />
@@ -108,10 +108,10 @@ const GiroPDFPrint = ({ yearMonth, invoiceBasicData, accountDetailData, monthlyA
                     <button
                         onClick={() => setIsOpen(!isOpen)}
                         className="text-gray-800 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300
-                    font-medium text-sm px-3 py-2.5 text-center inline-flex items-center rounded-r-lg border border-2 border-gray-800"
+                    font-medium text-sm px-3 py-2 text-center inline-flex items-center rounded-r-lg border border-2 border-gray-800"
                         type="button"
                     >
-                        <svg className={`w-3 h-3 transform transition ${isOpen ? 'rotate-90' : ''}`}
+                        <svg className={`w-2.5 h-2.5 transform transition ${isOpen ? 'rotate-90' : ''}`}
                              aria-hidden="true"
                              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"

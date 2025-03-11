@@ -15,6 +15,9 @@ import TabComponent from '@/components/layout/TabComponent.jsx';
 import PaymentSummary from '@/components/construct/monthly/PaymentSummary.jsx';
 import InvoicePDFMergedDownload from '@/components/invoice/InvoicePDFMergedDownload.jsx';
 import GiroPDFMergedDownload from '@/components/giro/GiroPDFMergedDownload.jsx';
+import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
+import InvoicePDFMergedPrintDirect from '@/components/invoice/InvoicePDFMergedPrintDirect.jsx';
+import GiroPDFMergedPrintDirect from '@/components/giro/GiroPDFMergedPrintDirect.jsx';
 
 
 const KOMonthlyAccountSavePage = () => {
@@ -71,33 +74,41 @@ const KOMonthlyAccountSavePage = () => {
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             {/* 상단 제목 및 월 선택 */}
             <div className="flex flex-row col-span-6 border-b pb-3 mb-2 border-gray-400 justify-between items-center">
-                <h1 className="text-xl font-bold">Payment Summary</h1>
+                <h1 className="text-xl font-bold">결제내역 요약</h1>
 
                 <div className="flex flex-row space-x-4">
-                    <InvoicePDFMergedDownload
+                    <InvoicePDFMergedPrintDirect
                         yearMonth={yearMonth}
                         invoiceBasicData={invoiceBasicData}
                         monthlyAcctSaveData={monthlyAcctSaveData}
                     />
-                    <GiroPDFMergedDownload
+                    <GiroPDFMergedPrintDirect
                         yearMonth={yearMonth}
                         invoiceBasicData={invoiceBasicData}
                         monthlyAcctSaveData={monthlyAcctSaveData}
                     />
+                    {/*<InvoicePDFMergedDownload*/}
+                    {/*    yearMonth={yearMonth}*/}
+                    {/*    invoiceBasicData={invoiceBasicData}*/}
+                    {/*    monthlyAcctSaveData={monthlyAcctSaveData}*/}
+                    {/*/>*/}
+                    {/*<GiroPDFMergedDownload*/}
+                    {/*    yearMonth={yearMonth}*/}
+                    {/*    invoiceBasicData={invoiceBasicData}*/}
+                    {/*    monthlyAcctSaveData={monthlyAcctSaveData}*/}
+                    {/*/>*/}
                 </div>
             </div>
 
             {/* 납부현황 */}
             <div className="flex flex-row col-span-6 pb-3 mb-2 border-gray-400 justify-between items-center">
-
-                    <PaymentSummary monthlyAcctSaveData={monthlyAcctSaveData}/>
-
+                <PaymentSummary monthlyAcctSaveData={monthlyAcctSaveData}/>
             </div>
 
             <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
                 <div className="flex justify-between items-center mb-4">
-                    <h1 className="text-xl font-bold">KO Monthly Account Data</h1>
-                    <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                    <h1 className="text-xl font-bold">최종 청구서 테이블</h1>
+                    <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                 </div>
 
                 {/* 테이블 UI */}
@@ -130,8 +141,8 @@ const KOMonthlyAccountSavePage = () => {
 
             {isExpanded && selectedRowData && (
                 <div className="p-2 col-span-4">
-                    <div className="flex flex-row justify-between">
-                        <h1 className="text-2xl p-2">{selectedRowData.acct_num}</h1>
+                    <div className="flex flex-row justify-between items-center">
+                        <h1 className="text-xl font-bold">{selectedRowData.acct_num}</h1>
                         <div className="flex flex-row space-x-4">
                             <InvoicePDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
                                              accountDetailData={monthlyAcctSaveDetailData} monthlyAcctSaveData={monthlyAcctSaveData} />
