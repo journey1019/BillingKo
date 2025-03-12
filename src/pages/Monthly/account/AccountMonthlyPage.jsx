@@ -10,10 +10,11 @@ import AccountMonthlyOverview from '@/components/form/AccountMonthly/AccountMont
 import AccountMonthlyOverviewBefo from '@/components/form/AccountMonthly/AccountMonthlyOverviewBefo.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
+import AccountMonthlyForm from '@/components/form/AccountMonthly/AccountMonthlyForm.jsx';
 
 
 /**
- * @desc: 고객별 데이터 페이지
+ * @desc: 청구 기본 자료
  * */
 const AccountMonthlyPage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
@@ -96,7 +97,7 @@ const AccountMonthlyPage = () => {
                 </div>
 
                 {isExpanded && selectedRowId && (
-                    <div className="p-2 col-span-2">
+                    <div className="p-2 col-span-4">
                         <div className="flex flex-row justify-between">
                             <h1 className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</h1>
 
@@ -107,9 +108,12 @@ const AccountMonthlyPage = () => {
                             {/*</div>*/}
                         </div>
                         <div className="flex flex-col p-4 bg-white">
-                            {/*<span className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</span>*/}
-                            <AccountMonthlyOverview accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError}/>
+                            <AccountMonthlyForm accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError} />
                         </div>
+                        {/*<div className="flex flex-col p-4 bg-white">*/}
+                        {/*    <span className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</span>*/}
+                        {/*    <AccountMonthlyOverview accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError}/>*/}
+                        {/*</div>*/}
                         {/*<div className="flex flex-col p-4 bg-white mt-10">*/}
                         {/*    <AccountMonthlyOverviewBefo accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError}/>*/}
                         {/*</div>*/}

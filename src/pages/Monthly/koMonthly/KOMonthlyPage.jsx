@@ -10,13 +10,15 @@ import LoadingSpinner from "@/components/common/LoadingSpinner.jsx";
 import { MonthlyTableColumns } from "@/columns/MonthlyTableColumns.jsx";
 import MonthPicker from "@/components/time/MonthPicker.jsx";
 import { KOMonthlyTableOptions } from "@/options/KOMonthlyTableOptions.jsx";
-import KOMonthlyForm from "@/components/form/Monthly/KOMonthlyForm.jsx";
+import DeviceMonthlyFormBefo from "@/components/form/Monthly/DeviceMonthlyFormBefo.jsx";
 import { MdModeEditOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import useYearMonth from '@/hooks/useYearMonth.js';
+import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
+import DeviceMonthlyForm from '@/components/form/Monthly/DeviceMonthlyForm.jsx';
 
 /**
- * @desc: 단말별 데이터 페이지
+ * @desc: 단말 기본 자료
  * */
 const KOMonthlyPage = () => {
     const navigate = useNavigate();
@@ -85,24 +87,25 @@ const KOMonthlyPage = () => {
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
             <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
-                <h1 className="text-2xl font-base">KO Monthly Data</h1>
+                <h1 className="text-xl font-base font-bold">단말 기본 자료</h1>
             </div>
 
             <div className={`p-2 ${isExpanded ? "col-span-2" : "col-span-6"}`}>
                 <div>
                     <div className="flex flex-row items-center justify-between mb-3 relative z-10">
-                        <h1 className="text-lg font-bold">
-                            Selected Month:{" "}
-                            {selectedDate.toLocaleDateString("ko-KR", {
-                                year: "numeric",
-                                month: "short", // '1월' 대신 '01월'을 원하면 "2-digit" 사용
-                            })}
-                            {/*{selectedDate.toLocaleDateString("en-US", {*/}
-                            {/*    year: "numeric",*/}
-                            {/*    month: "long",*/}
-                            {/*})}*/}
-                        </h1>
-                        <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                        <h1 className="text-xl font-bold">단말기 상세 테이블</h1>
+                        {/*<h1 className="text-lg font-bold">*/}
+                        {/*    Selected Month:{" "}*/}
+                        {/*    {selectedDate.toLocaleDateString("ko-KR", {*/}
+                        {/*        year: "numeric",*/}
+                        {/*        month: "short", // '1월' 대신 '01월'을 원하면 "2-digit" 사용*/}
+                        {/*    })}*/}
+                        {/*    /!*{selectedDate.toLocaleDateString("en-US", {*!/*/}
+                        {/*    /!*    year: "numeric",*!/*/}
+                        {/*    /!*    month: "long",*!/*/}
+                        {/*    /!*})}*!/*/}
+                        {/*</h1>*/}
+                        <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                     </div>
                     {loading ? (
                         <LoadingSpinner />
@@ -138,8 +141,10 @@ const KOMonthlyPage = () => {
                     <div className="flex flex-col">
                         <div className="flex flex-row justify-between mb-3">
                             <div className="flex flex-row items-center">
-                                <span className="text-black font-semibold pr-3">Data Index:</span>
-                                <h2 className="py-1 text-lg font-bold text-red-600">{selectedMonthlyIndex.data_index}</h2>
+                                {/*<h2 className="text-xl text-black font-semibold pr-3">{selectedMonthlyIndex.acct_num} - {selectedMonthlyIndex.serial_number}</h2>*/}
+
+                                {/*<span className="text-black font-semibold pr-3">Data Index:</span>*/}
+                                {/*<h2 className="py-1 text-lg font-bold text-red-600">{selectedMonthlyIndex.data_index}</h2>*/}
                             </div>
                             <button type="button"
                                     className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
@@ -155,13 +160,22 @@ const KOMonthlyPage = () => {
                             ) : detailError ? (
                                 <p className="text-red-500">Error loading detail data: {detailError}</p>
                             ) : (
-                                <KOMonthlyForm
-                                    detailData={detailVersionData || detailData}
-                                    version={version}
-                                    latestVersion={latestVersion}
-                                    setVersion={setVersion}
-                                    fetchVersionData={fetchVersionData}
-                                />
+                                <>
+                                    <DeviceMonthlyForm
+                                        detailData={detailVersionData || detailData}
+                                        version={version}
+                                        latestVersion={latestVersion}
+                                        setVersion={setVersion}
+                                        fetchVersionData={fetchVersionData}
+                                    />
+                                    {/*<DeviceMonthlyFormBefo*/}
+                                    {/*    detailData={detailVersionData || detailData}*/}
+                                    {/*    version={version}*/}
+                                    {/*    latestVersion={latestVersion}*/}
+                                    {/*    setVersion={setVersion}*/}
+                                    {/*    fetchVersionData={fetchVersionData}*/}
+                                    {/*/>*/}
+                                </>
                             )}
                         </div>
                     </div>

@@ -1,3 +1,5 @@
+import { formatNumber } from '@/utils/formatHelpers.jsx';
+
 /** MonthlyTableColumns.jsx */
 export const MonthlyTableColumns = [
     // {
@@ -38,10 +40,12 @@ export const MonthlyTableColumns = [
     {
         accessorKey: 'free_bytes',
         header: 'Free Bytes',
+        Cell: ({ cell }) => formatNumber(cell.getValue()),
     },
     {
         accessorKey: 'use_byte_total',
         header: 'Use Byte Total',
+        Cell: ({ cell }) => formatNumber(cell.getValue()),
     },
     {
         accessorKey: 'use_byte',

@@ -7,8 +7,9 @@ import Dropdown from '@/components/dropdown/Dropdown.jsx';
 import DropdownMenu from "@/components/dropdown/DropdownMenu.jsx";
 import Accordion from '@/components/ui/Accordions/Accordion.jsx';
 import { accordionItems } from '@/components/form/AccountMonthly/AccountAccordionItem.jsx';
+import TabComponent from '@/components/layout/TabComponent.jsx';
 
-const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accountDetailError }) => {
+const AccountMonthlyForm = ({ accountDetailData, accountDetailLoading, accountDetailError }) => {
     // ✅ 기본값 설정 (빈 배열)
     const safeAccountDetailData = Array.isArray(accountDetailData) ? accountDetailData : [];
 
@@ -39,11 +40,28 @@ const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accou
     // const handleEdit = () => setIsOpenDropdown(!isOpenDropdown);
     // const closeDropdown = () => setIsOpenDropdown(false);
 
+    const DeviceOverviewTab = () => {
+        return(
+            <>
+            </>
+        )
+    }
+    const AccountOverviewTab = () => {
+        return(
+            <>
+            </>
+        )
+    }
 
+    const tabs = [
+        { id: 1, label: '고객 정보', content: <AccountOverviewTab /> },
+        { id: 2, label: '단말 정보', content: <DeviceOverviewTab /> },
+    ];
 
 
     return (
         <div className="grid grid-cols-2 rounded-lg">
+            <TabComponent tabs={tabs}/>
             <div className="pr-2 col-span-2">
                 <Accordion items={accordionItems({ accountData, accountInfo, deviceDetail })} />
             </div>
@@ -245,4 +263,4 @@ const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accou
     );
 };
 
-export default AccountMonthlyOverview;
+export default AccountMonthlyForm;

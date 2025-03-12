@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData }) => {
+const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData }) => {
     if (!detailData) return <p>No data available</p>;
     const navigate = useNavigate();
 
@@ -115,10 +115,6 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                 <BasicDropdownForm detailData={detailData}/>
 
                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
-                    <div className="text-gray-500">Data Index:</div>
-                    <div className="px-2 col-span-1 ml-1">{detailData.data_index}</div>
-                </div>
-                <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
                     <div className="text-gray-500">Profile ID:</div>
                     <div className="px-2 col-span-1">{detailData.profile_id}</div>
                 </div>
@@ -126,7 +122,7 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
                     <div className="text-gray-500">Account Number:</div>
                     <div className="flex flex-row items-center col-span-1">
                         <button onClick={() => navigate('/accounts')}
-                            className="rounded-full px-2 py-1 hover:bg-gray-300 duration-300">
+                                className="rounded-full px-2 py-1 hover:bg-gray-300 duration-300">
                             {detailData.acct_num}
                         </button>
                     </div>
@@ -350,4 +346,4 @@ const KOMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVe
     );
 };
 
-export default KOMonthlyForm;
+export default DeviceMonthlyForm;
