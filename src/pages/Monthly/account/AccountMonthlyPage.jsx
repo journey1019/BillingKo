@@ -7,8 +7,9 @@ import useApiFetch from '@/hooks/useApiFetch.js';
 import { fetchKOMonthlyAccountDetailData, fetchKOMonthlyAccountIndexData } from '@/service/monthlyAccountService.js';
 import { useState, useEffect } from 'react';
 import AccountMonthlyOverview from '@/components/form/AccountMonthly/AccountMonthlyOverview.jsx';
+import AccountMonthlyOverviewBefo from '@/components/form/AccountMonthly/AccountMonthlyOverviewBefo.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
-import AccountMonthlyTransaction from '@/components/form/AccountMonthly/AccountMonthlyTransaction.jsx';
+import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 
 
 /**
@@ -50,7 +51,7 @@ const AccountMonthlyPage = () => {
 
     const tabs = [
         { id: 1, label: 'Overview', content: <AccountMonthlyOverview accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError}/>},
-        { id: 2, label: 'Transaction', content: <AccountMonthlyTransaction /> },
+        // { id: 2, label: 'Transaction', content: <AccountMonthlyTransaction /> },
     ];
 
     return(
@@ -58,13 +59,13 @@ const AccountMonthlyPage = () => {
             <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
                 {/* 상단 제목 및 월 선택 */}
                 <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
-                    <h1 className="text-2xl font-base">고객별 테이블</h1>
+                    <h1 className="text-xl font-bold">청구 기본 자료</h1>
                 </div>
 
                 <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
                     <div className="flex justify-between items-center mb-4">
-                        <h1 className="text-xl font-bold">All Account</h1>
-                        <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                        <h1 className="text-xl font-bold">청구서 점검 테이블</h1>
+                        <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                     </div>
 
                     {/* 테이블 UI */}
@@ -95,7 +96,7 @@ const AccountMonthlyPage = () => {
                 </div>
 
                 {isExpanded && selectedRowId && (
-                    <div className="p-2 col-span-4">
+                    <div className="p-2 col-span-2">
                         <div className="flex flex-row justify-between">
                             <h1 className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</h1>
 
@@ -109,6 +110,9 @@ const AccountMonthlyPage = () => {
                             {/*<span className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</span>*/}
                             <AccountMonthlyOverview accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError}/>
                         </div>
+                        {/*<div className="flex flex-col p-4 bg-white mt-10">*/}
+                        {/*    <AccountMonthlyOverviewBefo accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError}/>*/}
+                        {/*</div>*/}
                         {/*<TabComponent tabs={tabs} />*/}
                     </div>
                 )}

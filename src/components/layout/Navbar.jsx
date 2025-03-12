@@ -58,7 +58,7 @@ const Navbar = () => {
                                 className={`flex items-center space-x-2 p-2 transition hover:text-blue-400 ${useActivePath("/ko_monthly")}`}
                             >
                                 <FaChalkboard />
-                                <span>단말별 데이터</span>
+                                <span>단말 기본 자료</span>
                             </NavLink>
                         </li>
                         <li>
@@ -67,7 +67,7 @@ const Navbar = () => {
                                 className={`flex items-center space-x-2 p-2 transition hover:text-blue-400 ${useActivePath("/monthly/account")}`}
                             >
                                 <BiSolidUserAccount />
-                                <span>고객별 데이터</span>
+                                <span>청구 기본 자료</span>
                             </NavLink>
                         </li>
                         <li>

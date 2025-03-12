@@ -99,10 +99,11 @@ const App = () => {
                                 <Route path="/devices" element={<DevicePage />} />
                                 <Route path="/price" element={<PricePage />} />
                                 <Route path="/monthly" element={<MonthlyPage />} />
-                                <Route path="/ko_monthly" element={<KOMonthlyPage />} />
                                 <Route path="/adjustment" element={<AdjustmentPage />} />
                                 <Route path="/ko_monthly/account" element={<KOMonthlyAccountPage />} />
-                                <Route path="/ko_monthly/account/save" element={<KOMonthlyAccountSavePage />} />
+                                <Route path="/ko_monthly" element={<KOMonthlyPage />} /> {/* 단말별 */}
+                                <Route path="/monthly/account" element={<AccountMonthlyPage />} /> {/* 고객별 */}
+                                <Route path="/ko_monthly/account/save" element={<KOMonthlyAccountSavePage />} /> {/* 청구서 */}
 
                                 <Route path="/font_convert" element={<FontConvertPage />} />
 
@@ -123,9 +124,6 @@ const App = () => {
                                 <Route path="/code/new" element={<CodePage />} />
 
                                 <Route path="/ko_monthly/edit" element={<KOMonthlyEditPage />} />
-
-                                {/* Account Monthly Page */}
-                                <Route path="/monthly/account" element={<AccountMonthlyPage />} />
 
                                 {/* File Upload Page */}
                                 <Route path="/upload/new" element={<UploadNewPage />} />
