@@ -46,13 +46,13 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                                         >
                                             {device.serial_number}
                                         </td>
-                                        <td className="px-2 py-1 2xl:p-2 border">{device.period_data}</td>
-                                        <td className="px-2 py-1 2xl:p-2 border">{formatNumber(device.basic_fee)}</td>
-                                        <td className="px-2 py-1 2xl:p-2 border">{formatNumber(device.add_use_fee)}</td>
-                                        <td className="px-2 py-1 2xl:p-2 border">{formatNumber(device.subscribe_fee)}</td>
-                                        <td className="px-2 py-1 2xl:p-2 border">{formatNumber(device.modification_fee)}</td>
-                                        <td className="px-2 py-1 2xl:p-2 border">{formatNumber(device.use_byte_total)}</td>
-                                        <td className="px-2 py-1 2xl:p-2 border font-bold">{formatNumber(device.total_fee)}</td>
+                                        <td className="p-2 border">{device.period_data}</td>
+                                        <td className="p-2 border">{formatNumber(device.basic_fee)}</td>
+                                        <td className="text-xs 2xl:text-sm p-2 border">{formatNumber(device.add_use_fee)}</td>
+                                        <td className="text-xs 2xl:text-sm p-2 border">{formatNumber(device.subscribe_fee)}</td>
+                                        <td className="text-xs 2xl:text-sm p-2 border">{formatNumber(device.modification_fee)}</td>
+                                        <td className="text-xs 2xl:text-sm p-2 border">{formatNumber(device.use_byte_total)}</td>
+                                        <td className="text-xs 2xl:text-sm p-2 border font-bold">{formatNumber(device.total_fee)}</td>
                                     </tr>
                                 ))}
                             </tbody>
