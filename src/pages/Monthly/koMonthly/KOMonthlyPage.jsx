@@ -16,14 +16,21 @@ import { useNavigate } from 'react-router-dom';
 import useYearMonth from '@/hooks/useYearMonth.js';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import DeviceMonthlyForm from '@/components/form/Monthly/DeviceMonthlyForm.jsx';
+import { useSearchParams } from "react-router-dom";
+
 
 /**
  * @desc: 단말 기본 자료
  * */
 const KOMonthlyPage = () => {
+    const [searchParams] = useSearchParams();
+    console.log('searchParams: ', searchParams)
+
     const navigate = useNavigate();
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
 
+    // ✅ searchParams에 yearMonth가 존재하면 해당 값 사용, 없으면 기존 yearMonth 사용
+    // const selectedYearMonth = searchParams.get("yearMonth") || yearMonth;
 
     const { data, loading, error } = useApiFetch(fetchKOMonthlyData, yearMonth);
     const [selectedMonthlyIndex, setSelectedMonthlyIndex] = useState(null);

@@ -33,6 +33,17 @@ export const saveMonthlyData = async (yearMonth) => {
     }
 };
 
+/** Invoice 저장 */
+export const saveInvoiceData = async (yearMonth) => {
+    const endpoint = `/monthly/saveData/account_confirm/${yearMonth}`;
+    try {
+        return await postWithAuth(endpoint); // 인증 포함된 POST 요청
+    } catch (error) {
+        console.log("Failed to fetch", error.response?.data || error.message);
+        throw error;
+    }
+};
+
 
 /**
  * 저장된 Monthly 조회

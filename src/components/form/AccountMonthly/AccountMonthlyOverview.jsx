@@ -45,7 +45,7 @@ const AccountMonthlyOverview = ({ accountDetailData, accountDetailLoading, accou
     return (
         <div className="grid grid-cols-2 rounded-lg">
             <div className="pr-2 col-span-2">
-                <Accordion items={accordionItems({ accountData, accountInfo, deviceDetail })} />
+                <Accordion items={accordionItems({ accountData, accountInfo, deviceDetail, adjustmentInfo, nonePayInfo })} />
             </div>
             {/*<div className="col-span-1">*/}
             {/*    <Accordion items={[accordionItems({ accountData, accountInfo, deviceDetail })[0]]} />*/}

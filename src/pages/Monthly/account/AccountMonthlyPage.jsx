@@ -4,13 +4,14 @@ import KOMonthlyAccountTableColumns from '@/columns/KOMonthlyAccountTableColumns
 import { KOMonthlyAccountTableOptions } from '@/options/KOMonthlyAccountTableOptions.jsx';
 import useYearMonth from '@/hooks/useYearMonth.js';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchKOMonthlyAccountDetailData, fetchKOMonthlyAccountIndexData } from '@/service/monthlyAccountService.js';
+import { fetchKOMonthlyAccountDetailData, fetchKOMonthlyAccountIndexData, fetchMonthlyAccountIncludeDeviceDetailData } from '@/service/monthlyAccountService.js';
 import { useState, useEffect } from 'react';
 import AccountMonthlyOverview from '@/components/form/AccountMonthly/AccountMonthlyOverview.jsx';
 import AccountMonthlyOverviewBefo from '@/components/form/AccountMonthly/AccountMonthlyOverviewBefo.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import AccountMonthlyForm from '@/components/form/AccountMonthly/AccountMonthlyForm.jsx';
+import InvoiceSaveButton from '@/components/common/InvoiceSaveButton.jsx';
 
 
 /**
@@ -59,8 +60,9 @@ const AccountMonthlyPage = () => {
         <>
             <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
                 {/* 상단 제목 및 월 선택 */}
-                <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
+                <div className="col-span-6 border-b pb-3 border-gray-400 flex flex-row justify-between items-center">
                     <h1 className="text-xl font-bold">청구 기본 자료</h1>
+                    <InvoiceSaveButton yearMonth={yearMonth}/>
                 </div>
 
                 <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
@@ -70,7 +72,7 @@ const AccountMonthlyPage = () => {
                     </div>
 
                     {/* 테이블 UI */}
-                    <div className="bg-white shadow-md rounded-lg p-4">
+                    <div className="bg-white shadow-md rounded-lg p-4 overflow-x-auto">
                         <ReusableTable
                             data={monthlyAcctData || []} // 데이터가 null이면 빈 배열로 설정
                             exportFileName="KO_Monthly_Account_Report"
@@ -98,8 +100,8 @@ const AccountMonthlyPage = () => {
 
                 {isExpanded && selectedRowId && (
                     <div className="p-2 col-span-4">
-                        <div className="flex flex-row justify-between">
-                            <h1 className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</h1>
+                        <div className="flex flex-row justify-between mb-8 items-center text-center">
+                            <h1 className="text-xl font-bold text-gray-700 align-center text-center justify-center">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</h1>
 
                             {/* Buttons */}
                             {/*<div className="flex flex-row space-x-4">*/}
@@ -107,8 +109,8 @@ const AccountMonthlyPage = () => {
                             {/*    <span>삭제</span>*/}
                             {/*</div>*/}
                         </div>
-                        <div className="flex flex-col p-4 bg-white">
-                            <AccountMonthlyForm accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError} />
+                        <div className="flex flex-col">
+                            <AccountMonthlyForm yearMonth={yearMonth} accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError} />
                         </div>
                         {/*<div className="flex flex-col p-4 bg-white">*/}
                         {/*    <span className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</span>*/}

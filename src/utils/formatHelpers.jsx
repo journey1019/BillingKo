@@ -67,3 +67,22 @@ export const formatDateIndex = (dateIndex) => {
     if (!dateIndex || dateIndex.length !== 6) return "-"; // 유효성 검사
     return `${dateIndex.substring(0, 4)}-${dateIndex.substring(4, 6)}`;
 };
+
+/**
+ * @method: '202412' -> '2024년 12월'
+ * */
+export const formatYearMonth = (dateString) => {
+    // 값이 없거나 유효하지 않으면 기본값 반환
+    if (!dateString || typeof dateString !== "string" || dateString.length !== 6) {
+        return "-";
+    }
+
+    // 연도와 월 분리
+    const year = dateString.slice(0, 4);
+    const month = dateString.slice(4, 6);
+
+    // 숫자로 변환하여 월 앞의 0 제거
+    const formattedMonth = parseInt(month, 10);
+
+    return `${year}년 ${formattedMonth}월`;
+};

@@ -98,7 +98,9 @@ const App = () => {
                                 <Route path="/accounts" element={<AccountPage />} />
                                 <Route path="/devices" element={<DevicePage />} />
                                 <Route path="/price" element={<PricePage />} />
-                                <Route path="/monthly" element={<MonthlyPage />} />
+
+                                <Route path="/monthly" element={<MonthlyPage />} /> {/* 계산관리 */}
+
                                 <Route path="/adjustment" element={<AdjustmentPage />} />
                                 <Route path="/ko_monthly/account" element={<KOMonthlyAccountPage />} />
                                 <Route path="/ko_monthly" element={<KOMonthlyPage />} /> {/* 단말별 */}

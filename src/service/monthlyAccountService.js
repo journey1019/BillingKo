@@ -52,3 +52,14 @@ export const fetchPaymentConfirm = async (yearMonth, confirmData) => {
         throw error;
     }
 }
+
+
+/** 고객에 포함된 Device 마지막 버전 정보 출력 */
+export const fetchMonthlyAccountIncludeDeviceDetailData = async (year_month, serial_number) => {
+    try {
+        return await getWithAuth(`/monthly/saveData/sn/${year_month}/${serial_number}`);
+    } catch (error) {
+        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        throw error;
+    }
+}

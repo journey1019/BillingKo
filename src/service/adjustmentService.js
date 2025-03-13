@@ -83,7 +83,7 @@ export const createAdjustment = async (adjustData) => {
         console.error("Failed to create adjustment", error.response?.data || error.message);
         throw error;
     }
-}
+};
 
 /**
  * 조정 수정
@@ -110,6 +110,19 @@ export const deleteAdjustment = async (adjustment_index) => {
         return await del(`/adjustment/${adjustment_index}`);
     } catch (error) {
         console.error("Failed to delete adjustment:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
+/**
+ * @param {string} code_name: code_name의 포함된 코드 종류 조회
+ * */
+export const fetchAdjustmentCodeName = async (code_name) => {
+    try {
+        return await get(`/codeInfo/codeName/${code_name}`);
+    } catch (error) {
+        console.error("Failed to fetch account History:", error.response?.data || error.message);
         throw error;
     }
 };

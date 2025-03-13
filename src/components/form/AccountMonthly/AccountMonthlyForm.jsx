@@ -6,10 +6,15 @@ import { FaPlus } from "react-icons/fa6";
 import Dropdown from '@/components/dropdown/Dropdown.jsx';
 import DropdownMenu from "@/components/dropdown/DropdownMenu.jsx";
 import Accordion from '@/components/ui/Accordions/Accordion.jsx';
-import { accordionItems } from '@/components/form/AccountMonthly/AccountAccordionItem.jsx';
-import TabComponent from '@/components/layout/TabComponent.jsx';
+import { accordionDeviceItems, accordionItems } from '@/components/form/AccountMonthly/AccountAccordionItem.jsx';
+import AccountDeviceItem from '@/components/form/AccountMonthly/AccountDeviceItem.jsx';
 
-const AccountMonthlyForm = ({ accountDetailData, accountDetailLoading, accountDetailError }) => {
+
+/**
+ * @desc: 청구 기본 자료 폼
+ * @param yearMonth: Device Detail Click -> Move to Device Version Info Page
+ * */
+const AccountMonthlyForm = ({ yearMonth, accountDetailData, accountDetailLoading, accountDetailError }) => {
     // ✅ 기본값 설정 (빈 배열)
     const safeAccountDetailData = Array.isArray(accountDetailData) ? accountDetailData : [];
 
@@ -27,43 +32,25 @@ const AccountMonthlyForm = ({ accountDetailData, accountDetailLoading, accountDe
         return <div className="p-4 text-center text-gray-400">📌 조회된 데이터가 없습니다.</div>;
     }
 
+
     // 👍🏻 안전하게 데이터 접근
     const accountData = safeAccountDetailData[0] || {};
     const accountInfo = accountData.account_info || {};
     const deviceDetail = accountData.device_detail || [];
     const adjustmentInfo = accountData.adjustment_info || [];
-    const nonePayInfo = accountData.none_pay_fee || [];
+    const nonePayInfo = accountData.none_pay_info || [];
 
     console.log(accountData)
 
-    // const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
-    // const handleEdit = () => setIsOpenDropdown(!isOpenDropdown);
-    // const closeDropdown = () => setIsOpenDropdown(false);
-
-    const DeviceOverviewTab = () => {
-        return(
-            <>
-            </>
-        )
-    }
-    const AccountOverviewTab = () => {
-        return(
-            <>
-            </>
-        )
-    }
-
-    const tabs = [
-        { id: 1, label: '고객 정보', content: <AccountOverviewTab /> },
-        { id: 2, label: '단말 정보', content: <DeviceOverviewTab /> },
-    ];
-
 
     return (
-        <div className="grid grid-cols-2 rounded-lg">
-            <TabComponent tabs={tabs}/>
-            <div className="pr-2 col-span-2">
-                <Accordion items={accordionItems({ accountData, accountInfo, deviceDetail })} />
+        <div className="grid grid-cols-2 2xl:grid-cols-5 gap-2 rounded-lg">
+            <div className="col-span-1 2xl:col-span-2 p-4 bg-white rounded-md shadow-lg">
+                <Accordion items={accordionItems({ accountData, accountInfo, deviceDetail, adjustmentInfo, nonePayInfo })} />
+            </div>
+            <div className="col-span-1 2xl:col-span-3">
+                <AccountDeviceItem yearMonth={yearMonth} accountData={accountData} deviceDetail={deviceDetail} adjustmentInfo={adjustmentInfo} nonePayInfo={nonePayInfo}/>
+                {/*<Accordion items={accordionDeviceItems({ accountData, accountInfo, deviceDetail, adjustmentInfo, nonePayInfo })} />*/}
             </div>
             {/*<div className="col-span-1">*/}
             {/*    <Accordion items={[accordionItems({ accountData, accountInfo, deviceDetail })[0]]} />*/}
@@ -152,113 +139,113 @@ const AccountMonthlyForm = ({ accountDetailData, accountDetailLoading, accountDe
             {/*    </div>*/}
             {/*</div>*/}
 
-            <div className="col-span-3 flex flex-row justify-between items-center">
-                <h2 className="text-base font-semibold col-span-3 mt-4">디바이스 상세 정보</h2>
-                {/*<FaPlus/>*/}
-            </div>
-            <div className="col-span-3">
-                {deviceDetail.length > 0 ? (
-                    <div className="max-h-52 overflow-y-auto border border-gray-300 rounded-md">
-                        <table className="w-full text-sm text-center border-collapse">
-                            <thead className="bg-gray-200 sticky -top-0.5 z-10">
-                            <tr>
-                                {["번호", "별칭", "단말기", "사용 기간", "기본료", "통신료", "기타 사용료", "부가 서비스료", "사용 바이트 수 (b)", "총 요금"].map((header, index) => (
-                                    <th key={index}
-                                        className="px-2 py-1 border font-medium whitespace-nowrap">{header}</th>
-                                ))}
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {deviceDetail
-                                .sort((a, b) => b.period_data - a.period_data) // 기간 기준 내림차순 정렬
-                                .map((device, index) => (
-                                    <tr key={index} className="text-center text-xs whitespace-nowrap">
-                                        <td className="px-2 py-1 border">{index + 1}</td>
-                                        <td className="px-2 py-1 border text-blue-500 cursor-pointer hover:underline">{device.alias}</td>
-                                        <td className="px-2 py-1 border">{device.serial_number}</td>
-                                        <td className="px-2 py-1 border">{device.period_data}</td>
-                                        <td className="px-2 py-1 border">{formatNumber(device.basic_fee)}</td>
-                                        <td className="px-2 py-1 border">{formatNumber(device.add_use_fee)}</td>
-                                        <td className="px-2 py-1 border">{formatNumber(device.subscribe_fee)}</td>
-                                        <td className="px-2 py-1 border">{formatNumber(device.modification_fee)}</td>
-                                        <td className="px-2 py-1 border">{formatNumber(device.use_byte_total)}</td>
-                                        <td className="px-2 py-1 border font-bold">{formatNumber(device.total_fee)}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                ) : (
-                    <p className="mt-2 text-gray-500 text-sm">디바이스 정보 없음</p>
-                )}
-            </div>
+            {/*<div className="col-span-3 flex flex-row justify-between items-center">*/}
+            {/*    <h2 className="text-base font-semibold col-span-3 mt-4">디바이스 상세 정보</h2>*/}
+            {/*    /!*<FaPlus/>*!/*/}
+            {/*</div>*/}
+            {/*<div className="col-span-3">*/}
+            {/*    {deviceDetail.length > 0 ? (*/}
+            {/*        <div className="max-h-52 overflow-y-auto border border-gray-300 rounded-md">*/}
+            {/*            <table className="w-full text-sm text-center border-collapse">*/}
+            {/*                <thead className="bg-gray-200 sticky -top-0.5 z-10">*/}
+            {/*                <tr>*/}
+            {/*                    {["번호", "별칭", "단말기", "사용 기간", "기본료", "통신료", "기타 사용료", "부가 서비스료", "사용 바이트 수 (b)", "총 요금"].map((header, index) => (*/}
+            {/*                        <th key={index}*/}
+            {/*                            className="px-2 py-1 border font-medium whitespace-nowrap">{header}</th>*/}
+            {/*                    ))}*/}
+            {/*                </tr>*/}
+            {/*                </thead>*/}
+            {/*                <tbody>*/}
+            {/*                {deviceDetail*/}
+            {/*                    .sort((a, b) => b.period_data - a.period_data) // 기간 기준 내림차순 정렬*/}
+            {/*                    .map((device, index) => (*/}
+            {/*                        <tr key={index} className="text-center text-xs whitespace-nowrap">*/}
+            {/*                            <td className="px-2 py-1 border">{index + 1}</td>*/}
+            {/*                            <td className="px-2 py-1 border text-blue-500 cursor-pointer hover:underline">{device.alias}</td>*/}
+            {/*                            <td className="px-2 py-1 border">{device.serial_number}</td>*/}
+            {/*                            <td className="px-2 py-1 border">{device.period_data}</td>*/}
+            {/*                            <td className="px-2 py-1 border">{formatNumber(device.basic_fee)}</td>*/}
+            {/*                            <td className="px-2 py-1 border">{formatNumber(device.add_use_fee)}</td>*/}
+            {/*                            <td className="px-2 py-1 border">{formatNumber(device.subscribe_fee)}</td>*/}
+            {/*                            <td className="px-2 py-1 border">{formatNumber(device.modification_fee)}</td>*/}
+            {/*                            <td className="px-2 py-1 border">{formatNumber(device.use_byte_total)}</td>*/}
+            {/*                            <td className="px-2 py-1 border font-bold">{formatNumber(device.total_fee)}</td>*/}
+            {/*                        </tr>*/}
+            {/*                    ))}*/}
+            {/*                </tbody>*/}
+            {/*            </table>*/}
+            {/*        </div>*/}
+            {/*    ) : (*/}
+            {/*        <p className="mt-2 text-gray-500 text-sm">디바이스 정보 없음</p>*/}
+            {/*    )}*/}
+            {/*</div>*/}
 
-            <div className="pr-2">
-                <h2 className="text-base font-semibold col-span-3 mt-4">조정 내역</h2>
-                <div className="col-span-3">
-                    {adjustmentInfo.length > 0 ? (
-                        <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md">
-                            <table className="w-full text-sm text-center">
-                                <thead className="bg-gray-200">
-                                <tr>
-                                    {["조정 유형", "조정 대상", "조정 분류", "조정 타입", "요금 기준", "조정 금액", "설명"].map((header, index) => (
-                                        <th key={index}
-                                            className="px-2 py-1 border font-medium whitespace-nowrap">{header}</th>
-                                    ))}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {adjustmentInfo.map((adj, index) => (
-                                    <tr key={index} className="text-center text-xs whitespace-nowrap">
-                                        <td className="p-2 border">{formatValue(adj.adjustment_code)}</td>
-                                        <td className="p-2 border">{formatValue(adj.adjustment_value)}</td>
-                                        <td className="p-2 border">{formatValue(adj.adjustment_category)}</td>
-                                        <td className="p-2 border">{formatValue(adj.adjustment_type)}</td>
-                                        <td className="p-2 border">{formatValue(adj.mount_type)}</td>
-                                        <td className="p-2 border">{formatNumber(adj.adjustment_fee)} 원</td>
-                                        <td className="p-2 border">{formatValue(adj.description)}</td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="mt-2 text-gray-500 text-sm">조정 내역 없음</p>
-                    )}
-                </div>
-            </div>
+            {/*<div className="pr-2">*/}
+            {/*    <h2 className="text-base font-semibold col-span-3 mt-4">조정 내역</h2>*/}
+            {/*    <div className="col-span-3">*/}
+            {/*        {adjustmentInfo.length > 0 ? (*/}
+            {/*            <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md">*/}
+            {/*                <table className="w-full text-sm text-center">*/}
+            {/*                    <thead className="bg-gray-200">*/}
+            {/*                    <tr>*/}
+            {/*                        {["조정 유형", "조정 대상", "조정 분류", "조정 타입", "요금 기준", "조정 금액", "설명"].map((header, index) => (*/}
+            {/*                            <th key={index}*/}
+            {/*                                className="px-2 py-1 border font-medium whitespace-nowrap">{header}</th>*/}
+            {/*                        ))}*/}
+            {/*                    </tr>*/}
+            {/*                    </thead>*/}
+            {/*                    <tbody>*/}
+            {/*                    {adjustmentInfo.map((adj, index) => (*/}
+            {/*                        <tr key={index} className="text-center text-xs whitespace-nowrap">*/}
+            {/*                            <td className="p-2 border">{formatValue(adj.adjustment_code)}</td>*/}
+            {/*                            <td className="p-2 border">{formatValue(adj.adjustment_value)}</td>*/}
+            {/*                            <td className="p-2 border">{formatValue(adj.adjustment_category)}</td>*/}
+            {/*                            <td className="p-2 border">{formatValue(adj.adjustment_type)}</td>*/}
+            {/*                            <td className="p-2 border">{formatValue(adj.mount_type)}</td>*/}
+            {/*                            <td className="p-2 border">{formatNumber(adj.adjustment_fee)} 원</td>*/}
+            {/*                            <td className="p-2 border">{formatValue(adj.description)}</td>*/}
+            {/*                        </tr>*/}
+            {/*                    ))}*/}
+            {/*                    </tbody>*/}
+            {/*                </table>*/}
+            {/*            </div>*/}
+            {/*        ) : (*/}
+            {/*            <p className="mt-2 text-gray-500 text-sm">조정 내역 없음</p>*/}
+            {/*        )}*/}
+            {/*    </div>*/}
+            {/*</div>*/}
 
-            {/* 미납 내역 */}
-            <div>
-                <h2 className="text-base font-semibold col-span-3 mt-4">미납 내역</h2>
-                <div className="col-span-3">
-                    {nonePayInfo.length > 0 ? (
-                        <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md">
-                            <table className="w-full text-sm text-center">
-                                <thead className="bg-gray-200">
-                                <tr>
-                                    {["미납 금액", "추가 이자", "미납 기간"].map((header, index) => (
-                                        <th key={index}
-                                            className="px-2 py-1 border font-medium whitespace-nowrap">{header}</th>
-                                    ))}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {nonePayInfo.map((np, index) => (
-                                    <tr key={index} className="text-center text-xs whitespace-nowrap">
-                                        <td className="p-2 border">{formatNumber(np.none_paid_fee)} 원</td>
-                                        <td className="p-2 border">{np.add_percent}%</td>
-                                        <td className="p-2 border">{np.none_paid_period} 개월</td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <p className="mt-2 text-gray-500 text-sm">미납 내역 없음</p>
-                    )}
-                </div>
-            </div>
+            {/*/!* 미납 내역 *!/*/}
+            {/*<div>*/}
+            {/*    <h2 className="text-base font-semibold col-span-3 mt-4">미납 내역</h2>*/}
+            {/*    <div className="col-span-3">*/}
+            {/*        {nonePayInfo.length > 0 ? (*/}
+            {/*            <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md">*/}
+            {/*                <table className="w-full text-sm text-center">*/}
+            {/*                    <thead className="bg-gray-200">*/}
+            {/*                    <tr>*/}
+            {/*                        {["미납 금액", "추가 이자", "미납 기간"].map((header, index) => (*/}
+            {/*                            <th key={index}*/}
+            {/*                                className="px-2 py-1 border font-medium whitespace-nowrap">{header}</th>*/}
+            {/*                        ))}*/}
+            {/*                    </tr>*/}
+            {/*                    </thead>*/}
+            {/*                    <tbody>*/}
+            {/*                    {nonePayInfo.map((np, index) => (*/}
+            {/*                        <tr key={index} className="text-center text-xs whitespace-nowrap">*/}
+            {/*                            <td className="p-2 border">{formatNumber(np.none_paid_fee)} 원</td>*/}
+            {/*                            <td className="p-2 border">{np.add_percent}%</td>*/}
+            {/*                            <td className="p-2 border">{np.none_paid_period} 개월</td>*/}
+            {/*                        </tr>*/}
+            {/*                    ))}*/}
+            {/*                    </tbody>*/}
+            {/*                </table>*/}
+            {/*            </div>*/}
+            {/*        ) : (*/}
+            {/*            <p className="mt-2 text-gray-500 text-sm">미납 내역 없음</p>*/}
+            {/*        )}*/}
+            {/*    </div>*/}
+            {/*</div>*/}
         </div>
     );
 };

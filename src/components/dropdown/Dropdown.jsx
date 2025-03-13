@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import clsx from 'clsx';
+import React, { useState, useRef, useEffect } from "react";
+import clsx from "clsx";
 
 /**
  * 재사용 가능한 Dropdown 컴포넌트
@@ -9,46 +9,30 @@ import clsx from 'clsx';
  */
 const Dropdown = ({ trigger, children, position = "left" }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [width, setWidth] = useState("auto");
     const dropdownRef = useRef(null);
 
     const toggleDropdown = () => setIsOpen(!isOpen);
     const closeDropdown = () => setIsOpen(false);
 
-    // ✅ children의 크기에 따라 드롭다운 너비를 자동 조절
-    useEffect(() => {
-        if (dropdownRef.current) {
-            const contentWidth = dropdownRef.current.scrollWidth;
-            setWidth(`${contentWidth}px`);
-        }
-    }, [isOpen]);
-
     return (
         <div className="relative inline-block">
             {/* ✅ 트리거 버튼 */}
-            <button
-                className="hover:text-gray-500"
-                onClick={toggleDropdown}
-            >
+            <button className="hover:text-gray-500" onClick={toggleDropdown}>
                 {trigger}
             </button>
 
-            {/* ✅ 드롭다운 메뉴 (크기 자동 조절 및 위치 조정) */}
+            {/* ✅ 드롭다운 메뉴 */}
             <div
                 ref={dropdownRef}
                 className={clsx(
-                    "absolute top-full mt-1 bg-white divide-y divide-gray-100 rounded-lg shadow-sm border border-gray-300",
-                    "transition-all duration-200 ease-in-out transform",
+                    "absolute top-full mt-1 bg-white divide-y divide-gray-100 rounded-lg shadow-md border border-gray-300",
+                    "transition-all duration-200 ease-in-out transform min-w-max",
                     isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none",
                     position === "right" ? "right-0" : "left-0"
                 )}
-                style={{ width }}
-                // onMouseLeave={closeDropdown}
             >
-                {/* ✅ 컨텐츠 영역 */}
-                <ul className="text-sm text-gray-700 p-2">
-                    {children} {/* 동적 컨텐츠 삽입 */}
-                </ul>
+                {/* ✅ 컨텐츠 영역 (줄바꿈 방지) */}
+                <ul className="text-sm text-gray-700 p-2 whitespace-nowrap">{children}</ul>
 
                 {/* ✅ 닫기 버튼 */}
                 <div className="flex justify-end p-2 bg-gray-100 rounded-b-md">
