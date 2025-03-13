@@ -8,6 +8,7 @@ import DropdownMenu from "@/components/dropdown/DropdownMenu.jsx";
 import Accordion from '@/components/ui/Accordions/Accordion.jsx';
 import { accordionDeviceItems, accordionItems } from '@/components/form/AccountMonthly/AccountAccordionItem.jsx';
 import AccountDeviceItem from '@/components/form/AccountMonthly/AccountDeviceItem.jsx';
+import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 
 
 /**
@@ -20,7 +21,7 @@ const AccountMonthlyForm = ({ yearMonth, accountDetailData, accountDetailLoading
 
     // ⏳ 로딩 중일 때
     if (accountDetailLoading) {
-        return <div className="p-4 text-center text-gray-500">⏳ 데이터 로딩 중...</div>;
+        return <div className="p-4 text-center text-gray-500"><LoadingSpinner/></div>;
     }
     // 😵 에러 발생 시
     if (accountDetailError) {
