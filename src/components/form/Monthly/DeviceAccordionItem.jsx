@@ -7,8 +7,9 @@ import PaymentDropdownForm from '@/components/form/Monthly/Edit/PaymentDropdownF
  * @param (Object) detailData: 전체 단말 정보
  * @param (Object) paymentInfo: 단말 요금 정보
  * @param (Array) paymentFeeDetail: 요금 사용 세부 정보
+ * @param (Array) paymentAdjustmentInfo: 조정 세부 정보
  * */
-export const accordionItems = ({ detailData, paymentInfo, paymentFeeDetail }) => [
+export const accordionItems = ({ detailData, paymentInfo }) => [
     {
         title: "단말 정보",
         content: (
@@ -23,8 +24,8 @@ export const accordionItems = ({ detailData, paymentInfo, paymentFeeDetail }) =>
                         ['별칭', detailData.alias],
                         ['단말기', detailData.serial_number],
                         ['PPID', detailData.ppid],
-                        ['Active Date', formatDateTime(detailData.activate_date) || '-'],
-                        ['Deactive Date', formatDateTime(detailData.deactivate_date) || '-'],
+                        ['활성화 날짜', formatDateTime(detailData.activate_date) || '-'],
+                        ['비활성화 날짜', formatDateTime(detailData.deactivate_date) || '-'],
                     ].map(([label, value], index) => (
                         <p key={index} className="grid grid-cols-3 gap-4 py-0.5">
                             <span className="text-xs text-gray-500 col-span-1 text-left">{label}</span>
@@ -44,7 +45,7 @@ export const accordionItems = ({ detailData, paymentInfo, paymentFeeDetail }) =>
                     <UsageDetailDropdownForm detailData={detailData} />
                 </div>
                     {[
-                        ['무료 제공량', formatNumber(detailData.free_bytes)],
+                        ['무료 바이트 제공량(b)', formatNumber(detailData.free_bytes)],
                         ['총 사용 바이트(b)', formatNumber(detailData.use_byte_total)],
                         ['사용 기간', detailData.use_period],
                         ['월 사용 비율(%)', detailData.use_percent_of_month]

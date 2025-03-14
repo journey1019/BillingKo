@@ -85,7 +85,7 @@ const KOMonthlyPage = () => {
         }
     };
 
-    console.log(detailData)
+    console.log('detailData: ', detailData)
     useEffect(() => {
         console.log("Fetched Data:", data);
     }, [data]); // ✅ data가 변경될 때마다 실행
@@ -123,7 +123,7 @@ const KOMonthlyPage = () => {
                             data={data || []}
                             exportFileName="KO_Monthly_Report"
                             showExportButton={true} // ✅ 이 테이블에서는 CSV 버튼 활성화
-                            columns={[{ accessorKey: "data_index", header: "Data Index" }, ...MonthlyTableColumns]}
+                            columns={[{ accessorKey: "data_index", header: "Data Index", enableHiding: true }, ...MonthlyTableColumns]}
                             options={{
                                 ...KOMonthlyTableOptions,
                                 meta: {

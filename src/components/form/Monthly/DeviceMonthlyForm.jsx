@@ -15,45 +15,11 @@ import { formatDateTime, formatNumber } from '@/utils/formatHelpers.jsx';
 
 const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData }) => {
     if (!detailData) return <p>No data available</p>;
-    const navigate = useNavigate();
 
-    const EventTable = ({ title, data, detailData }) => {
-        if (!data || data.length === 0) return null;
-
-        return (
-            <div className="mb-2">
-                <h3 className="text-lg font-semibold text-gray-600">{title} ({data?.length || 0})</h3>
-                <table className="w-full border-collapse border border-gray-300 text-sm">
-                    <thead className="bg-gray-100">
-                    <tr>
-                        <th className="border border-gray-300 px-4 py-1">Check Code</th>
-                        <th className="border border-gray-300 px-4 py-1">Con Type</th>
-                        <th className="border border-gray-300 px-4 py-1">Discount Code</th>
-                        <th className="border border-gray-300 px-4 py-1">Event Date</th>
-                        <th className="border border-gray-300 px-4 py-1">Volumn Unit</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {data.map((code, index) => (
-                        <tr key={index} className="text-center">
-                            <td className="border border-gray-300 px-4 py-1">{code.check_code}</td>
-                            <td className="border border-gray-300 px-4 py-1">{code.con_type}</td>
-                            <td className="border border-gray-300 px-4 py-1">{code.discount_code}</td>
-                            <td className="border border-gray-300 px-4 py-1">{formatDateTime(code.event_date)}</td>
-                            <td className="border border-gray-300 px-4 py-1">{formatNumber(code.volumn_unit)}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
-        );
-    };
-    // const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
-    // const handleEdit = () => setIsOpenDropdown(!isOpenDropdown);
-    // const closeDropdown = () => setIsOpenDropdown(false);
 
     const paymentInfo = detailData.payment || {};
     const paymentFeeDetail = paymentInfo.fee_detail || [];
+    const paymentAdjustmentInfo = paymentInfo.adjustment_info || [];
 
     // D_Product 데이터 합쳐 가공.
     const transformDetailData = (detailData) => {
@@ -96,7 +62,7 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
                             </div>
                         </div>
 
-                        <Accordion items={accordionItems({ detailData, paymentInfo, paymentFeeDetail })} />
+                        <Accordion items={accordionItems({ detailData, paymentInfo })} />
 
 
                         {/*/!* ✅ 드롭다운 사용 예제 *!/*/}
@@ -390,7 +356,7 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
 
 
                     <UseByteDetailItem detailData={detailData} paymentInfo={paymentInfo}
-                                       paymentFeeDetail={paymentFeeDetail} dProductDetail={dProductDetail} />
+                                       paymentFeeDetail={paymentFeeDetail} dProductDetail={dProductDetail} paymentAdjustmentInfo={paymentAdjustmentInfo}/>
                 </div>
             </div>
         </>

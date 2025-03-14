@@ -1,7 +1,8 @@
 export const KOMonthlyTableOptions = {
     initialState: {
         sorting: [{ id: "data_index", desc: false }], // 기본 정렬 설정
-        showColumnFilters: true // 렌더링시 각 컬럼의 필터가 보여지도록 설정
+        showColumnFilters: true, // 렌더링시 각 컬럼의 필터가 보여지도록 설정
+        columnVisibility: { data_index: false }
     },
     enableRowSelection: true, // 행 선택 활성화
     enableMultiRowSelection: false, // 체크박스 -> 라디오 버튼

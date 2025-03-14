@@ -28,36 +28,46 @@ export const MonthlyTableColumns = [
     },
     {
         accessorKey: 'activate_date',
-        header: 'Activate Date',
+        header: '활성화 날짜',
         Cell: ({ cell }) => new Date(cell.getValue()).toLocaleDateString(),
     },
     {
         accessorKey: 'deactivate_date',
-        header: 'Deactivate Date',
+        header: '비활성화 날짜',
+        Cell: ({ cell }) =>
+            cell.getValue() ? new Date(cell.getValue()).toLocaleDateString() : 'N/A',
+    },
+    {
+        accessorKey: 'update_date',
+        header: '수정 날짜',
         Cell: ({ cell }) =>
             cell.getValue() ? new Date(cell.getValue()).toLocaleDateString() : 'N/A',
     },
     {
         accessorKey: 'free_bytes',
-        header: 'Free Bytes',
-        Cell: ({ cell }) => formatNumber(cell.getValue()),
+        header: '무료 바이트 제공량',
+        Cell: ({ cell }) => (
+            <div className="text-right">{formatNumber(cell.getValue())}</div>
+        ),
     },
     {
         accessorKey: 'use_byte_total',
-        header: 'Use Byte Total',
-        Cell: ({ cell }) => formatNumber(cell.getValue()),
+        header: '총 사용 바이트(b)',
+        Cell: ({ cell }) => (
+            <div className="text-right">{formatNumber(cell.getValue())}</div>
+        ),
     },
-    {
-        accessorKey: 'use_byte',
-        header: 'Use Byte (Detail)',
-        Cell: ({ cell }) =>
-            Object.entries(cell.getValue() || {}).map(([key, value]) => (
-                <div key={key}>
-                    <strong>{key}: </strong>
-                    {value}
-                </div>
-            )),
-    },
+    // {
+    //     accessorKey: 'use_byte',
+    //     header: 'Use Byte (Detail)',
+    //     Cell: ({ cell }) =>
+    //         Object.entries(cell.getValue() || {}).map(([key, value]) => (
+    //             <div key={key}>
+    //                 <strong>{key}: </strong>
+    //                 {value}
+    //             </div>
+    //         )),
+    // },
     // {
     //     accessorKey: 'use_byte_detail',
     //     header: 'Use Byte Detail',
@@ -75,12 +85,18 @@ export const MonthlyTableColumns = [
     // },
     {
         accessorKey: 'use_period',
-        header: 'Use Period',
+        header: '사용 기간',
+        Cell: ({ cell }) => (
+            <div className="text-right">{cell.getValue()}</div>
+        ),
     },
     {
         accessorKey: 'use_percent_of_month',
-        header: 'Use Percent of Month (%)',
+        header: '월 사용 비율(%)',
         size: 200,
+        Cell: ({ cell }) => (
+            <div className="text-right">{cell.getValue()}%</div>
+        ),
     },
     // {
     //     accessorKey: 'payment',
