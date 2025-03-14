@@ -144,9 +144,9 @@ const KOMonthlyPage = () => {
             </div>
 
             {isExpanded && selectedMonthlyIndex && (
-                <div className="p-2 col-span-4">
+                <div className="px-2 py-4 col-span-4">
                     <div className="flex flex-col">
-                        <div className="flex flex-row justify-between mb-3">
+                        <div className="flex flex-row justify-between mb-4">
                             <div className="flex flex-row items-center">
                                 <h1 className="text-xl font-bold text-gray-700 align-center text-center justify-center">{selectedMonthlyIndex.acct_num} _ {selectedMonthlyIndex.serial_number}</h1>
 

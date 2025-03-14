@@ -12,15 +12,15 @@ export const MonthlyTableColumns = [
     },
     {
         accessorKey: 'acct_num',
-        header: 'Account Number',
+        header: '고객 번호',
     },
     {
         accessorKey: 'serial_number',
-        header: 'Serial Number',
+        header: '단말기',
     },
     {
         accessorKey: 'alias',
-        header: 'Alias',
+        header: '별칭',
     },
     {
         accessorKey: 'ppid',

@@ -1,16 +1,7 @@
-import { MdEdit } from "react-icons/md";
-import { useState } from 'react';
-import clsx from 'clsx';
-import Dropdown from '@/components/dropdown/Dropdown.jsx';
-import BasicDropdownForm from '@/components/form/Monthly/Edit/BasicDropdownForm.jsx';
-import UsageDetailDropdownForm from '@/components/form/Monthly/Edit/UsageDetailDropdownForm.jsx';
-import PaymentDropdownForm from '@/components/form/Monthly/Edit/PaymentDropdownForm.jsx';
-import { IoExpandSharp } from "react-icons/io5";
-import { useNavigate } from 'react-router-dom';
 import Accordion from '@/components/ui/Accordions/Accordion.jsx';
 import { accordionItems } from '@/components/form/Monthly/DeviceAccordionItem.jsx';
 import UseByteDetailItem from '@/components/form/Monthly/UseByteDetailItem.jsx';
-import { formatDateTime, formatNumber } from '@/utils/formatHelpers.jsx';
+import { formatDateTime } from '@/utils/formatHelpers.jsx';
 
 
 const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData }) => {
@@ -36,10 +27,11 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
     const dProductDetail = transformDetailData(detailData);
     console.log(dProductDetail)
 
+
     return (
         <>
-            <div className="grid grid-cols-2 bg-white rounded-md shadow-lg">
-                {/* Left Section */}
+            <div className="grid grid-cols-2 bg-white shadow-lg">
+                {/* Left Section - 단말 및 금액 세부 정보 */}
                 <div className="col-span-1">
                     <div className="bg-white p-4 border-r">
 
@@ -50,310 +42,85 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
                         {/*    Update: <span*/}
                         {/*    className="text-gray-700 font-semibold">{formatDateTime(detailData.update_date) || '-'}</span>*/}
                         {/*</div>*/}
-                        <div className="text-gray-500 text-sm my-3">
-                            <div>
-                                Updated By:
-                                <span className="text-gray-700 font-semibold">{detailData.user_id || '-'}</span>
+                        {detailData?.update_date && (
+                            <div className="text-gray-500 text-sm mb-3">
+                                <div className="flex flex-row space-x-3">
+                                    <span>Updated By</span>
+                                    <span className="text-gray-700 font-semibold">{detailData?.user_id || '-'}</span>
+                                </div>
+                                <div className="flex flex-row space-x-2">
+                                    <span>Last Update</span>
+                                    <span
+                                        className="text-gray-700 font-semibold">{formatDateTime(detailData?.update_date) || '-'}</span>
+                                </div>
                             </div>
-                            <div>
-                                Last Update:
-                                <span
-                                    className="text-gray-700 font-semibold">{formatDateTime(detailData.update_date) || '-'}</span>
-                            </div>
-                        </div>
+                        )}
 
-                        <Accordion items={accordionItems({ detailData, paymentInfo })} />
-
-
-                        {/*/!* ✅ 드롭다운 사용 예제 *!/*/}
-                        {/*<div className="relative inline-block float-right">*/}
-                        {/*    /!* ✅ 오른쪽 정렬 드롭다운 *!/*/}
-                        {/*    <Dropdown trigger={<MdEdit />} position="right">*/}
-                        {/*        <li className="p-2 hover:bg-gray-100 cursor-pointer">Edit Item</li>*/}
-                        {/*        <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete Item</li>*/}
-                        {/*    </Dropdown>*/}
-                        {/*</div>*/}
-                        {/*<div className="border rounded-lg px-4 py-2 mb-2">*/}
-                        {/* 위 드롭다운 사용 예제 */}
-                        {/*    <BasicDropdownForm detailData={detailData} />*/}
-                        
-                        {/*    <div className="grid grid-cols-4 gap-4 mb-2 text-sm">*/}
-                        {/*        <div className="text-gray-500">Profile ID</div>*/}
-                        {/*        <div className="px-2 col-span-1">{detailData.profile_id}</div>*/}
-                        {/*    </div>*/}
-                        {/*    <div className="grid grid-cols-4 gap-4 mb-2 text-sm">*/}
-                        {/*        <div className="text-gray-500">고객 번호</div>*/}
-                        {/*        <div className="px-2 col-span-1">{detailData.acct_num}</div>*/}
-                        {/*        /!*<div className="flex flex-row items-center col-span-1">*!/*/}
-                        {/*        /!*    <button onClick={() => navigate('/accounts')}*!/*/}
-                        {/*        /!*            className="rounded-full px-2 py-1 hover:bg-gray-300 duration-300">*!/*/}
-                        {/*        /!*        {detailData.acct_num}*!/*/}
-                        {/*        /!*    </button>*!/*/}
-                        {/*        /!*</div>*!/*/}
-                        {/*    </div>*/}
-                        {/*    <div className="grid grid-cols-4 gap-4 mb-2 text-sm">*/}
-                        {/*        <div className="text-gray-500">별칭</div>*/}
-                        {/*        <div className="px-2 col-span-1">{detailData.alias}</div>*/}
-                        {/*    </div>*/}
-                        {/*    <div className="grid grid-cols-4 gap-4 mb-2 text-sm">*/}
-                        {/*        <div className="text-gray-500">단말기</div>*/}
-                        {/*        <div className="px-2 col-span-1">{detailData.serial_number}</div>*/}
-                        {/*        /!*<div className="flex flex-row col-span-1">*!/*/}
-                        {/*        /!*    <button onClick={() => navigate('/devices')}*!/*/}
-                        {/*        /!*            className="rounded-full p-2 py-1 hover:bg-gray-300 duration-300">*!/*/}
-                        {/*        /!*        {detailData.serial_number}*!/*/}
-                        {/*        /!*        <span className="pl-2 text-gray-500">({detailData.monthly_primary_key})</span>*!/*/}
-                        {/*        /!*    </button>*!/*/}
-                        {/*        /!*</div>*!/*/}
-                        {/*    </div>*/}
-                        {/*    <div className="grid grid-cols-4 gap-4 mb-2 text-sm">*/}
-                        {/*        <div className="text-gray-500">PPID</div>*/}
-                        {/*        <div className="px-2 col-span-1">{detailData.ppid}</div>*/}
-                        {/*        /!*<div className="col-span-1">*!/*/}
-                        {/*        /!*    <button onClick={() => navigate('/price')}*!/*/}
-                        {/*        /!*            className="rounded-full p-2 py-1 hover:bg-gray-300 duration-300">*!/*/}
-                        {/*        /!*        {detailData.ppid}*!/*/}
-                        {/*        /!*    </button>*!/*/}
-                        {/*        /!*</div>*!/*/}
-                        {/*    </div>*/}
-                        {/*    <div className="grid grid-cols-4 gap-4 mb-2 text-sm">*/}
-                        {/*        <div className="text-gray-500">Activation Date</div>*/}
-                        {/*        <div className="px-2 col-span-1">{formatDateTime(detailData.activate_date)}</div>*/}
-                        {/*    </div>*/}
-                        {/*    <div className="grid grid-cols-4 gap-4 text-sm">*/}
-                        {/*        <div className="text-gray-500">Deactivation Date</div>*/}
-                        {/*        <div*/}
-                        {/*            className="px-2 col-span-1">{formatDateTime(detailData.deactivate_date) || '-'}</div>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
-
-                        {/*<button onClick={handleEdit}*/}
-                        {/*    className="grid grid-cols-1 gap-4 mt-1 text-sm justify-end text-end float-right hover:text-gray-500">*/}
-                        {/*    <MdEdit className="w-4 h-4"/>*/}
-                        {/*</button>*/}
-                        {/*/!* ✅ 드롭다운 메 뉴 (애니메이션 효과 추가) *!/*/}
-                        {/*<div*/}
-                        {/*    className={clsx(*/}
-                        {/*        'absolute left-0 top-full mt-1 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300',*/}
-                        {/*        'transition-all duration-200 ease-in-out transform',*/}
-                        {/*        isOpenDropdown ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none',*/}
-                        {/*    )}*/}
-                        {/*    onMouseLeave={closeDropdown}*/}
-                        {/*>*/}
-                        {/*    <ul className="py-2 text-sm text-gray-700">*/}
-                        {/*        /!* 재사용 컨텐츠 *!/*/}
-                        {/*        <div className="text-end space-x-2">*/}
-                        {/*            <button className="p-1 rounded-md border border-gray-700">Save</button>*/}
-                        {/*            <button onClick={closeDropdown} className="p-1 rounded-md bg-blue-500 text-white">Close</button>*/}
-                        {/*        </div>*/}
-                        {/*    </ul>*/}
-                        {/*</div>*/}
-                        {/* 기본 정보 */}
-
-                        {/*<div className="border rounded-lg px-4 py-2">*/}
-                        {/*    <UsageDetailDropdownForm detailData={detailData} />*/}
-                        {/*    <div className="mb-2">*/}
-                        {/*        <h3 className="text-lg font-semibold mb-2 text-gray-600">Usage Details</h3>*/}
-                        {/*        <div className="grid grid-cols-4 gap-1 text-sm">*/}
-                        {/*            <div className="text-gray-500">Free Bytes:</div>*/}
-                        {/*            <div className="px-2 col-span-1">{formatNumber(detailData.free_bytes)}</div>*/}
-                        {/*            <div className="text-gray-500">Total Used Bytes:</div>*/}
-                        {/*            <div className="px-2 col-span-1">{formatNumber(detailData.use_byte_total)}</div>*/}
-                        {/*            <div className="text-gray-500">Use Period:</div>*/}
-                        {/*            <div className="px-2 col-span-1">{detailData.use_period} days</div>*/}
-                        {/*            <div className="text-gray-500">Use Percent of Month:</div>*/}
-                        {/*            <div className="px-2 col-span-1">{detailData.use_percent_of_month}%</div>*/}
-                        {/*        </div>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
-
-                        {/*<div className="mb-2">*/}
-                        {/*    <h3 className="text-lg font-semibold mb-2 text-gray-600">Usage Period Detail</h3>*/}
-                        {/*    <table className="w-full border-collapse border border-gray-300 text-sm">*/}
-                        {/*        <thead className="bg-gray-100">*/}
-                        {/*        <tr>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Account Numer</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Activation Date</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Deactivation Date</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Deactivation Profile ID</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Use Percent of month</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Use Period</th>*/}
-                        {/*        </tr>*/}
-                        {/*        </thead>*/}
-                        {/*        <tbody>*/}
-                        {/*        {detailData.use_period_detail && detailData.use_period_detail.length > 0 ? (*/}
-                        {/*            detailData.use_period_detail.map((item, index) => (*/}
-                        {/*                <tr key={index} className="text-center">*/}
-                        {/*                    <td className="border border-gray-300 px-2 py-1">{item.acct_num}</td>*/}
-                        {/*                    <td className="border border-gray-300 px-2 py-1">{item.act_date}</td>*/}
-                        {/*                    <td className="border border-gray-300 px-2 py-1">{item.deact_date || '-'}</td>*/}
-                        {/*                    <td className="border border-gray-300 px-2 py-1">{item.deact_profile_id}</td>*/}
-                        {/*                    <td className="border border-gray-300 px-2 py-1">{item.use_percent_of_month}%</td>*/}
-                        {/*                    <td className="border border-gray-300 px-2 py-1">{item.use_period} 일</td>*/}
-                        {/*                </tr>*/}
-                        {/*            ))*/}
-                        {/*        ) : (*/}
-                        {/*            <tr>*/}
-                        {/*                <td colSpan="6" className="text-center p-1">No data available</td>*/}
-                        {/*            </tr>*/}
-                        {/*        )}*/}
-                        {/*        </tbody>*/}
-                        {/*    </table>*/}
-                        {/*</div>*/}
-
-                        {/* 결제 정보 */}
-                        {/* 사용량 정보 */}
-                        {/*<div className="border rounded-lg px-4 py-2">*/}
-                        {/*    <PaymentDropdownForm detailData={detailData} />*/}
-                        {/*    <div className="mb-2">*/}
-                        {/*        <h3 className="text-lg font-semibold mb-2 text-gray-600">Payment Details</h3>*/}
-                        {/*        <div className="grid grid-cols-4 gap-1 text-sm">*/}
-                        {/*            <div className="text-gray-500">Basic Fee:</div>*/}
-                        {/*            <div className="px-2 col-span-1">{formatNumber(detailData.payment?.basic_fee)} 원*/}
-                        {/*            </div>*/}
-                        {/*            <div className="text-gray-500">Final Fee:</div>*/}
-                        {/*            <div className="px-2 col-span-1">{formatNumber(detailData.payment?.final_fee)} 원*/}
-                        {/*            </div>*/}
-                        {/*            <div className="text-gray-500">Total Fee:</div>*/}
-                        {/*            <div className="px-2 col-span-1">{formatNumber(detailData.payment?.total_fee)} 원*/}
-                        {/*            </div>*/}
-                        {/*            <div className="text-gray-500">Subscribe Fee:</div>*/}
-                        {/*            <div*/}
-                        {/*                className="px-2 col-span-1">{formatNumber(detailData.payment?.subscribe_fee)} 원*/}
-                        {/*            </div>*/}
-                        {/*        </div>*/}
-                        {/*    </div>*/}
-                        {/*    <div className="text-gray-500 border-b mb-2" />*/}
-                        {/*    /!* 기타 정보 *!/*/}
-                        {/*    <div className="mb-2">*/}
-                        {/*        <div className="grid grid-cols-4 gap-1 text-sm">*/}
-                        {/*            <div className="text-gray-500">Additional Usage Fee:</div>*/}
-                        {/*            <div className="col-span-1">{formatNumber(detailData.payment?.add_use_fee)} 원</div>*/}
-                        {/*            <div className="text-gray-500">Cut-off Fee:</div>*/}
-                        {/*            <div className="col-span-1">{formatNumber(detailData.payment?.cut_off_fee)} 원</div>*/}
-                        {/*            <div className="text-gray-500">Modification Fee:</div>*/}
-                        {/*            <div className="col-span-1">{formatNumber(detailData.payment?.modification_fee)} 원*/}
-                        {/*            </div>*/}
-                        {/*        </div>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
-
-                        {/* 요금 상세 (Table) */}
-                        {/*<div className="mb-2">*/}
-                        {/*    <h3 className="text-lg font-semibold mb-2 text-gray-600">Fee Detail</h3>*/}
-                        {/*    <table className="w-full border-collapse border border-gray-300 text-sm">*/}
-                        {/*        <thead className="bg-gray-100">*/}
-                        {/*        <tr>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Company</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Classification</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Billing Fee</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Period</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Use / Def Byte</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Note</th>*/}
-                        {/*        </tr>*/}
-                        {/*        </thead>*/}
-                        {/*        <tbody>*/}
-                        {/*        {detailData.payment?.fee_detail?.map((fee, index) => (*/}
-                        {/*            <tr key={index} className="text-center">*/}
-                        {/*                <td className="border border-gray-300 px-2 py-1">{fee.apply_company}</td>*/}
-                        {/*                <td className="border border-gray-300 px-2 py-1">{fee.classfication}</td>*/}
-                        {/*                <td className="border border-gray-300 px-2 py-1">{formatNumber(fee.billing_fee)} 원</td>*/}
-                        {/*                <td className="border border-gray-300 px-2 py-1">{fee.act_date_period}</td>*/}
-                        {/*                <td className="border border-gray-300 px-2 py-1">{fee.use_byte}/{fee.default_byte}</td>*/}
-                        {/*                <td className="border border-gray-300 px-2 py-1">{fee.note}</td>*/}
-                        {/*            </tr>*/}
-                        {/*        )) || <tr>*/}
-                        {/*            <td colSpan="5" className="text-center p-2">No data available</td>*/}
-                        {/*        </tr>}*/}
-                        {/*        </tbody>*/}
-                        {/*    </table>*/}
-                        {/*</div>*/}
-
-                        {/* ACT, DAT, MMF, DCT 항목별 상세 테이블을 `EventTable`로 대체 */}
-                        {/*<EventTable title="ACT" data={detailData.act} />*/}
-                        {/*<EventTable title="DAT" data={detailData.dat} />*/}
-                        {/*<EventTable title="MMF" data={detailData.mmf} />*/}
-                        {/*<EventTable title="DCT" data={detailData.dct} />*/}
-
-                        {/*/!* 상세 사용량 (Table) *!/*/}
-                        {/*<div className="mb-2">*/}
-                        {/*    <h3 className="text-lg font-semibold mb-2 text-gray-600">Usage Byte Detail</h3>*/}
-                        {/*    <table className="w-full border-collapse border border-gray-300 text-sm">*/}
-                        {/*        <thead className="bg-gray-100">*/}
-                        {/*        <tr>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Connection Type</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Used Bytes</th>*/}
-                        {/*            <th className="border border-gray-300 px-2 py-1">Free Byte Code</th>*/}
-                        {/*        </tr>*/}
-                        {/*        </thead>*/}
-                        {/*        <tbody>*/}
-                        {/*        {detailData.use_byte_detail?.map((item, index) => (*/}
-                        {/*            <tr key={index} className="text-center">*/}
-                        {/*                <td className="border border-gray-300 px-2 py-1">{item.con_type}</td>*/}
-                        {/*                <td className="border border-gray-300 px-2 py-1">{formatNumber(item.use_byte)}</td>*/}
-                        {/*                <td className="border border-gray-300 px-2 py-1">{formatNumber(item.free_byte_code)}</td>*/}
-                        {/*            </tr>*/}
-                        {/*        )) || <tr>*/}
-                        {/*            <td colSpan="3" className="text-center p-1">No data available</td>*/}
-                        {/*        </tr>}*/}
-                        {/*        </tbody>*/}
-                        {/*    </table>*/}
-                        {/*</div>*/}
-
-                        {/* 기타 이벤트 데이터 */}
-                        {/*<div className="mb-2">*/}
-                        {/*    <h3 className="text-lg font-semibold mb-2 text-gray-600">Event Logs</h3>*/}
-                        {/*    <div className="grid grid-cols-4 gap-1 text-sm">*/}
-                        {/*        <div className="text-gray-500">MMF Events:</div>*/}
-                        {/*        <div className="col-span-1">{detailData.mmf?.length || 0}</div>*/}
-                        {/*        <div className="text-gray-500">DAT Events:</div>*/}
-                        {/*        <div className="col-span-1">{detailData.dat?.length || 0}</div>*/}
-                        {/*        <div className="text-gray-500">ACT Events:</div>*/}
-                        {/*        <div className="col-span-1">{detailData.act?.length || 0}</div>*/}
-                        {/*        <div className="text-gray-500">DCT Events:</div>*/}
-                        {/*        <div className="col-span-1">{detailData.dct?.length || 0}</div>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
-
+                        <Accordion items={accordionItems({ detailData, paymentInfo, version })} />
                     </div>
                 </div>
 
-                {/* Left Section */}
+                {/* Right Section - 버전 변경 버튼 & 요금 및 byte 상세 정보 */}
                 <div className="col-span-1">
                     <div className="p-4">
                         <div className="flex flex-row items-right justify-end ">
 
                             {/* 버전 변경 버튼 */}
-                            <div className="text-end space-x-4 justify-end">
-                                <button
-                                    className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
-                                    onClick={() => {
-                                        const newVersion = Math.max(version - 1, 0);
-                                        setVersion(newVersion);
-                                        fetchVersionData(detailData.monthly_primary_key, newVersion);
-                                    }}
-                                    disabled={version <= 0}
-                                >
-                                    ◀
-                                </button>
-                                <span className="font-bold">Version {version}</span>
-                                <button
-                                    className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
-                                    onClick={() => {
-                                        const newVersion = version + 1;
-                                        setVersion(newVersion);
-                                        fetchVersionData(detailData.monthly_primary_key, newVersion);
-                                    }}
-                                    disabled={version >= latestVersion} // 최신 버전 이상이면 비활성화
-                                >
-                                    ▶
-                                </button>
-                            </div>
+                            {fetchVersionData && setVersion !== null && version !== null && latestVersion !== null && (
+                                <div className="text-end space-x-4 justify-end">
+                                    <button
+                                        className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
+                                        onClick={() => {
+                                            const newVersion = Math.max(version - 1, 0);
+                                            setVersion(newVersion);
+                                            fetchVersionData(detailData.monthly_primary_key, newVersion);
+                                        }}
+                                        disabled={version <= 0}
+                                    >
+                                        ◀
+                                    </button>
+                                    <span className="font-bold">Version {version}</span>
+                                    <button
+                                        className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
+                                        onClick={() => {
+                                            const newVersion = version + 1;
+                                            setVersion(newVersion);
+                                            fetchVersionData(detailData.monthly_primary_key, newVersion);
+                                        }}
+                                        disabled={version >= latestVersion} // 최신 버전 이상이면 비활성화
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
+                            )}
+
+                            {/*<div className="text-end space-x-4 justify-end">*/}
+                            {/*    <button*/}
+                            {/*        className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"*/}
+                            {/*        onClick={() => {*/}
+                            {/*            const newVersion = Math.max(version - 1, 0);*/}
+                            {/*            setVersion(newVersion);*/}
+                            {/*            fetchVersionData(detailData.monthly_primary_key, newVersion);*/}
+                            {/*        }}*/}
+                            {/*        disabled={version <= 0}*/}
+                            {/*    >*/}
+                            {/*        ◀*/}
+                            {/*    </button>*/}
+                            {/*    <span className="font-bold">Version {version}</span>*/}
+                            {/*    <button*/}
+                            {/*        className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"*/}
+                            {/*        onClick={() => {*/}
+                            {/*            const newVersion = version + 1;*/}
+                            {/*            setVersion(newVersion);*/}
+                            {/*            fetchVersionData(detailData.monthly_primary_key, newVersion);*/}
+                            {/*        }}*/}
+                            {/*        disabled={version >= latestVersion} // 최신 버전 이상이면 비활성화*/}
+                            {/*    >*/}
+                            {/*        ▶*/}
+                            {/*    </button>*/}
+                            {/*</div>*/}
                         </div>
-
-
                     </div>
-
 
                     <UseByteDetailItem detailData={detailData} paymentInfo={paymentInfo}
                                        paymentFeeDetail={paymentFeeDetail} dProductDetail={dProductDetail} paymentAdjustmentInfo={paymentAdjustmentInfo}/>

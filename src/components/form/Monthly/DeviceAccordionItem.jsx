@@ -9,81 +9,94 @@ import PaymentDropdownForm from '@/components/form/Monthly/Edit/PaymentDropdownF
  * @param (Array) paymentFeeDetail: 요금 사용 세부 정보
  * @param (Array) paymentAdjustmentInfo: 조정 세부 정보
  * */
-export const accordionItems = ({ detailData, paymentInfo }) => [
-    {
-        title: "단말 정보",
-        content: (
-            <>
-                <div className="relative text-sm p-3 rounded-md">
-                    <div className="absolute top-0 right-2">
-                        <BasicDropdownForm detailData={detailData} />
+export const accordionItems = ({ detailData, paymentInfo, version }) => {
+    // 데이터 유무 확인(Monthly Page | KOMonthly Page 구분)
+    // const hasFetchVersionData = fetchVersionData && Object.keys(fetchVersionData).length > 0;
+    const hasVersion = typeof version === "number" // ✅ version 데이터가 존재하고, 숫자인지 확인
+    console.log('version: ', version)
+
+    return [
+        {
+            title: "단말 정보",
+            content: (
+                <>
+                    <div className="relative text-sm p-3 rounded-md">
+                        {hasVersion && (
+                            <div className="absolute top-0 right-2">
+                                <BasicDropdownForm detailData={detailData} />
+                            </div>
+                        )}
+                        {[
+                            ['Profile ID', detailData.profile_id],
+                            ['고객 번호', detailData.acct_num],
+                            ['별칭', detailData.alias],
+                            ['단말기', detailData.serial_number],
+                            ['PPID', detailData.ppid],
+                            ['활성화 날짜', formatDateTime(detailData.activate_date) || '-'],
+                            ['비활성화 날짜', formatDateTime(detailData.deactivate_date) || '-'],
+                        ].map(([label, value], index) => (
+                            <p key={index} className="grid grid-cols-3 gap-4 py-0.5">
+                                <span className="text-xs text-gray-500 col-span-1 text-left">{label}</span>
+                                <span className="font-normal col-span-2 text-left text-black">{formatValue(value)}</span>
+                            </p>
+                        ))}
                     </div>
-                    {[
-                        ['Profile ID', detailData.profile_id],
-                        ['고객 번호', detailData.acct_num],
-                        ['별칭', detailData.alias],
-                        ['단말기', detailData.serial_number],
-                        ['PPID', detailData.ppid],
-                        ['활성화 날짜', formatDateTime(detailData.activate_date) || '-'],
-                        ['비활성화 날짜', formatDateTime(detailData.deactivate_date) || '-'],
-                    ].map(([label, value], index) => (
-                        <p key={index} className="grid grid-cols-3 gap-4 py-0.5">
-                            <span className="text-xs text-gray-500 col-span-1 text-left">{label}</span>
-                            <span className="font-normal col-span-2 text-left text-black">{formatValue(value)}</span>
-                        </p>
-                    ))}
-                </div>
-            </>
-        )
-    },
-    {
-        title: '세부 사용',
-        content: (
-            <>
-            <div className="relative text-sm p-3 rounded-md">
-                <div className="absolute top-0 right-2">
-                    <UsageDetailDropdownForm detailData={detailData} />
-                </div>
-                    {[
-                        ['무료 바이트 제공량(b)', formatNumber(detailData.free_bytes)],
-                        ['총 사용 바이트(b)', formatNumber(detailData.use_byte_total)],
-                        ['사용 기간', detailData.use_period],
-                        ['월 사용 비율(%)', detailData.use_percent_of_month]
-                    ].map(([label, value], index) => (
-                        <p key={index} className="grid grid-cols-2 gap-4 py-0.5">
-                            <span className="text-xs text-gray-500 col-span-1 text-left">{label}</span>
-                            <span className="font-normal col-span-1 text-right">{formatValue(value)}</span>
-                        </p>
-                    ))}
-                </div>
-            </>
-        )
-    },
-    {
-        title: "단말 요금 정보",
-        content: (
-            <>
-                <div className="relative text-sm p-3 rounded-md">
-                    <div className="absolute top-0 right-2">
-                        <PaymentDropdownForm detailData={detailData} />
+                </>
+            )
+        },
+        {
+            title: '세부 사용',
+            content: (
+                <>
+                    <div className="relative text-sm p-3 rounded-md">
+                        {hasVersion && (
+                            <div className="absolute top-0 right-2">
+                                <UsageDetailDropdownForm detailData={detailData} />
+                            </div>
+                        )}
+                        {[
+                            ['무료 바이트 제공량(b)', formatNumber(detailData.free_bytes)],
+                            ['총 사용 바이트(b)', formatNumber(detailData.use_byte_total)],
+                            ['사용 기간', detailData.use_period],
+                            ['월 사용 비율(%)', detailData.use_percent_of_month]
+                        ].map(([label, value], index) => (
+                            <p key={index} className="grid grid-cols-2 gap-4 py-0.5">
+                                <span className="text-xs text-gray-500 col-span-1 text-left">{label}</span>
+                                <span className="font-normal col-span-1 text-right">{formatValue(value)}</span>
+                            </p>
+                        ))}
                     </div>
-                    {[
-                        ['기본료', formatNumber(paymentInfo.basic_fee)],
-                        ['통신료', formatNumber(paymentInfo.add_use_fee)],
-                        ['가입비', formatNumber(paymentInfo.subscribe_fee)],
-                        ['부가 서비스료', formatNumber(paymentInfo.modification_fee)],
-                    ].map(([label, value], index) => (
-                        <p key={index} className="grid grid-cols-2 gap-4 py-0.5">
-                            <span className="text-xs text-gray-500 col-span-1 text-left">{label}</span>
-                            <span className="font-normal col-span-1 text-right">{formatValue(value)}</span>
+                </>
+            )
+        },
+        {
+            title: "단말 요금 정보",
+            content: (
+                <>
+                    <div className="relative text-sm p-3 rounded-md">
+                        {hasVersion && (
+                            <div className="absolute top-0 right-2">
+                                <PaymentDropdownForm detailData={detailData} />
+                            </div>
+                        )}
+                        {[
+                            ['기본료', formatNumber(paymentInfo.basic_fee)],
+                            ['통신료', formatNumber(paymentInfo.add_use_fee)],
+                            ['가입비', formatNumber(paymentInfo.subscribe_fee)],
+                            ['부가 서비스료', formatNumber(paymentInfo.modification_fee)],
+                        ].map(([label, value], index) => (
+                            <p key={index} className="grid grid-cols-2 gap-4 py-0.5">
+                                <span className="text-xs text-gray-500 col-span-1 text-left">{label}</span>
+                                <span className="font-normal col-span-1 text-right">{formatValue(value)}</span>
+                            </p>
+                        ))}
+                        <p className="grid grid-cols-2 gap-4 pt-3 mt-3 border-t">
+                            <span className="text-xs text-gray-500 col-span-1 text-left">최종 금액</span>
+                            <span className="col-span-1 text-right font-bold">{formatNumber(paymentInfo.total_fee)}</span>
                         </p>
-                    ))}
-                    <p className="grid grid-cols-2 gap-4 pt-3 mt-3 border-t">
-                        <span className="text-xs text-gray-500 col-span-1 text-left">최종 금액</span>
-                        <span className="col-span-1 text-right font-bold">{formatNumber(paymentInfo.total_fee)}</span>
-                    </p>
-                </div>
-            </>
-        )
-    }
-]
+                    </div>
+                </>
+            )
+        }
+    ]
+}

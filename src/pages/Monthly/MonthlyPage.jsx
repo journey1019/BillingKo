@@ -10,7 +10,14 @@ import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import useYearMonth from '@/hooks/useYearMonth.js';
 import MonthlyForm from '@/components/form/Monthly/MonthlyForm.jsx';
 import SaveButton from '@/components/common/SaveButton.jsx';
+import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
+import { IoMdClose } from "react-icons/io";
+import DeviceMonthlyForm from '@/components/form/Monthly/DeviceMonthlyForm.jsx';
 
+
+/**
+ * @desc: 계산관리 페이지(monthly Page)
+ * */
 const MonthlyPage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
 
@@ -48,57 +55,57 @@ const MonthlyPage = () => {
     }, [selectedRowData]);
     console.log('detail monthly data', detailData)
 
-    useEffect(() => {
-        const handleOutsideClick = (event) => {
-            if (
-                isExpanded &&
-                !event.target.closest(".expanded-container") // ✅ 상세정보 영역 클릭 제외
-            ) {
-                setIsExpanded(false);
-                setSelectedRowData(null);
-            }
-        };
-
-        document.addEventListener("click", handleOutsideClick);
-        return () => {
-            document.removeEventListener("click", handleOutsideClick);
-        };
-    }, [isExpanded]);
-
+    // useEffect(() => {
+    //     const handleOutsideClick = (event) => {
+    //         if (
+    //             isExpanded &&
+    //             !event.target.closest(".expanded-container") // ✅ 상세정보 영역 클릭 제외
+    //         ) {
+    //             setIsExpanded(false);
+    //             setSelectedRowData(null);
+    //         }
+    //     };
+    //
+    //     document.addEventListener("click", handleOutsideClick);
+    //     return () => {
+    //         document.removeEventListener("click", handleOutsideClick);
+    //     };
+    // }, [isExpanded]);
+    console.log(selectedRowData)
 
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
             {/* Save */}
             <div className="col-span-6 flex flex-row justify-between border-b pb-3 mb-2 border-gray-400">
-                <h1 className="text-2xl font-base">Monthly Data Save</h1>
+                <h1 className="text-xl font-base font-bold">원본 데이터 관리 페이지</h1>
                 <SaveButton yearMonth={yearMonth} />
             </div>
 
             {/* Table */}
-            <div className={`${isExpanded ? "col-span-2" : "col-span-6"}`}>
+            <div className={`p-2 ${isExpanded ? "col-span-2" : "col-span-6"}`}>
                 <div className="flex flex-row items-center justify-between mb-3">
-                    <h1 className="text-lg font-bold">
-                        Selected Month:{" "}
-                        {selectedDate.toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
+                    <h1 className="text-xl font-bold">
+                        {' '}
+                        {selectedDate.toLocaleDateString('ko-KR', {
+                            year: 'numeric',
+                            month: 'long',
                         })}
                     </h1>
                     <div className="flex flex-row z-10">
-                        <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                        <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                     </div>
                 </div>
                 <ReusableTable
-                    columns={MonthlyTableColumns}
                     data={data || []}
+                    columns={MonthlyTableColumns}
                     options={{
                         ...MonthlyTableOptions,
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 if (selectedRowData && selectedRowData.serial_number === selectedRow.serial_number) {
                                     // ✅ 이미 선택된 Row를 다시 클릭하면 닫기
-                                    setIsExpanded(false);
                                     setSelectedRowData(null);
+                                    setIsExpanded(false);
                                 } else {
                                     // ✅ 새 Row를 선택하면 열기
                                     setSelectedRowData(selectedRow);
@@ -113,33 +120,27 @@ const MonthlyPage = () => {
             </div>
 
             {isExpanded && selectedRowData && (
-                <div className="p-2 col-span-4 expanded-container">
+                <div className="p-2 col-span-4">
                     <div className="flex flex-col">
-                        <div className="flex flex-row justify-between mb-3">
+                        <div className="flex flex-row justify-between mb-4">
                             <div className="flex flex-row items-center">
-                                <span className="text-black font-semibold pr-3">Data Index:</span>
-                                <h2 className="py-1 text-lg font-bold text-red-600">{selectedRowData.dataIndex}</h2>
+                                <h1 className="py-1 text-xl font-bold">{selectedRowData.acct_num} _ {selectedRowData.serial_number}</h1>
                             </div>
                             <button
                                 onClick={() => {
                                     setIsExpanded(false);
                                     setSelectedRowData(null);
                                 }}
-                                className="p-2 bg-red-500 text-white rounded-md"
+                                className="p-2 rounded-md text-black hover:text-gray-500"
                             >
-                                닫기
+                                <IoMdClose/>
                             </button>
                         </div>
-                        <div className="p-4 bg-gray-100 rounded-lg">
-                            <pre className="text-sm text-gray-700">{JSON.stringify(selectedRowData, null, 2)}</pre>
-                            {detailLoading ? (
-                                <LoadingSpinner/>
-                            ) : detailError ? (
-                                <p className="text-red-500">Error loading detail data: {detailError}</p>
+                        <div className="bg-gray-100 rounded-lg">
+                            {Array.isArray(detailData) && detailData.length > 0 ? (
+                                <DeviceMonthlyForm detailData={detailData[0]} />
                             ) : (
-                                <MonthlyForm
-                                    detailData={detailData}
-                                />
+                                <p>No data available</p>
                             )}
                         </div>
                     </div>

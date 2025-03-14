@@ -83,7 +83,7 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
         const tableBody = [
             [
                 formatNumberWithCommas(device.basic_fee || 0),
-                formatNumberWithCommas(device.add_use_fee_total || 0),
+                formatNumberWithCommas(device.add_use_fee || 0),
                 "0",
                 ...dynamicValues
             ]

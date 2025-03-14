@@ -20,6 +20,9 @@ import InvoicePDFMergedPrintDirect from '@/components/invoice/InvoicePDFMergedPr
 import GiroPDFMergedPrintDirect from '@/components/giro/GiroPDFMergedPrintDirect.jsx';
 
 
+/**
+ * @desc: 청구서 페이지
+ * */
 const KOMonthlyAccountSavePage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
     const { data: invoiceBasicData, loading: invoiceBasicLoading, error:invoiceBasicError } = useApiFetch(fetchInvoicePrint); // 청구서 필요 양식
