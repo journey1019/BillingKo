@@ -10,24 +10,12 @@ import { useNavigate } from 'react-router-dom';
 import Accordion from '@/components/ui/Accordions/Accordion.jsx';
 import { accordionItems } from '@/components/form/Monthly/DeviceAccordionItem.jsx';
 import UseByteDetailItem from '@/components/form/Monthly/UseByteDetailItem.jsx';
+import { formatDateTime, formatNumber } from '@/utils/formatHelpers.jsx';
 
 
 const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData }) => {
     if (!detailData) return <p>No data available</p>;
     const navigate = useNavigate();
-
-    // 날짜 T 제거 포맷팅 함수
-    const formatDateTime = (dateTimeString) => {
-        const date = new Date(dateTimeString);
-        return date.toISOString().replace("T", " ").slice(0, 19);
-    };
-
-
-    // 천 단위 숫자 포맷팅 함수
-    const formatNumber = (num) => {
-        if (typeof num !== "number") return num; // 숫자가 아닌 경우 그대로 반환
-        return num.toLocaleString("en-US"); // 천 단위 ',' 추가
-    };
 
     const EventTable = ({ title, data, detailData }) => {
         if (!data || data.length === 0) return null;

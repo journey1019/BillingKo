@@ -39,13 +39,21 @@ export const formatDate = (datetime) => {
     return new Date(datetime).toISOString().slice(0, 10);
 };
 
-// 날짜 T 제거 포맷팅 함수 YYYY-MM-DD HH:mm:ss
+// 날짜 T 제거 포맷팅 함수 YYYY-MM-DD HH:mm:ss (UTC -> KST)
+// UCT로 변환해서 (-9)
+// export const formatDateTime = (dateTimeString) => {
+//     if(!dateTimeString) return '-';
+//
+//     const date = new Date(dateTimeString);
+//     return date.toISOString().replace("T", " ").slice(0, 19);
+// };
+// DateTime 그대로
 export const formatDateTime = (dateTimeString) => {
-    if(!dateTimeString) return '-';
+    if (!dateTimeString) return '-';
 
-    const date = new Date(dateTimeString);
-    return date.toISOString().replace("T", " ").slice(0, 19);
+    return dateTimeString.replace("T", " ").slice(0, 19); // "2018-08-13T00:00:00" -> "2018-08-13 00:00:00"
 };
+
 
 // 오늘 날짜를 YYYY-MM-DD 형식으로 변환
 export const getTodayDate = () => {
