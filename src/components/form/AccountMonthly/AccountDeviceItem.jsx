@@ -69,7 +69,7 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
             </div>
             <div className="col-span-3">
                 {deviceDetail.length > 0 ? (
-                    <div className="max-h-52 overflow-y-auto border border-gray-300 rounded-md">
+                    <div className="max-h-60 overflow-y-auto border border-gray-300 rounded-md">
                         <table className="w-full text-sm text-center border-collapse">
                             <thead className="bg-gray-200 sticky -top-0.5 z-10">
                             <tr>
@@ -124,7 +124,7 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                                 <table className="w-full text-sm text-center">
                                     <thead className="bg-gray-200">
                                     <tr>
-                                        {['번호', '조정 유형', '조정 대상', '조정 분류', '조정 타입', '요금 기준', '설명', '부가세 계산 전/후', '조정 금액'].map((header, index) => (
+                                        {['번호', '조정 유형', '조정 대상', '조정 분류', '조정 타입', '요금 기준', '설명', '부가세 포함 여부', '조정 금액'].map((header, index) => (
                                             <th key={index}
                                                 className="px-4 py-1 2xl:py-2 border font-medium whitespace-nowrap">{header}</th>
                                         ))}
@@ -140,7 +140,7 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                                             <td className="px-4 py-2 border">{codeMappings.adjustment_type[adj.adjustment_type] || formatValue(adj.adjustment_type)}</td>
                                             <td className="px-4 py-2 border">{codeMappings.mount_type[adj.mount_type] || formatValue(adj.mount_type)}</td>
                                             <td className="px-4 py-2 border">{formatValue(adj.description)}</td>
-                                            <td className="px-4 py-2 border">{formatValue(adj.adjustment_tax_free_yn)}</td>
+                                            <td className="px-4 py-2 border">{formatValue(adj.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>
                                             <td className="px-4 py-2 border text-right">{formatNumber(adj.adjustment_fee)}</td>
                                         </tr>
                                     ))}

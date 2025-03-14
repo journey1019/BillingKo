@@ -65,7 +65,7 @@ const FileUpload = () => {
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
                 <div className="flex flex-row justify-between py-2">
-                    <span className="font-bold">Service Provider</span>
+                    <span className="text-xl font-bold">Service Provider 테이블</span>
                     <button onClick={() => navigate('/upload/new')}
                             className="flex flex-row items-center space-x-2 p-2 rounded-md bg-blue-500 text-sm text-white hover:bg-blue-600 transition">
                         <FiPlus />
@@ -82,7 +82,7 @@ const FileUpload = () => {
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 console.log(selectedRow);
-                                if (selectedRowData && selectedRow.sp_id === selectedRow.sp_id) {
+                                if (selectedRowData && selectedRowData.sp_id === selectedRow.sp_id) {
                                     setSelectedRowData(null);
                                     setIsExpanded(false);
                                 } else {

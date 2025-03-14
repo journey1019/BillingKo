@@ -148,18 +148,18 @@ const KOMonthlyPage = () => {
                     <div className="flex flex-col">
                         <div className="flex flex-row justify-between mb-3">
                             <div className="flex flex-row items-center">
-                                {/*<h2 className="text-xl text-black font-semibold pr-3">{selectedMonthlyIndex.acct_num} - {selectedMonthlyIndex.serial_number}</h2>*/}
+                                <h1 className="text-xl font-bold text-gray-700 align-center text-center justify-center">{selectedMonthlyIndex.acct_num} _ {selectedMonthlyIndex.serial_number}</h1>
 
                                 {/*<span className="text-black font-semibold pr-3">Data Index:</span>*/}
                                 {/*<h2 className="py-1 text-lg font-bold text-red-600">{selectedMonthlyIndex.data_index}</h2>*/}
                             </div>
-                            <button type="button"
-                                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
-                                    onClick={() => navigate(`/ko_monthly/edit`, {state: {detailData: detailData} })}
-                            >
-                                <MdModeEditOutline className="mr-3" />
-                                Edit
-                            </button>
+                            {/*<button type="button"*/}
+                            {/*        className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"*/}
+                            {/*        onClick={() => navigate(`/ko_monthly/edit`, {state: {detailData: detailData} })}*/}
+                            {/*>*/}
+                            {/*    <MdModeEditOutline className="mr-3" />*/}
+                            {/*    Edit*/}
+                            {/*</button>*/}
                         </div>
                         <div>
                             {detailLoading || detailVersionLoading ? (

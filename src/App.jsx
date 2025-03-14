@@ -30,6 +30,7 @@ import FontConvertPage from '@/pages/FontConvert/FontConvertPage.jsx';
 import AccountMonthlyPage from '@/pages/Monthly/account/AccountMonthlyPage.jsx';
 import UploadNewPage from '@/pages/File/UploadNewPage.jsx';
 import UploadEditPage from '@/pages/File/UploadEditPage.jsx';
+import CDRnNNPage from '@/pages/File/CDRnNNPage.jsx';
 
 const checkAuth = () => {
     const token = localStorage.getItem("token");
@@ -94,6 +95,7 @@ const App = () => {
                         <RootLayout>
                             <Routes>
                                 <Route path="/" element={<Homepage />} />
+                                <Route path="/cdr_nn" element={<CDRnNNPage />} />
                                 <Route path="/file" element={<FilePage />} />
                                 <Route path="/accounts" element={<AccountPage />} />
                                 <Route path="/devices" element={<DevicePage />} />

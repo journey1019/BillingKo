@@ -18,6 +18,8 @@ import UploadFileModal from '@/components/layout/File/UploadFileModal.jsx';
 import FileDeviceForm from '@/components/form/FileDeviceForm.jsx';
 import FileUpload from '@/components/form/File/FileUpload.jsx';
 import FileUploadStatus from '@/components/form/File/FileUploadStatue.jsx';
+import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
+import CDRnNN from '@/components/features/CDRnNN.jsx';
 
 const FilePage = () => {
     const navigate = useNavigate();
@@ -74,64 +76,23 @@ const FilePage = () => {
             {/*    />*/}
             {/*</div>*/}
 
-            <div className="grid col-span-2 2xl:col-span-1">
-                <FileStatusForm />
-            </div>
+            {/*<div className="grid col-span-2 2xl:col-span-1">*/}
+            {/*    <FileStatusForm />*/}
+            {/*</div>*/}
             <div className="grid col-span-2 2xl:col-span-1">
                 <FileUploadStatus />
             </div>
 
-            <div className="grid col-span-4 2xl:col-span-1 py-5">
+            <div className="grid col-span-4 py-5">
                 <FileUpload />
             </div>
             {/*<div className="grid col-span-2 2xl:col-span-1">*/}
             {/*    <FileDeviceForm/>*/}
             {/*</div>*/}
+
+
             {/* 'CDR' & 'Network Report' Table */}
-            <div className="grid col-span-4 2xl:col-span-3 space-y-3">
-                <div className="flex flex-row items-center justify-between">
-                    <h1 className="text-lg font-bold">
-                        Selected Month:{' '}
-                        {selectedDate.toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                        })}
-                    </h1>
-                    <div className="flex flex-row z-10">
-                        <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
-                    </div>
-                </div>
-
-                <h1 className="text-xl font-semibold">CDR Table</h1>
-                {/* CDR Table */}
-                {/* 로딩 상태 */}
-                <ReusableTable
-                    data={cdrData || []}  // 데이터가 없으면 빈 배열 전달
-                    columns={CDRTableColumns}
-                    options={{
-                        ...CDRTableOptions,
-                    }}
-                    isLoading={cdrLoading}
-                    error={cdrError}
-                />
-
-                <h1 className="text-xl font-semibold">Network Report Table</h1>
-                <ReusableTable
-                    data={nrData || []}  // 데이터가 없으면 빈 배열 전달
-                    columns={NetworkReportTableColumns}
-                    options={{
-                        ...NetworkReportTableOptions,
-                    }}
-                    isLoading={nrLoading}
-                    error={nrError}
-                />
-            </div>
-
-            {/*<div>*/}
-            {/*    <p>Account Table</p>*/}
-            {/*    <p>Device Table</p>*/}
-            {/*    <p>PPlan Table</p>*/}
-            {/*</div>*/}
+            <CDRnNN />
         </div>
     )
 }
