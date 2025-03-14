@@ -58,7 +58,7 @@ const Navbar = () => {
                                 className={`flex items-center space-x-2 p-2 transition hover:text-blue-400 ${useActivePath("/ko_monthly")}`}
                             >
                                 <FaChalkboard />
-                                <span>단말 기본 자료</span>
+                                <span>단말기별 청구서 수정 페이지</span>
                             </NavLink>
                         </li>
                         <li>
@@ -67,7 +67,7 @@ const Navbar = () => {
                                 className={`flex items-center space-x-2 p-2 transition hover:text-blue-400 ${useActivePath("/monthly/account")}`}
                             >
                                 <BiSolidUserAccount />
-                                <span>청구 기본 자료</span>
+                                <span>고객별 청구서 수정 페이지</span>
                             </NavLink>
                         </li>
                         <li>
@@ -76,7 +76,7 @@ const Navbar = () => {
                                 className={`flex items-center space-x-2 p-2 transition hover:text-blue-400 ${useActivePath("/ko_monthly/account/save")}`}
                             >
                                 <FaPrint />
-                                <span>청구서</span>
+                                <span>최종 청구서 페이지</span>
                             </NavLink>
                         </li>
                         <li>

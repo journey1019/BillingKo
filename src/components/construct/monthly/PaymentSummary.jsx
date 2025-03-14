@@ -82,7 +82,7 @@ const PaymentSummary = ({ monthlyAcctSaveData }) => {
     ];
 
     return (
-        <div className="bg-white p-6 rounded-md shadow-md w-full">
+        <div className="w-full">
             <div className="grid grid-cols-3 gap-6">
                 {summaryGroups.map(({ title, items, bgColor, textColor }) => (
                     <div key={title} className={`p-4 rounded-lg ${bgColor} ${textColor} shadow-md`}>

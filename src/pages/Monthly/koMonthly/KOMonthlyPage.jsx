@@ -20,7 +20,7 @@ import { useSearchParams } from "react-router-dom";
 
 
 /**
- * @desc: 단말 기본 자료
+ * @desc: 단말기별 청구서 수정 페이지
  * */
 const KOMonthlyPage = () => {
     const [searchParams] = useSearchParams();
@@ -94,13 +94,13 @@ const KOMonthlyPage = () => {
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
             <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
-                <h1 className="text-xl font-base font-bold">단말 기본 자료</h1>
+                <h1 className="text-xl font-base font-bold">단말기별 청구서 수정 및 저장 페이지</h1>
             </div>
 
             <div className={`p-2 ${isExpanded ? "col-span-2" : "col-span-6"}`}>
                 <div>
                     <div className="flex flex-row items-center justify-between mb-3 relative z-10">
-                        <h1 className="text-xl font-bold">단말기 상세 테이블</h1>
+                        <h1 className="text-xl font-bold">단말기 청구서 테이블</h1>
                         {/*<h1 className="text-lg font-bold">*/}
                         {/*    Selected Month:{" "}*/}
                         {/*    {selectedDate.toLocaleDateString("ko-KR", {*/}

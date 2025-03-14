@@ -15,7 +15,7 @@ import InvoiceSaveButton from '@/components/common/InvoiceSaveButton.jsx';
 
 
 /**
- * @desc: 청구 기본 자료
+ * @desc: 고객별 청구서 수정 페이지
  * */
 const AccountMonthlyPage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
@@ -61,13 +61,13 @@ const AccountMonthlyPage = () => {
             <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
                 {/* 상단 제목 및 월 선택 */}
                 <div className="col-span-6 border-b pb-3 border-gray-400 flex flex-row justify-between items-center">
-                    <h1 className="text-xl font-bold">청구 기본 자료</h1>
+                    <h1 className="text-xl font-bold">고객별 청구서 조정 페이지</h1>
                     <InvoiceSaveButton yearMonth={yearMonth}/>
                 </div>
 
                 <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
                     <div className="flex justify-between items-center mb-4">
-                        <h1 className="text-xl font-bold">청구서 점검 테이블</h1>
+                        <h1 className="text-xl font-bold">고객 청구서 조정</h1>
                         <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                     </div>
 

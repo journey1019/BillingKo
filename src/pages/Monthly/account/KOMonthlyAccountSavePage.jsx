@@ -18,6 +18,8 @@ import GiroPDFMergedDownload from '@/components/giro/GiroPDFMergedDownload.jsx';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import InvoicePDFMergedPrintDirect from '@/components/invoice/InvoicePDFMergedPrintDirect.jsx';
 import GiroPDFMergedPrintDirect from '@/components/giro/GiroPDFMergedPrintDirect.jsx';
+import Accordion from '@/components/ui/Accordions/Accordion.jsx';
+import SimpleAccordion from '@/components/ui/Accordions/SimpleAccordion.jsx';
 
 
 /**
@@ -77,7 +79,7 @@ const KOMonthlyAccountSavePage = () => {
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             {/* 상단 제목 및 월 선택 */}
             <div className="flex flex-row col-span-6 border-b pb-3 mb-2 border-gray-400 justify-between items-center">
-                <h1 className="text-xl font-bold">결제내역 요약</h1>
+                <h1 className="text-xl font-bold">최종 청구서 확인 및 출력 페이지</h1>
 
                 <div className="flex flex-row space-x-4">
                     <InvoicePDFMergedPrintDirect
@@ -105,7 +107,7 @@ const KOMonthlyAccountSavePage = () => {
 
             {/* 납부현황 */}
             <div className="flex flex-row col-span-6 pb-3 mb-2 border-gray-400 justify-between items-center">
-                <PaymentSummary monthlyAcctSaveData={monthlyAcctSaveData}/>
+                <SimpleAccordion items={[{title: "결제내역 요약", content: (<PaymentSummary monthlyAcctSaveData={monthlyAcctSaveData}/>)}]} allOpen={true}/>
             </div>
 
             <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
