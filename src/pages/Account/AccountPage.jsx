@@ -20,6 +20,7 @@ import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options
 import AccountOverviewTab from '@/components/form/Account/AccountOverviewTab.jsx';
 import AccountTransactionTab from '@/components/form/Account/AccountTransactionTab.jsx';
 import AccountHistoryTab from '@/components/form/Account/AccountHistoryTab.jsx';
+import { IoMdClose } from "react-icons/io";
 
 
 const AccountPage = () => {
@@ -206,19 +207,39 @@ const AccountPage = () => {
                             {/* Acct_Num */}
                             <h2 className="py-1 text-lg font-bold">{selectedAccountId.acct_num} _ {selectedAccountId.acct_name}</h2>
 
-                            {/* Buttons - Edit & Mail & . */}
-                            <ButtonGroup
-                                entityType="accounts"
-                                id={selectedAccountId.acct_num}
-                                deleteFunction={deleteAccount}
-                                onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
-                            />
+                            <div className="flex flex-row items-center space-x-4">
+                                {/* Buttons - Edit & Mail & . */}
+                                <ButtonGroup
+                                    entityType="accounts"
+                                    id={selectedAccountId.acct_num}
+                                    deleteFunction={deleteAccount}
+                                    onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
+                                />
+                                <button
+                                    onClick={() => {
+                                        setIsExpanded(false);
+                                        selectedAccountId(null);
+                                    }}
+                                    className="p-2 rounded-md text-black hover:text-gray-500"
+                                >
+                                    <IoMdClose />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Tab */}
                         <TabComponent tabs={[
-                            { id: 1, label: 'Overview', content: <AccountOverviewTab partDataLoading={partDataLoading} partDataError={partDataError} accountPartData={accountPartData}/> },
-                            { id: 2, label: 'Transaction', content: <AccountTransactionTab adjustHistoryLoading={adjustHistoryLoading} adjustHistoryError={adjustHistoryError} adjustHistoryData={adjustHistoryData}/> },
+                            {
+                                id: 1,
+                                label: 'Overview',
+                                content: <AccountOverviewTab partDataLoading={partDataLoading}
+                                                             partDataError={partDataError}
+                                                             accountPartData={accountPartData} />,
+                            },
+                            {
+                                id: 2,
+                                label: 'Transaction',
+                                content: <AccountTransactionTab adjustHistoryLoading={adjustHistoryLoading} adjustHistoryError={adjustHistoryError} adjustHistoryData={adjustHistoryData}/> },
                             { id: 3, label: 'History', content: <AccountHistoryTab historyLoading={historyLoading} historyError={historyError} historyData={historyData} AccountTableColumns={AccountTableColumns}/> },
                         ]} />
                     </div>

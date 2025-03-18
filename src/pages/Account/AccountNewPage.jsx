@@ -167,13 +167,6 @@ const AccountNewPage = () => {
                 {/* ✅ 고객번호 (중복 검사 포함) */}
                 {renderInputField("acct_num", "고객번호", "text", true, "", "KO_99999", acctNumError)}
 
-                {/* ✅ 사용 여부 (토글) */}
-                <div className="flex items-center space-x-4">
-                    <label className="w-32 text-sm font-medium text-gray-900">사용 여부 *</label>
-                    <Switch checked={formData.use_yn === "Y"} onChange={handleToggleChange} />
-                    <span className="text-sm text-gray-700">{formData.use_yn === "Y" ? "Yes" : "No"}</span>
-                </div>
-
                 {/* ✅ 나머지 입력 필드 자동 생성 */}
                 {[
                     { id: "account_type", label: "고객 구분", type: "text", placeholder: "법인", required: true },
@@ -233,6 +226,13 @@ const AccountNewPage = () => {
                            placeholder,
                            ...rest
                        }) => renderInputField(id, label, type, required, "", placeholder , rest))}
+
+                {/* ✅ 사용 여부 (토글) */}
+                <div className="flex items-center space-x-4">
+                    <label className="w-32 text-sm font-medium text-gray-900">사용 여부 *</label>
+                    <Switch checked={formData.use_yn === "Y"} onChange={handleToggleChange} />
+                    <span className="text-sm text-gray-700">{formData.use_yn === "Y" ? "Yes" : "No"}</span>
+                </div>
 
                 {/* ✅ 저장 버튼 */}
                 <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-lg">
