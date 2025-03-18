@@ -35,14 +35,14 @@ const AccountNewPage = () => {
         acct_resident_num: "",
         regist_date: getTodayDate(), // 오늘 날짜를 초기값으로 설정
         classification: "",
-        invoice_address: "",
-        invoice_postcode: "",
+        invoice_address: null,
+        invoice_postcode: null,
         use_yn: "N",
         account_type: null,
         invoice_address2: null,
         recognize_id: null,
         company_tel: null,
-        tax_percent: null,
+        tax_percent: 0,
         business_num: null,
         company_name: null,
         company_team: null,
@@ -96,10 +96,10 @@ const AccountNewPage = () => {
             "acct_num",
             "acct_name",
             "acct_resident_num",
-            "regist_date",
+            // "regist_date",
             "classification",
-            "invoice_address",
-            "invoice_postcode",
+            // "invoice_address",
+            // "invoice_postcode",
             "use_yn",
         ];
 
@@ -136,13 +136,13 @@ const AccountNewPage = () => {
         }
     };
 
-    const renderInputField = (id, label, type, required, errorMessage, extraProps = {}) => (
+    const renderInputField = (id, label, type, required, errorMessage, placeholder, extraProps = {}) => (
         <div className="flex items-center space-x-4" key={id}>
             <label htmlFor={id} className="w-32 text-sm font-medium text-gray-900">
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
             <div className="flex-1">
-                <input id={id} type={type} value={formData[id]} onChange={handleInputChange}
+                <input id={id} type={type} value={formData[id]} onChange={handleInputChange} placeholder={placeholder}
                        className={`w-full bg-gray-50 border ${errorMessage ? "border-red-500" : "border-gray-300"} text-gray-900 text-sm rounded-lg p-2.5`}
                        {...extraProps} required={required}/>
                 {errorMessage && <p className="text-red-500 text-xs mt-1">{errorMessage}</p>}
@@ -165,7 +165,7 @@ const AccountNewPage = () => {
             {/* ✅ 입력 폼 */}
             <form className="bg-white p-5 rounded-xl space-y-4" onSubmit={handleSubmit}>
                 {/* ✅ 고객번호 (중복 검사 포함) */}
-                {renderInputField("acct_num", "고객번호", "text", true, acctNumError)}
+                {renderInputField("acct_num", "고객번호", "text", true, "", "KO_99999", acctNumError)}
 
                 {/* ✅ 사용 여부 (토글) */}
                 <div className="flex items-center space-x-4">
@@ -176,61 +176,63 @@ const AccountNewPage = () => {
 
                 {/* ✅ 나머지 입력 필드 자동 생성 */}
                 {[
-                    { id: "acct_name", label: "고객명", type: "text", required: true },
-                    { id: "acct_resident_num", label: "등록번호", type: "number", required: true },
-                    { id: "regist_date", label: "등록일", type: "date", required: true },
-                    { id: "classification", label: "분류", type: "text", required: true },
-                    { id: "invoice_address", label: "청구 주소", type: "text", required: true },
-                    { id: "invoice_postcode", label: "우편번호", type: "number", required: true },
-                    { id: "invoice_address2", label: "상세 주소", type: "text", required: true },
-                    { id: "account_type", label: "계정 유형", type: "text", required: true },
-                    { id: "recognize_id", label: "사업자 등록번호", type: "text", required: true },
-                    {
-                        id: "company_tel",
-                        label: "직장전화",
-                        type: "tel",
-                        pattern: "[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}",
-                        placeholder: "00-0000-0000",
-                        required: true
-                    },
+                    { id: "account_type", label: "고객 구분", type: "text", placeholder: "법인", required: true },
+                    { id: "acct_name", label: "고객명", type: "text", placeholder: "코리아오브컴", required: true },
+                    { id: "classification", label: "분류", type: "text", placeholder: "내부 개발", required: true },
+                    { id: "acct_resident_num", label: "등록 번호", type: "number", placeholder: "0000000000", required: true },
                     {
                         id: "tax_percent",
                         label: "부가세율 (%)",
                         type: "number",
+                        placeholder: "0",
                         min: "0",
                         max: "100",
                         step: "0.1",
                         required: false
                     },
-                    { id: "business_num", label: "법인번호", type: "number", required: false },
-                    { id: "company_name", label: "직장명", type: "text", required: false },
-                    { id: "company_team", label: "부서/팀", type: "text", required: false },
-                    { id: "company_director", label: "담당자", type: "text", required: false },
+                    { id: "regist_date", label: "등록일", type: "date", required: false },
+                    { id: "company_name", label: "회사명", type: "text", placeholder: "OOO", required: false },
+                    { id: "business_num", label: "사업자 등록 번호", type: "number", placeholder: "000-00-00000", required: false },
+                    { id: "recognize_id", label: "법인(주민) 번호", type: "text", required: false },
+                    {
+                        id: "company_tel",
+                        label: "회사 전화 번호",
+                        type: "tel",
+                        pattern: "[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}",
+                        placeholder: "00-0000-0000",
+                        required: false
+                    },
+                    { id: "company_postcode", label: "회사 우편 번호", type: "number", placeholder: "00000", required: false },
+                    { id: "company_address", label: "회사 주소", type: "text", placeholder: "-", required: false },
+                    { id: "company_address2", label: "회사 상세 주소", type: "text", placeholder: "-", required: false },
+                    { id: "company_team", label: "팀명", type: "text", placeholder: "Tech",required: false },
+                    { id: "company_director", label: "담당자", type: "text", placeholder: "OOO", required: false },
                     {
                         id: "director_email",
-                        label: "담당 이메일",
+                        label: "담당자 이메일",
                         type: "email",
                         placeholder: "example@gmail.com",
                         required: false
                     },
                     {
                         id: "director_tel",
-                        label: "담당 전화",
+                        label: "담당자 전화번호",
                         type: "tel",
                         pattern: "[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}",
                         placeholder: "000-0000-0000",
                         required: false
                     },
-                    { id: "company_postcode", label: "회사 우편번호", type: "number", required: false },
-                    { id: "company_address", label: "회사 주소", type: "text", required: false },
-                    { id: "company_address2", label: "회사 상세주소", type: "text", required: false },
+                    { id: "invoice_postcode", label: "청구서 우편 번호", type: "number", placeholder: '00000', required: false },
+                    { id: "invoice_address", label: "청구서 주소", type: "text", placeholder: '-', required: false },
+                    { id: "invoice_address2", label: "청구서 상세 주소", type: "text", placeholder: '-', required: false }
                 ].map(({
                            id,
                            label,
                            type,
                            required,
+                           placeholder,
                            ...rest
-                       }) => renderInputField(id, label, type, required, "", rest))}
+                       }) => renderInputField(id, label, type, required, "", placeholder , rest))}
 
                 {/* ✅ 저장 버튼 */}
                 <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-lg">

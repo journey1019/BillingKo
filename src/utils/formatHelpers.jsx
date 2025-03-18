@@ -94,3 +94,26 @@ export const formatYearMonth = (dateString) => {
 
     return `${year}년 ${formattedMonth}월`;
 };
+
+
+// ✅ 전화번호를 '00-0000-0000' 또는 '000-0000-0000' 형식으로 변환
+export const formatPhoneNumber = (phoneNumber) => {
+    if (!phoneNumber) return "";
+    const cleaned = phoneNumber.replace(/\D/g, ""); // 숫자만 추출
+    if (cleaned.length === 10) {
+        return cleaned.replace(/(\d{2})(\d{4})(\d{4})/, "$1-$2-$3");
+    } else if (cleaned.length === 11) {
+        return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+    }
+    return phoneNumber; // 원래 값 반환
+};
+
+// ✅ 사업자 등록번호를 '000-00-00000' 형식으로 변환
+export const formatBusinessNumber = (businessNum) => {
+    if (!businessNum) return "";
+    const cleaned = businessNum.replace(/\D/g, ""); // 숫자만 추출
+    if (cleaned.length === 10) {
+        return cleaned.replace(/(\d{3})(\d{2})(\d{5})/, "$1-$2-$3");
+    }
+    return businessNum; // 원래 값 반환
+};
