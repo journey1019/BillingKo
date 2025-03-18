@@ -35,11 +35,11 @@ const UploadFileModal = ({ onUploadComplete }) => {
     };
 
     const handleClose = () => {
+        setShowModal(false);
         // 업로드 완료 시 부모 콜백 호출 후 모달 닫기
         if (uploadStatuses.length > 0 && onUploadComplete) {
             onUploadComplete();
         }
-        setShowModal(false);
     };
 
     return (
@@ -52,8 +52,8 @@ const UploadFileModal = ({ onUploadComplete }) => {
             </button>
 
             <Modal show={showModal} onClose={handleClose}>
-                <h1 className="text-xl font-bold mb-4 pb-5 border-b">CDR & Network Report File Upload</h1>
-                <p className="pb-4 font-semibold">CDR, NetworkReport 파일을 한 번에 업로드합니다.</p>
+                <h1 className="text-xl font-bold mb-4 pb-5 border-b">CDR & Network Report 파일 업로드</h1>
+                <p className="pb-4 font-semibold">CSV 형식의 CDR/Network Report 파일을 업로드 하세요.</p>
 
                 <input
                     type="file"

@@ -17,6 +17,7 @@ import useYearMonth from '@/hooks/useYearMonth.js';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import DeviceMonthlyForm from '@/components/form/Monthly/DeviceMonthlyForm.jsx';
 import { useSearchParams } from "react-router-dom";
+import { IoMdClose } from 'react-icons/io';
 
 
 /**
@@ -160,6 +161,15 @@ const KOMonthlyPage = () => {
                             {/*    <MdModeEditOutline className="mr-3" />*/}
                             {/*    Edit*/}
                             {/*</button>*/}
+                            <button
+                                onClick={() => {
+                                    setIsExpanded(false);
+                                    setSelectedMonthlyIndex(null);
+                                }}
+                                className="p-2 rounded-md text-black hover:text-gray-500"
+                            >
+                                <IoMdClose />
+                            </button>
                         </div>
                         <div>
                             {detailLoading || detailVersionLoading ? (

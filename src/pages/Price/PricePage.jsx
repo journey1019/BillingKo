@@ -20,12 +20,13 @@ import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import { fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
 import AdjustmentPage from '@/pages/Adjustment/AdjustmentPage.jsx';
+import { TiPlus } from "react-icons/ti";
+
 
 const PricePage = () => {
     const { data, loading, error, refetch } = useApiFetch(fetchPrice);
     const [selectedPriceId, setSelectedPriceId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
-
 
     const [isOpenNewDropdown, setIsOpenNewDropdown] = useState(false); // New icon Drop
     const navigate = useNavigate();
@@ -121,8 +122,15 @@ const PricePage = () => {
         )
     }
     const TransactionTab = () => {
-        return(
-            <div>
+        return (
+            <div className="flex flex-col">
+                <div className="self-end">
+                    <Tooltip message="가격 정책 조정 추가">
+                        <button className="bg-blue-500 rounded-md text-white px-4 py-2 mb-2 hover:bg-blue-600">
+                            <TiPlus />
+                        </button>
+                    </Tooltip>
+                </div>
                 {adjustHistoryLoading ? (
                     <LoadingSpinner />
                 ) : adjustHistoryError ? (
@@ -174,7 +182,7 @@ const PricePage = () => {
     return (
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             <div className="col-span-6 justify-between border-b pb-3 mb-2 border-gray-400">
-                <h1 className="text-2xl font-base">Price</h1>
+                <h1 className="text-2xl font-base">통신 요금제 관리</h1>
             </div>
 
             {/* Left Section - Recent Table */}
@@ -182,7 +190,7 @@ const PricePage = () => {
 
                 {/* Top */}
                 <div className="flex flex-row justify-between mb-3">
-                    <h1 className="py-1 text-lg font-bold">Price Data</h1>
+                    <h1 className="py-1 text-lg font-bold">고객별 및 단말별 요금제(PPID) 설정</h1>
                     <div className="flex space-x-2 items-center">
                         <div className="inline-flex rounded-md shadow-xs" role="group">
                             <Tooltip message="Create Price Plan">
@@ -194,6 +202,7 @@ const PricePage = () => {
                                     <span>New</span>
                                 </button>
                             </Tooltip>
+
                             {/*<button type="button"*/}
                             {/*        className="inline-flex items-center px-1 py-2 text-sm font-medium text-white bg-blue-500 border border-gray-200 rounded-e-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"*/}
                             {/*        onClick={toggleNewDropdown}*/}

@@ -12,7 +12,7 @@ import TabComponent from '@/components/layout/TabComponent.jsx';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import AccountMonthlyForm from '@/components/form/AccountMonthly/AccountMonthlyForm.jsx';
 import InvoiceSaveButton from '@/components/common/InvoiceSaveButton.jsx';
-
+import { IoMdClose } from 'react-icons/io';
 
 /**
  * @desc: 고객별 청구서 수정 페이지
@@ -100,17 +100,28 @@ const AccountMonthlyPage = () => {
 
                 {isExpanded && selectedRowId && (
                     <div className="p-2 col-span-4">
-                        <div className="flex flex-row justify-between mb-8 items-center text-center">
-                            <h1 className="text-xl font-bold text-gray-700 align-center text-center justify-center">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</h1>
+                        <div className="flex flex-row justify-between mb-6 items-center text-center">
+                            <h1 className="text-xl font-bold text-gray-800 align-center text-center justify-center">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</h1>
 
                             {/* Buttons */}
                             {/*<div className="flex flex-row space-x-4">*/}
                             {/*    <span>수정</span>*/}
                             {/*    <span>삭제</span>*/}
                             {/*</div>*/}
+                            <button
+                                onClick={() => {
+                                    setIsExpanded(false);
+                                    setSelectedRowId(null);
+                                }}
+                                className="p-2 rounded-md text-black hover:text-gray-500"
+                            >
+                                <IoMdClose />
+                            </button>
                         </div>
                         <div className="flex flex-col">
-                            <AccountMonthlyForm yearMonth={yearMonth} accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError} />
+                            <AccountMonthlyForm yearMonth={yearMonth} accountDetailData={accountDetailData}
+                                                accountDetailLoading={accountDetailLoading}
+                                                accountDetailError={accountDetailError} />
                         </div>
                         {/*<div className="flex flex-col p-4 bg-white">*/}
                         {/*    <span className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</span>*/}

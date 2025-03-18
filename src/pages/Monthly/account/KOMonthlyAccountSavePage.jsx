@@ -20,6 +20,7 @@ import InvoicePDFMergedPrintDirect from '@/components/invoice/InvoicePDFMergedPr
 import GiroPDFMergedPrintDirect from '@/components/giro/GiroPDFMergedPrintDirect.jsx';
 import Accordion from '@/components/ui/Accordions/Accordion.jsx';
 import SimpleAccordion from '@/components/ui/Accordions/SimpleAccordion.jsx';
+import { IoMdClose } from 'react-icons/io';
 
 
 /**
@@ -150,9 +151,20 @@ const KOMonthlyAccountSavePage = () => {
                         <h1 className="text-xl font-bold">{selectedRowData.acct_num}</h1>
                         <div className="flex flex-row space-x-4">
                             <InvoicePDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
-                                             accountDetailData={monthlyAcctSaveDetailData} monthlyAcctSaveData={monthlyAcctSaveData} />
+                                             accountDetailData={monthlyAcctSaveDetailData}
+                                             monthlyAcctSaveData={monthlyAcctSaveData} />
                             <GiroPDFPrint yearMonth={yearMonth} invoiceBasicData={invoiceBasicData}
-                                          accountDetailData={monthlyAcctSaveDetailData} monthlyAcctSaveData={monthlyAcctSaveData} />
+                                          accountDetailData={monthlyAcctSaveDetailData}
+                                          monthlyAcctSaveData={monthlyAcctSaveData} />
+                            <button
+                                onClick={() => {
+                                    setIsExpanded(false);
+                                    setSelectedRowData(null);
+                                }}
+                                className="p-2 rounded-md text-black hover:text-gray-500"
+                            >
+                                <IoMdClose />
+                            </button>
                         </div>
                     </div>
                     <TabComponent tabs={tabs} />

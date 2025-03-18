@@ -4,6 +4,7 @@ import { updatePrice, fetchPricePart } from "@/service/priceService.js";
 
 import { IoMdClose } from 'react-icons/io';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
+import { formatNumber } from '../../utils/formatHelpers.jsx';
 
 const PriceEditPage = () => {
     const { ppid } = useParams();
@@ -26,7 +27,18 @@ const PriceEditPage = () => {
         const loadPriceData = async () => {
             try {
                 const price = await fetchPricePart(ppid);
-                setFormData(price);  // 가져온 데이터를 폼에 채우기
+
+                // 숫자 필드에 대해서 천 단위 포맷 적용
+                const formattedPrice = {
+                    ...price,
+                    basic_fee: price.basic_fee ? Number(price.basic_fee).toLocaleString() : "",
+                    subscription_fee: price.subscription_fee ? Number(price.subscription_fee).toLocaleString() : "",
+                    free_byte: price.free_byte ? Number(price.free_byte).toLocaleString() : "",
+                    surcharge_unit: price.surcharge_unit ? Number(price.surcharge_unit).toLocaleString() : "",
+                    each_surcharge_fee: price.each_surcharge_fee ? Number(price.each_surcharge_fee).toLocaleString() : "",
+                };
+
+                setFormData(formattedPrice);
             } catch (err) {
                 setError("Failed to fetch price data");
                 console.error(err);
@@ -39,7 +51,18 @@ const PriceEditPage = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+
+        // 숫자 필드일 경우 천 단위 구분자 적용
+        const numericFields = ["basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"];
+
+        let formattedValue = value;
+        if (numericFields.includes(name)) {
+            // 숫자만 남기기
+            const onlyNums = value.replace(/[^0-9]/g, "");
+            formattedValue = onlyNums ? Number(onlyNums).toLocaleString() : "";
+        }
+
+        setFormData((prev) => ({ ...prev, [name]: formattedValue }));
     };
 
     const handleSubmit = async (e) => {
@@ -85,7 +108,7 @@ const PriceEditPage = () => {
                             htmlFor="ppid"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Price Number
+                            PPID
                         </label>
                         <input
                             type="number"
@@ -104,15 +127,15 @@ const PriceEditPage = () => {
                             htmlFor="basic_fee"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Basic Fee
+                            기본료
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             id="basic_fee"
                             name="basic_fee"
                             value={formData.basic_fee}
                             onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 text-right"
                             placeholder="0"
                             required
                         />
@@ -123,15 +146,15 @@ const PriceEditPage = () => {
                             htmlFor="subscription_fee"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Subscription Fee
+                            가입비
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             id="subscription_fee"
                             name="subscription_fee"
                             value={formData.subscription_fee}
                             onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 text-right"
                             placeholder="0"
                             required
                         />
@@ -142,15 +165,15 @@ const PriceEditPage = () => {
                             htmlFor="surcharge_unit"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Surcharge Unit
+                            추가 사용 과금 단위
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             id="surcharge_unit"
                             name="surcharge_unit"
                             value={formData.surcharge_unit}
                             onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 text-right"
                             placeholder="0"
                             required
                         />
@@ -161,15 +184,15 @@ const PriceEditPage = () => {
                             htmlFor="each_surcharge_fee"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Each Surcharge Fee
+                            추가 사용 과금 금액
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             id="each_surcharge_fee"
                             name="each_surcharge_fee"
                             value={formData.each_surcharge_fee}
                             onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 text-right"
                             placeholder="0"
                             required
                         />
@@ -180,34 +203,15 @@ const PriceEditPage = () => {
                             htmlFor="apply_company"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Apply Company
+                            고객
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             id="apply_company"
                             name="apply_company"
                             value={formData.apply_company}
                             onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="0"
-                            required
-                        />
-                    </div>
-                    {/* Subscription_Fee */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label
-                            htmlFor="subscription_fee"
-                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                        >
-                            Subscription Fee
-                        </label>
-                        <input
-                            type="number"
-                            id="subscription_fee"
-                            name="subscription_fee"
-                            value={formData.subscription_fee}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
                             placeholder="0"
                             required
                         />
@@ -218,7 +222,7 @@ const PriceEditPage = () => {
                             htmlFor="remarks"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Remarks
+                            비고
                         </label>
                         <input
                             type="text"
@@ -236,7 +240,7 @@ const PriceEditPage = () => {
                             htmlFor="note"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Note
+                            메모
                         </label>
                         <input
                             type="text"

@@ -1,3 +1,5 @@
+import { FormatBusinessNumber, FormatPhoneNumber, FormatUseYnToggle } from './cellStyle/AccountCell.jsx';
+
 export const AccountTableColumns = [
     {
         accessorKey: 'acct_num',
@@ -5,8 +7,14 @@ export const AccountTableColumns = [
         enableClickToCopy: true,  // 클릭 시 복사 가능
     },
     {
+        accessorKey: 'classification',
+        header: '고객 별칭',
+        filterVariant: 'select',
+        size: 100,
+    },
+    {
         accessorKey: 'account_type',
-        header: '고객구분',
+        header: '고객 구분',
     },
     {
         accessorKey: 'acct_name',
@@ -15,6 +23,7 @@ export const AccountTableColumns = [
     {
         accessorKey: 'acct_resident_num',
         header: '등록 번호',
+        Cell: FormatPhoneNumber,
     },
     {
         accessorKey: 'regist_date',
@@ -24,15 +33,11 @@ export const AccountTableColumns = [
     {
         accessorKey: 'use_yn',
         header: '사용',
-    },
-    {
-        accessorKey: 'classification',
-        header: '분류(Alias)',
-        filterVariant: 'select',
+        Cell: FormatUseYnToggle,
     },
     {
         accessorKey: 'invoice_postcode',
-        header: '우편번호',
+        header: '우편 번호',
     },
     {
         accessorKey: 'invoice_address',
@@ -45,19 +50,21 @@ export const AccountTableColumns = [
     },
     {
         accessorKey: 'recognize_id',
-        header: '사업자등록번호',
+        header: '사업자 등록 번호',
     },
     {
         accessorKey: 'company_tel',
-        header: '직장전화',
+        header: '직장 전화',
+        Cell: FormatPhoneNumber
     },
     {
         accessorKey: 'tax_percent',
-        header: '적용부가세율(%)',
+        header: '적용 부가 세율(%)',
     },
     {
         accessorKey: 'business_num',
-        header: '법인번호',
+        header: '법인 번호',
+        Cell: FormatBusinessNumber,
     },
     {
         accessorKey: 'company_name',
@@ -73,15 +80,15 @@ export const AccountTableColumns = [
     },
     {
         accessorKey: 'director_email',
-        header: '담당메일',
+        header: '담당 메일',
     },
     {
         accessorKey: 'director_tel',
-        header: '담당전화',
+        header: '담당 전화',
     },
     {
         accessorKey: 'company_postcode',
-        header: '청구소 우편번호',
+        header: '청구소 우편 번호',
     },
     {
         accessorKey: 'company_address',

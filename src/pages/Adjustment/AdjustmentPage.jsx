@@ -116,14 +116,14 @@ const AdjustmentPage = () => {
     return(
         <div className={`grid gap-0 ${isAdjustExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             <div className="col-span-6 justify-between border-b pb-3 mb-2 border-gray-400">
-                <h1 className="text-2xl font-base">Adjustment</h1>
+                <h1 className="text-2xl font-base">조정 내역 관리</h1>
             </div>
 
             {/* Left Section */}
             <div className={`p-2 ${isAdjustExpanded ? 'col-span-2' : 'col-span-6'}`}>
                 {/* Top */}
                 <div className="flex flex-row justify-between mb-3">
-                    <h1 className="py-1 text-lg font-bold">Adjustment Data</h1>
+                    <h1 className="py-1 text-lg font-bold">할인, 가산 요금 등 조정 내역 삽입, 수정, 삭제</h1>
                     <div className="flex space-x-2 items-center">
                         <div className="inline-flex rounded-md shadow-xs" role="group">
                             <Tooltip message="Create Price Plan">
@@ -148,13 +148,13 @@ const AdjustmentPage = () => {
                                     <div className="p-2 text-sm text-gray-700">
                                         <button onClick={() => navigate('/adjustmenr/new')}
                                                 className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">
-                                            Adjustment
+                                            조정
                                         </button>
                                     </div>
                                     <ul className="p-2 text-sm text-gray-700">
                                         <li>
                                             <button onClick={() => navigate('/code/new')}
-                                                    className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">New Code
+                                                    className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">조정 세부 정의
                                             </button>
                                         </li>
                                     </ul>

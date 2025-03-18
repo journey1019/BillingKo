@@ -1,20 +1,28 @@
 import React from 'react';
 import clsx from 'clsx';
+import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+
 
 export const AdjustmentCell_Code = ({ cell }) => {
-    const value = cell.getValue();
+    const codeMappings = useAdjustmentMappings();
+
+    const value = cell.getValue() || ''; // 값이 없으면 빈 문자열로 초기화
+    const normalizedValue = value.toLowerCase().replace(/[^a-z0-9]/gi, ''); // 특수문자 제거 및 소문자로 변환
 
     // 조건에 따른 동적 클래스 설정
     const cellClass = clsx({
-        'bg-green-100 text-green-800': value === 'account',
-        'bg-blue-100 text-blue-800': value === 'ppid',
-        'bg-yellow-100 text-yellow-800': value === 'device',
+        'bg-green-100 text-green-800': normalizedValue.includes('account'), // "account" 포함 여부
+        'bg-blue-100 text-blue-800': normalizedValue.includes('ppid'), // "ppid" 포함 여부
+        'bg-yellow-100 text-yellow-800':
+            normalizedValue.includes('device') || normalizedValue.includes('serialnumber'), // "device" 또는 "serial_number" 포함 여부
     });
 
-    return <span className={`px-2 py-1 rounded-md ${cellClass}`}>{value}</span>;
+    // return <span className={`px-2 py-1 rounded-md ${cellClass}`}>{value}</span>;
+    return <span className={`px-2 py-1 rounded-md`}>{codeMappings.adjustment_code[value] || value}</span>;
 };
 
 export const AdjustmentCell_Category = ({ cell }) => {
+    const codeMappings = useAdjustmentMappings();
     const value = cell.getValue();
 
     // 첫 글자만 대문자로 변환
@@ -28,7 +36,8 @@ export const AdjustmentCell_Category = ({ cell }) => {
         'bg-green-100 text-green-800': capitalizedValue === 'VMS',
     });
 
-    return <span className={`px-2 py-1 rounded-md ${cellClass}`}>{capitalizedValue}</span>;
+    // return <span className={`px-2 py-1 rounded-md ${cellClass}`}>{capitalizedValue}</span>;
+    return <span className={`px-2 py-1 rounded-md`}>{codeMappings.adjustment_category[value] || value}</span>;
 };
 
 export const AdjustmentCell_Type = ({ cell }) => {

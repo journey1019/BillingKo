@@ -109,7 +109,7 @@ const AccountEditPage = () => {
                             htmlFor="acct_num"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            고객번호
+                            고객 번호
                         </label>
                         <input
                             type="text"
@@ -123,13 +123,33 @@ const AccountEditPage = () => {
                         />
                     </div>
 
+                    {/* Classification */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label
+                            htmlFor="classification"
+                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
+                        >
+                            고객 별칭
+                        </label>
+                        <input
+                            type="text"
+                            id="classification"
+                            name="classification"
+                            value={formData.classification}
+                            onChange={handleChange}
+                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="내부"
+                            required
+                        />
+                    </div>
+
                     {/* Account_Type */}
                     <div className="grid grid-cols-6 items-center space-x-4">
                         <label
                             htmlFor="account_type"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            고객구분
+                            고객 구분
                         </label>
                         <input
                             type="text"
@@ -167,7 +187,7 @@ const AccountEditPage = () => {
                             htmlFor="acct_resident_num"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            등록번호
+                            등록 번호
                         </label>
                         <input
                             type="number"
@@ -203,7 +223,7 @@ const AccountEditPage = () => {
 
                     {/* Use Y/N */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="use_yn" className="col-start-1 text-sm font-medium text-gray-900">Use</label>
+                        <label htmlFor="use_yn" className="col-start-1 text-sm font-medium text-gray-900">사용</label>
                         <div className="col-span-2 col-start-2 flex items-center space-x-4">
                             <label className="relative inline-flex items-center cursor-pointer">
                                 <input
@@ -221,33 +241,13 @@ const AccountEditPage = () => {
                         </div>
                     </div>
 
-                    {/* Classification */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label
-                            htmlFor="classification"
-                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                        >
-                            Classification
-                        </label>
-                        <input
-                            type="text"
-                            id="classification"
-                            name="classification"
-                            value={formData.classification}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="내부"
-                            required
-                        />
-                    </div>
-
                     {/* invoice_postcode */}
                     <div className="grid grid-cols-6 items-center space-x-4">
                         <label
                             htmlFor="invoice_postcode"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            우편번호
+                            우편 번호
                         </label>
                         <input
                             type="number"
@@ -287,7 +287,7 @@ const AccountEditPage = () => {
                             htmlFor="invoice_address2"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            주소2
+                            주소 2
                         </label>
                         <input
                             type="text"
@@ -307,7 +307,7 @@ const AccountEditPage = () => {
                             htmlFor="recognize_id"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            사업자 등록번호
+                            사업자 등록 번호
                         </label>
                         <input
                             type="text"
@@ -325,7 +325,7 @@ const AccountEditPage = () => {
                             htmlFor="company_tel"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            직장전화
+                            직장 전화
                         </label>
                         <input
                             type="tel"
@@ -344,7 +344,7 @@ const AccountEditPage = () => {
                             htmlFor="tax_percent"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            적용부가세율(%)
+                            적용 부가 세율(%)
                         </label>
                         <input
                             type="number"
@@ -366,7 +366,7 @@ const AccountEditPage = () => {
                             htmlFor="business_num"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            법인번호
+                            법인 번호
                         </label>
                         <input
                             type="number"
@@ -438,7 +438,7 @@ const AccountEditPage = () => {
                             htmlFor="director_email"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            담당메일
+                            담당 메일
                         </label>
                         <input
                             type="email"
@@ -456,7 +456,7 @@ const AccountEditPage = () => {
                             htmlFor="director_tel"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            담당전화
+                            담당 전화
                         </label>
                         <input
                             type="tel"
@@ -475,7 +475,7 @@ const AccountEditPage = () => {
                             htmlFor="company_postcode"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            우편번호
+                            청구서 우편 번호
                         </label>
                         <input
                             type="number"

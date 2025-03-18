@@ -1,105 +1,56 @@
 import React from 'react';
+import { formatDateTime } from '@/utils/formatHelpers.jsx';
 
 const PricePartForm = ({ pricePartData }) => {
-    console.log(pricePartData)
     return (
-        <form className="grid grid-cols-2 gap-3">
-            {/* Price Plan ID */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Price Plan ID (PPID)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{pricePartData.ppid}</span>
+        <div className="space-y-4 max-w-2xl items-center bg-white justify-start">
+            {/* ✅ 전체 레이아웃을 제한 (너비 조절 및 가독성 개선) */}
+
+            {/* ✅ 업데이트 정보 (맨 위에 표시) */}
+            <div className="text-gray-500 text-xs 2xl:text-sm mb-3 border-b pb-2">
+                <div className="flex flex-row space-x-3">
+                    <span>Updated By</span>
+                    <span className="text-gray-700 font-semibold">{pricePartData?.user_id || '-'}</span>
+                </div>
+                <div className="flex flex-row space-x-2">
+                    <span>Last Update</span>
+                    <span className="text-gray-700 font-semibold">{formatDateTime(pricePartData?.update_date) || '-'}</span>
+                </div>
             </div>
 
-            {/* Basic Fee */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">기본 요금 (Basic Fee)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{Number(pricePartData.basic_fee).toLocaleString()}</span>
-            </div>
-
-            {/* Subscription Fee */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">구독 요금 (Subscription Fee)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{Number(pricePartData.subscription_fee).toLocaleString()}</span>
-            </div>
-
-            {/* Free Byte */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">무료 데이터 (Free Byte)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{Number(pricePartData.free_byte).toLocaleString()}</span>
-                {/*<input*/}
-                {/*    type="number"*/}
-                {/*    value={pricePartData.free_byte}*/}
-                {/*    readOnly*/}
-                {/*    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"*/}
-                {/*/>*/}
-            </div>
-
-            {/* Surcharge Unit */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">초과 사용 단위 (Surcharge Unit)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{Number(pricePartData.surcharge_unit).toLocaleString()}</span>
-            </div>
-
-            {/* Each Surcharge Fee */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">단위별 추가 요금 (Each Surcharge Fee)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{Number(pricePartData.each_surcharge_fee).toLocaleString()}</span>
-            </div>
-
-            {/* Apply Company */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">적용 회사 (Apply Company)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{pricePartData.apply_company}</span>
-            </div>
-
-            {/* Remarks */}
-            <div className="col-span-2">
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">비고 (Remarks)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{pricePartData.remarks}</span>
-                {/*<textarea*/}
-                {/*    value={pricePartData.remarks}*/}
-                {/*    readOnly*/}
-                {/*    rows="3"*/}
-                {/*    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"*/}
-                {/*></textarea>*/}
-            </div>
-
-            {/* User ID */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">사용자 ID (User ID)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{pricePartData.user_id || 'N/A'}</span>
-                {/*<input*/}
-                {/*    type="text"*/}
-                {/*    value={pricePartData.user_id}*/}
-                {/*    readOnly*/}
-                {/*    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"*/}
-                {/*/>*/}
-            </div>
-
-            {/* Note */}
-            <div className="col-span-2">
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">메모 (Note)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{pricePartData.note}</span>
-                {/*<textarea*/}
-                {/*    value={pricePartData.note}*/}
-                {/*    readOnly*/}
-                {/*    rows="3"*/}
-                {/*    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"*/}
-                {/*></textarea>*/}
-            </div>
-
-            {/* Update Date */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">업데이트 날짜 (Update Date)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{pricePartData.update_date ? new Date(pricePartData.update_date).toISOString().split('T')[0]: 'N/A'}</span>
-                {/*<input*/}
-                {/*    type="date"*/}
-                {/*    value={pricePartData.update_date ? new Date(pricePartData.update_date).toISOString().slice(0, 10) : ''}*/}
-                {/*    readOnly*/}
-                {/*    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"*/}
-                {/*/>*/}
-            </div>
-        </form>
+            {/* ✅ 가격 정보 폼 */}
+            <form className="grid grid-cols-1 gap-3">
+                {[
+                    { label: "PPID (Price Plan ID)", value: pricePartData.ppid },
+                    { label: "고객", value: pricePartData.apply_company },
+                    { label: "기본료", value: Number(pricePartData.basic_fee).toLocaleString(), isNumber: true },
+                    { label: "가입비", value: Number(pricePartData.subscription_fee).toLocaleString(), isNumber: true },
+                    { label: "무료 데이터", value: Number(pricePartData.free_byte).toLocaleString(), isNumber: true },
+                    { label: "초과 사용 과금 단위", value: Number(pricePartData.surcharge_unit).toLocaleString(), isNumber: true },
+                    { label: "초과 사용 과금 금액", value: Number(pricePartData.each_surcharge_fee).toLocaleString(), isNumber: true },
+                    { label: "비고", value: pricePartData.remarks, spanFull: true },
+                    { label: "메모", value: pricePartData.note, spanFull: true },
+                ].map((item, index) => (
+                    <div
+                        key={index}
+                        className={`grid grid-cols-3 items-center gap-4 ${item.spanFull ? 'col-span-1' : ''}`}
+                    >
+                        <label className="text-xs 2xl:text-sm font-medium text-gray-500 text-left">
+                            {item.label}
+                        </label>
+                        <span
+                            className={`text-sm 2xl:text-md col-span-2 p-1 rounded-md ${
+                                item.isNumber
+                                    ? 'text-right bg-gray-100 font-semibold'  // ✅ 숫자는 강조된 배경 추가
+                                    : 'text-left'
+                            }`}
+                        >
+                            {item.value}
+                        </span>
+                    </div>
+                ))}
+            </form>
+        </div>
     );
 };
 

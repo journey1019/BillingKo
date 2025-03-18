@@ -20,6 +20,10 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     const month = String(yearMonth % 100).padStart(2, '0');
     const formattedYearMonth = `${year}-${month}`; // 2024-12
 
+    // 해당 월의 1일부터 말일까지 계산 (사용기간) 'YYYY-MM-DD ~ YYYY-MM-DD'
+    const lastDayOfGivenMonth = new Date(year, Number(month), 0).getDate(); // 주어진 month의 말일 계산
+    console.log(lastDayOfGivenMonth)
+
     // 청구서 출력 다음달
     const nextMonth = Number(month) + 1;
     const nextYear = nextMonth > 12 ? year + 1 : year;
@@ -59,7 +63,8 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     // Basic Table (First Table)
     const billing_num = formattedYearMonth+"-"+acct_num; // 청구번호
     const create_date = `${nextYear}-${String(formattedNextMonth).padStart(2, '0')}-05`; // 작성일자
-    const period_of_use = `${nextYear}-${String(formattedNextMonth).padStart(2, '0')}-01 ~ ${nextYear}-${String(formattedNextMonth).padStart(2, '0')}-${String(lastDayOfMonth).padStart(2, '0')}` // 사용기간
+    const period_of_use = `${year}-${month}-01 ~ ${year}-${month}-${String(lastDayOfGivenMonth).padStart(2, '0')}`;
+    // const period_of_use = `${nextYear}-${String(formattedNextMonth).padStart(2, '0')}-01 ~ ${nextYear}-${String(formattedNextMonth).padStart(2, '0')}-${String(lastDayOfMonth).padStart(2, '0')}` // 사용기간
     const due_date_of_payment = `${nextYear}-${String(formattedNextMonth).padStart(2, '0')}-${String(lastDayOfMonth).padStart(2, '0')} 까지`; // 납부기한
     // Current Month Table (Second Table)
     const basic_fee_total = formatNumberWithCommas(accountData.basic_fee_total); // 기본료

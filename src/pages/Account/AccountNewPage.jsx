@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createAccount, fetchAccounts } from "@/service/accountService.js";
 import { IoMdClose } from "react-icons/io";
 import { Switch } from "@mui/material";
+import { formatPhoneNumber } from '@/utils/formatPhoneNumber.jsx';
 
 const AccountNewPage = () => {
     const navigate = useNavigate();
@@ -73,6 +74,15 @@ const AccountNewPage = () => {
                 setAcctNumError("");
             }
         }
+
+        let formattedValue = value;
+
+        // ✅ 전화번호 필드 자동 포맷 적용
+        if (id === "company_tel" || id === "director_tel") {
+            formattedValue = formatPhoneNumber(value);
+        }
+
+        setFormData((prev) => ({ ...prev, [id]: formattedValue }));
     };
 
     // ✅ 토글 버튼 핸들러 (사용 유무)

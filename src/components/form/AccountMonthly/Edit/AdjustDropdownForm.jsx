@@ -113,7 +113,7 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
             <button className="hover:text-gray-500" onClick={toggleDropdown}>
                 <MdEdit />
             </button>
-            <DropdownMenu isOpen={isOpen} closeDropdown={closeDropdown} title="조정 정보 추가" tooltipContent="조정 세부 설정 페이지 이동" tooltipLink="/adjustment">
+            <DropdownMenu isOpen={isOpen} closeDropdown={closeDropdown} title="조정 정보 추가" tooltipContent="조정 세부 설정 페이지 이동" tooltipLink="/adjustment" position="left">
                 <div className="px-4 py-2 space-y-3">
                     {/* ✅ 고정된 데이터 (조정 대상 구분 & 조정 대상) */}
                     {/*<div className="flex flex-col">*/}

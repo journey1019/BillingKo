@@ -128,7 +128,7 @@ import { saveMonthlyData } from '@/service/monthlyService.js';
 import { useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { Alert, Snackbar } from "@mui/material"; // ✅ MUI Alert 추가
+import { Alert, Snackbar, Tooltip } from "@mui/material"; // ✅ MUI Alert 추가
 
 const SaveButton = ({ yearMonth }) => {
     const navigate = useNavigate();
@@ -187,13 +187,15 @@ const SaveButton = ({ yearMonth }) => {
 
     return(
         <>
-            <button
-                className="flex flex-row items-center p-2 bg-blue-500 rounded-md text-white"
-                onClick={() => setShowConfirmModal(true)}
-            >
-                {isLoading ? <LoadingSpinner /> : <FaSave />}
-                <span className="pl-2">{isLoading ? 'Saving...' : 'SAVE'}</span>
-            </button>
+            <Tooltip title="단말기-고객 최종 매칭 데이터를 확인 후 저장버튼을 눌러주세요">
+                <button
+                    className="flex flex-row items-center p-2 bg-blue-500 rounded-md text-white"
+                    onClick={() => setShowConfirmModal(true)}
+                >
+                    {isLoading ? <LoadingSpinner /> : <FaSave />}
+                    <span className="pl-2">{isLoading ? 'Saving...' : 'SAVE'}</span>
+                </button>
+            </Tooltip>
 
             {/* ✅ MUI Alert을 Snackbar로 감싸서 표시 */}
             <Snackbar

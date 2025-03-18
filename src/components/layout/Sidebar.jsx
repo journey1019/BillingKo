@@ -11,8 +11,8 @@ const Sidebar = ({ isSidebarOpen }) => {
         { path: "/file", icon: <FaFileCsv size={20} />, label: "파일 관리" },
         { path: "/accounts", icon: <FaAddressCard size={20} />, label: "사용자 관리" },
         { path: "/devices", icon: <FaChalkboard size={20} />, label: "단말기 관리" },
-        { path: "/price", icon: <FaSackDollar size={20} />, label: "요금제 관리" },
-        { path: "/monthly", icon: <FaCalculator size={20} />, label: "계산 관리" },
+        { path: "/price", icon: <FaSackDollar size={20} />, label: "요금제 및 조정 관리" },
+        { path: "/monthly", icon: <FaCalculator size={20} />, label: "단말기별 정산 내역 관리" },
     ];
 
     return (

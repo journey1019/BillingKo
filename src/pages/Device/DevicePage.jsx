@@ -208,7 +208,7 @@ const DevicePage = () => {
     return (
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
-                <h1 className="text-2xl font-base">Device</h1>
+                <h1 className="text-2xl font-base">단말기 데이터 검토</h1>
             </div>
 
             {/* Left Section */}
@@ -216,7 +216,7 @@ const DevicePage = () => {
 
                 {/* Top */}
                 <div className="flex flex-row justify-between mb-3">
-                    <h1 className="py-1 text-lg font-bold">Device Data</h1>
+                    <h1 className="py-1 text-lg font-bold">단말기 기본 정보 및 매핑 수정</h1>
                     <div className="flex space-x-2 items-center">
                         <button onClick={() => navigate('/devices/new')}
                                 className="flex flex-row items-center space-x-2 p-2 rounded-md bg-blue-500 text-sm text-white hover:bg-blue-600 transition">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Tooltip } from '@mui/material'; // ✅ MUI Alert 추가
 import useApiFetch from "@/hooks/useApiFetch.js";
 import { fetchMonthlyData, saveMonthlyData, fetchMonthlyDetailData } from '@/service/monthlyService.js'; // API 호출 함수
 import { MonthlyTableColumns } from "@/columns/MonthlyTableColumns.jsx";
@@ -77,7 +78,7 @@ const MonthlyPage = () => {
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
             {/* Save */}
             <div className="col-span-6 flex flex-row justify-between border-b pb-3 mb-2 border-gray-400">
-                <h1 className="text-xl font-base font-bold">원본 데이터 관리 페이지</h1>
+                <h1 className="text-xl font-base font-bold">단말기별 정산 내역 테이블</h1>
                 <SaveButton yearMonth={yearMonth} />
             </div>
 

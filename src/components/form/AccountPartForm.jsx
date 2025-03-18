@@ -1,49 +1,28 @@
 import React from 'react';
+import Accordion from '../ui/Accordions/Accordion.jsx';
 
 const AccountPartForm = ({ accountPartData }) => {
-    // Yes/No Toggle
-    const isEnabled = accountPartData.use_yn === 'Y'; // Y면 활성화된 토글, N이면 비활성화된 토글
+    // 사용 여부 (Toggle)
+    const isEnabled = accountPartData.use_yn === 'Y';
 
-    // 날짜 포맷터 함수
+    // 날짜 포맷 함수
     const formatDate = (dateString) => {
-        if (!dateString) return '';
+        if (!dateString) return '-';
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(dateString).toLocaleDateString('ko-KR', options);
     };
 
+    // 빈 값 처리 함수
     const formatDisplayValue = (value) => {
         return !value || value === "null" ? "-" : value;
     };
 
-
     return (
-        <form className="grid grid-cols-2 gap-3">
-            {/* Section: 기본 정보 */}
-            <h2 className="col-span-2 text-md 2xl:text-lg font-semibold text-gray-800">기본 정보</h2>
-
-            {/* Account Number */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">고객 번호</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.acct_num}</span>
-            </div>
-
-            {/* Account Name */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">고객명</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.acct_name}</span>
-            </div>
-
-            {/* Resident Number */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">등록 번호</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{accountPartData.acct_resident_num}</span>
-            </div>
-
-            {/* 사용 여부 (Toggle 스타일) */}
-            <div>
-            <label className="block text-xs 2xl:text-sm font-medium text-gray-500">사용 여부</label>
-                <div className="mt-2 flex items-center space-x-2">
-                    {/* 토글 버튼 */}
+        <div className="space-y-4">
+            {/* ✅ 사용 여부 (맨 위) */}
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                <span className="text-sm font-semibold text-gray-600">사용 여부</span>
+                <div className="flex items-center space-x-2">
                     <div
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                             isEnabled ? 'bg-blue-500' : 'bg-gray-400'
@@ -55,72 +34,72 @@ const AccountPartForm = ({ accountPartData }) => {
                             }`}
                         />
                     </div>
-                    {/* 텍스트 표시 */}
-                    <span className="text-xs 2xl:text-sm font-medium">{isEnabled ? 'Yes' : 'No'}</span>
+                    <span className="text-sm font-medium">{isEnabled ? 'Yes' : 'No'}</span>
                 </div>
             </div>
 
-
-            {/* Section: 주소 정보 */}
-            <h2 className="col-span-2 text-md 2xl:text-lg font-semibold text-gray-800">주소 정보</h2>
-
-            {/* Invoice Address */}
-            <div className="col-span-2">
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">청구지 주소</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.invoice_address)}</span>
+            {/* ✅ 기본 정보 */}
+            <h2 className="text-md font-semibold text-gray-800 border-b pb-1">기본 정보</h2>
+            <div className="grid grid-cols-1 2xl:grid-cols-2 gap-2">
+                {[
+                    { label: "고객 번호", value: accountPartData.acct_num },
+                    { label: "고객명", value: accountPartData.acct_name },
+                    { label: "등록 번호", value: accountPartData.acct_resident_num },
+                    { label: "부가세율 (%)", value: accountPartData.tax_percent },
+                ].map(({ label, value }, index) => (
+                    <div key={index} className="flex justify-between">
+                        <label className="text-xs font-medium text-gray-500 w-1/6">{label}</label>
+                        <span className="text-sm w-5/6">{formatDisplayValue(value)}</span>
+                    </div>
+                ))}
             </div>
 
-            {/* Invoice Address 2 */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">추가 주소</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.invoice_address2)}</span>
+
+            {/* ✅ 회사 정보 */}
+            <h2 className="text-md font-semibold text-gray-800 border-b pb-1">회사 정보</h2>
+            <div className="grid grid-cols-1 2xl:grid-cols-2 gap-3">
+                {[
+                    { label: "회사명", value: accountPartData.company_name },
+                    { label: "팀명", value: accountPartData.company_team },
+                    { label: "담당자", value: accountPartData.company_director },
+                    { label: "담당자 이메일", value: accountPartData.director_email },
+                    { label: "담당자 전화번호", value: accountPartData.director_tel },
+                ].map(({ label, value }, index) => (
+                    <div key={index} className="flex justify-between">
+                        <label className="text-xs font-medium text-gray-500 w-1/6">{label}</label>
+                        <span className="text-sm w-5/6">{formatDisplayValue(value)}</span>
+                    </div>
+                ))}
+            </div>
+            {/* ✅ 주소 정보 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {[
+                    { label: "청구지 주소", value: accountPartData.invoice_address },
+                    { label: "추가 주소", value: accountPartData.invoice_address2 },
+                    { label: "우편번호", value: accountPartData.invoice_postcode },
+                ].map(({ label, value }, index) => (
+                    <div key={index} className="flex justify-between">
+                        <label className="text-xs font-medium text-gray-500 w-1/3">{label}</label>
+                        <span className="text-sm w-2/3">{formatDisplayValue(value)}</span>
+                    </div>
+                ))}
             </div>
 
-            {/* Invoice Postcode */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">우편번호</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.invoice_postcode)}</span>
+            {/* ✅ 기타 정보 */}
+            <h2 className="text-md font-semibold text-gray-800 border-b pb-1">기타 정보</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {[
+                    { label: "등록일자", value: formatDate(accountPartData.regist_date) },
+                    { label: "법인(주민)번호", value: accountPartData.recognize_id },
+                    { label: "사업자 등록번호", value: accountPartData.business_num },
+                ].map(({ label, value }, index) => (
+                    <div key={index} className="flex justify-between">
+                        <label className="text-xs font-medium text-gray-500 w-1/3">{label}</label>
+                        <span className="text-sm w-2/3">{formatDisplayValue(value)}</span>
+                    </div>
+                ))}
             </div>
-
-            {/* Section: 회사 정보 */}
-            <h2 className="col-span-2 text-md 2xl:text-lg font-semibold text-gray-800">회사 정보</h2>
-
-            {/* 회사명 */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">회사명</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.company_name)}</span>
-            </div>
-
-            {/* 팀명 */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">팀명</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.company_team)}</span>
-            </div>
-
-            {/* 담당자 */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">담당자</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.company_director)}</span>
-            </div>
-
-            {/* 담당자 이메일 */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">담당자 이메일</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.director_email)}</span>
-            </div>
-
-            {/* 담당자 전화번호 */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">담당자 전화번호</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.director_tel)}</span>
-            </div>
-
-            {/* 세금 비율 */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">부가세율 (%)</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(accountPartData.tax_percent)}</span>
-            </div>
-        </form>
+        </div>
     );
 };
 
