@@ -4,11 +4,13 @@ import { updatePrice, fetchPricePart } from "@/service/priceService.js";
 
 import { IoMdClose } from 'react-icons/io';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
-import { formatNumber } from '../../utils/formatHelpers.jsx';
+import { formatAnyWithCommas, formatNumber, removeCommas } from '../../utils/formatHelpers.jsx';
 
 const PriceEditPage = () => {
     const { ppid } = useParams();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(null);
+    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
         ppid: "",
         basic_fee: "",
@@ -20,25 +22,30 @@ const PriceEditPage = () => {
         remarks: "",
         note: "",
     });
-    const [loading, setLoading] = useState(null);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const loadPriceData = async () => {
             try {
                 const price = await fetchPricePart(ppid);
-
-                // 숫자 필드에 대해서 천 단위 포맷 적용
-                const formattedPrice = {
+                setFormData({
                     ...price,
-                    basic_fee: price.basic_fee ? Number(price.basic_fee).toLocaleString() : "",
-                    subscription_fee: price.subscription_fee ? Number(price.subscription_fee).toLocaleString() : "",
-                    free_byte: price.free_byte ? Number(price.free_byte).toLocaleString() : "",
-                    surcharge_unit: price.surcharge_unit ? Number(price.surcharge_unit).toLocaleString() : "",
-                    each_surcharge_fee: price.each_surcharge_fee ? Number(price.each_surcharge_fee).toLocaleString() : "",
-                };
-
-                setFormData(formattedPrice);
+                    basic_fee: formatAnyWithCommas(price.basic_fee),
+                    subscription_fee: formatAnyWithCommas(price.subscription_fee),
+                    free_byte: formatAnyWithCommas(price.free_byte),
+                    surcharge_unit: formatAnyWithCommas(price.surcharge_unit),
+                    each_surcharge_fee: formatAnyWithCommas(price.each_surcharge_fee),
+                })
+                // 숫자 필드에 대해서 천 단위 포맷 적용
+                // const formattedPrice = {
+                //     ...price,
+                //     basic_fee: price.basic_fee ? Number(price.basic_fee).toLocaleString() : "",
+                //     subscription_fee: price.subscription_fee ? Number(price.subscription_fee).toLocaleString() : "",
+                //     free_byte: price.free_byte ? Number(price.free_byte).toLocaleString() : "",
+                //     surcharge_unit: price.surcharge_unit ? Number(price.surcharge_unit).toLocaleString() : "",
+                //     each_surcharge_fee: price.each_surcharge_fee ? Number(price.each_surcharge_fee).toLocaleString() : "",
+                // };
+                //
+                // setFormData(formattedPrice);
             } catch (err) {
                 setError("Failed to fetch price data");
                 console.error(err);
@@ -51,15 +58,16 @@ const PriceEditPage = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        let formattedValue = value;
 
         // 숫자 필드일 경우 천 단위 구분자 적용
         const numericFields = ["basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"];
 
-        let formattedValue = value;
         if (numericFields.includes(name)) {
             // 숫자만 남기기
-            const onlyNums = value.replace(/[^0-9]/g, "");
-            formattedValue = onlyNums ? Number(onlyNums).toLocaleString() : "";
+            // const onlyNums = value.replace(/[^0-9]/g, "");
+            // formattedValue = onlyNums ? Number(onlyNums).toLocaleString() : "";
+            formattedValue = removeCommas(value);
         }
 
         setFormData((prev) => ({ ...prev, [name]: formattedValue }));
@@ -203,7 +211,7 @@ const PriceEditPage = () => {
                             htmlFor="apply_company"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            고객
+                            적용 회사
                         </label>
                         <input
                             type="text"

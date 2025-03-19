@@ -6,6 +6,7 @@ import { AdjustmentHistoryTableColumns } from '@/columns/AdjustmentTableColumns.
 import { AdjustmentHistoryTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import { TiPlus } from "react-icons/ti";
 import { Tooltip } from '@mui/material';
+import { formatDateTime } from '../../../columns/cellStyle/AccountCell.jsx';
 
 const PriceTabItems = ({ pricePartData, partDataLoading, partDataError, adjustHistoryData, adjustHistoryLoading, adjustHistoryError, historyData, historyLoading, historyError }) => [
     {
@@ -66,12 +67,20 @@ const PriceTabItems = ({ pricePartData, partDataLoading, partDataError, adjustHi
                     ) : (
                         <div>
                             <ReusableTable
-                                columns={PriceTableColumns}
+                                columns={[
+                                    ...PriceTableColumns,
+                                    { accessorKey: "update_date", header: "업데이트한 날짜", Cell: formatDateTime },
+                                    { accessorKey: "user_id", header: "업데이트한 계정" }
+                                ]}
                                 data={historyData}
                                 options={{
-                                    initialState: { sorting: [{ id: 'ppid', desc: true }] },
-                                    enablePagination: false,
-                                    enableSorting: false,
+                                    initialState: {
+                                        sorting: [{ id: 'update_date', desc: true }],
+                                        showColumnFilters: true
+                                    },
+                                    enablePagination: true,
+                                    enableSorting: true,
+                                    enableFilters: true,
                                 }}
                             />
                         </div>

@@ -19,6 +19,42 @@ const formatNumberWithCommasString = (number) => {
     return Number(number).toLocaleString();
 };
 
+/**
+ * 숫자 또는 문자열을 받아 천 단위 구분자 추가
+ * - 값이 없거나 유효하지 않으면 "-"
+ * - 숫자로 변환 후 천 단위 ',' 구분 추가
+ * - 소수점이 있는 경우 유지
+ *
+ * @param {string|number|null|undefined} value - 변환할 값
+ * @returns {string} 변환된 값 ('-', '1,000', '10,000.50' 등)
+ */
+export const formatAnyWithCommas = (value) => {
+    if (value === null || value === undefined || value === "" || isNaN(Number(value))) {
+        return "-"; // 유효하지 않은 값이면 "-"
+    }
+
+    return Number(value).toLocaleString("en-US"); // 천 단위 구분자 추가
+};
+
+/**
+ * 천 단위 ',' 구분자를 제거하고 숫자로 변환
+ * - 값이 없거나 유효하지 않으면 0 반환
+ * - 문자열 숫자를 변환하여 정수 또는 소수 반환
+ *
+ * @param {string|null|undefined} value - 변환할 값
+ * @returns {number} 변환된 숫자 (1000, 2500.75 등)
+ */
+export const removeCommas = (value) => {
+    if (!value || typeof value !== "string") {
+        return 0; // 유효하지 않은 값이면 0 반환
+    }
+
+    const numberValue = value.replace(/,/g, ""); // ',' 제거 후 숫자로 변환
+    return isNaN(Number(numberValue)) ? 0 : Number(numberValue);
+};
+
+
+
 
 
 export const formatValue = (value, defaultText = "-") => {

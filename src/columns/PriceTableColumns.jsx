@@ -8,7 +8,7 @@ export const PriceTableColumns = [
     },
     {
         accessorKey: "apply_company",
-        header: "고객",
+        header: "적용 회사",
     },
     {
         accessorKey: "basic_fee",

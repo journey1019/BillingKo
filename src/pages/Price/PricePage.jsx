@@ -202,8 +202,7 @@ const PricePage = () => {
                             {/* Acct_Num */}
                             {/*<h2 className="py-1 text-lg font-bold">PPID Detail Form <span className="text-red-500 pl-3">{pricePartData.ppid}</span></h2>*/}
                             <div className="flex flex-row items-center">
-                                <span className="pr-2 font-bold">PPID : </span>
-                                <h2 className="py-1 text-lg font-bold text-red-600">{selectedPriceId.ppid}</h2>
+                                <h2 className="py-1 text-lg font-bold">{selectedPriceId.ppid} _ {selectedPriceId.apply_company}</h2>
                             </div>
 
                             {/* Buttons - Edit & Mail & . */}

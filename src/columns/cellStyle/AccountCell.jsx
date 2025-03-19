@@ -65,6 +65,13 @@ export const FormatPhoneNumber = ({ cell }) => {
     return cleaned;
 }
 
+// YYYY. MM. DD.
+export const formatDate = ({ cell }) => {
+    const value = cell.getValue() || "-";
+
+    return value ? new Date(value).toLocaleDateString() : '-';
+}
+
 // 'YYYY-MM-DDTHH:mm:ss' -> 'YYYY-MM-DD HH:mm:ss' (UTC 변환)
 export const formatUTCDateTime = ({ cell }) => {
     const value = cell.getValue() || '-'; // 값이 없을 경우 '-'
@@ -72,13 +79,6 @@ export const formatUTCDateTime = ({ cell }) => {
     const dateObj = new Date(value);
     return dateObj.toISOString().replace("T", " ").split(".")[0]; // "YYYY-MM-DD HH:mm:ss"
 };
-
-// YYYY. MM. DD.
-export const formatDate = ({ cell }) => {
-    const value = cell.getValue() || "-";
-
-    return value ? new Date(value).toLocaleDateString() : '-';
-}
 
 // 'YYYY-MM-DDTHH:mm:ss' -> 'YYYY-MM-DD HH:mm:ss'
 export const formatDateTime = ({ cell }) => {
