@@ -21,6 +21,7 @@ import TabComponent from '@/components/layout/TabComponent.jsx';
 import { fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
 import AdjustmentPage from '@/pages/Adjustment/AdjustmentPage.jsx';
 import { TiPlus } from "react-icons/ti";
+import PriceTabItems from '../../components/form/Price/PriceTabItems.jsx';
 
 
 const PricePage = () => {
@@ -104,78 +105,6 @@ const PricePage = () => {
     // New Button Toggle
     const toggleNewDropdown = () => setIsOpenNewDropdown(!isOpenNewDropdown);
     const closeNewDropdown = () => setIsOpenNewDropdown(false);
-
-
-    const OverviewTab = () => {
-        return(
-            <div>
-                {partDataLoading ? (
-                    <LoadingSpinner />
-                ) : partDataError ? (
-                    <p className="text-red-500">Error loading history: {historyError}</p>
-                ) : pricePartData ? (
-                    <PricePartForm pricePartData={pricePartData} />
-                ) : (
-                    <p>Select an price to view details</p>
-                )}
-            </div>
-        )
-    }
-    const TransactionTab = () => {
-        return (
-            <div className="flex flex-col">
-                <div className="self-end">
-                    <Tooltip message="가격 정책 조정 추가">
-                        <button className="bg-blue-500 rounded-md text-white px-4 py-2 mb-2 hover:bg-blue-600">
-                            <TiPlus />
-                        </button>
-                    </Tooltip>
-                </div>
-                {adjustHistoryLoading ? (
-                    <LoadingSpinner />
-                ) : adjustHistoryError ? (
-                    <p className="text-red-500">{adjustHistoryError}</p>
-                ) : (
-                    <div>
-                        <ReusableTable
-                            columns={AdjustmentHistoryTableColumns}
-                            data={adjustHistoryData}
-                            options={AdjustmentHistoryTableOptions}
-                        />
-                    </div>
-                )}
-            </div>
-        )
-    }
-    const HistoryTab = () => {
-        return (
-            <div>
-                {historyLoading ? (
-                    <LoadingSpinner />
-                ) : historyError ? (
-                    <p>Error loading particular: {historyError}</p>
-                ) : (
-                    <div>
-                        <ReusableTable
-                            columns={PriceTableColumns}
-                            data={historyData}
-                            options={{
-                                initialState: { sorting: [{ id: 'ppid', desc: true }] },
-                                enablePagination: false,
-                                enableSorting: false,
-                            }}
-                        />
-                    </div>
-                )}
-            </div>
-        )
-    }
-    const tabs = [
-        { id: 1, label: 'Overview', content: <OverviewTab/>},
-        // { id: 1, label: 'Overview', content: <AccountOverviewTab partDataLoading={partDataLoading} partDataError={partDataError} accountPartData={accountPartData}/> },
-        { id: 2, label: 'Transaction', content: <TransactionTab /> },
-        { id: 3, label: 'History', content: <HistoryTab /> },
-    ];
 
     console.log('price data: ', data)
 
@@ -287,7 +216,17 @@ const PricePage = () => {
                         </div>
 
                         {/* Tab */}
-                        <TabComponent tabs={tabs} />
+                        <TabComponent tabs={PriceTabItems({
+                            pricePartData,
+                            partDataLoading,
+                            partDataError,
+                            adjustHistoryData,
+                            adjustHistoryLoading,
+                            adjustHistoryError,
+                            historyData,
+                            historyLoading,
+                            historyError
+                        })} />
                     </div>
                 </div>
             )}

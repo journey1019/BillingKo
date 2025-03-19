@@ -54,11 +54,15 @@ export const formatDateTime = (dateTimeString) => {
     return dateTimeString.replace("T", " ").slice(0, 19); // "2018-08-13T00:00:00" -> "2018-08-13 00:00:00"
 };
 
+export const formatDisplayValue = (value) => {
+    return !value || value === "null" ? "-" : value;
+};
 
 // 오늘 날짜를 YYYY-MM-DD 형식으로 변환
 export const getTodayDate = () => {
     return new Date().toISOString().slice(0, 10);
 }
+
 
 /**
  * @desc: 'YYYY-MM-DD HH:mm' -> 'YYYY-MM-DD HH:mm:00'
@@ -117,3 +121,4 @@ export const formatBusinessNumber = (businessNum) => {
     }
     return businessNum; // 원래 값 반환
 };
+

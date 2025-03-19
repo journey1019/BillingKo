@@ -1,6 +1,9 @@
 export const DeviceTableOptions = {
     initialState: {
-        sorting: [{ id: "activated", desc: false }], // 기본 정렬 설정
+        sorting: [
+            { id: "update_date", desc: true },
+            { id: "acct_num", desc: false }
+        ], // 기본 정렬 설정
         showColumnFilters: true // 렌더링시 각 컬럼의 필터가 보여지도록 설정
     },
     enableRowSelection: true, // 행 선택 활성화

@@ -1,210 +1,86 @@
-// import { formatDateTime } from '@/utils/formatHelpers.jsx';
-//
-// const DevicePartForm = ({ devicePartData }) => {
-//     console.log(devicePartData)
-//     const formatDisplayValue = (value) => {
-//         return !value || value === "null" ? "-" : value;
-//     };
-//
-//     return (
-//         <div className="bg-white p-4 rounded-lg shadow-md">
-//             <div className="flex flex-row justify-between items-center">
-//                 <h2 className="text-xl font-bold mb-2 text-gray-700">{devicePartData.profile_id} _ {devicePartData.serial_number}</h2>
-//             </div>
-//
-//             <div className="text-gray-500 text-sm mb-6">
-//                 Updated By: <span className="text-gray-700 font-semibold">{devicePartData.regist_user_id || "-"}</span> | Last
-//                 Update: <span className="text-gray-700 font-semibold">{formatDateTime(devicePartData.regist_date) || '-'}</span>
-//             </div>
-//
-//             <div className="border rounded-lg px-4 py-2 mb-2">
-//
-//                 <div className="grid grid-cols-4 gap-4 mb-2 text-sm">
-//                     <div className="text-gray-500">Data Index:</div>
-//                     <div className="px-2 col-span-1 ml-1">{devicePartData.data_index}</div>
-//                 </div>
-//             </div>
-//
-//             <form className="grid grid-cols-4 gap-4 mb-2 text-sm">
-//                 {[
-//                     { label: 'Serial Number', value: devicePartData.serial_number },
-//                     { label: 'Account Number', value: devicePartData.acct_num },
-//                     { label: "Profile ID", value: devicePartData.profile_id },
-//                     { label: "PPID", value: devicePartData.ppid },
-//                     { label: "Activated Date", value: formatDateTime(devicePartData.activated) },
-//                     { label: "Deactivated Date", value: formatDateTime(devicePartData.deactivated) },
-//                     { label: "Model Name", value: formatDisplayValue(devicePartData.model_name) },
-//                     { label: "Internet Mail ID", value: formatDisplayValue(devicePartData.internet_mail_id) },
-//                     { label: "Alias", value: formatDisplayValue(devicePartData.alias) },
-//                     { label: "Register User ID", value: formatDisplayValue(devicePartData.regist_user_id) },
-//                     { label: "Update User ID", value: formatDisplayValue(devicePartData.update_user_id) },
-//                     { label: "Register Date", value: formatDateTime(devicePartData.regist_date) },
-//                     { label: "Update Date", value: formatDateTime(devicePartData.update_date) }
-//                 ].map((item, index) => (
-//                     <div key={index}>
-//                         <div className="text-gray-500">{item.label}</div>
-//                         <div className="px-2 col-span-1 ml-1">{item.value}</div>
-//                     </div>
-//                 ))}
-//
-//                 {/* ✅ 사용 여부 (Toggle) */}
-//                 <div className="col-span-2 flex items-center justify-between">
-//                     <label className="text-xs 2xl:text-sm font-medium text-gray-500">사용 여부</label>
-//                     <div className="flex items-center space-x-4">
-//                         {/* Toggle Button */}
-//                         <label className="relative inline-flex items-center cursor-pointer">
-//                             <input
-//                                 type="checkbox"
-//                                 checked={devicePartData.use_yn === 'Y'}
-//                                 readOnly // Toggle 활성화 여부만 보여줌 (수정 불가)
-//                                 className="sr-only peer"
-//                             />
-//                             <div
-//                                 className={`w-11 h-6 ${devicePartData.use_yn === 'Y' ? 'bg-blue-600' : 'bg-gray-300'} rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300`}></div>
-//                             <div
-//                                 className={`absolute w-5 h-5 bg-white rounded-full shadow-md transform transition-all ${devicePartData.use_yn === 'Y' ? 'peer-checked:translate-x-5' : ''}`}></div>
-//                         </label>
-//                         <span className="text-sm font-medium text-gray-700">
-//                         {devicePartData.use_yn === 'Y' ? 'Yes' : 'No'}
-//                     </span>
-//                     </div>
-//                 </div>
-//
-//                 {/* ✅ Remarks (col-span-2) */}
-//                 <div className="col-span-2 flex flex-col">
-//                     <label className="text-xs 2xl:text-sm font-medium text-gray-500">Remarks</label>
-//                     <span className="mt-1 text-sm 2xl:text-md">{formatDisplayValue(devicePartData.remarks)}</span>
-//                 </div>
-//             </form>
-//         </div>
-//     );
-// };
-//
-// export default DevicePartForm;
-
-import { formatDateTime } from '@/utils/formatHelpers.jsx';
+import { formatDateTime, formatDisplayValue } from '@/utils/formatHelpers.jsx';
 
 const DevicePartForm = ({ devicePartData }) => {
-    const formatDisplayValue = (value) => {
-        return !value || value === "null" ? "-" : value;
-    };
+    // // 빈 값 처리 함수
+    // const formatDisplayValue = (value) => (!value || value === "null" ? "-" : value);
 
     return (
-        <form className="grid grid-cols-2 gap-3">
-            {/* Serial Number */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Serial Number</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.serial_number}</span>
-            </div>
-
-            {/* Account Number */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Account Number</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.acct_num}</span>
-            </div>
-
-            {/* Profile ID */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Profile ID</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.profile_id}</span>
-            </div>
-
-            {/* PPID */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">PPID</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{devicePartData.ppid}</span>
-            </div>
-
-            {/* Activated Date */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Activated Date</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDateTime(devicePartData.activated)}</span>
-            </div>
-
-            {/* Deactivated Date */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Deactivated Date</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDateTime(devicePartData.deactivated)}</span>
-            </div>
-
-            {/* Use Y/N (Toggle) */}
-            <div className="col-span-2">
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500 mb-2">사용 여부</label>
-                <div className="flex items-center space-x-4">
-                    {/* Toggle Button */}
-                    <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={devicePartData.use_yn === 'Y'}
-                            readOnly // Toggle 활성화 여부만 보여줌 (수정 불가)
-                            className="sr-only peer"
-                        />
+        <div className="space-y-4">
+            {/* ✅ 사용 여부 (맨 위) */}
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                <span className="text-sm font-semibold text-gray-600">사용 여부</span>
+                <div className="flex items-center space-x-2">
+                    <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        devicePartData.use_yn === 'Y' ? 'bg-blue-500' : 'bg-gray-400'
+                    }`}>
                         <div
-                            className={`w-11 h-6 ${devicePartData.use_yn === 'Y' ? 'bg-blue-600' : 'bg-gray-300'} rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300`}></div>
-                        <div
-                            className={`absolute w-5 h-5 bg-white rounded-full shadow-md transform transition-all ${devicePartData.use_yn === 'Y' ? 'peer-checked:translate-x-5' : ''}`}></div>
-                    </label>
-                    <span className="text-sm font-medium text-gray-700">
-                        {devicePartData.use_yn === 'Y' ? 'Yes' : 'No'}
-                    </span>
+                            className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                                devicePartData.use_yn === 'Y' ? 'translate-x-6' : 'translate-x-1'
+                            }`} />
+                    </div>
+                    <span className="text-sm font-medium">{devicePartData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
                 </div>
             </div>
 
-            {/* Model Name */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Model Name</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.model_name)}</span>
+            {/* ✅ 기본 정보 */}
+            <h2 className="text-md font-semibold text-gray-800 border-b pb-1">기본 정보</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {[
+                    { label: '단말기', value: devicePartData.serial_number },
+                    { label: '고객 번호', value: devicePartData.acct_num },
+                    { label: 'Profile ID', value: devicePartData.profile_id },
+                    { label: 'PPID', value: devicePartData.ppid },
+                    { label: '모델명', value: devicePartData.model_name },
+                    { label: 'ORBCOMM 별칭', value: devicePartData.internet_mail_id },
+                    { label: '별칭', value: devicePartData.alias },
+                ].map(({ label, value }, index) => (
+                    <DataRow key={index} label={label} value={formatDisplayValue(value)} />
+                ))}
             </div>
 
-            {/* Internet Mail ID */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Internet Mail ID</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.internet_mail_id)}</span>
+            {/* ✅ 등록 및 수정 정보 */}
+            <h2 className="text-md font-semibold text-gray-800 border-b pb-1">등록 및 수정 정보</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {[
+                    { label: '등록한 날짜', value: formatDateTime(devicePartData.regist_date) },
+                    { label: '업데이트한 날짜', value: formatDateTime(devicePartData.update_date) },
+                    { label: '등록한 계정', value: formatDisplayValue(devicePartData.regist_user_id) },
+                    { label: '업데이트한 계정', value: formatDisplayValue(devicePartData.update_user_id) },
+                ].map(({ label, value }, index) => (
+                    <DataRow key={index} label={label} value={value} />
+                ))}
             </div>
 
-            {/* Alias */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Alias</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.alias)}</span>
+            {/* ✅ 활성화 및 비활성화 날짜 */}
+            <h2 className="text-md font-semibold text-gray-800 border-b pb-1">활성화 및 비활성화 정보</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {[
+                    { label: '활성화 날짜', value: formatDateTime(devicePartData.activated) },
+                    { label: '비활성화 날짜', value: formatDateTime(devicePartData.deactivated) },
+                ].map(({ label, value }, index) => (
+                    <DataRow key={index} label={label} value={value} />
+                ))}
             </div>
 
-            {/* Remarks */}
-            <div className="col-span-2">
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Remarks</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.remarks)}</span>
-                {/*<textarea*/}
-                {/*    value={devicePartData.remarks || 'N/A'}*/}
-                {/*    readOnly*/}
-                {/*    rows={3}*/}
-                {/*    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"*/}
-                {/*/>*/}
+            {/* ✅ 추가 정보 */}
+            <h2 className="text-md font-semibold text-gray-800 border-b pb-1">추가 정보</h2>
+            {/*<div className="grid grid-cols-1 gap-3">*/}
+            {/*    <DataRow label="비고" value={formatDisplayValue(devicePartData.remarks)} fullWidth />*/}
+            {/*</div>*/}
+            <div className="flex flex-row items-center py-2 px-1">
+                <span className="text-xs text-gray-500 w-1/6">비고</span>
+                <span className="text-sm w-2/3 px-2 py-1 rounded-md bg-gray-100">{formatDisplayValue(devicePartData.remarks)}</span>
             </div>
-
-            {/* Register User ID */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Register User ID</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.regist_user_id)}</span>
-            </div>
-
-            {/* Update User ID */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Update User ID</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDisplayValue(devicePartData.update_user_id)}</span>
-            </div>
-
-            {/* Register Date */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Register Date</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDateTime(devicePartData.regist_date)}</span>
-            </div>
-
-            {/* Update Date */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">Update Date</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{formatDateTime(devicePartData.update_date)}</span>
-            </div>
-        </form>
+        </div>
     );
 };
+
+// ✅ 재사용 가능한 데이터 행 컴포넌트
+const DataRow = ({ label, value, fullWidth = false }) => (
+    <div className={`flex justify-between items-center ${fullWidth ? 'col-span-2' : ''}`}>
+        <label className="text-xs font-medium text-gray-500 w-1/3 p-1">{label}</label>
+        <span className="text-sm w-2/3 px-2 py-1 rounded-md bg-gray-100">{value}</span>
+    </div>
+);
 
 export default DevicePartForm;

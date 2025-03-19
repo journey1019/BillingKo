@@ -3,6 +3,7 @@ import {
     AdjustmentCell_Code, AdjustmentCell_Cycle, AdjustmentCell_Mount_Value, AdjustmentCell_Type,
     AdjustmentCell_Use,
 } from '@/columns/cellStyle/AdjustmentCell.jsx';
+import { formatDateIndex, formatDateTime, renderNumberCell, applyRightAlignStyles } from './cellStyle/AccountCell.jsx';
 
 export const AdjustmentTableColumns = [
     {
@@ -62,6 +63,7 @@ export const AdjustmentHistoryTableColumns = [
     {
         accessorKey: 'adjustment_index',
         header: 'Index',
+        size: 50,
     },
     {
         accessorKey: 'adjustment_code',
@@ -89,7 +91,8 @@ export const AdjustmentHistoryTableColumns = [
     {
         accessorKey: 'mount_value',
         header: '요금 적용 금액',
-        Cell: AdjustmentCell_Mount_Value
+        Cell: renderNumberCell,
+        ...applyRightAlignStyles()
     },
     {
         accessorKey: 'description',
@@ -108,6 +111,7 @@ export const AdjustmentHistoryTableColumns = [
     {
         accessorKey: 'date_index',
         header: 'Date Index',
+        Cell: formatDateIndex,
     },
     {
         accessorKey: 'user_id',
@@ -116,5 +120,6 @@ export const AdjustmentHistoryTableColumns = [
     {
         accessorKey: 'update_date',
         header: 'Update Date',
+        Cell: formatDateTime
     }
 ]

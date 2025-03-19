@@ -124,7 +124,7 @@ const PriceNewPage = () => {
                             htmlFor="basic_fee"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Basic Fee
+                            기본료
                         </label>
                         <input
                             type="number"
@@ -142,7 +142,7 @@ const PriceNewPage = () => {
                             htmlFor="subscription_fee"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Subscription Fee
+                            가입비
                         </label>
                         <input
                             type="number"
@@ -160,7 +160,7 @@ const PriceNewPage = () => {
                             htmlFor="free_byte"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Free Byte
+                            무료 데이터
                         </label>
                         <input
                             type="number"
@@ -178,7 +178,7 @@ const PriceNewPage = () => {
                             htmlFor="surcharge_unit"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Surcharge Unit
+                            추가 사용 과금 단위
                         </label>
                         <input
                             type="number"
@@ -196,7 +196,7 @@ const PriceNewPage = () => {
                             htmlFor="each_surcharge_fee"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Each Surcharge Fee
+                            추가 사용 과금 금액
                         </label>
                         <input
                             type="number"
@@ -214,7 +214,7 @@ const PriceNewPage = () => {
                             htmlFor="apply_company"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Apply Company
+                            적용 회사
                         </label>
                         <input
                             type="text"
@@ -232,7 +232,7 @@ const PriceNewPage = () => {
                             htmlFor="remarks"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Remarks
+                            비고
                         </label>
                         <input
                             type="text"
@@ -250,7 +250,7 @@ const PriceNewPage = () => {
                             htmlFor="note"
                             className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
                         >
-                            Note
+                            메모
                         </label>
                         <input
                             type="text"

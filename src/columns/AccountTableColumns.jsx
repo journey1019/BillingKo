@@ -89,7 +89,7 @@ export const AccountTableColumns = [
         Cell: FormatPhoneNumber,
     },
     {
-        accessorKey: 'company_postcode',
+        accessorKey: 'invoice_postcode',
         header: '청구소 우편 번호',
     },
     {

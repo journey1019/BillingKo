@@ -25,6 +25,10 @@ import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns
 import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import { DeviceHistoryLogTableColumns } from '@/columns/DeviceHistoryLogTableColumns.jsx';
 import Buttons from '@/components/common/Buttons.jsx';
+import DeviceOverviewTab from '@/components/form/Device/DeviceOverViewTab.jsx';
+import DeviceTransactionTab from '@/components/form/Device/DeviceTransactionTab.jsx';
+import DeviceHistoryTab from '@/components/form/Device/DeviceHistoryTab.jsx';
+import DeviceTabItems from '@/components/form/Device/DeviceTabItems.jsx';
 
 const DevicePage = () => {
     const { data: deviceData, loading: deviceLoading, error: deviceError, refetch: deviceRefetch } = useApiFetch(fetchDevices);
@@ -120,91 +124,16 @@ const DevicePage = () => {
     const toggleDropdown = () => setIsOpenDropdown(!isOpenDropdown);
     const closeDropdown = () => setIsOpenDropdown(false);
 
-    const OverviewTab = () => {
-        return(
-            <>
-                {partDataLoading ? (
-                    <LoadingSpinner />
-                ) : partDataError ? (
-                    <p className="text-red-500">Error loading history: {historyError}</p>
-                ) : devicePartData ? (
-                    <DevicePartForm devicePartData={devicePartData} />
-                ) : (
-                    <p>Select an device to view details</p>
-                )}
-            </>
-        )
-    }
-    const TransactionTab = () => {
-        return(
-            <div>
-                {adjustHistoryLoading ? (
-                    <LoadingSpinner />
-                ) : adjustHistoryError ? (
-                    <p className="text-red-500">Error loading history: {adjustHistoryError}</p>
-                ) : adjustHistoryData ? (
-                    <ReusableTable
-                        data={adjustHistoryData}
-                        columns={AdjustmentHistoryTableColumns}
-                        options={AdjustmentHistoryTableOptions}
-                    />
-                ) : <p>Select an price to view details</p>}
-            </div>
-        )
-    }
 
     const highestRowData = deviceHistoryLogData?.length
         ? deviceHistoryLogData.sort((a, b) => b.row_number - a.row_number)[0]
         : null;
     console.log('deviceData :', deviceData)
     console.log(highestRowData);
-    const HistoryTab = () => {
-        return(
-            <div>
-                <h1 className="font-bold mb-2">기본 정보 변경 이력</h1>
-                <ReusableTable
-                    columns={DeviceTableColumns}
-                    data={historyData ? historyData : []}
-                    //data={Array.isArray(historyData) ? historyData : [historyData].filter(Boolean)}  // 배열로 변환하여 전달
-                    options={{
-                        initialState: { sorting: [{ id: 'serial_number', desc: true }] },
-                        enablePagination: false,
-                        enableSorting: false,
-                    }}
-                    isLoading={historyDataLoading}
-                    error={historyDataError}
-                />
-                <div className="flex flex-row justify-between">
-                    <h1 className="font-bold my-2">Account 정보 변경 이력</h1>
-                    <div>
-                        <Buttons
-                            entityType="devices/changed"
-                            id={selectedDeviceId.row_index}
-                        />
-                    </div>
-                </div>
-                <ReusableTable
-                    columns={DeviceHistoryLogTableColumns}
-                    data={deviceHistoryLogData ? deviceHistoryLogData : []}
-                    options={{
-                        initialState: {
-                            sorting: [{ id: 'row_number', desc: true }],
-                            columnVisibility: { row_number: false, row_index: false },
-                        },
-                        enablePagination: false,
-                        enableSorting: false,
-                    }}
-                    isLoading={deviceHistoryLogLoading}
-                    error={deviceHistoryLogError}
-                />
-            </div>
-        )
-    }
-    const tabs = [
-        { id: 1, label: 'Overview', content: <OverviewTab /> },
-        { id: 2, label: 'Transaction', content: <TransactionTab /> },
-        { id: 3, label: 'History', content: <HistoryTab /> },
-    ];
+
+    console.log('historyData', historyData)
+    console.log('deviceHistoryLogData', deviceHistoryLogData)
+
     return (
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
@@ -223,30 +152,30 @@ const DevicePage = () => {
                             <FiPlus />
                             <span>New</span>
                         </button>
-                        <button onClick={toggleDropdown}
-                                className="flex flex-row items-center p-2 rounded-md bg-gray-200 border border-gray-300 hover:bg-gray-300 transition">
-                            <BsThreeDotsVertical />
-                        </button>
-                        {isOpenDropdown && (
-                            <div
-                                className="absolute z-10 mt-32 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"
-                                onMouseLeave={closeDropdown}>
-                                <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                    <li>
-                                        <a href="#"
-                                           className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Modify</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                           className="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-                        <button onClick={() => console.log('device_setting')}
-                                className="flex flex-row items-center p-2 rounded-md bg-gray-200 border border-gray-300 hover:bg-gray-300 transition">
-                            <RiSettings3Fill />
-                        </button>
+                        {/*<button onClick={toggleDropdown}*/}
+                        {/*        className="flex flex-row items-center p-2 rounded-md bg-gray-200 border border-gray-300 hover:bg-gray-300 transition">*/}
+                        {/*    <BsThreeDotsVertical />*/}
+                        {/*</button>*/}
+                        {/*{isOpenDropdown && (*/}
+                        {/*    <div*/}
+                        {/*        className="absolute z-10 mt-32 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"*/}
+                        {/*        onMouseLeave={closeDropdown}>*/}
+                        {/*        <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">*/}
+                        {/*            <li>*/}
+                        {/*                <a href="#"*/}
+                        {/*                   className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Modify</a>*/}
+                        {/*            </li>*/}
+                        {/*            <li>*/}
+                        {/*                <a href="#"*/}
+                        {/*                   className="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>*/}
+                        {/*            </li>*/}
+                        {/*        </ul>*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
+                        {/*<button onClick={() => console.log('device_setting')}*/}
+                        {/*        className="flex flex-row items-center p-2 rounded-md bg-gray-200 border border-gray-300 hover:bg-gray-300 transition">*/}
+                        {/*    <RiSettings3Fill />*/}
+                        {/*</button>*/}
                     </div>
                 </div>
                 {/* Bottom */}
@@ -284,7 +213,7 @@ const DevicePage = () => {
                         {/* Top */}
                         <div className="flex flex-row justify-between mb-3">
                             {/* Serial_Number */}
-                            <h2 className="py-1 text-lg font-bold text-red-600">{selectedDeviceId.serial_number}</h2>
+                            <h2 className="py-1 text-lg font-bold">{selectedDeviceId.serial_number} _ {selectedDeviceId.alias}</h2>
 
                             {/* Buttons - Edit & Mail & . */}
                             <ButtonGroup
@@ -296,7 +225,22 @@ const DevicePage = () => {
                         </div>
 
                         {/* Tab */}
-                        <TabComponent tabs={tabs} />
+                        {/*<TabComponent tabs={<DeviceTabItems/>} />*/}
+                        <TabComponent tabs={DeviceTabItems({
+                            devicePartData,
+                            partDataLoading,
+                            partDataError,
+                            adjustHistoryData,
+                            adjustHistoryLoading,
+                            adjustHistoryError,
+                            selectedDeviceId,
+                            historyData,
+                            historyDataLoading,
+                            historyDataError,
+                            deviceHistoryLogData,
+                            deviceHistoryLogLoading,
+                            deviceHistoryLogError
+                        })} />
                     </div>
                 </div>
             )}

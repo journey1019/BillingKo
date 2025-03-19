@@ -3,6 +3,8 @@ import { useState } from 'react';
 const TabComponent = ({ tabs }) => {
     const [activeTab, setActiveTab] = useState(tabs[0]?.id || 1); // 기본 첫 번째 탭 활성화
 
+    if (!tabs.length) return <p>No tabs available</p>;
+
     return (
         <div className="w-full p-3 bg-white rounded-md shadow-lg">
             {/* Tab Headers */}

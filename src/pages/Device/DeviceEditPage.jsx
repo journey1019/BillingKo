@@ -3,10 +3,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { updateDevice, fetchDevicePart } from '@/service/deviceService.js';
 import { IoMdClose } from 'react-icons/io';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
+import { Switch } from "@mui/material";
 
 const DeviceEditPage = () => {
     const { serial_number } = useParams();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
         serial_number: "",
         acct_num: "",
@@ -18,14 +21,8 @@ const DeviceEditPage = () => {
         internet_mail_id: "",
         alias: "",
         remarks: "",
-        use_yn: "",
-        regist_date: "",
-        update_date: "",
-        regist_user_id: "",
-        update_user_id: ""
+        use_yn: ""
     });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     // Convert datetime string to date format (YYYY-MM-DD)
     // Input Value 값에 넣어주기 위함
@@ -42,8 +39,6 @@ const DeviceEditPage = () => {
                     ...device,
                     activated: formatDate(device.activated),
                     deactivated: formatDate(device.deactivated),
-                    regist_date: formatDate(device.regist_date),
-                    update_date: formatDate(device.update_date),
                 });
             } catch (err) {
                 setError("Failed to fetch device data");
@@ -107,10 +102,37 @@ const DeviceEditPage = () => {
                 </div>
 
                 <form className="bg-white p-5 rounded-xl space-y-6" onSubmit={handleSubmit}>
+                    {/* Use Y/N */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label className="col-start-1 text-sm font-medium text-gray-900">사용 여부 *</label>
+                        <div className="col-span-2 col-start-2 flex items-center space-x-4">
+                            <Switch checked={formData.use_yn === 'Y'} onChange={handleToggleChange} />
+                            <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
+                        </div>
+                    </div>
+                    {/*<div className="grid grid-cols-6 items-center space-x-4">*/}
+                    {/*    <label htmlFor="use_yn" className="col-start-1 text-sm font-medium text-gray-900">사용 여부 *</label>*/}
+                    {/*    <div className="col-span-2 col-start-2 flex items-center space-x-4">*/}
+                    {/*        <label className="relative inline-flex items-center cursor-pointer">*/}
+                    {/*            <input*/}
+                    {/*                type="checkbox"*/}
+                    {/*                checked={formData.use_yn === 'Y'}*/}
+                    {/*                onChange={handleToggleChange}*/}
+                    {/*                className="sr-only peer"*/}
+                    {/*            />*/}
+                    {/*            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600"></div>*/}
+                    {/*            <div className="absolute w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-all"></div>*/}
+                    {/*        </label>*/}
+                    {/*        <span className="text-sm text-gray-700">*/}
+                    {/*        {formData.use_yn === 'Y' ? 'Yes' : 'No'}*/}
+                    {/*    </span>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
 
                     {/* Serial Number */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="serial_number" className="col-start-1 text-sm font-medium text-gray-900">Serial Number</label>
+                        <label htmlFor="serial_number"
+                               className="col-start-1 text-sm font-medium text-gray-900">단말기</label>
                         <input
                             type="text"
                             id="serial_number"
@@ -124,7 +146,8 @@ const DeviceEditPage = () => {
 
                     {/* Account Number */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="acct_num" className="col-start-1 text-sm font-medium text-gray-900">Account Number</label>
+                        <label htmlFor="acct_num" className="col-start-1 text-sm font-medium text-gray-900">고객
+                            번호</label>
                         <input
                             type="text"
                             id="acct_num"
@@ -139,7 +162,8 @@ const DeviceEditPage = () => {
 
                     {/* Profile ID */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="profile_id" className="col-start-1 text-sm font-medium text-gray-900">Profile ID</label>
+                        <label htmlFor="profile_id" className="col-start-1 text-sm font-medium text-gray-900">Profile
+                            ID</label>
                         <input
                             type="number"
                             id="profile_id"
@@ -150,34 +174,6 @@ const DeviceEditPage = () => {
                             required
                         />
                     </div>
-
-                    {/* Activated */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="activated" className="col-start-1 text-sm font-medium text-gray-900">Activated</label>
-                        <input
-                            type="date"
-                            id="activated"
-                            name="activated"
-                            value={formData.activated}
-                            onChange={handleChange}
-                            className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                            required
-                        />
-                    </div>
-
-                    {/* Deactivated */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="deactivated" className="col-start-1 text-sm font-medium text-gray-900">Deactivated</label>
-                        <input
-                            type="date"
-                            id="deactivated"
-                            name="deactivated"
-                            value={formData.deactivated}
-                            onChange={handleChange}
-                            className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                        />
-                    </div>
-
 
                     {/* PPID */}
                     <div className="grid grid-cols-6 items-center space-x-4">
@@ -195,7 +191,8 @@ const DeviceEditPage = () => {
 
                     {/* Model Name */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="model_name" className="col-start-1 text-sm font-medium text-gray-900">Model Name</label>
+                        <label htmlFor="model_name"
+                               className="col-start-1 text-sm font-medium text-gray-900">모델명</label>
                         <input
                             type="text"
                             id="model_name"
@@ -208,7 +205,8 @@ const DeviceEditPage = () => {
 
                     {/* Internet Mail ID */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="internet_mail_id" className="col-start-1 text-sm font-medium text-gray-900">Internet Mail ID</label>
+                        <label htmlFor="internet_mail_id" className="col-start-1 text-sm font-medium text-gray-900">ORBCOMM
+                            별칭</label>
                         <input
                             type="text"
                             id="internet_mail_id"
@@ -221,7 +219,7 @@ const DeviceEditPage = () => {
 
                     {/* Alias */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="alias" className="col-start-1 text-sm font-medium text-gray-900">Alias</label>
+                        <label htmlFor="alias" className="col-start-1 text-sm font-medium text-gray-900">별칭</label>
                         <input
                             type="text"
                             id="alias"
@@ -232,9 +230,38 @@ const DeviceEditPage = () => {
                         />
                     </div>
 
+                    {/* Activated */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="activated" className="col-start-1 text-sm font-medium text-gray-900">활성화
+                            날짜</label>
+                        <input
+                            type="date"
+                            id="activated"
+                            name="activated"
+                            value={formData.activated}
+                            onChange={handleChange}
+                            className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                            required
+                        />
+                    </div>
+
+                    {/* Deactivated */}
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="deactivated" className="col-start-1 text-sm font-medium text-gray-900">비활성화
+                            날짜</label>
+                        <input
+                            type="date"
+                            id="deactivated"
+                            name="deactivated"
+                            value={formData.deactivated}
+                            onChange={handleChange}
+                            className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                        />
+                    </div>
+
                     {/* Remarks */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="remarks" className="col-start-1 text-sm font-medium text-gray-900">Remarks</label>
+                        <label htmlFor="remarks" className="col-start-1 text-sm font-medium text-gray-900">비고</label>
                         <input
                             type="text"
                             id="remarks"
@@ -245,92 +272,13 @@ const DeviceEditPage = () => {
                         />
                     </div>
 
-                    {/* Use Y/N */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="use_yn" className="col-start-1 text-sm font-medium text-gray-900">Use</label>
-                        <div className="col-span-2 col-start-2 flex items-center space-x-4">
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.use_yn === 'Y'}
-                                    onChange={handleToggleChange}
-                                    className="sr-only peer"
-                                />
-                                <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600"></div>
-                                <div className="absolute w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-all"></div>
-                            </label>
-                            <span className="text-sm text-gray-700">
-                            {formData.use_yn === 'Y' ? 'Yes' : 'No'}
-                        </span>
-                        </div>
-                    </div>
 
-                    {/* Register Date */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="regist_date" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
-                            Register Date
-                        </label>
-                        <input
-                            type="date"
-                            id="regist_date"
-                            name="regist_date"
-                            value={formData.regist_date}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                        />
-                    </div>
-
-                    {/* Update Date */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="regist_dateupdate_date" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
-                            Update Date
-                        </label>
-                        <input
-                            type="date"
-                            id="update_date"
-                            name="update_date"
-                            value={formData.update_date}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                        />
-                    </div>
-
-                    {/* Registration User ID */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="regist_user_id" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
-                            Registration User ID
-                        </label>
-                        <input
-                            type="text"
-                            id="regist_user_id"
-                            value={formData.regist_user_id}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                            placeholder=""
-                        />
-                    </div>
-
-                    {/* Update User ID */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="update_user_id" className="col-start-1 col-end-1 text-sm font-medium text-gray-900">
-                            Update User ID
-                        </label>
-                        <input
-                            type="text"
-                            id="update_user_id"
-                            value={formData.update_user_id}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                            placeholder=""
-                        />
-                    </div>
-
-
-
-                    <button type="submit" className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
+                    <button type="submit"
+                            className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
                         Submit
                     </button>
-                    <button type="button" onClick={() => navigate("/devices")} className="ml-4 text-gray-700 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
+                    <button type="button" onClick={() => navigate("/devices")}
+                            className="ml-4 text-gray-700 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
                         Cancel
                     </button>
 
