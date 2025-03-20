@@ -212,7 +212,7 @@ export const fetchUploadHistoryDetailFiles = async (sp_id) => {
  * */
 export const updateUpload = async (sp_id, uploadData) => {
     try {
-        return await put(`/upload/${sp_id}/edit`, uploadData);
+        return await put(`/spInfo/spId/${sp_id}`, uploadData);
     } catch (error) {
         console.error("Failed to update account:", error.response?.data || error.message);
         throw error;
@@ -222,7 +222,7 @@ export const updateUpload = async (sp_id, uploadData) => {
 
 export const createUpload = async (uploadData) => {
     try {
-        return await postWithBody("/upload/", uploadData);
+        return await postWithBody("/spInfo/", uploadData);
     } catch (error) {
         console.error("Failed to create account:", error.response?.data || error.message);
         throw error;

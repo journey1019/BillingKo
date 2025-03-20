@@ -64,9 +64,9 @@ const FileUploadStatus = () => {
                     {/*<button className="p-1 border-2 border-gray-800 rounded-md hover:bg-gray-200"*/}
                     {/*        onClick={() => navigator(`/upload/${uploadData.sp_id}/edit`)}><MdEdit />*/}
                     {/*</button>*/}
-                    <button className="p-1 border-2 border-gray-800 rounded-md hover:bg-gray-200"
-                            onClick={() => alert('Modify Click')}><MdEdit />
-                    </button>
+                    {/*<button className="p-1 border-2 border-gray-800 rounded-md hover:bg-gray-200"*/}
+                    {/*        onClick={() => alert('Modify Click')}><MdEdit />*/}
+                    {/*</button>*/}
                 </div>
                 <div className="">
                     {filteredData?.map((uploadData) => {

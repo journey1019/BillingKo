@@ -8,6 +8,8 @@ import Popover from '@/components/layout/Popover.jsx';
 import { formatNumber } from '@/utils/formatHelpers.jsx';
 import { FaExchangeAlt } from "react-icons/fa";
 import { showConfirmAlert, showSuccessAlert, showErrorAlert, showWarningAlert } from "@/utils/AlertService.js";
+import MonthPickerArrow from '../../time/MonthPickerArrow.jsx';
+import ToggleSwitchButton from '../../ui/ToggleSwitchButton.jsx';
 
 
 
@@ -144,7 +146,8 @@ const PaymentStatus = ({ selectedDate, handleDateChange, yearMonth, monthlyAcctS
                 <div className="flex flex-row justify-between bg-neutral-200 rounded-t-2xl items-center px-4 py-2">
                     <h1 className="text-lg font-semibold">납부 현황</h1>
                     <div className="relative z-10">
-                        <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                        <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
+                        {/*<MonthPicker value={selectedDate} onDateChange={handleDateChange} />*/}
                     </div>
                 </div>
 
@@ -206,7 +209,8 @@ const PaymentStatus = ({ selectedDate, handleDateChange, yearMonth, monthlyAcctS
                                             {/*        readOnly*/}
                                             {/*    />*/}
                                             {/*</td>*/}
-                                            <td className="p-2 border">{account.confirm_yn}</td>
+                                            {/*<td className="p-2 border">{account.confirm_yn}</td>*/}
+                                            <td className="p-2 border"><ToggleSwitchButton value={account.confirm_yn} /></td>
                                             <td className="p-2 border">{account.confirm_payment_method}</td>
                                             <td className="p-2 border">{account.confirm_payment_bank}</td>
                                             <td className="p-2 border">{account.confirm_payment_desc}</td>

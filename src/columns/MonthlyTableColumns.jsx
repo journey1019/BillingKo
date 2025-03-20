@@ -35,13 +35,13 @@ export const MonthlyTableColumns = [
         accessorKey: 'deactivate_date',
         header: '비활성화 날짜',
         Cell: ({ cell }) =>
-            cell.getValue() ? new Date(cell.getValue()).toLocaleDateString() : 'N/A',
+            cell.getValue() ? new Date(cell.getValue()).toLocaleDateString() : '-',
     },
     {
         accessorKey: 'update_date',
         header: '수정 날짜',
         Cell: ({ cell }) =>
-            cell.getValue() ? new Date(cell.getValue()).toLocaleDateString() : 'N/A',
+            cell.getValue() ? new Date(cell.getValue()).toLocaleDateString() : '-',
     },
     {
         accessorKey: 'free_bytes',
@@ -95,7 +95,7 @@ export const MonthlyTableColumns = [
         header: '월 사용 비율(%)',
         size: 200,
         Cell: ({ cell }) => (
-            <div className="text-right">{cell.getValue()}%</div>
+            <div className="text-left">{cell.getValue()}%</div>
         ),
     },
     // {

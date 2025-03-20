@@ -1,5 +1,6 @@
 import { YearMonthCell_Type, UseYorNCell_Type } from '@/columns/cellStyle/FileUpdateCell.jsx';
 import { formatDateTime } from '@/utils/formatHelpers.jsx';
+import { FormatUseYnToggle } from './cellStyle/AccountCell.jsx';
 
 export const FileUploadHistoryTableColumns = [
     {
@@ -24,7 +25,8 @@ export const FileUploadHistoryTableColumns = [
     {
         accessorKey: 'use_yn',
         header: 'Use',
-        Cell: UseYorNCell_Type,
+        Cell: FormatUseYnToggle,
+        // Cell: UseYorNCell_Type,
     },
     {
         accessorKey: 'update_date',

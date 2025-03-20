@@ -88,7 +88,7 @@ export const formatDate = (datetime) => {
 //     const date = new Date(dateTimeString);
 //     return date.toISOString().replace("T", " ").slice(0, 19);
 // };
-// DateTime 그대로
+// DateTime 그대로 ('YYYY-MM-DDTHH:mm:ss' -> 'YYYY-MM-DD HH:mm:ss')
 export const formatDateTime = (dateTimeString) => {
     if (!dateTimeString) return '-';
 

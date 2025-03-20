@@ -2,37 +2,15 @@ import React from 'react';
 import { MdDelete, MdModeEditOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { deleteUpload } from '@/service/fileService.js';
-import useAlert from '@/hooks/useAlert'; // ✅ 커스텀 훅 사용
+import useAlert from '@/hooks/useAlert';
+import UploadFileTabOverview from './UploadFileTabOverview.jsx';
+import TabComponent from '../../layout/TabComponent.jsx'; // ✅ 커스텀 훅 사용
 
 const UploadHistoryDetailForm = ({ detailData }) => {
     const navigate = useNavigate();
     const { showConfirm, showSuccess, showError } = useAlert(); // ✅ 커스텀 훅 사용
 
     if (!detailData) return <p>No data available.</p>;
-
-    // 날짜 포맷 변환 함수
-    const formatDateTime = (dateString) => {
-        if (!dateString) return '-';
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return '-';
-
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    };
-
-    // 'YYYYMM' 형식을 'YYYY년 MM월'로 변환하는 함수
-    const formatYearMonth = (yearMonthString) => {
-        if (!yearMonthString || yearMonthString.length !== 6) return '-';
-        const year = yearMonthString.slice(0, 4);
-        const month = yearMonthString.slice(4, 6);
-        return `${year}년 ${month}월`;
-    };
 
     // 삭제 이벤트
     const handleDelete = async () => {
@@ -56,9 +34,9 @@ const UploadHistoryDetailForm = ({ detailData }) => {
     };
 
     return (
-        <div className="p-4 bg-white rounded-lg shadow-md">
+        <div className="">
             <div className="flex flex-row justify-between items-center">
-                <h2 className="text-lg font-bold mb-4">Upload History Detail</h2>
+                <h2 className="text-lg font-bold mb-4">{detailData.sp_id} _ {detailData.alias}</h2>
                 <div className="flex flex-row">
                     <button
                         type="button"
@@ -79,41 +57,24 @@ const UploadHistoryDetailForm = ({ detailData }) => {
                 </div>
             </div>
 
-            <div className="space-y-2 text-sm">
-                {[
-                    { label: 'SP ID', value: detailData.sp_id },
-                    { label: 'Alias', value: detailData.alias },
-                    { label: 'Active Index', value: formatYearMonth(detailData.active_index) },
-                    { label: 'Deactive Index', value: formatYearMonth(detailData.deactive_index) ?? '-' },
-                    { label: 'Register Date', value: formatDateTime(detailData.regist_date) },
-                    { label: 'Register User ID', value: detailData.regist_user_id },
-                    { label: 'Update Date', value: formatDateTime(detailData.update_date) },
-                    { label: 'Update User ID', value: detailData.update_user_id ?? '-' },
-                    {
-                        label: 'Use Y/N',
-                        value: detailData.use_yn,
-                        className: detailData.use_yn === 'Y' ? 'bg-green-500 text-white' : 'bg-red-500 text-white',
-                    },
-                ].map(({ label, value, className }, index) => (
-                    <div key={index} className="flex items-center gap-4 border-b pb-2">
-                        <span className="w-40 font-semibold text-gray-700">{label}</span>
-                        <span className={`p-2 rounded-md bg-gray-100 flex-1 ${className || ''}`}>{value}</span>
-                    </div>
-                ))}
+            <TabComponent tabs={[
+                {
+                    id: 1,
+                    label: 'Overview',
+                    content: (
+                        <UploadFileTabOverview detailData={detailData}/>
+                    )
+                },
+                {
+                    id: 2,
+                    label: 'History',
+                    content: (
+                        <UploadFileTabOverview detailData={detailData}/>
+                    )
+                },
+            ]}
+            />
 
-                <div className="flex items-start gap-4 border-b pb-2">
-                    <span className="w-40 font-semibold text-gray-700">Include Files</span>
-                    <ul className="p-2 border rounded-md bg-gray-100 flex-1">
-                        {detailData.include_files && detailData.include_files.length > 0 ? (
-                            detailData.include_files.map((file, index) => (
-                                <li key={index} className="list-disc ml-5">{file}</li>
-                            ))
-                        ) : (
-                            <p>-</p>
-                        )}
-                    </ul>
-                </div>
-            </div>
         </div>
     );
 };

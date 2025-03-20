@@ -15,7 +15,7 @@ const AdjustmentEditPage = () => {
     const adjustment_code = searchParams.get("adjustment_code") || "";
     const adjustment_code_value = searchParams.get("adjustment_code_value") || "";
     console.log('adjustment_code: ', adjustment_code, 'adjustment_code_value: ', adjustment_code_value);
-ㅁ
+
     const [formData, setFormData] = useState({
         adjustment_code: adjustment_code || "",
         adjustment_code_value: adjustment_code_value || "",

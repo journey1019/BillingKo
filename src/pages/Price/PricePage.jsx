@@ -262,18 +262,18 @@ const PricePage = () => {
                 <AdjustmentPage />
             </div>
 
-            <div className="col-span-5 justify-between border-b pb-3 mb-2 border-gray-400">
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                >
-                    플러스
-                </button>
+            {/*<div className="col-span-5 justify-between border-b pb-3 mb-2 border-gray-400">*/}
+            {/*    <button*/}
+            {/*        onClick={() => setShowModal(true)}*/}
+            {/*        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"*/}
+            {/*    >*/}
+            {/*        플러스*/}
+            {/*    </button>*/}
 
-                <Modal show={showModal} onClose={() => setShowModal(false)}>
-                    <p>This is the content inside the modal.</p>
-                </Modal>
-            </div>
+            {/*    <Modal show={showModal} onClose={() => setShowModal(false)}>*/}
+            {/*        <p>This is the content inside the modal.</p>*/}
+            {/*    </Modal>*/}
+            {/*</div>*/}
 
         </div>
     );
