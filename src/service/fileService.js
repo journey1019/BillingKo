@@ -37,6 +37,17 @@ export const fetchFileUpdateHistory = async () => {
     }
 };
 
+/** CDR 원가계산
+ * @desc: monthly(CDR 원가계산)
+ * */
+export const fetchCDRCostCalc = async (yearMonth) => {
+    try {
+        return await get(`/monthly/${yearMonth}`);
+    } catch (error) {
+        console.error('Failed to fetch updated cdr file:', error.response?.data || error.message);
+        throw error;
+    }
+};
 
 /**
  * 업데이트 된 CDR Monthly 가져오기

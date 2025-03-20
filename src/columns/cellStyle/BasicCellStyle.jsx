@@ -16,6 +16,7 @@ export const applyRightAlignStyles = () => ({
             '& .Mui-TableHeadCell-Content': {
                 justifyContent: "flex-end !important",
                 textAlign: "right !important",
+                whiteSpace: "wrap"
             }
         }
     },
