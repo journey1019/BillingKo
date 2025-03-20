@@ -41,58 +41,70 @@ const FileUploadStatus = () => {
     console.log('업로드 : ', uploadMonthlyData)
     console.log('이번달 : ', uploadedFilesMap)
 
+    const getFileDetails = (spId, fileType) => {
+        return uploadMonthlyData.find(file => {
+            const [id, , type] = file.file_name.split('_');
+            return Number(id) === spId && type === fileType;
+        });
+    };
+
     return (
         <div className="p-5 bg-white rounded-lg shadow-md">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-2">
-                <div className="flex flex-col">
-                    <h2 className="text-xl font-bold">파일 업로드 상태</h2>
-                    {/*<h2 className="text-xl font-bold text-gray-700">{selectedDate.toLocaleDateString('en-US', {*/}
-                    {/*    year: 'numeric',*/}
-                    {/*    month: 'long'*/}
-                    {/*})}</h2>*/}
-                </div>
+            <div className="flex justify-between items-center mb-2">
+                <h2 className="text-xl font-bold">파일 업로드 상태</h2>
                 <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between items-center mb-2">
-                <UploadFileModal onUploadComplete={handleUploadComplete} />
+            <div className="mb-4">
+                <UploadFileModal />
             </div>
 
-            <div>
-                <div className="flex flex-row justify-between pb-2">
-                    <h3 className="text-base font-semibold text-blue-600">List of files to upload</h3>
-                    {/*<button className="p-1 border-2 border-gray-800 rounded-md hover:bg-gray-200"*/}
-                    {/*        onClick={() => navigator(`/upload/${uploadData.sp_id}/edit`)}><MdEdit />*/}
-                    {/*</button>*/}
-                    {/*<button className="p-1 border-2 border-gray-800 rounded-md hover:bg-gray-200"*/}
-                    {/*        onClick={() => alert('Modify Click')}><MdEdit />*/}
-                    {/*</button>*/}
-                </div>
-                <div className="">
-                    {filteredData?.map((uploadData) => {
-                        const spId = uploadData.sp_id;
-                        const requiredFiles = uploadData.include_files; // 업로드해야 할 파일 리스트
-                        const uploadedFiles = uploadedFilesMap[spId] || new Set(); // 해당 sp_id에 업로드된 파일 목록
+            <div className="space-y-2">
+                {filteredData?.map((uploadData) => {
+                    const uploadedFiles = uploadedFilesMap[uploadData.sp_id] || new Set();
 
-                        return (
-                            <div key={spId}
-                                 className="flex flex-row bg-gray-300 rounded-md p-2 text-sm mb-2 justify-between">
-                                <div className="grid grid-cols-2 space-x-4">
-                                    <span className="col-span-1">{uploadData.alias}</span>
-                                    <span className="col-span-1">{spId}</span>
-                                </div>
-                                <div className="flex flex-row space-x-4">
-                                    {requiredFiles.map(fileType => (
-                                        <div key={fileType} className="space-x-4">
-                                            <span>{fileType}</span>
-                                            {uploadedFiles.has(fileType) ? "✅" : "☑️"}
-                                        </div>
-                                    ))}
-                                </div>
+                    return (
+                        <div key={uploadData.sp_id}
+                             className="flex justify-between items-center bg-gray-100 rounded-md p-3 text-sm relative">
+                            <div className="grid grid-cols-2 gap-4">
+                                <span className="font-medium">{uploadData.alias}</span>
+                                <span>{uploadData.sp_id}</span>
                             </div>
-                        );
-                    })}
-                </div>
+
+                            <div className="flex space-x-4">
+                                {uploadData.include_files.map((fileType, index) => {
+                                    const fileDetails = getFileDetails(uploadData.sp_id, fileType);
+                                    const isUploaded = uploadedFiles.has(fileType);
+
+                                    return (
+                                        <div key={fileType} className="relative group">
+                                            <span className="cursor-pointer">
+                                                {fileType} {isUploaded ? "✅" : "☑️"}
+                                            </span>
+
+                                            {isUploaded && fileDetails && (
+                                                <div
+                                                    className="absolute left-0 top-full mt-1 w-70 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-lg text-sm text-gray-500 z-10">
+                                                    <div
+                                                        className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
+                                                        <p className="font-semibold text-gray-900 truncate">{fileDetails.file_name}</p>
+                                                    </div>
+                                                    <div className="p-3 break-words whitespace-nowrap">
+                                                        <p><strong>Update
+                                                            Date:</strong> {new Date(fileDetails.update_date).toLocaleString()}
+                                                        </p>
+                                                        <p><strong>User ID:</strong> {fileDetails.user_id}</p>
+                                                        <p><strong>File Size:</strong> {fileDetails.file_size} bytes</p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
