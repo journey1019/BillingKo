@@ -18,7 +18,7 @@ export const AdjustmentCell_Code = ({ cell }) => {
     });
 
     // return <span className={`px-2 py-1 rounded-md ${cellClass}`}>{value}</span>;
-    return <span className={`px-2 py-1 rounded-md`}>{codeMappings.adjustment_code[value] || value}</span>;
+    return <span className={`rounded-md`}>{codeMappings.adjustment_code[value] || value}</span>;
 };
 
 export const AdjustmentCell_Category = ({ cell }) => {
@@ -37,14 +37,17 @@ export const AdjustmentCell_Category = ({ cell }) => {
     });
 
     // return <span className={`px-2 py-1 rounded-md ${cellClass}`}>{capitalizedValue}</span>;
-    return <span className={`px-2 py-1 rounded-md`}>{codeMappings.adjustment_category[value] || value}</span>;
+    return <span className={`rounded-md`}>{codeMappings.adjustment_category[value] || value}</span>;
 };
 
 export const AdjustmentCell_Type = ({ cell }) => {
-    const value = cell.getValue();
-    const colorClass = value === 'Discount' ? 'text-green-500' : 'text-red-500';
+    const value = cell.getValue() || "-";
 
-    return <span className={`font-bold ${colorClass}`}>{value}</span>;
+    // 맨 앞 글자만 대문자로 변환
+    const formattedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    const colorClass = value.toLowerCase() === 'discount' ? 'text-green-500' : 'text-red-500';
+
+    return <span className={`font-bold ${colorClass}`}>{formattedValue}</span>;
 };
 
 export const AdjustmentCell_Mount_Value = ({ cell }) => {
@@ -69,10 +72,10 @@ export const AdjustmentCell_Mount_Value = ({ cell }) => {
 export const AdjustmentCell_Cycle = ({ cell }) => {
     const value = cell.getValue();
 
-    const CycleStyle = (value === 'monthly' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')
+    const CycleStyle = (value === 'monthly' ? 'bg-orange-100 text-orange-800' : 'bg-yellow-100 text-yellow-800')
 
     return (
-        <span className={`px-2 py-1 rounded ${CycleStyle}`}>
+        <span className={`px-2 py-1 rounded-full ${CycleStyle}`}>
             {value}
         </span>
     );

@@ -22,6 +22,9 @@ import { fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
 import AdjustmentPage from '@/pages/Adjustment/AdjustmentPage.jsx';
 import { TiPlus } from "react-icons/ti";
 import PriceTabItems from '../../components/form/Price/PriceTabItems.jsx';
+import PriceTabOverview from '../../components/form/Price/PriceTabOverview.jsx';
+import PriceTabTransaction from '../../components/form/Price/PriceTabTransaction.jsx';
+import PriceTabHistory from '../../components/form/Price/PriceTabHistory.jsx';
 
 
 const PricePage = () => {
@@ -215,17 +218,42 @@ const PricePage = () => {
                         </div>
 
                         {/* Tab */}
-                        <TabComponent tabs={PriceTabItems({
-                            pricePartData,
-                            partDataLoading,
-                            partDataError,
-                            adjustHistoryData,
-                            adjustHistoryLoading,
-                            adjustHistoryError,
-                            historyData,
-                            historyLoading,
-                            historyError
-                        })} />
+                        <TabComponent tabs={[
+                            {
+                                id: 1,
+                                label: 'Overview',
+                                content: (
+                                    <PriceTabOverview  pricePartData={pricePartData} partDataLoading={partDataLoading} partDataError={partDataError} historyError={historyError}/>
+                                )
+                            },
+                            {
+                                id: 2,
+                                label: 'Transaction',
+                                content: (
+                                    <PriceTabTransaction  selectedPriceId={selectedPriceId} adjustHistoryData={adjustHistoryData} adjustHistoryLoading={adjustHistoryLoading} adjustHistoryError={adjustHistoryError}/>
+                                )
+                            },
+                            {
+                                id: 3,
+                                label: 'History',
+                                content: (
+                                    <PriceTabHistory  historyData={historyData} historyLoading={historyLoading} historyError={historyError} />
+                                )
+                            }
+                        ]}
+                        />
+                        {/*<TabComponent tabs={PriceTabItems({*/}
+                        {/*    selectedPriceId,*/}
+                        {/*    pricePartData,*/}
+                        {/*    partDataLoading,*/}
+                        {/*    partDataError,*/}
+                        {/*    adjustHistoryData,*/}
+                        {/*    adjustHistoryLoading,*/}
+                        {/*    adjustHistoryError,*/}
+                        {/*    historyData,*/}
+                        {/*    historyLoading,*/}
+                        {/*    historyError*/}
+                        {/*})} />*/}
                     </div>
                 </div>
             )}

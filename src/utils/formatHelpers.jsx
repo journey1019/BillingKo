@@ -54,6 +54,11 @@ export const removeCommas = (value) => {
 };
 
 
+/** @desc: 맨 앞 글자만 대문자 변환 */
+export const FirstUpperChange = (value) => {
+    if (!value) return "";
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+}
 
 
 
@@ -109,7 +114,7 @@ export const formatDateAddTime = (dateString) => {
 };
 
 /**
- * @method: '202412' -> '2024-12'
+ * @method: '202412' -> '2024-12' || 'YYYYMM' -> 'YYYY-MM'
  * */
 export const formatDateIndex = (dateIndex) => {
     if (!dateIndex || dateIndex.length !== 6) return "-"; // 유효성 검사

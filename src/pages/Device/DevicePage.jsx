@@ -29,6 +29,7 @@ import DeviceOverviewTab from '@/components/form/Device/DeviceOverViewTab.jsx';
 import DeviceTransactionTab from '@/components/form/Device/DeviceTransactionTab.jsx';
 import DeviceHistoryTab from '@/components/form/Device/DeviceHistoryTab.jsx';
 import DeviceTabItems from '@/components/form/Device/DeviceTabItems.jsx';
+import DeviceOverViewTab from '../../components/form/Device/DeviceOverViewTab.jsx';
 
 const DevicePage = () => {
     const { data: deviceData, loading: deviceLoading, error: deviceError, refetch: deviceRefetch } = useApiFetch(fetchDevices);
@@ -225,22 +226,48 @@ const DevicePage = () => {
                         </div>
 
                         {/* Tab */}
-                        {/*<TabComponent tabs={<DeviceTabItems/>} />*/}
-                        <TabComponent tabs={DeviceTabItems({
-                            devicePartData,
-                            partDataLoading,
-                            partDataError,
-                            adjustHistoryData,
-                            adjustHistoryLoading,
-                            adjustHistoryError,
-                            selectedDeviceId,
-                            historyData,
-                            historyDataLoading,
-                            historyDataError,
-                            deviceHistoryLogData,
-                            deviceHistoryLogLoading,
-                            deviceHistoryLogError
-                        })} />
+                        <TabComponent tabs={[
+                            {
+                                id: 1,
+                                label: 'Overview',
+                                content:
+                                <>
+                                    <DeviceOverViewTab devicePartData={devicePartData} partDataLoading={partDataLoading} partDataError={partDataError}/>
+                                </>
+                            },
+                            {
+                                id: 2,
+                                label: 'Transaction',
+                                content:
+                                    <>
+                                        <DeviceTransactionTab selectedDeviceId={selectedDeviceId} adjustHistoryData={adjustHistoryData} adjustHistoryLoading={adjustHistoryLoading} adjustHistoryError={adjustHistoryError}/>
+                                    </>
+                            },
+                            {
+                                id: 3,
+                                label: 'History',
+                                content:
+                                    <>
+                                        <DeviceHistoryTab selectedDeviceId={selectedDeviceId} historyData={historyData} historyDataLoading={historyDataLoading} historyDataError={historyDataError} deviceHistoryLogData={deviceHistoryLogData} deviceHistoryLogLoading={deviceHistoryLogLoading} deviceHistoryLogError={deviceHistoryLogError}/>
+                                    </>
+                            },
+
+                        ]} />
+                        {/*<TabComponent tabs={DeviceTabItems({*/}
+                        {/*    devicePartData,*/}
+                        {/*    partDataLoading,*/}
+                        {/*    partDataError,*/}
+                        {/*    adjustHistoryData,*/}
+                        {/*    adjustHistoryLoading,*/}
+                        {/*    adjustHistoryError,*/}
+                        {/*    selectedDeviceId,*/}
+                        {/*    historyData,*/}
+                        {/*    historyDataLoading,*/}
+                        {/*    historyDataError,*/}
+                        {/*    deviceHistoryLogData,*/}
+                        {/*    deviceHistoryLogLoading,*/}
+                        {/*    deviceHistoryLogError*/}
+                        {/*})} />*/}
                     </div>
                 </div>
             )}

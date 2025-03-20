@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
 import { IoIosArrowDown } from 'react-icons/io';
+import AdjustmentTabItems from '@/components/form/Adjustment/AdjustmentTabItems.jsx';
+import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
 
 const AdjustmentPage = () => {
     const { data: adjustmentData, loading: adjustmentLoading, error: adjustmentError, refetch: adjustmentRefetch } = useApiFetch(fetchAdjustment);
@@ -19,6 +21,8 @@ const AdjustmentPage = () => {
     const [isAdjustExpanded, setIsAdjustExpanded] = useState(false); // Drawer 확장
     const [isOpenNewDropdown, setIsOpenNewDropdown] = useState(false); // New icon Drop
     const navigate = useNavigate();
+
+    const codeMappings = useAdjustmentMappings();
 
     // 부분 데이터 상태
     const [adjustPartData, setAdjustPartData] = useState(null);
@@ -194,8 +198,7 @@ const AdjustmentPage = () => {
                     <div className="flex flex-col">
                         <div className="flex flex-row justify-between mb-3">
                             <div className="flex flex-row items-center">
-                                <span className="pr-2 font-bold">Adjustment Index : </span>
-                                <h2 className="py-1 text-lg font-bold text-red-600">{selectedAdjustId.adjustment_index}</h2>
+                                <h2 className="py-1 text-lg font-bold">{codeMappings.adjustment_code[selectedAdjustId.adjustment_code]} _ {selectedAdjustId.adjustment_code_value}</h2>
                             </div>
 
 
@@ -207,7 +210,15 @@ const AdjustmentPage = () => {
                             />
                         </div>
 
-                        <TabComponent tabs={tabs} />
+                        <TabComponent tabs={AdjustmentTabItems({
+                            selectedAdjustId,
+                            adjustPartData,
+                            adjustPartLoading,
+                            adjustPartError,
+                            adjustHistoryData,
+                            adjustHistoryLoading,
+                            adjustHistoryError,
+                        })} />
                     </div>
                 </div>
             )}

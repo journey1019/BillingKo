@@ -7,44 +7,55 @@ import { DeviceHistoryLogTableColumns } from '@/columns/DeviceHistoryLogTableCol
 
 const DeviceHistoryTab = ({ selectedDeviceId, historyData, historyDataLoading, historyDataError, deviceHistoryLogData, deviceHistoryLogLoading, deviceHistoryLogError }) => {
     return (
-        <div>
-            <h1 className="font-bold mb-2">기본 정보 변경 이력</h1>
-            <ReusableTable
-                columns={DeviceTableColumns}
-                data={historyData ? historyData : []}
-                //data={Array.isArray(historyData) ? historyData : [historyData].filter(Boolean)}  // 배열로 변환하여 전달
-                options={{
-                    initialState: { sorting: [{ id: 'serial_number', desc: true }] },
-                    enablePagination: false,
-                    enableSorting: false,
-                }}
-                isLoading={historyDataLoading}
-                error={historyDataError}
-            />
-            <div className="flex flex-row justify-between">
-                <h1 className="font-bold my-2">Account 정보 변경 이력</h1>
-                <div>
-                    <Buttons
-                        entityType="devices/changed"
-                        id={selectedDeviceId.row_index}
-                    />
+        <>
+            <div>
+                <h1 className="font-bold mb-2">단말 정보 변경 이력</h1>
+                <ReusableTable
+                    columns={DeviceTableColumns}
+                    data={historyData ? historyData : []}
+                    options={{
+                        initialState: {
+                            pagination: {
+                                pageSize: 5, pageIndex: 1
+                            },
+                            sorting: [
+                                { id: "update_date", desc: true },
+                                { id: "acct_num", desc: false }
+                            ],
+                            density: 'compact',
+                            showColumnFilters: false
+                        },
+                        enablePagination: true,
+                        enableSorting: true,
+                    }}
+                    isLoading={historyDataLoading}
+                    error={historyDataError}
+                />
+                <div className="flex flex-row justify-between">
+                    <h1 className="font-bold my-2">고객 매칭 정보 변경 이력</h1>
+                    {/*<div>*/}
+                    {/*    <Buttons*/}
+                    {/*        entityType="devices/changed"*/}
+                    {/*        id={selectedDeviceId.row_index}*/}
+                    {/*    />*/}
+                    {/*</div>*/}
                 </div>
+                <ReusableTable
+                    columns={DeviceHistoryLogTableColumns}
+                    data={deviceHistoryLogData ? deviceHistoryLogData : []}
+                    options={{
+                        initialState: {
+                            sorting: [{ id: 'row_number', desc: true }],
+                            // columnVisibility: { row_number: false, row_index: false },
+                        },
+                        enablePagination: true,
+                        enableSorting: true,
+                    }}
+                    isLoading={deviceHistoryLogLoading}
+                    error={deviceHistoryLogError}
+                />
             </div>
-            <ReusableTable
-                columns={DeviceHistoryLogTableColumns}
-                data={deviceHistoryLogData ? deviceHistoryLogData : []}
-                options={{
-                    initialState: {
-                        sorting: [{ id: 'row_number', desc: true }],
-                        columnVisibility: { row_number: false, row_index: false },
-                    },
-                    enablePagination: false,
-                    enableSorting: false,
-                }}
-                isLoading={deviceHistoryLogLoading}
-                error={deviceHistoryLogError}
-            />
-        </div>
+        </>
     )
 }
 

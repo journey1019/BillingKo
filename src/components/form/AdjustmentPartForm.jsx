@@ -1,124 +1,101 @@
 import React from 'react';
+import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+import { formatDateTime, formatDisplayValue, formatValue } from '@/utils/formatHelpers.jsx';
+import { FirstUpperChange, formatDateIndex } from '../../utils/formatHelpers.jsx';
 
 const AdjustmentPartForm = ({ adjustPartData }) => {
+    const codeMappings = useAdjustmentMappings();
 
-    // Yes/No Toggle
-    const isEnabled = adjustPartData.use_yn === 'Y'; // Y면 활성화된 토글, N이면 비활성화된 토글
+    // 사용 여부 토글 설정
+    const isEnabled = adjustPartData.use_yn === 'Y';
 
-    // 날짜 포맷터 함수
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString('ko-KR', options);
-    };
+    // 숫자 값에 대한 포맷 함수 (천 단위 구분자)
+    const formatNumber = (value) => (value ? Number(value).toLocaleString() + ' 원' : '-');
 
     return (
-        <form className="grid grid-cols-2 gap-3">
-            {/* Section: 기본 정보 */}
-            <h2 className="col-span-2 text-md 2xl:text-lg font-semibold text-gray-800">조정된 이력 정보</h2>
-
-            {/* Adjustment Index */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">조정 인덱스</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{adjustPartData.adjustment_index}</span>
-            </div>
-
-            {/* Adjustment Code */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">조정 코드</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{adjustPartData.adjustment_code}</span>
-            </div>
-
-            {/* Adjustment Code Value */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">조정 코드 값</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{adjustPartData.adjustment_code_value}</span>
-            </div>
-
-            {/* Adjustment Category */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">조정 카테고리</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{adjustPartData.adjustment_category}</span>
-            </div>
-
-            {/* Adjustment Type */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">조정 타입</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{adjustPartData.adjustment_type}</span>
-            </div>
-
-            {/* Mount Type */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">마운트 타입</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{adjustPartData.mount_type}</span>
-            </div>
-
-            {/* Mount Value */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">마운트 값</label>
-                <span className="mt-1 block text-sm 2xl:text-md">
-                    {adjustPartData.mount_value ? adjustPartData.mount_value.toLocaleString() + ' 원' : ''}
-                </span>
-            </div>
-
-
-            {/* Description */}
-            <div className="col-span-2">
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">설명</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{adjustPartData.description}</span>
-            </div>
-
-            {/* Adjustment Cycle */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">조정 주기</label>
-                <span className="mt-1 block text-sm 2xl:text-md capitalize">{adjustPartData.adjustment_cycle}</span>
-            </div>
-
-            {/* Date Index */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">날짜 인덱스</label>
-                <span className="mt-1 block text-sm 2xl:text-md">{adjustPartData.date_index}</span>
-            </div>
-
-            {/*{adjustPartData.user_id && adjustPartData.update && (*/}
-            {/*    <>*/}
-            {/*        /!* User ID *!/*/}
-            {/*        <div>*/}
-            {/*            <label className="block text-xs 2xl:text-sm font-medium text-gray-500">User ID</label>*/}
-            {/*            <span className="mt-1 block text-sm 2xl:text-md">{adjustPartData.user_id}</span>*/}
-            {/*        </div>*/}
-
-            {/*        /!* 업데이트 날짜 *!/*/}
-            {/*        <div>*/}
-            {/*            <label className="block text-xs 2xl:text-sm font-medium text-gray-500">업데이트 날짜</label>*/}
-            {/*            <span className="mt-1 block text-sm 2xl:text-md">{formatDate(adjustPartData.update)}</span>*/}
-            {/*        </div>*/}
-            {/*    </>*/}
-            {/*)}*/}
-
-
-            {/* 사용 여부 (Toggle 스타일) */}
-            <div>
-                <label className="block text-xs 2xl:text-sm font-medium text-gray-500">사용 여부</label>
-                <div className="mt-2 flex items-center space-x-2">
-                    {/* 토글 버튼 */}
-                    <div
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                            isEnabled ? 'bg-blue-500' : 'bg-gray-400'
-                        }`}
-                    >
+        <div className="space-y-4">
+            {/* ✅ 사용 여부 (토글 스타일) */}
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                <span className="text-sm font-semibold text-gray-600">사용 여부</span>
+                <div className="flex items-center space-x-2">
+                    <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        isEnabled ? 'bg-blue-500' : 'bg-gray-400'
+                    }`}>
                         <div
                             className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
                                 isEnabled ? 'translate-x-6' : 'translate-x-1'
-                            }`}
-                        />
+                            }`} />
                     </div>
-                    {/* 텍스트 표시 */}
-                    <span className="text-xs 2xl:text-sm font-medium">{isEnabled ? 'Yes' : 'No'}</span>
+                    <span className="text-sm font-medium">{isEnabled ? 'Yes' : 'No'}</span>
                 </div>
             </div>
-        </form>
+
+            {/* ✅ 기본 정보 */}
+            <h2 className="text-md font-semibold text-gray-800 border-b pb-1">조정 정보</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {[
+                    {
+                        label: '조정 대상 구분',
+                        value: <>{codeMappings.adjustment_code[adjustPartData.adjustment_code] || formatValue(adjustPartData.adjustment_code)}</>,
+                    },
+                    { label: '조정 대상', value: adjustPartData.adjustment_code_value },
+                    {
+                        label: '조정 종류',
+                        value: <>{codeMappings.adjustment_category[adjustPartData.adjustment_category] || formatValue(adjustPartData.adjustment_category)}</>,
+                    },
+                    {
+                        label: '가산/할인 여부',
+                        value: <>{codeMappings.adjustment_type[adjustPartData.adjustment_type] || formatValue(adjustPartData.adjustment_type)}</>,
+                    },
+                    {
+                        label: '지불 방법',
+                        value: <>{codeMappings.mount_type[adjustPartData.mount_type] || formatValue(adjustPartData.mount_type)}</>,
+                    },
+                    { label: '금액', value: formatNumber(adjustPartData.mount_value) },
+                    { label: '조정 적용 기간', value: FirstUpperChange(adjustPartData.adjustment_cycle) },
+                    { label: '적용 날짜', value: formatDateIndex(adjustPartData.date_index) },
+                ].map(({ label, value }, index) => (
+                    <DataRow key={index} label={label} value={formatDisplayValue(value)} />
+                ))}
+            </div>
+            <div className="col-span-3">
+                <label className="text-xs 2xl:text-sm font-medium text-gray-500">설명</label>
+                <p className="mt-1 text-sm 2xl:text-md font-medium text-gray-800">{adjustPartData.description || '-'}</p>
+            </div>
+            {/*<div className="grid grid-cols-3 gap-4">*/}
+            {/*    {[*/}
+            {/*        { label: "조정 코드", value: adjustPartData.adjustment_code },*/}
+            {/*        { label: "조정 코드 값", value: adjustPartData.adjustment_code_value },*/}
+            {/*        { label: "조정 카테고리", value: adjustPartData.adjustment_category },*/}
+            {/*        { label: "조정 타입", value: adjustPartData.adjustment_type },*/}
+            {/*        { label: "마운트 타입", value: adjustPartData.mount_type },*/}
+            {/*        { label: "마운트 값", value: formatNumber(adjustPartData.mount_value) },*/}
+            {/*        { label: "조정 주기", value: adjustPartData.adjustment_cycle },*/}
+            {/*        { label: "날짜 인덱스", value: adjustPartData.date_index },*/}
+            {/*    ].map(({ label, value }, index) => (*/}
+            {/*        <div key={index} className="flex justify-between items-center border-b pb-2">*/}
+            {/*            <span className="text-xs 2xl:text-sm font-medium text-gray-500">{label}</span>*/}
+            {/*            <span className="text-sm 2xl:text-md font-semibold text-gray-800">{value || '-'}</span>*/}
+            {/*        </div>*/}
+            {/*    ))}*/}
+
+
+            {/*    /!* ✅ 설명 (가로 전체 사용) *!/*/}
+            {/*    <div className="col-span-3">*/}
+            {/*        <label className="text-xs 2xl:text-sm font-medium text-gray-500">설명</label>*/}
+            {/*        <p className="mt-1 text-sm 2xl:text-md font-medium text-gray-800">{adjustPartData.description || '-'}</p>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
+        </div>
     );
 };
+
+// ✅ 재사용 가능한 데이터 행 컴포넌트
+const DataRow = ({ label, value, fullWidth = false }) => (
+    <div className={`flex justify-between items-center ${fullWidth ? 'col-span-2' : ''}`}>
+        <label className="text-xs font-medium text-gray-500 w-1/3 p-1">{label}</label>
+        <span className="text-sm w-2/3 px-2 py-1 rounded-md bg-gray-100">{value}</span>
+    </div>
+);
 
 export default AdjustmentPartForm;

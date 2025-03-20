@@ -21,6 +21,8 @@ import AccountOverviewTab from '@/components/form/Account/AccountOverviewTab.jsx
 import AccountTransactionTab from '@/components/form/Account/AccountTransactionTab.jsx';
 import AccountHistoryTab from '@/components/form/Account/AccountHistoryTab.jsx';
 import { IoMdClose } from "react-icons/io";
+import { TiPlus } from "react-icons/ti";
+import { Tooltip } from '@mui/material';
 
 
 const AccountPage = () => {
@@ -118,6 +120,23 @@ const AccountPage = () => {
         setIsExpanded(false); // Grid 초기 화면 복구
     };
 
+    const handleClick = () => {
+        if (!selectedAccountId?.acct_num) {
+            console.error("Account Num이 존재하지 않습니다.");
+            return;
+        }
+
+        if (!adjustHistoryData || adjustHistoryData.length === 0) {
+            // 🔹 조정 정보가 없으면 새로운 조정 추가 페이지로 이동
+            console.log("Navigating to new adjustment page");
+            navigate(`/adjustment/new?adjustment_code=account_num&adjustment_code_value=${selectedAccountId.acct_num}`);
+        } else {
+            // 🔹 조정 정보가 있으면 가장 최근 adjustment_index 가져와서 수정 페이지로 이동
+            const latestAdjustment = adjustHistoryData[0]; // 최신 데이터 (정렬이 되어 있다고 가정)
+            console.log("Navigating to edit adjustment page:", latestAdjustment.adjustment_index);
+            navigate(`/adjustment/${latestAdjustment.adjustment_index}/adjustment_code=account_num&edit?adjustment_code_value=${selectedAccountId.acct_num}`);
+        }
+    };
 
 
     console.log('accountPartData : ', accountPartData)
@@ -239,8 +258,35 @@ const AccountPage = () => {
                             {
                                 id: 2,
                                 label: 'Transaction',
-                                content: <AccountTransactionTab adjustHistoryLoading={adjustHistoryLoading} adjustHistoryError={adjustHistoryError} adjustHistoryData={adjustHistoryData}/> },
-                            { id: 3, label: 'History', content: <AccountHistoryTab historyLoading={historyLoading} historyError={historyError} historyData={historyData} AccountTableColumns={AccountTableColumns}/> },
+                                content: (
+                                    <>
+                                        <div className="flex flex-row justify-between">
+                                            <h1 className="font-bold my-2">단말기 조정 정보 이력</h1>
+                                            <Tooltip title="단말기 조정 정보 추가">
+                                                <button
+                                                    className="bg-blue-500 rounded-md text-white px-4 py-2 mb-2 hover:bg-blue-600"
+                                                    onClick={() => {
+                                                        console.log("Button Clicked!");
+                                                        handleClick();
+                                                    }}
+                                                >
+                                                    <TiPlus />
+                                                </button>
+                                            </Tooltip>
+                                        </div>
+                                        <AccountTransactionTab adjustHistoryLoading={adjustHistoryLoading}
+                                                               adjustHistoryError={adjustHistoryError}
+                                                               adjustHistoryData={adjustHistoryData} />
+                                    </>
+                                )
+                            },
+                            {
+                                id: 3,
+                                label: 'History',
+                                content: <AccountHistoryTab historyLoading={historyLoading} historyError={historyError}
+                                                            historyData={historyData}
+                                                            AccountTableColumns={AccountTableColumns} />
+                            },
                         ]} />
                     </div>
                 </div>

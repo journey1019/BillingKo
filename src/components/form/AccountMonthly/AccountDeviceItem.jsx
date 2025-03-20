@@ -16,6 +16,7 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
     console.log(deviceDetail)
     console.log(adjustmentInfo)
     console.log(nonePayInfo)
+    console.log('codeMappings: ', codeMappings);
 
     return(
         <>
