@@ -60,7 +60,7 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
         adjustment_category: "", // API로 가져온 옵션
         adjustment_type: "", // 선택 목록 제공
         mount_type: "", // 선택 목록 제공
-        mount_value: "", // 사용자가 입력
+        mount_value: 0, // 사용자가 입력
         description: "-", // 선택 사항
         adjustment_cycle: "", // 선택 목록 제공
         date_index: yearMonth, // 사용자가 입력
@@ -107,6 +107,7 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
             alert("조정 정보 추가 실패");
         }
     };
+    console.log(formData)
 
     return (
         <div className="relative inline-block float-right">

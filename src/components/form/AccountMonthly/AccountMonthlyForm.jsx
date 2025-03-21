@@ -15,7 +15,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
  * @desc: 청구 기본 자료 폼
  * @param yearMonth: Device Detail Click -> Move to Device Version Info Page
  * */
-const AccountMonthlyForm = ({ yearMonth, accountDetailData, accountDetailLoading, accountDetailError }) => {
+const AccountMonthlyForm = ({ yearMonth, accountDetailData, accountDetailLoading, accountDetailError, onAdjustmentRefresh }) => {
     // ✅ 기본값 설정 (빈 배열)
     const safeAccountDetailData = Array.isArray(accountDetailData) ? accountDetailData : [];
 
@@ -42,6 +42,7 @@ const AccountMonthlyForm = ({ yearMonth, accountDetailData, accountDetailLoading
     const nonePayInfo = accountData.none_pay_info || [];
 
     console.log(accountData)
+    console.log(adjustmentInfo)
 
 
     return (
@@ -50,7 +51,7 @@ const AccountMonthlyForm = ({ yearMonth, accountDetailData, accountDetailLoading
                 <Accordion items={accordionItems({ accountData, accountInfo, deviceDetail, adjustmentInfo, nonePayInfo })} />
             </div>
             <div className="col-span-1 2xl:col-span-3">
-                <AccountDeviceItem yearMonth={yearMonth} accountData={accountData} deviceDetail={deviceDetail} adjustmentInfo={adjustmentInfo} nonePayInfo={nonePayInfo}/>
+                <AccountDeviceItem yearMonth={yearMonth} accountData={accountData} deviceDetail={deviceDetail} adjustmentInfo={adjustmentInfo} nonePayInfo={nonePayInfo} onAdjustmentRefresh={onAdjustmentRefresh}/>
                 {/*<Accordion items={accordionDeviceItems({ accountData, accountInfo, deviceDetail, adjustmentInfo, nonePayInfo })} />*/}
             </div>
             {/*<div className="col-span-1">*/}

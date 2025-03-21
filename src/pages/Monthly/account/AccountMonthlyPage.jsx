@@ -30,25 +30,25 @@ const AccountMonthlyPage = () => {
     const [accountDetailLoading, setAccountDetailLoading] = useState(false);
     const [accountDetailError, setAccountDetailError] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if(!selectedRowId?.acct_num) return;
+    const fetchDetailData = async () => {
+        if (!selectedRowId?.acct_num) return;
 
-            setAccountDetailLoading(true);
-            setAccountDetailError(null);
-            try {
-                const response = await fetchKOMonthlyAccountDetailData(yearMonth, selectedRowId.acct_num);
-                setAccountDetailData(response)
-            } catch (error) {
-                setAccountDetailData(error.message || 'Failed to fetch Account Monthly Detail');
-            } finally {
-                setAccountDetailLoading(false);
-            }
+        setAccountDetailLoading(true);
+        setAccountDetailError(null);
+        try {
+            const response = await fetchKOMonthlyAccountDetailData(yearMonth, selectedRowId.acct_num);
+            setAccountDetailData(response);
+        } catch (error) {
+            setAccountDetailError(error.message || 'Failed to fetch Account Monthly Detail');
+        } finally {
+            setAccountDetailLoading(false);
         }
-        fetchData();
-    }, [selectedRowId]);
-    console.log(accountDetailData)
+    };
+    useEffect(() => {
+        fetchDetailData();
+    }, [selectedRowId, yearMonth]);
 
+    console.log(accountDetailData)
 
 
     const tabs = [
@@ -121,7 +121,9 @@ const AccountMonthlyPage = () => {
                         <div className="flex flex-col">
                             <AccountMonthlyForm yearMonth={yearMonth} accountDetailData={accountDetailData}
                                                 accountDetailLoading={accountDetailLoading}
-                                                accountDetailError={accountDetailError} />
+                                                accountDetailError={accountDetailError}
+                                                onAdjustmentRefresh={fetchDetailData} // 리프레시 함수 전달
+                            />
                         </div>
                         {/*<div className="flex flex-col p-4 bg-white">*/}
                         {/*    <span className="text-xl font-bold mb-4 text-gray-700">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</span>*/}

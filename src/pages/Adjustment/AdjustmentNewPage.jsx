@@ -1,14 +1,82 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createAdjustment } from '@/service/adjustmentService.js';
+import { createCode } from '@/service/codeService.js';
 import { IoMdClose } from 'react-icons/io';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
 import { Switch } from "@mui/material";
+import { CiCirclePlus } from "react-icons/ci";
+
 
 const AdjustmentNewPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams(); // ✅ Query Params 가져오기
     const codeMappings = useAdjustmentMappings();
+
+    /** CODE 형식 새로 생성 */
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMappingKey, setModalMappingKey] = useState(null);
+    const [modalInput, setModalInput] = useState({
+        code_type: 'bill',
+        code_value: '',
+        code_alias: '',
+    });
+
+    // 모달 열기
+    const openModal = (mappingKey) => {
+        setModalMappingKey(mappingKey);
+        setIsModalOpen(true);
+        setModalInput({
+            code_type: 'bill',
+            code_value: '',
+            code_alias: '',
+        });
+    };
+
+    // 모달 닫기
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setModalMappingKey(null);
+    };
+
+    // 입력 변경 핸들러
+    const handleModalChange = (e) => {
+        const { name, value } = e.target;
+        setModalInput((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    // 저장
+    const handleModalSubmit = async () => {
+        try {
+            const payload = {
+                code_name: modalMappingKey,         // ✅ 버튼에서 받은 mappingKey
+                code_type: 'bill',
+                code_value: modalInput.code_value,
+                code_alias: modalInput.code_alias,
+            };
+            await createCode(payload);
+            alert("코드가 성공적으로 추가되었습니다.");
+            closeModal();
+            window.location.reload(); // ✅ 현재 페이지 전체 리로드
+        } catch (err) {
+            alert("코드 생성 실패");
+        }
+    };
+
+    const openModalForCodeType = (type) => {
+        setCodeForm({
+            code_name: "",
+            code_type: type,
+            code_value: "",
+            code_alias: "",
+        });
+        setNewCodeType(type);
+        setIsModalOpen(true);
+    };
+
 
     // ✅ URL에서 전달된 인자 추출
     const adjustment_code = searchParams.get("adjustment_code") || "";
@@ -75,6 +143,8 @@ const AdjustmentNewPage = () => {
         }
     };
 
+
+
     return (
         <div className="container mx-auto">
             {/* 🔹 Header */}
@@ -106,19 +176,6 @@ const AdjustmentNewPage = () => {
                         <span className="text-sm text-gray-700">{formData.tax_free_yn === 'Y' ? 'Yes' : 'No'}</span>
                     </div>
                 </div>
-
-                {/* ✅ 입력 필드 */}
-                {/*{[*/}
-                {/*    { id: "adjustment_code", label: "조정 대상 구분", placeholder: "Serial Number" },*/}
-                {/*    { id: "adjustment_code_value", label: "조정 대상", placeholder: "01680651SKYD374" },*/}
-                {/*].map(({ id, label, placeholder }) => (*/}
-                {/*    <div key={id} className="grid grid-cols-6 items-center space-x-4">*/}
-                {/*        <label htmlFor={id} className="col-span-2 text-sm font-medium text-gray-900">{label}</label>*/}
-                {/*        <input type="text" id={id} name={id} value={formData[id]} onChange={handleChange}*/}
-                {/*               className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"*/}
-                {/*               placeholder={placeholder} required />*/}
-                {/*    </div>*/}
-                {/*))}*/}
 
                 {/* ✅ 조정 대상 구분 */}
                 <div key="adjustment_code" className="grid grid-cols-6 items-center space-x-4">
@@ -155,13 +212,70 @@ const AdjustmentNewPage = () => {
                     <div key={id} className="grid grid-cols-6 items-center space-x-4">
                         <label htmlFor={id} className="col-span-2 text-sm font-medium text-gray-900">{label}</label>
                         <select id={id} name={id} value={formData[id]} onChange={handleChange}
-                                className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5">
+                                className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5">
                             {Object.keys(codeMappings[mappingKey]).map((optionKey, index) => (
                                 <option key={optionKey} value={optionKey}>
                                     {Object.values(codeMappings[mappingKey])[index]}
                                 </option>
                             ))}
                         </select>
+                        <button
+                            type="button"
+                            className="col-span-1 justify-end items-center"
+                            onClick={() => openModal(mappingKey)}
+                        >
+                            <CiCirclePlus className="w-5 h-5" />
+                        </button>
+                        {isModalOpen && (
+                            <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
+                                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                                    <h2 className="text-lg font-semibold mb-4">새 코드 추가</h2>
+
+                                    {/*<div className="mb-3">*/}
+                                    {/*    <label className="block text-sm font-medium">Code Type(bill / pay)</label>*/}
+                                    {/*    <input*/}
+                                    {/*        type="text"*/}
+                                    {/*        name="code_type"*/}
+                                    {/*        value={modalInput.code_type}*/}
+                                    {/*        onChange={handleModalChange}*/}
+                                    {/*        className="w-full border p-2 rounded"*/}
+                                    {/*    />*/}
+                                    {/*</div>*/}
+
+                                    <div className="mb-3">
+                                        <label className="block text-sm font-medium">코드(Code Value)</label>
+                                        <input
+                                            type="text"
+                                            name="code_value"
+                                            value={modalInput.code_value}
+                                            onChange={handleModalChange}
+                                            className="w-full border p-2 rounded"
+                                        />
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium">별칭(Code Alias)</label>
+                                        <input
+                                            type="text"
+                                            name="code_alias"
+                                            value={modalInput.code_alias}
+                                            onChange={handleModalChange}
+                                            className="w-full border p-2 rounded"
+                                        />
+                                    </div>
+
+                                    <div className="flex justify-end space-x-2">
+                                        <button onClick={closeModal} className="px-4 py-2 bg-gray-300 rounded">
+                                            취소
+                                        </button>
+                                        <button onClick={handleModalSubmit} className="px-4 py-2 bg-blue-500 text-white rounded">
+                                            저장
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                     </div>
                 ))}
 

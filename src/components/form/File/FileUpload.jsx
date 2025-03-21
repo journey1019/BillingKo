@@ -91,14 +91,24 @@ const FileUpload = () => {
         }
 
         const requiredFiles = item.include_files;
-        const uploadedFiles = uploadMonthlyData
-            ?.filter((file) => file.file_name.startsWith(`${item.sp_id}_`))
-            ?.map((file) => file.file_name.split('_').slice(-1)[0]);
+        const uploadedFiles = uploadMonthlyData?.filter((file) =>
+            file.file_name.startsWith(`${item.sp_id}_`)
+        );
 
-        const uploadStatus = requiredFiles.map((fileType) => ({
-            fileType,
-            isUploaded: uploadedFiles.includes(fileType),
-        }));
+        const uploadStatus = requiredFiles.map((fileType) => {
+            const matchedFile = uploadedFiles.find((file) =>
+                file.file_name.endsWith(fileType)
+            );
+
+            return {
+                fileType,
+                isUploaded: Boolean(matchedFile),
+                file_update_date: matchedFile?.update_date || null,
+                file_update_index: matchedFile?.update_index || null,
+                file_user_id: matchedFile?.user_id || null,
+                file_size: matchedFile?.file_size || null,
+            };
+        });
 
         const isAllUploaded = uploadStatus.every((f) => f.isUploaded);
 

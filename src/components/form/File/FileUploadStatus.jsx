@@ -45,6 +45,7 @@ const FileUploadStatus = () => {
         });
     };
 
+
     return (
         <div className="p-5 bg-white rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-2">

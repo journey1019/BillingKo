@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 import AdjustDropdownForm from '@/components/form/AccountMonthly/Edit/AdjustDropdownForm.jsx';
 import { fetchAdjustmentCodeName } from '@/service/adjustmentService.js';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+import { LuRefreshCw } from "react-icons/lu";
 
 
-const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInfo, nonePayInfo }) => {
+
+const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInfo, nonePayInfo, onAdjustmentRefresh }) => {
     const navigate = useNavigate();
     const codeMappings = useAdjustmentMappings();
 
@@ -73,7 +75,15 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                     <div className="flex flex-row justify-between items-center border-b border-gray-400 pb-2 mb-4">
                         <h2 className="text-lg font-semibold col-span-3">조정 내역</h2>
 
-                        <AdjustDropdownForm acctNum={accountData.acct_num} yearMonth={yearMonth}/>
+                        <div className="flex flex-row space-x-2">
+                            <button
+                                className="hover:text-blue-500"
+                                onClick={onAdjustmentRefresh} // 리프레시 함수 호출
+                            >
+                                <LuRefreshCw />
+                            </button>
+                            <AdjustDropdownForm acctNum={accountData.acct_num} yearMonth={yearMonth} />
+                        </div>
                     </div>
                     <div className="col-span-3">
                         {Array.isArray(adjustmentInfo) && adjustmentInfo.length > 0 ? (

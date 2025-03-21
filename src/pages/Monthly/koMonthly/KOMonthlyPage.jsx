@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
     fetchKOMonthlyData,
     fetchKOMonthlyDetailIndexData,
@@ -28,10 +28,31 @@ const KOMonthlyPage = () => {
     console.log('searchParams: ', searchParams)
 
     const navigate = useNavigate();
-    const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
+
+    const urlYearMonth = searchParams.get("yearMonth"); // ex) '202402'
+    const urlSerial = searchParams.get("serial");
+
+    // '고객별 청구' 페이지에서 단말기 상세 정보 보려고 할때
+    // 필터 초기값 구성
+    const [columnFilters, setColumnFilters] = useState(() => {
+        return urlSerial
+            ? [{ id: "serial_number", value: urlSerial }]
+            : [];
+    });
+
+    const initialDate = useMemo(() => {
+        if (!urlYearMonth || urlYearMonth.length !== 6) return null;
+        const year = Number(urlYearMonth.slice(0, 4));
+        const month = Number(urlYearMonth.slice(4, 6)) - 1;
+        return new Date(year, month);
+    }, [urlYearMonth]);
+
+
+    const { selectedDate, handleDateChange, yearMonth } = useYearMonth(initialDate);
 
     // ✅ searchParams에 yearMonth가 존재하면 해당 값 사용, 없으면 기존 yearMonth 사용
     // const selectedYearMonth = searchParams.get("yearMonth") || yearMonth;
+
 
     const { data, loading, error } = useApiFetch(fetchKOMonthlyData, yearMonth);
     const [selectedMonthlyIndex, setSelectedMonthlyIndex] = useState(null);
@@ -138,6 +159,11 @@ const KOMonthlyPage = () => {
                                         }
                                     },
                                 },
+                                // ✅ 필터 상태 연결
+                                state: {
+                                    columnFilters,
+                                },
+                                onColumnFiltersChange: setColumnFilters,
                             }}
                         />
                     )}

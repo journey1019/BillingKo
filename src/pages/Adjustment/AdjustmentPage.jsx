@@ -103,7 +103,10 @@ const AdjustmentPage = () => {
                     <ReusableTable
                         data={adjustHistoryData}
                         columns={AdjustmentHistoryTableColumns}
-                        options={AdjustmentHistoryTableOptions}
+                        options={{
+                            ...AdjustmentHistoryTableOptions,
+
+                        }}
                     />
                 ) : (
                     <p>Select an price to view details</p>
@@ -132,38 +135,38 @@ const AdjustmentPage = () => {
                         <div className="inline-flex rounded-md shadow-xs" role="group">
                             <Tooltip message="Create Price Plan">
                                 <button type="button"
-                                        className="inline-flex items-center space-x-2 px-4 py-2 text-sm text-white font-medium bg-blue-500 border border-gray-200 rounded-s-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
+                                        className="inline-flex items-center space-x-2 px-4 py-2 text-sm text-white font-medium bg-blue-500 border border-gray-200 rounded-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
                                         onClick={() => navigate('/adjustment/new')}
                                 >
                                     <FiPlus />
                                     <span>New</span>
                                 </button>
                             </Tooltip>
-                            <button type="button"
-                                    className="inline-flex items-center px-1 py-2 text-sm font-medium text-white bg-blue-500 border border-gray-200 rounded-e-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
-                                    onClick={toggleNewDropdown}
-                            >
-                                <IoIosArrowDown />
-                            </button>
-                            {isOpenNewDropdown && (
-                                <div
-                                    className="absolute z-10 mt-10 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"
-                                    onMouseLeave={closeNewDropdown}>
-                                    <div className="p-2 text-sm text-gray-700">
-                                        <button onClick={() => navigate('/adjustmenr/new')}
-                                                className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">
-                                            조정
-                                        </button>
-                                    </div>
-                                    <ul className="p-2 text-sm text-gray-700">
-                                        <li>
-                                            <button onClick={() => navigate('/code/new')}
-                                                    className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">조정 세부 정의
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
+                            {/*<button type="button"*/}
+                            {/*        className="inline-flex items-center px-1 py-2 text-sm font-medium text-white bg-blue-500 border border-gray-200 rounded-e-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"*/}
+                            {/*        onClick={toggleNewDropdown}*/}
+                            {/*>*/}
+                            {/*    <IoIosArrowDown />*/}
+                            {/*</button>*/}
+                            {/*{isOpenNewDropdown && (*/}
+                            {/*    <div*/}
+                            {/*        className="absolute right-5 z-10 mt-10 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"*/}
+                            {/*        onMouseLeave={closeNewDropdown}>*/}
+                            {/*        <div className="p-2 text-sm text-gray-700">*/}
+                            {/*            <button onClick={() => navigate('/adjustment/new')}*/}
+                            {/*                    className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">*/}
+                            {/*                조정 생성*/}
+                            {/*            </button>*/}
+                            {/*        </div>*/}
+                            {/*        <ul className="p-2 text-sm text-gray-700">*/}
+                            {/*            <li>*/}
+                            {/*                <button onClick={() => navigate('/code/new')}*/}
+                            {/*                        className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition whitespace-nowrap">조정 세부 단위 생성*/}
+                            {/*                </button>*/}
+                            {/*            </li>*/}
+                            {/*        </ul>*/}
+                            {/*    </div>*/}
+                            {/*)}*/}
                         </div>
                     </div>
                 </div>
