@@ -1,6 +1,9 @@
 export const FileUploadTableOptions = {
     initialState: {
-        sorting: [{ id: "sp_id", desc: true }],
+        sorting: [
+            { id: "use_yn", desc: true },
+            { id: "alias", desc: true }
+        ],
         showColumnFilters: true,
     },
     enableRowSelection: true,

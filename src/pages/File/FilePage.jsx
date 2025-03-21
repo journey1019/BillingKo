@@ -17,7 +17,7 @@ import Modal from '@/components/common/Modal.jsx';
 import UploadFileModal from '@/components/layout/File/UploadFileModal.jsx';
 import FileDeviceForm from '@/components/form/FileDeviceForm.jsx';
 import FileUpload from '@/components/form/File/FileUpload.jsx';
-import FileUploadStatus from '@/components/form/File/FileUploadStatue.jsx';
+import FileUploadStatus from '@/components/form/File/FileUploadStatus.jsx';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import CDRnNN from '@/components/features/CDRnNN.jsx';
 

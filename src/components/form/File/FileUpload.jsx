@@ -38,14 +38,14 @@ const FileUpload = () => {
 
         return activeIndex <= currentYearMonth && currentYearMonth <= deactiveIndex;
     }) || [];
-    console.log('filteredData : ', filteredData)
+    // console.log('filteredData : ', filteredData)
 
 
     // 숫자 부분 추출 후 중복 제거하여 배열로 변환
     const uniqueFileSPID = Array.from(
         new Set(uploadMonthlyData?.map(item => item.file_name.split('_')[0])) // `_` 앞의 숫자 추출 후 Set으로 중복 제거
     );
-    console.log(uniqueFileSPID);
+    // console.log(uniqueFileSPID);
 
     // 조건을 만족하는 새로운 배열 생성 (use_yn === 'Y' && sp_id가 uniqueFileSPID에 포함)
     const filteredUploadHistoryData = uploadHistoryAllData?.filter(
@@ -53,8 +53,8 @@ const FileUpload = () => {
     ) || [];
     // `use_yn === 'N'`인 행을 제거
     const filteredUseData = uploadHistoryAllData?.filter(item => item.use_yn !== 'N') || [];
-    console.log('filteredUploadHistoryData : ', filteredUploadHistoryData)
-    console.log('filteredUseData : ', filteredUseData)
+    // console.log('filteredUploadHistoryData : ', filteredUploadHistoryData)
+    // console.log('filteredUseData : ', filteredUseData)
 
     console.log('uploadHistoryAllData : ', uploadHistoryAllData)
     console.log('uploadMonthlyData : ', uploadMonthlyData)
@@ -81,6 +81,36 @@ const FileUpload = () => {
         }
     };
 
+    const enrichedUploadData = uploadHistoryAllData?.map((item) => {
+        if (item.use_yn === 'N') {
+            return {
+                ...item,
+                uploadStatus: null,
+                isAllUploaded: null,
+            };
+        }
+
+        const requiredFiles = item.include_files;
+        const uploadedFiles = uploadMonthlyData
+            ?.filter((file) => file.file_name.startsWith(`${item.sp_id}_`))
+            ?.map((file) => file.file_name.split('_').slice(-1)[0]);
+
+        const uploadStatus = requiredFiles.map((fileType) => ({
+            fileType,
+            isUploaded: uploadedFiles.includes(fileType),
+        }));
+
+        const isAllUploaded = uploadStatus.every((f) => f.isUploaded);
+
+        return {
+            ...item,
+            uploadStatus,
+            isAllUploaded,
+        };
+    });
+
+    console.log(enrichedUploadData)
+
     return(
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
@@ -93,7 +123,7 @@ const FileUpload = () => {
                     </button>
                 </div>
                 <ReusableTable
-                    data={uploadHistoryAllData || []}
+                    data={enrichedUploadData || []}
                     columns={FileUploadHistoryTableColumns}
                     isLoading={uploadHistoryAllLoading}
                     error={uploadHistoryAllError}

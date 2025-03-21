@@ -3,7 +3,6 @@ import { formatDateTime, formatDateIndex } from '@/utils/formatHelpers.jsx';
 
 const UploadFileTabOverview = ({ detailData, uploadHistoryDetailLoading, uploadHistoryDetailError }) => {
 
-
     return(
         <>
             <div>

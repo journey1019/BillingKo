@@ -183,6 +183,13 @@ export const fetchByteUpdateHistory = async (serialNumber, dateIndex) => {
 /**
  * 파일 업데이트 이력 가져오기
  * @returns {Promise<Array>} 서버에서 반환된 파일 이력 데이터
+ * @struct: {
+ *         "file_name": "123343_202502_CDRv3.csv",
+ *         "update_date": "2025-03-14T08:56:35",
+ *         "user_id": "jhlee",
+ *         "update_index": "202502",
+ *         "file_size": 4144
+ *     },
  */
 export const fetchUploadFileMonthly = async (yearMonth) => {
     try {
@@ -194,7 +201,7 @@ export const fetchUploadFileMonthly = async (yearMonth) => {
 };
 
 /**
- * @desc: 업로드 파일 전체 이력
+ * @desc: CDR & NetworkReport 전체 SPID
  * */
 export const fetchUploadHistoryAllFiles = async () => {
     try {

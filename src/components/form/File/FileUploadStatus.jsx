@@ -10,6 +10,8 @@ const FileUploadStatus = () => {
     const { data: uploadHistoryAllData, loading: uploadHistoryAllLoading, error: uploadHistoryAllError } = useApiFetch(fetchUploadHistoryAllFiles);
     const { data: uploadMonthlyData, loading: uploadMonthlyLoading, error: uploadMonthlyError } = useApiFetch(fetchUploadFileMonthly, yearMonth);
 
+    console.log('uploadHistoryAllData : ', uploadHistoryAllData)
+
     // 조건을 만족하는 데이터 필터링
     const filteredData = uploadHistoryAllData?.filter(item => {
         if (item.use_yn !== 'Y') return false; // use_yn이 'Y'인 데이터만 포함
@@ -32,11 +34,6 @@ const FileUploadStatus = () => {
         acc[spId].add(fileType); // 업로드된 파일 타입 저장
         return acc;
     }, {}) || {};
-
-    const handleUploadComplete = () => {
-        // 업로드 완료 시 데이터 갱신
-        refetch();
-    }
 
     console.log('업로드 : ', uploadMonthlyData)
     console.log('이번달 : ', uploadedFilesMap)
@@ -64,37 +61,44 @@ const FileUploadStatus = () => {
                     const uploadedFiles = uploadedFilesMap[uploadData.sp_id] || new Set();
 
                     return (
-                        <div key={uploadData.sp_id}
-                             className="flex justify-between items-center bg-gray-100 rounded-md p-3 text-sm relative">
-                            <div className="grid grid-cols-2 gap-4">
-                                <span className="font-medium">{uploadData.alias}</span>
-                                <span>{uploadData.sp_id}</span>
-                            </div>
+                        <div
+                            key={uploadData.sp_id}
+                            className="grid grid-cols-4 gap-4 items-center bg-gray-100 rounded-md p-3 text-sm relative"
+                        >
+                            <span>{uploadData.sp_id}</span>
+                            <span className="font-medium">{uploadData.alias}</span>
 
-                            <div className="flex space-x-4">
-                                {uploadData.include_files.map((fileType, index) => {
+                            <div className="col-span-2 flex space-x-4">
+                                {uploadData.include_files.map((fileType) => {
                                     const fileDetails = getFileDetails(uploadData.sp_id, fileType);
                                     const isUploaded = uploadedFiles.has(fileType);
 
                                     return (
-                                        <div key={fileType} className="relative group">
-                                            <span className="cursor-pointer">
-                                                {fileType} {isUploaded ? "✅" : "☑️"}
+                                        <div key={fileType} className="relative group cursor-pointer">
+                                            <span>
+                                              {fileType} {isUploaded ? '✅' : '☑️'}
                                             </span>
 
                                             {isUploaded && fileDetails && (
                                                 <div
-                                                    className="absolute left-0 top-full mt-1 w-70 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-lg text-sm text-gray-500 z-10">
+                                                    className="absolute left-0 top-full mt-1 w-72 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-lg text-sm text-gray-500 z-10">
                                                     <div
                                                         className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
-                                                        <p className="font-semibold text-gray-900 truncate">{fileDetails.file_name}</p>
+                                                        <p className="font-semibold text-gray-900 truncate">
+                                                            {fileDetails.file_name}
+                                                        </p>
                                                     </div>
                                                     <div className="p-3 break-words whitespace-nowrap">
-                                                        <p><strong>Update
-                                                            Date:</strong> {new Date(fileDetails.update_date).toLocaleString()}
+                                                        <p>
+                                                            <strong>Update Date:</strong>{' '}
+                                                            {new Date(fileDetails.update_date).toLocaleString()}
                                                         </p>
-                                                        <p><strong>User ID:</strong> {fileDetails.user_id}</p>
-                                                        <p><strong>File Size:</strong> {fileDetails.file_size} bytes</p>
+                                                        <p>
+                                                            <strong>User ID:</strong> {fileDetails.user_id}
+                                                        </p>
+                                                        <p>
+                                                            <strong>File Size:</strong> {fileDetails.file_size} bytes
+                                                        </p>
                                                     </div>
                                                 </div>
                                             )}
@@ -106,6 +110,7 @@ const FileUploadStatus = () => {
                     );
                 })}
             </div>
+
         </div>
     );
 };
