@@ -139,6 +139,7 @@ const AccountPage = () => {
     };
 
 
+    console.log('accountData : ', accountData)
     console.log('accountPartData : ', accountPartData)
     console.log('historyData : ', historyData)
     console.log('adjustHistoryData : ', adjustHistoryData)

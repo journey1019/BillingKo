@@ -10,6 +10,9 @@ import { LuRefreshCw } from "react-icons/lu";
 
 
 
+/**
+ * @desc: 고객별 청구서 수정 페이지_Account Right Form
+ * */
 const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInfo, nonePayInfo, onAdjustmentRefresh }) => {
     const navigate = useNavigate();
     const codeMappings = useAdjustmentMappings();

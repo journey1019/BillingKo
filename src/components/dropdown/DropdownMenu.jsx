@@ -9,10 +9,12 @@ const DropdownMenu = ({ isOpen, closeDropdown, title, children, tooltipContent, 
     const navigate = useNavigate();
 
     // position에 따라 class 설정 (left 또는 right)
-    const positionClass = position === "left" ? "right-0" : "left-0";
+    /** @desc: left(Account Adjustment) || right(Device Form) */
+    const positionClass = position === "left" ? "right-0 top-full mt-1" : "left-0 left-12 -top-3";
+    // const positionClass = position === "left" ? "right-0 bottom-full mb-1" : "left-0 left-12 -top-3";
 
     return (
-        <div className={`w-[250px] xl:w-[400px] absolute top-full mt-1 bg-white divide-y divide-gray-100 
+        <div className={`w-[250px] xl:w-[400px] absolute mt-1 bg-white divide-y divide-gray-100
                         rounded-lg shadow-sm border border-gray-300 transition-all duration-200 
                         ease-in-out transform ${positionClass} z-20`}>
             <div className="flex rounded-t-md py-3 px-4 border-b bg-gray-100 justify-between">
@@ -26,7 +28,7 @@ const DropdownMenu = ({ isOpen, closeDropdown, title, children, tooltipContent, 
                     </Tooltip>
                 )}
             </div>
-            <ul className="text-sm text-gray-700">{children}</ul>
+            <div className="text-sm text-gray-700">{children}</div>
         </div>
     );
 };

@@ -116,36 +116,15 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
             </button>
             <DropdownMenu isOpen={isOpen} closeDropdown={closeDropdown} title="조정 정보 추가" tooltipContent="조정 세부 설정 페이지 이동" tooltipLink="/adjustment" position="left">
                 <div className="px-4 py-2 space-y-3">
-                    {/* ✅ 고정된 데이터 (조정 대상 구분 & 조정 대상) */}
-                    {/*<div className="flex flex-col">*/}
-                    {/*    <label className="text-sm font-semibold text-gray-600">조정 대상 구분</label>*/}
-                    {/*    <input*/}
-                    {/*        type="text"*/}
-                    {/*        name="adjustment_code"*/}
-                    {/*        value={formData.adjustment_code}*/}
-                    {/*        className="border rounded-md p-2 text-sm bg-gray-200 cursor-not-allowed"*/}
-                    {/*        readOnly*/}
-                    {/*    />*/}
-                    {/*</div>*/}
-                    {/*<div className="flex flex-col">*/}
-                    {/*    <label className="text-sm font-semibold text-gray-600">조정 대상</label>*/}
-                    {/*    <input*/}
-                    {/*        type="text"*/}
-                    {/*        name="adjustment_code_value"*/}
-                    {/*        value={formData.adjustment_code_value}*/}
-                    {/*        className="border rounded-md p-2 text-sm bg-gray-200 cursor-not-allowed"*/}
-                    {/*        readOnly*/}
-                    {/*    />*/}
-                    {/*</div>*/}
 
                     {/* ✅ Select 드롭다운 목록 */}
-                    <div className="flex flex-col">
-                        <label className="text-sm font-semibold text-gray-600">조정 구분</label>
+                    <div className="grid grid-cols-3 items-center">
+                        <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">조정 구분</label>
                         <select
                             name="adjustment_category"
                             value={formData.adjustment_category}
                             onChange={handleChange}
-                            className="border rounded-md p-2 text-sm"
+                            className="col-span-2 border rounded-md p-2 text-xs 2xl:text-sm"
                         >
                             <option value="">선택하세요</option>
                             {adjustmentCategories.map((option) => (
@@ -156,10 +135,10 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
                         </select>
                     </div>
 
-                    <div className="flex flex-col">
-                        <label className="text-sm font-semibold text-gray-600">조정 타입</label>
+                    <div className="grid grid-cols-3 items-center">
+                        <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">조정 타입</label>
                         <select name="adjustment_type" value={formData.adjustment_type} onChange={handleChange}
-                                className="border rounded-md p-2 text-sm">
+                                className="col-span-2 border rounded-md p-2 text-xs 2xl:text-sm">
                             {adjustmentTypes.map((option) => (
                                 <option key={option.code_value} value={option.code_value}>
                                     {option.code_alias}
@@ -168,10 +147,10 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
                         </select>
                     </div>
 
-                    <div className="flex flex-col">
-                    <label className="text-sm font-semibold text-gray-600">금액/요율</label>
+                    <div className="grid grid-cols-3 items-center">
+                        <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">금액/요율</label>
                         <select name="mount_type" value={formData.mount_type} onChange={handleChange}
-                                className="border rounded-md p-2 text-sm">
+                                className="col-span-2 border rounded-md p-2 text-xs 2xl:text-sm">
                             {mountTypes.map((option) => (
                                 <option key={option.code_value} value={option.code_value}>
                                     {option.code_alias}
@@ -180,16 +159,14 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
                         </select>
                     </div>
 
-                    <FormInput label="적용 요금" name="mount_value" type="number" value={formData.mount_value}
-                               onChange={handleChange} placeholder="5,000" />
+                    <FormInput label="적용 요금" name="mount_value" type="number" value={formData.mount_value} onChange={handleChange} placeholder="5,000" />
 
-                    <FormInput label="설명" name="description" type="text" value={formData.description}
-                               onChange={handleChange} placeholder="-" />
+                    <FormInput label="설명" name="description" type="text" value={formData.description} onChange={handleChange} placeholder="-" />
 
-                    <div className="flex flex-col">
-                        <label className="text-sm font-semibold text-gray-600">적용 횟수</label>
+                    <div className="grid grid-cols-3 items-center">
+                        <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">적용 횟수</label>
                         <select name="adjustment_cycle" value={formData.adjustment_cycle} onChange={handleChange}
-                                className="border rounded-md p-2 text-sm">
+                                className="col-span-2 border rounded-md p-2 text-xs 2xl:text-sm">
                             {adjustmentCycles.map((option) => (
                                 <option key={option.code_value} value={option.code_value}>
                                     {option.code_alias}
@@ -198,23 +175,11 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
                         </select>
                     </div>
 
-                    <FormInput label="적용 날짜" name="date_index" type="text" value={formData.date_index}
-                               onChange={handleChange} placeholder="202501" />
+                    <FormInput label="적용 날짜" name="date_index" type="text" value={formData.date_index} onChange={handleChange} placeholder="202501" />
 
-                    {/* ✅ Toggle 스위치 */}
-                    {/*<div className="flex items-center justify-between">*/}
-                    {/*    <label className="text-sm font-semibold text-gray-600">사용 여부</label>*/}
-                    {/*    <button*/}
-                    {/*        className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 transition duration-300 ${formData.use_yn ? 'bg-blue-500' : ''}`}*/}
-                    {/*        onClick={() => handleToggleChange("use_yn")}*/}
-                    {/*    >*/}
-                    {/*        <div className={`bg-white w-4 h-4 rounded-full shadow-md transform ${formData.use_yn ? 'translate-x-5' : ''}`}></div>*/}
-                    {/*    </button>*/}
-                    {/*</div>*/}
-
-                    <div className="flex items-center justify-between">
-                        <label className="text-sm font-semibold text-gray-600">부가세 할인 여부</label>
-                        <div className="flex flex-row space-x-2 items-center">
+                    <div className="grid grid-cols-3">
+                        <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">부가세 할인 여부</label>
+                        <div className="col-span-2 flex flex-row space-x-2 items-center text-right">
                             <span className="text-blue-500">
                                 {formData.tax_free_yn === 'Y' ? '부가세 계산 전 조정' : '부가세 계산 후 조정'}
                             </span>
@@ -232,14 +197,14 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
                 </div>
 
                 {/* ✅ 오류 메시지 출력 */}
-                {errorMessage && <p className="text-red-500 text-sm px-4">{errorMessage}</p>}
+                {errorMessage && <p className="text-red-500 text-xs 2xl:text-sm px-4">{errorMessage}</p>}
 
                 {/* ✅ 액션 버튼 */}
                 <div className="flex justify-end p-2 bg-gray-100 rounded-b-md space-x-2">
-                    <button onClick={handleSave} className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm">Save
+                    <button onClick={handleSave} className="px-3 py-1 bg-blue-500 text-white rounded-md text-xs 2xl:text-sm">Save
                     </button>
                     <button onClick={closeDropdown}
-                            className="px-3 py-1 bg-gray-500 text-white rounded-md text-sm">Close</button>
+                            className="px-3 py-1 bg-gray-500 text-white rounded-md text-xs 2xl:text-sm">Close</button>
                 </div>
             </DropdownMenu>
         </div>

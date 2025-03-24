@@ -3,7 +3,7 @@ import { MdEdit } from 'react-icons/md';
 import { saveKOMonthlyDetailData } from "@/service/monthlyService.js";
 import DropdownMenu from "@/components/dropdown/DropdownMenu.jsx";
 import FormInput from "@/components/dropdown/FormInput.jsx";
-import { formatDateAddTime } from '@/utils/formatHelpers.jsx';
+import { formatDateAddTime, formatNumberWithCommas } from '@/utils/formatHelpers.jsx';
 import { LuRefreshCw } from "react-icons/lu";
 import AlertBox from '@/components/common/AlertBox';
 
@@ -26,20 +26,43 @@ const BasicDropdownForm = ({ detailData, fetchDetailData }) => {
             ppid: detailData.ppid || "",
             activationDate: detailData.activate_date ? detailData.activate_date.split("T").join(" ") : "",
             deactivationDate: detailData.deactivate_date ? detailData.deactivate_date.split("T").join(" ") : "",
+            free_bytes: detailData.free_bytes ?? "",
+            use_period: detailData.use_period || "",
+            use_percent_of_month: detailData.use_percent_of_month || "",
+            use_byte_total: detailData.use_byte_total || "",
+            basic_fee: detailData.payment.basic_fee ?? "",
+            final_fee: detailData.payment.final_fee ?? "",
+            total_fee: detailData.payment.total_fee ?? "",
+            subscribe_fee: detailData.payment.subscribe_fee ?? "",
+            add_use_fee: detailData.payment.add_use_fee ?? "",
+            cut_off_fee: detailData.payment.cut_off_fee ?? "",
+            modification_fee: detailData.payment.modification_fee ?? "",
         });
     }, [detailData]);
 
-    // ✅ 입력 변경 핸들러
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        const updatedValue =
-            (name === "activationDate" || name === "deactivationDate") && value.length === 16
-                ? `${value}:00`
-                : value;
+        if (!name) return; // name 없으면 무시
 
-        setFormData(prev => ({ ...prev, [name]: updatedValue }));
+        let cleanedValue = value;
+
+        // 숫자일 경우 쉼표 제거
+        if (!isNaN(value.toString().replace(/,/g, ""))) {
+            cleanedValue = value.toString().replace(/,/g, "");
+        }
+
+        // 날짜일 경우 시:분까지만 입력되었으면 ":00" 추가
+        if ((name === "activationDate" || name === "deactivationDate") && value.length === 16) {
+            cleanedValue = `${value}:00`;
+        }
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: cleanedValue,
+        }));
     };
+
 
     // ✅ 저장
     const handleSave = async () => {
@@ -53,6 +76,17 @@ const BasicDropdownForm = ({ detailData, fetchDetailData }) => {
                 ppid: formData.ppid,
                 activate_date: formatDateAddTime(formData.activationDate),
                 deactivate_date: formatDateAddTime(formData.deactivationDate),
+                free_bytes: formData.free_bytes,
+                use_byte_total: formData.use_byte_total,
+                use_period: formData.use_period,
+                use_percent_of_month: formData.use_percent_of_month,
+                basic_fee: formData.basic_fee,
+                final_fee: formData.final_fee,
+                total_fee: formData.total_fee,
+                subscribe_fee: formData.subscribe_fee,
+                add_use_fee: formData.add_use_fee,
+                cut_off_fee: formData.cut_off_fee,
+                modification_fee: formData.modification_fee,
             };
 
             const { data_index, user_id, update_date, update_version, ...payload } = updatedData;
@@ -117,17 +151,51 @@ const BasicDropdownForm = ({ detailData, fetchDetailData }) => {
             </button>
 
             {/* ✅ 드롭다운 */}
-            <DropdownMenu isOpen={isOpen} closeDropdown={closeDropdown} title="Basic Info Modify">
-                <div className="px-4 py-2 space-y-3">
+            <DropdownMenu isOpen={isOpen} closeDropdown={closeDropdown} title="단말 세부 내용 수정">
+                <div className="px-4 py-2 space-y-3 border-b">
                     {[
-                        { label: "Activation Date", name: "activationDate", type: "datetime-local" },
-                        { label: "Deactivation Date", name: "deactivationDate", type: "datetime-local" },
+                        { label: "활성화 날짜", name: "activationDate", type: "datetime-local" },
+                        { label: "비활성화 날짜", name: "deactivationDate", type: "datetime-local" },
                     ].map((field, index) => (
                         <FormInput
                             key={index}
                             {...field}
                             value={formData[field.name]}
                             onChange={handleChange}
+                        />
+                    ))}
+                </div>
+                <div className="px-4 py-2 space-y-3 border-b">
+                    {[
+                        { label: "무료 바이트 제공량", name: "free_bytes", type: "number" },
+                        { label: "총 사용 바이트", name: "use_byte_total", type: "number" },
+                        { label: "월간 사용 기간", name: "use_period", type: "number" },
+                        { label: "월간 사용 백분율", name: "use_percent_of_month", type: "number" },
+                    ].map((field, index) => (
+                        <FormInput
+                            key={index}
+                            {...field}
+                            value={formData[field.name]}
+                            onChange={handleChange}
+                            direct={field.type}
+                        />
+                    ))}
+                </div>
+                <div className="px-4 py-2 space-y-3">
+                    {[
+                        { label: "기본료", name: "basic_fee", type: "number" },
+                        { label: "가입비", name: "subscribe_fee", type: "number" },
+                        { label: "추가 사용료", name: "add_use_fee", type: "number" },
+                        { label: "절사 금액", name: "cut_off_fee", type: "number" },
+                        { label: "부가 서비스료", name: "modification_fee", type: "number" },
+                        { label: "총 납부액", name: "final_fee", type: "number" },
+                    ].map((field, index) => (
+                        <FormInput
+                            key={index}
+                            {...field}
+                            value={formData[field.name] ?? ""}
+                            onChange={handleChange}
+                            direct={field.type}
                         />
                     ))}
                 </div>

@@ -19,7 +19,7 @@ export const accordionItems = ({ detailData, paymentInfo, version, fetchDetailDa
 
     return [
         {
-            title: "단말 정보",
+            title: "기본 정보",
             content: (
                 <>
                     <div className="relative text-sm p-3 rounded-md">
@@ -47,22 +47,22 @@ export const accordionItems = ({ detailData, paymentInfo, version, fetchDetailDa
             )
         },
         {
-            title: '세부 사용',
+            title: 'Byte 사용 정보',
             content: (
                 <>
                     <div className="relative text-sm p-3 rounded-md">
-                        {hasVersion && (
-                            <div className="absolute top-0 right-2">
-                                <UsageDetailDropdownForm detailData={detailData} fetchDetailData={fetchDetailData} />
-                            </div>
-                        )}
+                        {/*{hasVersion && (*/}
+                        {/*    <div className="absolute top-0 right-2">*/}
+                        {/*        <UsageDetailDropdownForm detailData={detailData} fetchDetailData={fetchDetailData} />*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
                         {[
                             ['무료 바이트 제공량(b)', formatNumber(detailData.free_bytes)],
                             ['총 사용 바이트(b)', formatNumber(detailData.use_byte_total)],
-                            ['사용 기간', detailData.use_period],
-                            ['월 사용 비율(%)', detailData.use_percent_of_month]
+                            ['월간 사용 기간', detailData.use_period],
+                            ['월간 사용 비율(%)', detailData.use_percent_of_month]
                         ].map(([label, value], index) => (
-                            <p key={index} className="grid grid-cols-2 gap-4 py-0.5">
+                            <p key={index} className="grid grid-cols-2 gap-4">
                                 <span className="text-xs text-gray-500 col-span-1 text-left">{label}</span>
                                 <span className="font-normal col-span-1 text-right">{formatValue(value)}</span>
                             </p>
@@ -72,19 +72,20 @@ export const accordionItems = ({ detailData, paymentInfo, version, fetchDetailDa
             )
         },
         {
-            title: "단말 요금 정보",
+            title: "요금 정보",
             content: (
                 <>
                     <div className="relative text-sm p-3 rounded-md">
-                        {hasVersion && (
-                            <div className="absolute top-0 right-2">
-                                <PaymentDropdownForm detailData={detailData} />
-                            </div>
-                        )}
+                        {/*{hasVersion && (*/}
+                        {/*    <div className="absolute top-0 right-2">*/}
+                        {/*        <PaymentDropdownForm detailData={detailData} />*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
                         {[
                             ['기본료', formatNumber(paymentInfo.basic_fee)],
                             ['통신료', formatNumber(paymentInfo.add_use_fee)],
                             ['가입비', formatNumber(paymentInfo.subscribe_fee)],
+                            ['절사 금액', formatNumber(paymentInfo.cut_off_fee)],
                             ['부가 서비스료', formatNumber(paymentInfo.modification_fee)],
                         ].map(([label, value], index) => (
                             <p key={index} className="grid grid-cols-2 gap-4 py-0.5">

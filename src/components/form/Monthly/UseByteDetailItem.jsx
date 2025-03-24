@@ -4,6 +4,7 @@ import { formatDateTime, formatNumber, formatValue } from '@/utils/formatHelpers
 import { formatPeriod, getTypeClass } from '@/options/DeviceDetailOption.jsx';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
 import { FaExpand } from "react-icons/fa";
+import { LuRefreshCw } from "react-icons/lu";
 
 /**
  * @desc: 단말기별 청구서 수정 페이지_Device Right Form
@@ -94,13 +95,19 @@ const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProduct
             </div>
 
             <div className="bg-white p-4">
-                <div className="flex flex-row justify-between">
+                <div className="flex flex-row justify-between items-center">
                     <h2 className="text-lg font-semibold pb-2">조정 상세 정보</h2>
-                    {location.pathname !== "/adjustment" && (
-                        <div className="p-2 rounded-full hover:bg-gray-200 cursor-pointer" onClick={() => navigate("/adjustment")}>
-                            <FaExpand className="w-5 h-5" />
-                        </div>
-                    )}
+                    <div className="flex flex-row items-center">
+                        <button className="hover:text-blue-500">
+                            <LuRefreshCw />
+                        </button>
+                        {location.pathname !== '/adjustment' && (
+                            <div className="p-2 rounded-full hover:bg-gray-200 cursor-pointer"
+                                 onClick={() => navigate('/adjustment')}>
+                                <FaExpand className="w-5 h-5" />
+                            </div>
+                        )}
+                    </div>
                 </div>
                 {paymentAdjustmentInfo.length > 0 ? (
                     <div className="max-h-60 overflow-y-auto border border-gray-300 rounded-md">

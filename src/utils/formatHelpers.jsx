@@ -14,9 +14,16 @@ export function formatNumberWithCommas(number) {
 /**
  * @method: '10000' -> '10.000'
  * */
-const formatNumberWithCommasString = (number) => {
+export const formatNumberWithCommasString = (number) => {
     if (isNaN(number) || number === null) return "0";
     return Number(number).toLocaleString();
+};
+
+export const formatNumberWithCommasNumber = (value) => {
+    if (value === null || value === undefined || value === "") return "";
+    const number = Number(value.toString().replace(/,/g, ""));
+    if (isNaN(number)) return value;
+    return number.toLocaleString();
 };
 
 /**
