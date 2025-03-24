@@ -2,12 +2,16 @@ import Accordion from '@/components/ui/Accordions/Accordion.jsx';
 import { accordionItems } from '@/components/form/Monthly/DeviceAccordionItem.jsx';
 import UseByteDetailItem from '@/components/form/Monthly/UseByteDetailItem.jsx';
 import { formatDateTime } from '@/utils/formatHelpers.jsx';
+import { FaTrash } from "react-icons/fa";
+import { deleteRecentMonthly } from "@/service/monthlyService.js";
+import Swal from 'sweetalert2';
 
 
-const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData }) => {
+const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData, fetchDetailData, originalSerialNumber }) => {
     if (!detailData) return <p>No data available</p>;
 
 
+    console.log(detailData)
     const paymentInfo = detailData.payment || {};
     const paymentFeeDetail = paymentInfo.fee_detail || [];
     const paymentAdjustmentInfo = paymentInfo.adjustment_info || [];
@@ -26,6 +30,38 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
     // 변환된 데이터
     const dProductDetail = transformDetailData(detailData);
     console.log(dProductDetail)
+    console.log(fetchVersionData)
+    console.log(version)
+    console.log(latestVersion)
+
+
+    // 삭제 핸들러 함수
+    const handleDelete = async () => {
+        const result = await Swal.fire({
+            title: '정말 삭제하시겠습니까?',
+            text: '이 동작은 되돌릴 수 없습니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소',
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await deleteRecentMonthly(originalSerialNumber);
+                Swal.fire('삭제 완료', '데이터가 삭제되었습니다.', 'success');
+                // ✅ 데이터 새로고침
+                fetchVersionData(detailData.monthly_primary_key, latestVersion - 1);
+                setVersion(latestVersion - 1);
+                window.location.reload();
+            } catch (err) {
+                Swal.fire('오류', '삭제 중 오류가 발생했습니다.', 'error');
+            }
+        }
+    };
+
 
 
     return (
@@ -56,7 +92,7 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
                             </div>
                         )}
 
-                        <Accordion items={accordionItems({ detailData, paymentInfo, version })} />
+                        <Accordion items={accordionItems({ detailData, paymentInfo, version, fetchDetailData })} />
                     </div>
                 </div>
 
@@ -67,29 +103,39 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
 
                             {/* 버전 변경 버튼 */}
                             {fetchVersionData && setVersion !== null && version !== null && latestVersion !== null && (
-                                <div className="text-end space-x-4 justify-end">
+                                <div className="flex flex-row space-x-2 items-center">
+                                    <div className="text-end space-x-4 justify-end">
+                                        <button
+                                            className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
+                                            onClick={() => {
+                                                const newVersion = Math.max(version - 1, 0);
+                                                setVersion(newVersion);
+                                                fetchVersionData(detailData.monthly_primary_key, newVersion);
+                                            }}
+                                            disabled={version <= 0}
+                                        >
+                                            ◀
+                                        </button>
+                                        <span className="font-bold">Version {version}</span>
+                                        <button
+                                            className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
+                                            onClick={() => {
+                                                const newVersion = version + 1;
+                                                setVersion(newVersion);
+                                                fetchVersionData(detailData.monthly_primary_key, newVersion);
+                                            }}
+                                            disabled={version >= latestVersion} // 최신 버전 이상이면 비활성화
+                                        >
+                                            ▶
+                                        </button>
+                                    </div>
+
                                     <button
-                                        className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
-                                        onClick={() => {
-                                            const newVersion = Math.max(version - 1, 0);
-                                            setVersion(newVersion);
-                                            fetchVersionData(detailData.monthly_primary_key, newVersion);
-                                        }}
-                                        disabled={version <= 0}
+                                        className="text-gray-700 hover:text-red-500 hover:bg-gray-100 rounded-full p-2 disabled:opacity-30 disabled:hover:bg-white disabled:text-gray-700"
+                                        onClick={handleDelete}
+                                        disabled={latestVersion <= 0}
                                     >
-                                        ◀
-                                    </button>
-                                    <span className="font-bold">Version {version}</span>
-                                    <button
-                                        className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
-                                        onClick={() => {
-                                            const newVersion = version + 1;
-                                            setVersion(newVersion);
-                                            fetchVersionData(detailData.monthly_primary_key, newVersion);
-                                        }}
-                                        disabled={version >= latestVersion} // 최신 버전 이상이면 비활성화
-                                    >
-                                        ▶
+                                        <FaTrash className="w-4 h-4" />
                                     </button>
                                 </div>
                             )}
@@ -123,7 +169,8 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
                     </div>
 
                     <UseByteDetailItem detailData={detailData} paymentInfo={paymentInfo}
-                                       paymentFeeDetail={paymentFeeDetail} dProductDetail={dProductDetail} paymentAdjustmentInfo={paymentAdjustmentInfo}/>
+                                       paymentFeeDetail={paymentFeeDetail} dProductDetail={dProductDetail}
+                                       paymentAdjustmentInfo={paymentAdjustmentInfo} />
                 </div>
             </div>
         </>

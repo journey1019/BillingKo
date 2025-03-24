@@ -1,15 +1,22 @@
 import React from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
 import { formatDateTime, formatNumber, formatValue } from '@/utils/formatHelpers.jsx';
 import { formatPeriod, getTypeClass } from '@/options/DeviceDetailOption.jsx';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+import { FaExpand } from "react-icons/fa";
 
 /**
+ * @desc: 단말기별 청구서 수정 페이지_Device Right Form
  * @param (Array) paymentFeeDetail: 요금 발생 바이트 상세 정보
  * @param (Array) dProductDetail: 사용 바이트 상세 정보 (D_Product)
  * @param (Array) paymentAdjustmentInfo: 조정 상세 정보 (Adjustment)
  * */
 const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProductDetail, paymentAdjustmentInfo }) => {
     console.log(paymentFeeDetail)
+    console.log(paymentAdjustmentInfo)
+
+    const location = useLocation();
+    const navigate = useNavigate();
     const codeMappings = useAdjustmentMappings();
 
     return(
@@ -87,7 +94,14 @@ const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProduct
             </div>
 
             <div className="bg-white p-4">
-                <h2 className="text-lg font-semibold pb-2">조정 상세 정보</h2>
+                <div className="flex flex-row justify-between">
+                    <h2 className="text-lg font-semibold pb-2">조정 상세 정보</h2>
+                    {location.pathname !== "/adjustment" && (
+                        <div className="p-2 rounded-full hover:bg-gray-200 cursor-pointer" onClick={() => navigate("/adjustment")}>
+                            <FaExpand className="w-5 h-5" />
+                        </div>
+                    )}
+                </div>
                 {paymentAdjustmentInfo.length > 0 ? (
                     <div className="max-h-60 overflow-y-auto border border-gray-300 rounded-md">
                         <table className="w-full text-sm text-center border-collapse">

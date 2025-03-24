@@ -1,19 +1,21 @@
+import { useEffect, useState, useMemo } from "react";
 import { formatDateTime, formatNumber, formatValue } from '@/utils/formatHelpers.jsx';
 import BasicDropdownForm from '@/components/form/Monthly/Edit/BasicDropdownForm.jsx';
 import UsageDetailDropdownForm from '@/components/form/Monthly/Edit/UsageDetailDropdownForm.jsx';
 import PaymentDropdownForm from '@/components/form/Monthly/Edit/PaymentDropdownForm.jsx';
 
 /**
+ * @desc: 단마기별 청구서 수정 페이지_Device Left Form
  * @param (Object) detailData: 전체 단말 정보
  * @param (Object) paymentInfo: 단말 요금 정보
  * @param (Array) paymentFeeDetail: 요금 사용 세부 정보
  * @param (Array) paymentAdjustmentInfo: 조정 세부 정보
  * */
-export const accordionItems = ({ detailData, paymentInfo, version }) => {
-    // 데이터 유무 확인(Monthly Page | KOMonthly Page 구분)
-    // const hasFetchVersionData = fetchVersionData && Object.keys(fetchVersionData).length > 0;
+export const accordionItems = ({ detailData, paymentInfo, version, fetchDetailData }) => {
+
     const hasVersion = typeof version === "number" // ✅ version 데이터가 존재하고, 숫자인지 확인
     console.log('version: ', version)
+    console.log(detailData)
 
     return [
         {
@@ -23,7 +25,7 @@ export const accordionItems = ({ detailData, paymentInfo, version }) => {
                     <div className="relative text-sm p-3 rounded-md">
                         {hasVersion && (
                             <div className="absolute top-0 right-2">
-                                <BasicDropdownForm detailData={detailData} />
+                                <BasicDropdownForm detailData={detailData} fetchDetailData={fetchDetailData} />
                             </div>
                         )}
                         {[
@@ -51,7 +53,7 @@ export const accordionItems = ({ detailData, paymentInfo, version }) => {
                     <div className="relative text-sm p-3 rounded-md">
                         {hasVersion && (
                             <div className="absolute top-0 right-2">
-                                <UsageDetailDropdownForm detailData={detailData} />
+                                <UsageDetailDropdownForm detailData={detailData} fetchDetailData={fetchDetailData} />
                             </div>
                         )}
                         {[

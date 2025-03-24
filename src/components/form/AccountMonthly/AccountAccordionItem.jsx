@@ -1,7 +1,9 @@
 import { formatDateTime, formatNumber, formatValue } from '@/utils/formatHelpers.jsx';
 import InnerAccordion from '@/components/ui/Accordions/InnerAccordion.jsx';
 import DeviceTable from './DeviceTable.jsx';
-
+/**
+ * @Desc: 고객별 청구서 수정 페이지_Account Left Form
+ * */
 const acctAccordionItem= ({ accountData, accountInfo }) => [
     {
         title: '담당자 정보',

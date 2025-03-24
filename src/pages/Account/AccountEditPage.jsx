@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { updateAccount, fetchAccountPart } from "@/service/accountService.js";
 import { IoMdClose } from "react-icons/io";
 import LoadingSpinner from "@/components/common/LoadingSpinner.jsx";
-import { formatPhoneNumber, formatBusinessNumber } from "@/utils/formatHelpers.jsx";
+import { formatPhoneNumber, formatBusinessNumber, formatFormDate } from "@/utils/formatHelpers.jsx";
 import { Switch } from "@mui/material";
 
 const AccountEditPage = () => {
@@ -21,9 +21,6 @@ const AccountEditPage = () => {
         company_address: "", company_address2: "",
     });
 
-    // ✅ 날짜 포맷 함수
-    const formatDate = (datetime) => (datetime ? new Date(datetime).toISOString().slice(0, 10) : "");
-
     // ✅ 데이터 불러오기
     useEffect(() => {
         const loadAccountData = async () => {
@@ -31,7 +28,7 @@ const AccountEditPage = () => {
                 const account = await fetchAccountPart(acct_num);
                 setFormData({
                     ...account,
-                    regist_date: formatDate(account.regist_date),
+                    regist_date: formatFormDate(account.regist_date),
                     company_tel: formatPhoneNumber(account.company_tel),
                     director_tel: formatPhoneNumber(account.director_tel),
                     business_num: formatBusinessNumber(account.business_num),

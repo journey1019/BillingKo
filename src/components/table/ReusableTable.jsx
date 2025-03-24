@@ -59,6 +59,15 @@ const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, er
             maxSize: 200,
         },
         renderDetailPanel: null, // 기본적으로 세부 정보 패널 비황설화
+        // ✅ 선택 셀(UI) 숨기기
+        // muiTableBodyCellProps: ({ cell }) => {
+        //     if (cell.column.id === 'mrt-row-select') {
+        //         return {
+        //             sx: { display: 'none' },
+        //         };
+        //     }
+        //     return {};
+        // },
     };
 
     // 병합된 옵션

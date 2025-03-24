@@ -4,6 +4,7 @@ import { updateDevice, fetchDevicePart } from '@/service/deviceService.js';
 import { IoMdClose } from 'react-icons/io';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import { Switch } from "@mui/material";
+import { formatFormDate } from "@/utils/formatHelpers";
 
 const DeviceEditPage = () => {
     const { serial_number } = useParams();
@@ -24,12 +25,6 @@ const DeviceEditPage = () => {
         use_yn: ""
     });
 
-    // Convert datetime string to date format (YYYY-MM-DD)
-    // Input Value 값에 넣어주기 위함
-    const formatDate = (datetime) => {
-        if (!datetime) return "";
-        return new Date(datetime).toISOString().slice(0, 10);
-    };
 
     useEffect(() => {
         const loadDeviceData = async () => {
@@ -37,8 +32,8 @@ const DeviceEditPage = () => {
                 const device = await fetchDevicePart(serial_number);
                 setFormData({
                     ...device,
-                    activated: formatDate(device.activated),
-                    deactivated: formatDate(device.deactivated),
+                    activated: formatFormDate(device.activated),
+                    deactivated: formatFormDate(device.deactivated),
                 });
             } catch (err) {
                 setError("Failed to fetch device data");
@@ -49,6 +44,7 @@ const DeviceEditPage = () => {
         };
         loadDeviceData();
     }, [serial_number]);
+    console.log(formData)
 
     // 빈 문자열을 null로 변환하는 함수
     const convertEmptyToNull = (data) => {

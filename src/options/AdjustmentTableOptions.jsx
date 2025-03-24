@@ -21,6 +21,7 @@ export const AdjustmentTableOptions = {
             cursor: "pointer",
         },
     }),
+
 };
 
 

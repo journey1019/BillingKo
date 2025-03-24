@@ -11,6 +11,7 @@ export const FileUploadTableOptions = {
     enablePagination: true,
     enableFilters: true,
     positionToolbarAlertBanner: "none",
+    enableColumnVisibility: false,   // ✅ 컬럼 토글 버튼 제거
     enableSorting: true,
 
     muiTableBodyRowProps: ({ row, table }) => ({
@@ -27,4 +28,13 @@ export const FileUploadTableOptions = {
             cursor: 'pointer',
         },
     }),
+    // ✅ 선택 셀(UI) 숨기기
+    // muiTableBodyCellProps: ({ cell }) => {
+    //     if (cell.column.id === 'mrt-row-select') {
+    //         return {
+    //             sx: { display: 'none' },
+    //         };
+    //     }
+    //     return {};
+    // },
 }

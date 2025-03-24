@@ -3,8 +3,10 @@ import { MdEdit } from "react-icons/md";
 import { saveKOMonthlyDetailData } from "@/service/monthlyService.js";
 import DropdownMenu from "@/components/dropdown/DropdownMenu.jsx";
 import FormInput from "@/components/dropdown/FormInput.jsx";
+import { LuRefreshCw } from "react-icons/lu";
 
-const UsageDetailDropdownForm = ({ detailData }) => {
+
+const UsageDetailDropdownForm = ({ detailData, fetchDetailData }) => {
     console.log(detailData);
 
     // ✅ Dropdown 상태 관리
@@ -63,8 +65,21 @@ const UsageDetailDropdownForm = ({ detailData }) => {
         }
     };
 
+    const handleRefresh = async () => {
+        if(!fetchDetailData) return;
+        try {
+            await fetchDetailData();
+            alert("최신 데이터로 갱신되었습니다.");
+        } catch(error) {
+            alert("갱신 중 오류가 발생했습니다.")
+        }
+    }
+
     return (
         <div className="relative inline-block float-right">
+            <button className="hover:text-blue-500 pr-2" onClick={handleRefresh}>
+                <LuRefreshCw />
+            </button>
             <button className="hover:text-gray-500" onClick={toggleDropdown}>
                 <MdEdit />
             </button>

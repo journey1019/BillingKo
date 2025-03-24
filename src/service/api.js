@@ -8,7 +8,7 @@ export const API_URL = "http://112.168.252.12:29455";
 // export const API_sURL = "http://127.0.0.1:8008";
 // export const API_URL = "http://0.0.0.0:8008";
 // export const API_URL = "http://192.168.0.74:8008";
-// export const API_URL = "http://112.168.252.12:29466";
+    // export const API_URL = "http://112.168.252.12:29466"; // :33111 배포
 
 // Axios 인스턴스 생성
 const api = axios.create({

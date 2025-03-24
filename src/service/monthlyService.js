@@ -1,4 +1,4 @@
-import { get, postWithBody, postWithAuth } from "./api";
+import { get, postWithBody, postWithAuth, del } from './api';
 
 /**
  * 월별 데이터 가져오기
@@ -86,6 +86,17 @@ export const saveKOMonthlyDetailData = async (dataIndex, payload) => {
         return await postWithAuth(endpoint, payload); // ✅ body로 payload 추가
     } catch (error) {
         console.log("Failed to fetch", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
+/** Monthly Device Version Delete */
+export const deleteRecentMonthly = async (serial_number) => {
+    try {
+        return await del(`/monthly/saveData/version/${serial_number}`);
+    } catch (error) {
+        console.error("Failed to delete adjustment:", error.response?.data || error.message);
         throw error;
     }
 };

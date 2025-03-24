@@ -25,9 +25,6 @@ import { IoMdClose } from 'react-icons/io';
  * */
 const KOMonthlyPage = () => {
     const [searchParams] = useSearchParams();
-    console.log('searchParams: ', searchParams)
-
-    const navigate = useNavigate();
 
     const urlYearMonth = searchParams.get("yearMonth"); // ex) '202402'
     const urlSerial = searchParams.get("serial");
@@ -48,15 +45,12 @@ const KOMonthlyPage = () => {
     }, [urlYearMonth]);
 
 
+    /** API 데이터 호출 */
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth(initialDate);
-
-    // ✅ searchParams에 yearMonth가 존재하면 해당 값 사용, 없으면 기존 yearMonth 사용
-    // const selectedYearMonth = searchParams.get("yearMonth") || yearMonth;
-
-
-    const { data, loading, error } = useApiFetch(fetchKOMonthlyData, yearMonth);
     const [selectedMonthlyIndex, setSelectedMonthlyIndex] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
+
+    const { data, loading, error } = useApiFetch(fetchKOMonthlyData, yearMonth);
 
     // Detail Data
     const [version, setVersion] = useState(0);
@@ -69,29 +63,30 @@ const KOMonthlyPage = () => {
     // Detail Version Data
     const [detailVersionData, setDetailVersionData] = useState(null);
     const [detailVersionLoading, setDetailVersionLoading] = useState(false);
-    const [detailVersionError, setDetailVersionError] = useState(null);
+    const [detailVersionError, setDetailVersionError] = useState(null)
 
-
+    // 선택이 바뀔 때 상세 기본 데이터
     useEffect(() => {
-        const fetchMonthlyDetail = async () => {
-            if (!selectedMonthlyIndex) return;
-
-            setDetailLoading(true);
-            setDetailError(null);
-            try {
-                const response = await fetchKOMonthlyDetailIndexData(selectedMonthlyIndex.data_index);
-                setDetailData(response);
-                setVersion(response.update_version || 0);
-                setLatestVersion(response.update_version || 0); // 최신 버전 저장
-            } catch (error) {
-                setDetailError(error.message || "Failed to fetch detail data");
-            } finally {
-                setDetailLoading(false);
-            }
-        };
-
-        fetchMonthlyDetail();
+        if (!selectedMonthlyIndex) return;
+        fetchDetailData(selectedMonthlyIndex.data_index);
     }, [selectedMonthlyIndex]);
+
+    // 선택된 data_index에 대한 detail fetch 함수
+    const fetchDetailData = async (dataIndex) => {
+        if (!dataIndex) return;
+        setDetailLoading(true);
+        setDetailError(null);
+        try {
+            const response = await fetchKOMonthlyDetailIndexData(dataIndex + `?ts=${Date.now()}`);
+            setDetailData(response);
+            setVersion(response.update_version || 0);
+            setLatestVersion(response.update_version || 0);
+        } catch (error) {
+            setDetailError(error.message || "Failed to fetch detail data");
+        } finally {
+            setDetailLoading(false);
+        }
+    };
 
     const fetchVersionData = async (serial_number, version_index) => {
         setDetailVersionLoading(true);
@@ -108,9 +103,6 @@ const KOMonthlyPage = () => {
     };
 
     console.log('detailData: ', detailData)
-    useEffect(() => {
-        console.log("Fetched Data:", data);
-    }, [data]); // ✅ data가 변경될 때마다 실행
     console.log(selectedMonthlyIndex)
 
     return (
@@ -123,17 +115,6 @@ const KOMonthlyPage = () => {
                 <div>
                     <div className="flex flex-row items-center justify-between mb-3 relative z-10">
                         <h1 className="text-xl font-bold">단말기 청구서 테이블</h1>
-                        {/*<h1 className="text-lg font-bold">*/}
-                        {/*    Selected Month:{" "}*/}
-                        {/*    {selectedDate.toLocaleDateString("ko-KR", {*/}
-                        {/*        year: "numeric",*/}
-                        {/*        month: "short", // '1월' 대신 '01월'을 원하면 "2-digit" 사용*/}
-                        {/*    })}*/}
-                        {/*    /!*{selectedDate.toLocaleDateString("en-US", {*!/*/}
-                        {/*    /!*    year: "numeric",*!/*/}
-                        {/*    /!*    month: "long",*!/*/}
-                        {/*    /!*})}*!/*/}
-                        {/*</h1>*/}
                         <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                     </div>
                     {loading ? (
@@ -176,17 +157,7 @@ const KOMonthlyPage = () => {
                         <div className="flex flex-row justify-between mb-4">
                             <div className="flex flex-row items-center">
                                 <h1 className="text-xl font-bold text-gray-700 align-center text-center justify-center">{selectedMonthlyIndex.acct_num} _ {selectedMonthlyIndex.serial_number}</h1>
-
-                                {/*<span className="text-black font-semibold pr-3">Data Index:</span>*/}
-                                {/*<h2 className="py-1 text-lg font-bold text-red-600">{selectedMonthlyIndex.data_index}</h2>*/}
                             </div>
-                            {/*<button type="button"*/}
-                            {/*        className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"*/}
-                            {/*        onClick={() => navigate(`/ko_monthly/edit`, {state: {detailData: detailData} })}*/}
-                            {/*>*/}
-                            {/*    <MdModeEditOutline className="mr-3" />*/}
-                            {/*    Edit*/}
-                            {/*</button>*/}
                             <button
                                 onClick={() => {
                                     setIsExpanded(false);
@@ -210,14 +181,9 @@ const KOMonthlyPage = () => {
                                         latestVersion={latestVersion}
                                         setVersion={setVersion}
                                         fetchVersionData={fetchVersionData}
+                                        fetchDetailData={fetchDetailData}
+                                        originalSerialNumber={selectedMonthlyIndex.monthly_primary_key}
                                     />
-                                    {/*<DeviceMonthlyFormBefo*/}
-                                    {/*    detailData={detailVersionData || detailData}*/}
-                                    {/*    version={version}*/}
-                                    {/*    latestVersion={latestVersion}*/}
-                                    {/*    setVersion={setVersion}*/}
-                                    {/*    fetchVersionData={fetchVersionData}*/}
-                                    {/*/>*/}
                                 </>
                             )}
                         </div>

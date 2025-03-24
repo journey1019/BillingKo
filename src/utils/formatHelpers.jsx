@@ -163,3 +163,14 @@ export const formatBusinessNumber = (businessNum) => {
     return businessNum; // 원래 값 반환
 };
 
+
+
+/** UTC 변환 없이 원 날짜 그대로 활용 */
+export const formatFormDate = (datetime) => {
+    if (!datetime) return "";
+    const date = new Date(datetime);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 0-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
