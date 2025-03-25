@@ -26,7 +26,12 @@ export const useAcctTypeList = () => {
 
 // ✅ 중복 제거 classification 배열만 추출하는 filter_selector
 // ['내부개발용', '평창군청', '홍수통제소']
-export const useClassificationOptions = () => {
+export const useAcctClassificationOptions = () => {
     const accountData = useAccountStore((state) => state.accountData);
     return Array.from(new Set(accountData.map((item) => item.classification))).filter(Boolean);
+};
+
+export const useAcctResidentNumOptions = () => {
+    const accountData = useAccountStore((state) => state.accountData);
+    return Array.from(new Set(accountData.map((item) => item.acct_resident_num))).filter(Boolean);
 };

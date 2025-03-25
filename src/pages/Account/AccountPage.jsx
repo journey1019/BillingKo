@@ -24,13 +24,13 @@ import { IoMdClose } from "react-icons/io";
 import { TiPlus } from "react-icons/ti";
 import { Tooltip } from '@mui/material';
 import useAccountStore from '@/stores/accountStore';
-import { useAcctNumList, useClassificationOptions } from '@/selectors/useAccountSelectors';
+import { useAcctNumList, useAcctClassificationOptions } from '@/selectors/useAccountSelectors';
 
 
 
 const AccountPage = () => {
     const { accountData, fetchAccountData, fetchAccountDetails, accountLoading, accountError, accountPartData, historyData, adjustHistoryData, } = useAccountStore();
-    const classificationOptions = useClassificationOptions();
+    const classificationOptions = useAcctClassificationOptions();
 
     const navigate = useNavigate();
 

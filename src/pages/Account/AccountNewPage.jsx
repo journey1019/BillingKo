@@ -6,6 +6,8 @@ import { Switch } from "@mui/material";
 import { formatPhoneNumber } from '@/utils/formatPhoneNumber.jsx';
 import useAccountStore from '@/stores/accountStore';
 import { useAcctNumList } from '@/selectors/useAccountSelectors.js';
+import { defaultAccountFormData } from '@/contents/accountFormDefault.js';
+import { inputAccountFormData } from '../../contents/accountFormDefault.js';
 
 const AccountNewPage = () => {
     const { accountData, fetchAccountData, isDuplicateAcctNm, accountLoading, accountError } = useAccountStore();
@@ -19,29 +21,7 @@ const AccountNewPage = () => {
 
 
     // ✅ 폼 데이터 상태 관리
-    const [formData, setFormData] = useState({
-        acct_num: "",
-        acct_name: "",
-        acct_resident_num: "",
-        classification: "",
-        invoice_address: null,
-        invoice_postcode: null,
-        use_yn: "N",
-        account_type: null,
-        invoice_address2: null,
-        recognize_id: null,
-        company_tel: null,
-        tax_percent: 0,
-        business_num: null,
-        company_name: null,
-        company_team: null,
-        company_director: null,
-        director_email: null,
-        director_tel: null,
-        company_postcode: null,
-        company_address: null,
-        company_address2: null,
-    });
+    const [formData, setFormData] = useState(defaultAccountFormData);
 
     const [error, setError] = useState(null);
     const [acctNumError, setAcctNumError] = useState("");
@@ -150,6 +130,11 @@ const AccountNewPage = () => {
     )
 
 
+    const extendedFormData = [
+        { id: 'account_type', label: '고객 구분', type: 'text', placeholder: '법인', required: true },
+        ...inputAccountFormData
+    ];
+
     return (
         <div className="container mx-auto">
             {/* ✅ 상단 타이틀 및 닫기 버튼 */}
@@ -163,69 +148,13 @@ const AccountNewPage = () => {
 
             {/* ✅ 입력 폼 */}
             <form className="bg-white p-5 rounded-xl space-y-4" onSubmit={handleSubmit}>
-                {/* ✅ 고객번호 (중복 검사 포함) */}
+                {/* ✅ 고객 번호 (중복 검사 포함) */}
                 {renderInputField("acct_num", "고객번호", "text", true, acctNumError, "KO_99999")}
-                {/*{renderSelectFiled("acct_num", "고객번호", "text", true, acctNumList)}*/}
 
-                {/* ✅ 나머지 입력 필드 자동 생성 */}
-                {[
-                    { id: 'account_type', label: '고객 구분', type: 'text', placeholder: '법인', required: true },
-                    { id: 'acct_name', label: '고객명', type: 'text', placeholder: '코리아오브컴', required: true },
-                    { id: "classification", label: "분류", type: "text", placeholder: "내부 개발", required: true },
-                    { id: "acct_resident_num", label: "등록 번호", type: "number", placeholder: "0000000000", required: true },
-                    {
-                        id: "tax_percent",
-                        label: "부가세율 (%)",
-                        type: "number",
-                        placeholder: "0",
-                        min: "0",
-                        max: "100",
-                        step: "0.1",
-                        required: false
-                    },
-                    // { id: "regist_date", label: "등록일", type: "date", required: false },
-                    { id: "company_name", label: "회사명", type: "text", placeholder: "OOO", required: false },
-                    { id: "business_num", label: "사업자 등록 번호", type: "number", placeholder: "000-00-00000", required: false },
-                    { id: "recognize_id", label: "법인(주민) 번호", type: "text", required: false },
-                    {
-                        id: "company_tel",
-                        label: "회사 전화 번호",
-                        type: "tel",
-                        pattern: "[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}",
-                        placeholder: "00-0000-0000",
-                        required: false
-                    },
-                    { id: "company_postcode", label: "회사 우편 번호", type: "number", placeholder: "00000", required: false },
-                    { id: "company_address", label: "회사 주소", type: "text", placeholder: "-", required: false },
-                    { id: "company_address2", label: "회사 상세 주소", type: "text", placeholder: "-", required: false },
-                    { id: "company_team", label: "팀명", type: "text", placeholder: "Tech",required: false },
-                    { id: "company_director", label: "담당자", type: "text", placeholder: "OOO", required: false },
-                    {
-                        id: "director_email",
-                        label: "담당자 이메일",
-                        type: "email",
-                        placeholder: "example@gmail.com",
-                        required: false
-                    },
-                    {
-                        id: "director_tel",
-                        label: "담당자 전화번호",
-                        type: "tel",
-                        pattern: "[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}",
-                        placeholder: "000-0000-0000",
-                        required: false
-                    },
-                    { id: "invoice_postcode", label: "청구서 우편 번호", type: "number", placeholder: '00000', required: false },
-                    { id: "invoice_address", label: "청구서 주소", type: "text", placeholder: '-', required: false },
-                    { id: "invoice_address2", label: "청구서 상세 주소", type: "text", placeholder: '-', required: false }
-                ].map(({
-                           id,
-                           label,
-                           type,
-                           required,
-                           placeholder,
-                           ...rest
-                       }) => renderInputField(id, label, type, required, "", placeholder , rest))}
+                {/* ✅ account_type 포함된 전체 필드 */}
+                {extendedFormData.map((
+                    { id, label, type, required, placeholder, ...rest }
+                ) => renderInputField(id, label, type, required, "", placeholder , rest))}
 
                 {/* ✅ 사용 여부 (토글) */}
                 <div className="flex items-center space-x-4">
