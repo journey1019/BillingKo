@@ -2,8 +2,11 @@ import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
 import { AdjustmentHistoryTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
 import { AdjustmentHistoryTableOptions } from '@/options/AdjustmentTableOptions.jsx';
+import useAccountStore from '@/stores/accountStore';
 
-const AccountTransactionTab = ({ adjustHistoryLoading, adjustHistoryError, adjustHistoryData}) => {
+
+const AccountTransactionTab = () => {
+    const { adjustHistoryData, adjustHistoryLoading, adjustHistoryError } = useAccountStore();
     return(
         <div>
             {adjustHistoryLoading ? (

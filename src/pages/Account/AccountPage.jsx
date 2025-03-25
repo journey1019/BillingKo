@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import useApiFetch from '@/hooks/useApiFetch.js';
 import { fetchAccounts, deleteAccount, fetchAccountHistory, fetchAccountPart } from '@/service/accountService.js';
 import { fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
@@ -23,99 +23,59 @@ import AccountHistoryTab from '@/components/form/Account/AccountHistoryTab.jsx';
 import { IoMdClose } from "react-icons/io";
 import { TiPlus } from "react-icons/ti";
 import { Tooltip } from '@mui/material';
+import useAccountStore from '@/stores/accountStore';
+import { useAcctNumList, useClassificationOptions } from '@/selectors/useAccountSelectors';
+
 
 
 const AccountPage = () => {
-    const { data: accountData, loading: accountLoading, error: accountError, refetch: accountRefetch } = useApiFetch(fetchAccounts);
+    const { accountData, fetchAccountData, fetchAccountDetails, accountLoading, accountError, accountPartData, historyData, adjustHistoryData, } = useAccountStore();
+    const classificationOptions = useClassificationOptions();
 
-    const [selectedAccountId, setSelectedAccountId] = useState(null);
-    const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
-    const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
     const navigate = useNavigate();
 
-    // 부분 계정 데이터 상태
-    const [accountPartData, setAccountPartData] = useState(null);
-    const [partDataLoading, setPartDataLoading] = useState(false);
-    const [partDataError, setPartDataError] = useState(null);
+    // Account Table Row Select
+    const [selectedAccountId, setSelectedAccountId] = useState(null);
+    const [isExpanded, setIsExpanded] = useState(false);
 
-    // 이력 데이터 상태
-    const [historyData, setHistoryData] = useState(null);
-    const [historyLoading, setHistoryLoading] = useState(false);
-    const [historyError, setHistoryError] = useState(null);
+    useEffect(() => {
+        fetchAccountData();
+    }, []);
 
-    // 조정 데이터 상태
-    const [adjustHistoryData, setAdjustHistoryData] = useState(null);
-    const [adjustHistoryLoading, setAdjustHistoryLoading] = useState(false);
-    const [adjustHistoryError, setAdjustHistoryError] = useState(null);
+    useEffect(() => {
+        if (selectedAccountId) {
+            fetchAccountDetails(selectedAccountId.acct_num);
+        }
+    }, [selectedAccountId]);
+
 
     // FilterSelectOptions
-    const [classificationOptions, setClassificationOptions] = useState([]);
-    useEffect(() => {
-        if (accountData) {
-            const uniqueClassifiactions = Array.from(
-                new Set(accountData.map((item) => item.classification))
-            ).filter(Boolean);
-            setClassificationOptions(uniqueClassifiactions);
-        }
-    }, [accountData]);
+    // const [classificationOptions, setClassificationOptions] = useState([]);
+    // useEffect(() => {
+    //     if (accountData) {
+    //         const uniqueClassifiactions = Array.from(
+    //             new Set(accountData.map((item) => item.classification))
+    //         ).filter(Boolean);
+    //         setClassificationOptions(uniqueClassifiactions);
+    //     }
+    // }, [accountData]);
+    // const dynamicColumns = AccountTableColumns.map((col) => {
+    //     if (col.accessorKey === 'classification') {
+    //         return { ...col, filterSelectOptions: classificationOptions };
+    //     }
+    //     return col;
+    // });
 
-    const dynamicColumns = AccountTableColumns.map((col) => {
-        if (col.accessorKey === 'classification') {
-            return { ...col, filterSelectOptions: classificationOptions };
-        }
-        return col;
-    });
-
-
-    /** AccountData의 파생 데이터 */
-    useEffect(() => {
-        const fetchAccountDetails = async () => {
-            if (!selectedAccountId) return;  // 선택된 값이 없으면 호출하지 않음
-
-            // 부분 계정 데이터 가져오기
-            setPartDataLoading(true);
-            setPartDataError(null);
-            try {
-                const partResponse = await fetchAccountPart(selectedAccountId.acct_num);
-                setAccountPartData(partResponse);
-            } catch (error) {
-                setPartDataError(error.message || 'Failed to fetch account details');
-            } finally {
-                setPartDataLoading(false);
-            }
-
-            // 이력 데이터 가져오기
-            setHistoryLoading(true);
-            setHistoryError(null);
-            try {
-                const response = await fetchAccountHistory(selectedAccountId.acct_num);
-                setHistoryData(response);
-            } catch (error) {
-                setHistoryError(error.message || 'Failed to fetch account history');
-            } finally {
-                setHistoryLoading(false);
-            }
-
-            // 조정 데이터 가져오기
-            setAdjustHistoryLoading(true);
-            setAdjustHistoryError(null);
-            try {
-                const adjustResponse = await fetchAdjustmentValueHistory(selectedAccountId.acct_num);
-                setAdjustHistoryData(adjustResponse);
-            } catch (error) {
-                setAdjustHistoryError(error.message || 'Failed to fetch account details');
-            } finally {
-                setAdjustHistoryLoading(false);
-            }
-        };
-
-        fetchAccountDetails();
-    }, [selectedAccountId]);  // selectedAccountId가 변경될 때만 실행
-
+    const dynamicColumns = useMemo(() => {
+        return AccountTableColumns.map((col) =>
+            col.accessorKey === 'classification'
+                ? { ...col, filterSelectOptions: classificationOptions }
+                : col
+        );
+    }, [classificationOptions]);
 
     // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
     const handleDeleteSuccess = () => {
-        accountRefetch();  // 데이터 새로고침
         setSelectedAccountId(null);  // 선택 해제
         setIsExpanded(false); // Grid 초기 화면 복구
     };
@@ -252,9 +212,7 @@ const AccountPage = () => {
                             {
                                 id: 1,
                                 label: 'Overview',
-                                content: <AccountOverviewTab partDataLoading={partDataLoading}
-                                                             partDataError={partDataError}
-                                                             accountPartData={accountPartData} />,
+                                content: <AccountOverviewTab />,
                             },
                             {
                                 id: 2,
@@ -275,18 +233,14 @@ const AccountPage = () => {
                                                 </button>
                                             </Tooltip>
                                         </div>
-                                        <AccountTransactionTab adjustHistoryLoading={adjustHistoryLoading}
-                                                               adjustHistoryError={adjustHistoryError}
-                                                               adjustHistoryData={adjustHistoryData} />
+                                        <AccountTransactionTab />
                                     </>
                                 )
                             },
                             {
                                 id: 3,
                                 label: 'History',
-                                content: <AccountHistoryTab historyLoading={historyLoading} historyError={historyError}
-                                                            historyData={historyData}
-                                                            AccountTableColumns={AccountTableColumns} />
+                                content: <AccountHistoryTab AccountTableColumns={AccountTableColumns} />
                             },
                         ]} />
                     </div>

@@ -108,7 +108,7 @@ export const formatDisplayValue = (value) => {
 
 // 오늘 날짜를 YYYY-MM-DD 형식으로 변환
 export const getTodayDate = () => {
-    return new Date().toISOString().slice(0, 10);
+    return new Date().toISOString().slice(0, 10); // .toISOString().split("T")[0];
 }
 
 

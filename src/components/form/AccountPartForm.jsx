@@ -2,6 +2,8 @@ import React from 'react';
 import Accordion from '../ui/Accordions/Accordion.jsx';
 
 const AccountPartForm = ({ accountPartData }) => {
+    if (!accountPartData) return;
+
     // 사용 여부 (Toggle)
     const isEnabled = accountPartData.use_yn === 'Y';
 

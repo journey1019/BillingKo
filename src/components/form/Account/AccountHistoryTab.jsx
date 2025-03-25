@@ -1,7 +1,9 @@
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
+import useAccountStore from '@/stores/accountStore';
 
-const AccountHistoryTab = ({ historyLoading, historyError, historyData, AccountTableColumns }) => {
+const AccountHistoryTab = ({ AccountTableColumns }) => {
+    const { historyData, historyLoading, historyError } = useAccountStore();
     return (
         <div>
             {historyLoading ? (

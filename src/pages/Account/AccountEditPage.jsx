@@ -5,12 +5,22 @@ import { IoMdClose } from "react-icons/io";
 import LoadingSpinner from "@/components/common/LoadingSpinner.jsx";
 import { formatPhoneNumber, formatBusinessNumber, formatFormDate } from "@/utils/formatHelpers.jsx";
 import { Switch } from "@mui/material";
+import useAccountStore from '@/stores/accountStore';
+import { useAcctTypeList } from '@/selectors/useAccountSelectors.js';
 
 const AccountEditPage = () => {
     const { acct_num } = useParams();
+    const acctTypeList = useAcctTypeList();
+
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const {
+        accountPartData,
+        accountPartLoading,
+        accountPartError,
+        fetchAccountDetails,
+        updateAccountData
+    } = useAccountStore();
+
     const [formData, setFormData] = useState({
         acct_num: "", account_type: "", acct_name: "", acct_resident_num: "",
         regist_date: "", use_yn: "", classification: "", invoice_postcode: "",
@@ -21,41 +31,42 @@ const AccountEditPage = () => {
         company_address: "", company_address2: "",
     });
 
+    useEffect(() => {
+        fetchAccountDetails(acct_num);
+    }, [acct_num]);
+    const normalizeNullToEmptyString = (obj) =>
+        Object.fromEntries(
+            Object.entries(obj).map(([key, value]) => [key, value ?? ""])
+        );
+
     // ✅ 데이터 불러오기
     useEffect(() => {
-        const loadAccountData = async () => {
-            try {
-                const account = await fetchAccountPart(acct_num);
-                setFormData({
-                    ...account,
-                    regist_date: formatFormDate(account.regist_date),
-                    company_tel: formatPhoneNumber(account.company_tel),
-                    director_tel: formatPhoneNumber(account.director_tel),
-                    business_num: formatBusinessNumber(account.business_num),
-                });
-            } catch (err) {
-                setError("Failed to fetch account data");
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadAccountData();
-    }, [acct_num]);
+        if (accountPartData) {
+            const formatted = {
+                ...accountPartData,
+                regist_date: formatFormDate(accountPartData.regist_date),
+                company_tel: formatPhoneNumber(accountPartData.company_tel),
+                director_tel: formatPhoneNumber(accountPartData.director_tel),
+                business_num: formatBusinessNumber(accountPartData.business_num),
+            };
+            setFormData(normalizeNullToEmptyString(formatted));
+        }
+    }, [accountPartData]);
+
+
 
     // ✅ 입력값 변경 핸들러
     const handleChange = (e) => {
         const { name, value } = e.target;
-        let formattedValue = value;
+        let formatted = value;
 
-        // 전화번호 & 사업자 등록번호 변환
         if (name === "company_tel" || name === "director_tel") {
-            formattedValue = formatPhoneNumber(value);
+            formatted = formatPhoneNumber(value);
         } else if (name === "business_num") {
-            formattedValue = formatBusinessNumber(value);
+            formatted = formatBusinessNumber(value);
         }
 
-        setFormData((prev) => ({ ...prev, [name]: formattedValue }));
+        setFormData((prev) => ({ ...prev, [name]: formatted }));
     };
 
     // ✅ Yes / No 토글
@@ -67,26 +78,16 @@ const AccountEditPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log("PUT 요청 보낼 데이터", formData);
-            await updateAccount(acct_num, formData);
-            alert("Account updated successfully!");
-            navigate("/accounts");
+            await updateAccountData(acct_num, formData);
+            alert('계정이 성공적으로 수정되었습니다.');
+            navigate('/accounts');
         } catch (err) {
-            console.error(err.message);
-            setError("Failed to update account");
+            alert(err.message || '수정에 실패했습니다.');
         }
     };
 
-    if (loading) return <LoadingSpinner />;
-    if (error) return <p className="text-red-500 text-sm mt-3">{error}</p>;
-
-    const InputField = ({ id, label, type, value, onChange, ...props }) => (
-        <div className="grid grid-cols-6 items-center space-x-4">
-            <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">{label}</label>
-            <input id={id} type={type} value={value} onChange={onChange}
-                   className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" {...props} />
-        </div>
-    );
+    if (accountPartLoading) return <LoadingSpinner />;
+    if (accountPartError) return <p className="text-red-500">{accountPartError}</p>;
 
     return (
         <div className="container mx-auto">
@@ -142,20 +143,46 @@ const AccountEditPage = () => {
                     { id: 'invoice_address', label: '청구지 주소', type: 'text' },
                     { id: 'invoice_address2', label: '청구지 상세 주소', type: 'text' },
                 ].map(({ id, label, type, ...rest }) => (
-                    <InputField key={id} id={id} label={label} type={type} value={formData[id]}
-                                onChange={handleChange} {...rest} />
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">{label}</label>
+                        <input
+                            id={id}
+                            name={id}
+                            type={type === 'number' ? 'text' : type}
+                            value={formData[id] ?? ''} // null 방지
+                            onChange={handleChange}
+                            className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
+                            {...rest}
+                        />
+                    </div>
                 ))}
 
+                <div className="grid grid-cols-6 items-center space-x-4">
+                    <label htmlFor="account_type" className="col-start-1 text-sm font-medium text-gray-900">고객
+                        구분</label>
+                    <input
+                        list="account-type-options"
+                        id="account_type"
+                        name="account_type"
+                        value={formData.account_type ?? ''}
+                        onChange={handleChange}
+                        placeholder="예: 법인, 개인, 내부 등"
+                        className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
+                    />
+                    <datalist id="account-type-options">
+                        {acctTypeList.map((type, index) => (
+                            <option key={index} value={type} />
+                        ))}
+                    </datalist>
+                </div>
+
                 {/* ✅ 사용 여부 (토글 스위치) */}
-                {/*<div className="grid grid-cols-6 items-center space-x-4">*/}
-                {/*    <label htmlFor="use_yn" className="col-start-1 text-sm font-medium text-gray-900">사용</label>*/}
-                {/*    <Switch checked={formData.use_yn === "Y"} onChange={handleToggleChange} />*/}
-                {/*    <span className="text-sm text-gray-700">{formData.use_yn === "Y" ? "Yes" : "No"}</span>*/}
-                {/*</div>*/}
-                <div className="flex items-center space-x-4">
-                    <label className="w-32 text-sm font-medium text-gray-900">사용 여부 *</label>
-                    <Switch checked={formData.use_yn === 'Y'} onChange={handleToggleChange} />
-                    <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
+                <div className="grid grid-cols-6 items-center space-x-4">
+                    <label className="col-start-1  w-32 text-sm font-medium text-gray-900">사용 여부 *</label>
+                    <div className="col-start-2">
+                        <Switch checked={formData.use_yn === 'Y'} onChange={handleToggleChange} />
+                        <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
+                    </div>
                 </div>
 
                 {/* ✅ 버튼 */}
