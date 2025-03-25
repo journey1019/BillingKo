@@ -88,6 +88,35 @@ const AccountEditPage = () => {
     if (accountPartLoading) return <LoadingSpinner />;
     if (accountPartError) return <p className="text-red-500">{accountPartError}</p>;
 
+    // 주소 검색 함수를 재사용 가능하게 두 개로 분리
+    const handleAddressSearch = (fieldPrefix) => {
+        new window.daum.Postcode({
+            oncomplete: function (data) {
+                const fullAddress = data.address;
+                const zonecode = data.zonecode;
+
+                setFormData((prev) => ({
+                    ...prev,
+                    [`${fieldPrefix}_postcode`]: zonecode,
+                    [`${fieldPrefix}_address`]: fullAddress,
+                    [`${fieldPrefix}_address2`]: "", // 상세주소는 사용자가 입력
+                }));
+            }
+        }).open();
+    };
+    // 버튼 클릭 시 company → invoice 복사
+    const copyCompanyToInvoice = () => {
+        setFormData((prev) => ({
+            ...prev,
+            invoice_postcode: prev.company_postcode,
+            invoice_address: prev.company_address,
+            invoice_address2: prev.company_address2,
+        }));
+    };
+
+
+
+    console.log(formData)
     return (
         <div className="container mx-auto">
             {/* ✅ 상단 영역 */}
@@ -100,7 +129,7 @@ const AccountEditPage = () => {
 
             {/* ✅ 입력 폼 */}
             <form className="bg-white p-5 rounded-xl space-y-6" onSubmit={handleSubmit}>
-                {/* 고객 번호 */}
+                {/* ☑️ 고객 번호 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
                     <label htmlFor="acct_num" className="col-start-1 text-sm font-medium text-gray-900">
                         고객 번호
@@ -118,7 +147,7 @@ const AccountEditPage = () => {
                     />
                 </div>
 
-                {/* 고객 구분 */}
+                {/* ☑️ 고객 구분 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
                     <label htmlFor="account_type" className="col-start-1 text-sm font-medium text-gray-900">
                         고객 구분
@@ -140,7 +169,53 @@ const AccountEditPage = () => {
                     </datalist>
                 </div>
 
-                {/* 나머지 필드 */}
+                {/*{inputAccountFormData.map(({ id, label, type, required, ...rest }) => {*/}
+                {/*    if (id === "company_postcode") {*/}
+                {/*        return (*/}
+                {/*            <div className="grid grid-cols-6 items-center space-x-4" key={id}>*/}
+                {/*                <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">*/}
+                {/*                    {label}{required && <span className="text-red-500">*</span>}*/}
+                {/*                </label>*/}
+                {/*                <div className="col-span-2 flex gap-2">*/}
+                {/*                    <input*/}
+                {/*                        id={id}*/}
+                {/*                        name={id}*/}
+                {/*                        type="text"*/}
+                {/*                        value={formData[id] ?? ''}*/}
+                {/*                        onChange={handleChange}*/}
+                {/*                        className="flex-1 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"*/}
+                {/*                        {...rest}*/}
+                {/*                    />*/}
+                {/*                    <button*/}
+                {/*                        type="button"*/}
+                {/*                        onClick={handleAddressSearch}*/}
+                {/*                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm"*/}
+                {/*                    >*/}
+                {/*                        주소 검색*/}
+                {/*                    </button>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        );*/}
+                {/*    }*/}
+
+                {/*    return (*/}
+                {/*        <div className="grid grid-cols-6 items-center space-x-4" key={id}>*/}
+                {/*            <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">*/}
+                {/*                {label}{required && <span className="text-red-500">*</span>}*/}
+                {/*            </label>*/}
+                {/*            <input*/}
+                {/*                id={id}*/}
+                {/*                name={id}*/}
+                {/*                type={type === 'number' ? 'text' : type}*/}
+                {/*                value={formData[id] ?? ''}*/}
+                {/*                onChange={handleChange}*/}
+                {/*                className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"*/}
+                {/*                {...rest}*/}
+                {/*            />*/}
+                {/*        </div>*/}
+                {/*    );*/}
+                {/*})}*/}
+
                 {inputAccountFormData.map(({ id, label, type, required, ...rest }) => (
                     <div className="grid grid-cols-6 items-center space-x-4">
                         <label htmlFor={id}
@@ -157,6 +232,101 @@ const AccountEditPage = () => {
                         />
                     </div>
                 ))}
+
+                {/* ☑️ 회사 주소 검색 */}
+                <div className="grid grid-cols-6 items-center space-x-4">
+                    <label className="col-start-1 text-sm font-medium text-gray-900">회사 주소</label>
+                    <div className="col-span-2 flex flex-col gap-2">
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                name="company_postcode"
+                                value={formData.company_postcode ?? ''}
+                                onChange={handleChange}
+                                placeholder="우편번호"
+                                className="flex-1 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
+                            />
+                            <button type="button" onClick={() => handleAddressSearch('company')} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm">
+                                주소 검색
+                            </button>
+                        </div>
+                        <input
+                            type="text"
+                            name="company_address"
+                            value={formData.company_address ?? ''}
+                            onChange={handleChange}
+                            placeholder="주소"
+                            className="w-full bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
+                        />
+                        <input
+                            type="text"
+                            name="company_address2"
+                            value={formData.company_address2 ?? ''}
+                            onChange={handleChange}
+                            placeholder="상세 주소"
+                            className="w-full bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
+                        />
+                    </div>
+                </div>
+
+                {/* ☑️ 청구지 주소 검색 */}
+                <div className="grid grid-cols-6 items-center space-x-4">
+                    <label className="col-start-1 text-sm font-medium text-gray-900">청구지 주소</label>
+                    <div className="col-span-2 flex flex-col gap-2">
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                name="invoice_postcode"
+                                value={formData.invoice_postcode ?? ''}
+                                onChange={handleChange}
+                                placeholder="우편번호"
+                                className="flex-1 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
+                            />
+                            <button type="button" onClick={() => handleAddressSearch('invoice')} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm">
+                                주소 검색
+                            </button>
+                            <button type="button" onClick={copyCompanyToInvoice} className="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1 rounded-md text-sm">
+                                회사 주소 복사
+                            </button>
+                        </div>
+                        <input
+                            type="text"
+                            name="invoice_address"
+                            value={formData.invoice_address ?? ''}
+                            onChange={handleChange}
+                            placeholder="주소"
+                            className="w-full bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
+                        />
+                        <input
+                            type="text"
+                            name="invoice_address2"
+                            value={formData.invoice_address2 ?? ''}
+                            onChange={handleChange}
+                            placeholder="상세 주소"
+                            className="w-full bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
+                        />
+                    </div>
+                </div>
+
+
+
+                {/* 나머지 필드 */}
+                {/*{inputAccountFormData.map(({ id, label, type, required, ...rest }) => (*/}
+                {/*    <div className="grid grid-cols-6 items-center space-x-4">*/}
+                {/*        <label htmlFor={id}*/}
+                {/*               className="col-start-1 text-sm font-medium text-gray-900">{label}{required &&*/}
+                {/*            <span className="text-red-500">*</span>}</label>*/}
+                {/*        <input*/}
+                {/*            id={id}*/}
+                {/*            name={id}*/}
+                {/*            type={type === 'number' ? 'text' : type}*/}
+                {/*            value={formData[id] ?? ''} // null 방지*/}
+                {/*            onChange={handleChange}*/}
+                {/*            className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"*/}
+                {/*            {...rest}*/}
+                {/*        />*/}
+                {/*    </div>*/}
+                {/*))}*/}
 
                 {/* ✅ 사용 여부 (토글 스위치) */}
                 <div className="grid grid-cols-6 items-center space-x-4">
