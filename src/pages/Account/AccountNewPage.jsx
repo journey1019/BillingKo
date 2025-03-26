@@ -128,7 +128,7 @@ const AccountNewPage = () => {
     };
 
     const extendedFormData = [
-        { id: 'account_type', label: '고객 구분', type: 'text', placeholder: '법인', required: true },
+        // { id: 'account_type', label: '고객 구분', type: 'text', placeholder: '법인', required: true },
         ...inputAccountFormData
     ];
 
