@@ -4,25 +4,17 @@ import { createDevice } from '@/service/deviceService.js';
 
 import { IoMdClose } from 'react-icons/io';
 import { getTodayDate } from '@/utils/formatHelpers.jsx';
-import DeviceNewFile from '@/pages/Device/DeviceNewFile.jsx';
+import { defaultDeviceFormData } from '@/contents/deviceFormDefault.js';
+import DeviceNewFile from '@/components/form/Device/DeviceNewFile';
+
+import useDeviceStore from '@/stores/deviceStore.js';
+import useDeviceFormStore from '@/stores/deviceFormStore.js';
 
 const DeviceNewPage = () => {
     const navigate = useNavigate();
 
     // 폼 데이터 상태 관리
-    const [formData, setFormData] = useState({
-        serial_number: "",
-        acct_num: "",
-        profile_id: "",
-        activated: "",
-        deactivated: "",
-        ppid: "",
-        model_name: "",
-        internet_mail_id: "",
-        alias: "",
-        remarks: "",
-        use_yn: ""
-    });
+    const [formData, setFormData] = useState(defaultDeviceFormData);
 
     const [error, setError] = useState(null);
 

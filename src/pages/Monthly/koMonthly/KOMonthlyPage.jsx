@@ -37,16 +37,9 @@ const KOMonthlyPage = () => {
             : [];
     });
 
-    const initialDate = useMemo(() => {
-        if (!urlYearMonth || urlYearMonth.length !== 6) return null;
-        const year = Number(urlYearMonth.slice(0, 4));
-        const month = Number(urlYearMonth.slice(4, 6)) - 1;
-        return new Date(year, month);
-    }, [urlYearMonth]);
-
 
     /** API 데이터 호출 */
-    const { selectedDate, handleDateChange, yearMonth } = useYearMonth(initialDate);
+    const { selectedDate, handleDateChange, yearMonth } = useYearMonth(urlYearMonth);
     const [selectedMonthlyIndex, setSelectedMonthlyIndex] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -77,7 +70,7 @@ const KOMonthlyPage = () => {
         setDetailLoading(true);
         setDetailError(null);
         try {
-            const response = await fetchKOMonthlyDetailIndexData(dataIndex + `?ts=${Date.now()}`);
+            const response = await fetchKOMonthlyDetailIndexData(dataIndex);
             setDetailData(response);
             setVersion(response.update_version || 0);
             setLatestVersion(response.update_version || 0);

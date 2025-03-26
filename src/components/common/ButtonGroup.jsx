@@ -17,7 +17,7 @@ const ButtonGroup = ({ entityType, id, deleteFunction, onDeleteSuccess }) => {
     const handleDelete = async () => {
         try {
             await deleteFunction(id);
-            alert(`${entityType.charAt(0).toUpperCase() + entityType.slice(1)} deleted successfully!`);
+            alert(`${entityType.charAt(0).toUpperCase() + entityType.slice(1)} 성공적으로 삭제하였습니다.`);
 
             if (onDeleteSuccess) {
                 onDeleteSuccess();

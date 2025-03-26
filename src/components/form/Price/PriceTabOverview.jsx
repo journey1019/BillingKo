@@ -1,13 +1,16 @@
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import PricePartForm from '@/components/form/PricePartForm.jsx';
+import usePriceStore from '@/stores/priceStore.js';
 
-const PriceTabOverview = ({ pricePartData, partDataLoading, partDataError, historyError }) => {
+
+const PriceTabOverview = () => {
+    const { pricePartData, pricePartLoading, pricePartError } = usePriceStore();
     return(
         <>
-            {partDataLoading ? (
+            {pricePartLoading ? (
                 <LoadingSpinner />
-            ) : partDataError ? (
-                <p className="text-red-500">Error loading history: {historyError}</p>
+            ) : pricePartError ? (
+                <p className="text-red-500">Error loading history: {pricePartError}</p>
             ) : pricePartData ? (
                 <PricePartForm pricePartData={pricePartData} />
             ) : (

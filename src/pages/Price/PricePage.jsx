@@ -25,83 +25,50 @@ import PriceTabItems from '../../components/form/Price/PriceTabItems.jsx';
 import PriceTabOverview from '../../components/form/Price/PriceTabOverview.jsx';
 import PriceTabTransaction from '../../components/form/Price/PriceTabTransaction.jsx';
 import PriceTabHistory from '../../components/form/Price/PriceTabHistory.jsx';
-
+import usePriceStore from '@/stores/priceStore.js';
 
 const PricePage = () => {
-    const { data, loading, error, refetch } = useApiFetch(fetchPrice);
+    const {
+        fetchPriceData,
+        fetchPriceDetails,
+        priceData,
+        priceLoading,
+        priceError,
+        pricePartData,
+        priceHistoryData,
+        priceAdjustHistoryData,
+    } = usePriceStore();
+
     const [selectedPriceId, setSelectedPriceId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
 
     const [isOpenNewDropdown, setIsOpenNewDropdown] = useState(false); // New icon Drop
     const navigate = useNavigate();
 
-    const [historyData, setHistoryData] = useState(null);
-    const [historyLoading, setHistoryLoading] = useState(false);
-    const [historyError, setHistoryError] = useState(null);
+    useEffect(() => {
+        fetchPriceData();
+    }, []);
 
-    // 부분 단말 데이터 상태
-    const [pricePartData, setPricePartData] = useState(null);
-    const [partDataLoading, setPartDataLoading] = useState(false);
-    const [partDataError, setPartDataError] = useState(null);
+    useEffect(() => {
+        if (selectedPriceId?.ppid) {
+            fetchPriceDetails(selectedPriceId.ppid);
+        }
+    }, [selectedPriceId]);
 
-    // 조정 데이터 상태
-    const [adjustHistoryData, setAdjustHistoryData] = useState(null);
-    const [adjustHistoryLoading, setAdjustHistoryLoading] = useState(false);
-    const [adjustHistoryError, setAdjustHistoryError] = useState(null);
 
     // Modal
     const [showModal, setShowModal] = useState(false);
 
-    // 선택된 ppid 변경 시만 이력 데이터 가져오기
-    useEffect(() => {
-        const fetchParticular = async () => {
-            if (!selectedPriceId) return;  // 선택된 값이 없으면 호출하지 않음
-
-            // 이력 데이터 가져오기
-            setHistoryLoading(true);
-            setHistoryError(null);
-            try {
-                const response = await fetchPriceHistory(selectedPriceId.ppid);
-                setHistoryData(response);
-            } catch (error) {
-                setHistoryError(error.message || 'Failed to fetch price particular');
-            } finally {
-                setHistoryLoading(false);
-            }
-
-            // 부분 계정 데이터 가져오기
-            setPartDataLoading(true);
-            setPartDataError(null);
-            try {
-                const partResponse = await fetchPricePart(selectedPriceId.ppid);
-                setPricePartData(partResponse);
-            } catch (error) {
-                setPartDataError(error.message || 'Failed to fetch price details');
-            } finally {
-                setPartDataLoading(false);
-            }
-
-            // 조정 데이터 가져오기
-            setAdjustHistoryLoading(true);
-            setAdjustHistoryError(null);
-            try {
-                const adjustResponse = await fetchAdjustmentValueHistory(selectedPriceId.ppid);
-                setAdjustHistoryData(adjustResponse);
-            } catch (error) {
-                setAdjustHistoryError(error.message || 'Failed to fetch account details');
-            } finally {
-                setAdjustHistoryLoading(false);
-            }
-        };
-
-        fetchParticular();
-    }, [selectedPriceId]);  // selectedPriceId가 변경될 때만 실행
-
     // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
-    const handleDeleteSuccess = () => {
-        refetch();  // 데이터 새로고침
-        setSelectedPriceId(null);  // 선택 해제
-        setIsExpanded(false); // Grid 초기 화면 복구
+    const handleDeleteSuccess = async (ppid) => {
+        try {
+            await deletePrice(ppid);
+            fetchPriceData(); // 삭제 후 새로고침
+            setSelectedPriceId(null);
+            setIsExpanded(false);
+        } catch (error) {
+            alert("삭제에 실패했습니다.");
+        }
     };
 
 
@@ -109,7 +76,6 @@ const PricePage = () => {
     const toggleNewDropdown = () => setIsOpenNewDropdown(!isOpenNewDropdown);
     const closeNewDropdown = () => setIsOpenNewDropdown(false);
 
-    console.log('price data: ', data)
 
     return (
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
@@ -171,7 +137,7 @@ const PricePage = () => {
                 {/* Bottom */}
                 <ReusableTable
                     columns={PriceTableColumns}
-                    data={data || []}
+                    data={priceData || []}
                     options={{
                         ...PriceTableOptions,
                         meta: {
@@ -191,8 +157,8 @@ const PricePage = () => {
                             },
                         },
                     }}
-                    isLoading={loading}
-                    error={error}
+                    isLoading={priceLoading}
+                    error={priceError}
                 />
             </div>
 
@@ -223,21 +189,21 @@ const PricePage = () => {
                                 id: 1,
                                 label: 'Overview',
                                 content: (
-                                    <PriceTabOverview  pricePartData={pricePartData} partDataLoading={partDataLoading} partDataError={partDataError} historyError={historyError}/>
+                                    <PriceTabOverview />
                                 )
                             },
                             {
                                 id: 2,
                                 label: 'Transaction',
                                 content: (
-                                    <PriceTabTransaction  selectedPriceId={selectedPriceId} adjustHistoryData={adjustHistoryData} adjustHistoryLoading={adjustHistoryLoading} adjustHistoryError={adjustHistoryError}/>
+                                    <PriceTabTransaction selectedPriceId={selectedPriceId}/>
                                 )
                             },
                             {
                                 id: 3,
                                 label: 'History',
                                 content: (
-                                    <PriceTabHistory  historyData={historyData} historyLoading={historyLoading} historyError={historyError} />
+                                    <PriceTabHistory />
                                 )
                             }
                         ]}

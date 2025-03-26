@@ -17,6 +17,7 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
     const navigate = useNavigate();
     const codeMappings = useAdjustmentMappings();
 
+    console.log('yearMonth', yearMonth)
     console.log(accountData)
     console.log(deviceDetail)
     console.log(adjustmentInfo)

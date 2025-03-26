@@ -5,26 +5,20 @@ import { IoMdClose } from 'react-icons/io';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import { Switch } from "@mui/material";
 import { formatFormDate } from "@/utils/formatHelpers";
+import { defaultDeviceFormData } from '@/contents/deviceFormDefault.js';
+import { useAcctNumList } from '@/selectors/useAccountSelectors.js';
+import { useDevProfileList, useDevModelNameList } from '@/selectors/useDeviceSelectors.js';
 
 const DeviceEditPage = () => {
     const { serial_number } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [formData, setFormData] = useState({
-        serial_number: "",
-        acct_num: "",
-        profile_id: "",
-        activated: "",
-        deactivated: "",
-        ppid: "",
-        model_name: "",
-        internet_mail_id: "",
-        alias: "",
-        remarks: "",
-        use_yn: ""
-    });
+    const [formData, setFormData] = useState(defaultDeviceFormData);
 
+    const acctNumList = useAcctNumList();
+    const devProfileList = useDevProfileList();
+    const devModelNameList = useDevModelNameList();
 
     useEffect(() => {
         const loadDeviceData = async () => {
@@ -127,8 +121,10 @@ const DeviceEditPage = () => {
 
                     {/* Serial Number */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="serial_number"
-                               className="col-start-1 text-sm font-medium text-gray-900">단말기</label>
+                        <label htmlFor="serial_number" className="col-start-1 text-sm font-medium text-gray-900">
+                            단말기
+                            <span className="text-red-500">*</span>
+                        </label>
                         <input
                             type="text"
                             id="serial_number"
@@ -137,43 +133,97 @@ const DeviceEditPage = () => {
                             onChange={handleChange}
                             className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                             readOnly
+                            required
                         />
                     </div>
 
                     {/* Account Number */}
+                    {/*<div className="grid grid-cols-6 items-center space-x-4">*/}
+                    {/*    <label htmlFor="acct_num" className="col-start-1 text-sm font-medium text-gray-900">고객*/}
+                    {/*        번호</label>*/}
+                    {/*    <input*/}
+                    {/*        type="text"*/}
+                    {/*        id="acct_num"*/}
+                    {/*        name="acct_num"*/}
+                    {/*        value={formData.acct_num}*/}
+                    {/*        onChange={handleChange}*/}
+                    {/*        className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"*/}
+                    {/*        placeholder="KO_99999"*/}
+                    {/*        required*/}
+                    {/*    />*/}
+                    {/*</div>*/}
+
+                    {/* Account Number (Select + Free Input) */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="acct_num" className="col-start-1 text-sm font-medium text-gray-900">고객
-                            번호</label>
-                        <input
-                            type="text"
-                            id="acct_num"
-                            name="acct_num"
-                            value={formData.acct_num}
-                            onChange={handleChange}
-                            className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                            placeholder="KO_99999"
-                            required
-                        />
+                        <label htmlFor="acct_num" className="col-start-1 text-sm font-medium text-gray-900">
+                            고객 번호
+                            <span className="text-red-500">*</span>
+                        </label>
+                        <div className="col-span-2">
+                            <input
+                                type="text"
+                                id="acct_num"
+                                name="acct_num"
+                                list="acct-num-options"
+                                value={formData.acct_num ?? ''}
+                                onChange={handleChange}
+                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                                placeholder="KO_99999"
+                                required
+                            />
+                            <datalist id="acct-num-options">
+                                {acctNumList?.map((num, index) => (
+                                    <option key={index} value={num} />
+                                ))}
+                            </datalist>
+                        </div>
                     </div>
 
                     {/* Profile ID */}
+                    {/*<div className="grid grid-cols-6 items-center space-x-4">*/}
+                    {/*    <label htmlFor="profile_id" className="col-start-1 text-sm font-medium text-gray-900">Profile*/}
+                    {/*        ID</label>*/}
+                    {/*    <input*/}
+                    {/*        type="number"*/}
+                    {/*        id="profile_id"*/}
+                    {/*        name="profile_id"*/}
+                    {/*        value={formData.profile_id}*/}
+                    {/*        onChange={handleChange}*/}
+                    {/*        className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"*/}
+                    {/*        required*/}
+                    {/*    />*/}
+                    {/*</div>*/}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="profile_id" className="col-start-1 text-sm font-medium text-gray-900">Profile
-                            ID</label>
-                        <input
-                            type="number"
-                            id="profile_id"
-                            name="profile_id"
-                            value={formData.profile_id}
-                            onChange={handleChange}
-                            className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                            required
-                        />
+                        <label htmlFor="profile_id" className="col-start-1 text-sm font-medium text-gray-900">
+                            Profile ID
+                            <span className="text-red-500">*</span>
+                        </label>
+                        <div className="col-span-2">
+                            <input
+                                type="text"
+                                id="profile_id"
+                                name="profile_id"
+                                list="profile_id-options"
+                                value={formData.profile_id ?? ''}
+                                onChange={handleChange}
+                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                                placeholder="KO_99999"
+                                required
+                            />
+                            <datalist id="profile_id-options">
+                                {devProfileList?.map((num, index) => (
+                                    <option key={index} value={num} />
+                                ))}
+                            </datalist>
+                        </div>
                     </div>
 
                     {/* PPID */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="ppid" className="col-start-1 text-sm font-medium text-gray-900">PPID</label>
+                        <label htmlFor="ppid" className="col-start-1 text-sm font-medium text-gray-900">
+                            PPID
+                            <span className="text-red-500">*</span>
+                        </label>
                         <input
                             type="number"
                             id="ppid"
@@ -186,17 +236,40 @@ const DeviceEditPage = () => {
                     </div>
 
                     {/* Model Name */}
+                    {/*<div className="grid grid-cols-6 items-center space-x-4">*/}
+                    {/*    <label htmlFor="model_name"*/}
+                    {/*           className="col-start-1 text-sm font-medium text-gray-900">모델명</label>*/}
+                    {/*    <input*/}
+                    {/*        type="text"*/}
+                    {/*        id="model_name"*/}
+                    {/*        name="model_name"*/}
+                    {/*        value={formData.model_name}*/}
+                    {/*        onChange={handleChange}*/}
+                    {/*        className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"*/}
+                    {/*    />*/}
+                    {/*</div>*/}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="model_name"
-                               className="col-start-1 text-sm font-medium text-gray-900">모델명</label>
-                        <input
-                            type="text"
-                            id="model_name"
-                            name="model_name"
-                            value={formData.model_name}
-                            onChange={handleChange}
-                            className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                        />
+                        <label htmlFor="model_name" className="col-start-1 text-sm font-medium text-gray-900">
+                            모델명
+                        </label>
+                        <div className="col-span-2">
+                            <input
+                                type="text"
+                                id="model_name"
+                                name="model_name"
+                                list="model_name-options"
+                                value={formData.model_name ?? ''}
+                                onChange={handleChange}
+                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                                placeholder="KO_99999"
+                                required
+                            />
+                            <datalist id="model_name-options">
+                                {devModelNameList?.map((num, index) => (
+                                    <option key={index} value={num} />
+                                ))}
+                            </datalist>
+                        </div>
                     </div>
 
                     {/* Internet Mail ID */}
@@ -228,8 +301,10 @@ const DeviceEditPage = () => {
 
                     {/* Activated */}
                     <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor="activated" className="col-start-1 text-sm font-medium text-gray-900">활성화
-                            날짜</label>
+                        <label htmlFor="activated" className="col-start-1 text-sm font-medium text-gray-900">
+                            활성화 날짜
+                            <span className="text-red-500">*</span>
+                        </label>
                         <input
                             type="date"
                             id="activated"

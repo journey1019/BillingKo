@@ -76,7 +76,7 @@ export const createPrice = async (priceData) => {
         console.log("POST 데이터:", JSON.stringify(priceData, null, 2));  // 디버깅
         return await postWithBody("/price/", priceData);
     } catch (error) {
-        console.error("Failed to create price:", error.response?.data || error.message);
+        console.error(error.response?.data?.ppid || error.message?.ppid);
         throw error;
     }
 };

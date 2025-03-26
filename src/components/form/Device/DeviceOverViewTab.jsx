@@ -1,13 +1,15 @@
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import DevicePartForm from '@/components/form/DevicePartForm.jsx';
+import useDeviceStore from '@/stores/deviceStore.js';
 
-const DeviceOverviewTab = ({ devicePartData, partDataLoading, partDataError, historyError}) => {
+const DeviceOverviewTab = () => {
+    const { devicePartData, devicePartLoading, devicePartError } = useDeviceStore();
     return(
         <>
-            {partDataLoading ? (
+            {devicePartLoading ? (
                 <LoadingSpinner />
-            ) : partDataError ? (
-                <p className="text-red-500">Error loading history: {partDataError}</p>
+            ) : devicePartError ? (
+                <p className="text-red-500">Error loading history: {devicePartError}</p>
             ) : devicePartData ? (
                 <DevicePartForm devicePartData={devicePartData} />
             ) : (

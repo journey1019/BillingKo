@@ -29,7 +29,7 @@ import { useAcctNumList, useAcctClassificationOptions } from '@/selectors/useAcc
 
 
 const AccountPage = () => {
-    const { accountData, fetchAccountData, fetchAccountDetails, accountLoading, accountError, accountPartData, historyData, adjustHistoryData, } = useAccountStore();
+    const { accountData, fetchAccountData, fetchAccountDetails, accountLoading, accountError, accountPartData, historyData, adjustHistoryData, deleteAccountData } = useAccountStore();
     const classificationOptions = useAcctClassificationOptions();
 
     const navigate = useNavigate();
@@ -75,10 +75,17 @@ const AccountPage = () => {
     }, [classificationOptions]);
 
     // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
-    const handleDeleteSuccess = () => {
-        setSelectedAccountId(null);  // 선택 해제
-        setIsExpanded(false); // Grid 초기 화면 복구
+    const handleDeleteSuccess = async (acct_num) => {
+        try {
+            await deleteAccountData(acct_num);
+            fetchAccountData(); // 삭제 후 새로고침
+            setSelectedAccountId(null);
+            setIsExpanded(false);
+        } catch (error) {
+            alert("삭제에 실패했습니다.");
+        }
     };
+
 
     const handleClick = () => {
         if (!selectedAccountId?.acct_num) {

@@ -9,6 +9,7 @@ import { useAcctNumList } from '@/selectors/useAccountSelectors.js';
 import { defaultAccountFormData } from '@/contents/accountFormDefault.js';
 import { inputAccountFormData } from '../../contents/accountFormDefault.js';
 import { useAcctTypeList } from '../../selectors/useAccountSelectors.js';
+import { renderInputField, renderSelectFiled } from '@/utils/renderHelpers.jsx';
 
 const AccountNewPage = () => {
     const { accountData, fetchAccountData, isDuplicateAcctNm, accountLoading, accountError } = useAccountStore();
@@ -99,40 +100,6 @@ const AccountNewPage = () => {
         }
     };
 
-    const renderInputField = (id, label, type, required, errorMessage, placeholder, extraProps = {}) => (
-        <div className="grid grid-cols-6 flex items-center space-x-4" key={id}>
-            <label htmlFor={id} className="col-span-1 w-32 text-sm font-medium text-gray-900">
-                {label} {required && <span className="text-red-500">*</span>}
-            </label>
-            <div className="col-span-2 flex-1">
-                <input id={id} type={type} value={formData[id]} onChange={handleInputChange} placeholder={placeholder}
-                       className={`w-full bg-gray-50 border ${errorMessage ? "border-red-500" : "border-gray-300"} text-gray-900 text-sm rounded-lg p-2.5`}
-                       {...extraProps} required={required}/>
-                {errorMessage && <p className="text-red-500 text-xs mt-1">{errorMessage}</p>}
-            </div>
-        </div>
-    );
-    const renderSelectFiled = (id, label, type, required, list) => (
-        <div className="grid grid-cols-6 flex items-center space-x-4">
-            <label className="col-span-1 w-32 text-sm font-medium text-gray-900">
-                {label} {required && <span className="text-red-500">*</span>}
-            </label>
-            <input
-                list="account-type-options"
-                id={id}
-                name={id}
-                value={formData[id] ?? ''}
-                onChange={handleInputChange}
-                placeholder="예: 법인, 개인, 내부 등"
-                className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
-            />
-            <datalist id="account-type-options">
-                {list.map((type, index) => (
-                    <option key={index} value={type} />
-                ))}
-            </datalist>
-        </div>
-    )
 
     // 주소 검색 함수를 재사용 가능하게 두 개로 분리
     const handleAddressSearch = (fieldPrefix) => {
@@ -179,8 +146,8 @@ const AccountNewPage = () => {
             {/* ✅ 입력 폼 */}
             <form className="bg-white p-5 rounded-xl space-y-4" onSubmit={handleSubmit}>
                 {/* ✅ 고객 번호 (중복 검사 포함) */}
-                {renderInputField("acct_num", "고객번호", "text", true, acctNumError, "KO_99999")}
-                {renderSelectFiled("account_type", "고객구분", "text", true, acctTypeList)}
+                {renderInputField("acct_num", "고객번호", "text", formData['acct_num'], handleInputChange, true, acctNumError, "KO_99999")}
+                {renderSelectFiled("account_type", "고객구분", "text", formData['account_type'], handleInputChange, true, acctTypeList)}
 
                 {/* ✅ account_type 포함된 전체 필드 */}
                 {/*{extendedFormData.map((*/}

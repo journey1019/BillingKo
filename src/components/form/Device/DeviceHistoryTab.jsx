@@ -4,8 +4,10 @@ import { DeviceTableColumns } from '@/columns/DeviceTableColumns.jsx';
 import { DeviceTableOptions } from '@/options/DeviceTableOptions.jsx';
 import Buttons from '@/components/common/Buttons.jsx';
 import { DeviceHistoryLogTableColumns } from '@/columns/DeviceHistoryLogTableColumns.jsx';
+import useDeviceStore from '@/stores/deviceStore.js';
 
-const DeviceHistoryTab = ({ selectedDeviceId, historyData, historyDataLoading, historyDataError, deviceHistoryLogData, deviceHistoryLogLoading, deviceHistoryLogError }) => {
+const DeviceHistoryTab = ({ selectedDeviceId }) => {
+    const {historyData, historyDataLoading, historyDataError, deviceHistoryLogData, deviceHistoryLogLoading, deviceHistoryLogError } = useDeviceStore();
     return (
         <>
             <div>

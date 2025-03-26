@@ -6,16 +6,12 @@ import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns
 import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import { TiPlus } from "react-icons/ti";
 import { Tooltip } from '@mui/material';
+import useDeviceStore from '@/stores/deviceStore.js';
 
-const DeviceTransactionTab = ({ selectedDeviceId, adjustHistoryData, adjustHistoryLoading, adjustHistoryError }) => {
+const DeviceTransactionTab = ({ selectedDeviceId }) => {
+    const { adjustHistoryData, adjustHistoryLoading, adjustHistoryError } = useDeviceStore();
     const navigate = useNavigate();
     console.log(adjustHistoryData.length)
-
-    useEffect(() => {
-        if (selectedDeviceId) {
-            console.log("selectedDeviceId updated:", selectedDeviceId);
-        }
-    }, [selectedDeviceId]); // ✅ 항상 실행되도록 설정
 
     const handleClick = () => {
         if (!selectedDeviceId?.serial_number) {

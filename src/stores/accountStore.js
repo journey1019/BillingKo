@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { fetchAccounts, fetchAccountPart, fetchAccountHistory, updateAccount } from '@/service/accountService';
+import { fetchAccounts, fetchAccountPart, fetchAccountHistory, updateAccount, deleteAccount } from '@/service/accountService';
 import { fetchAdjustmentValueHistory } from '@/service/adjustmentService';
 
 const useAccountStore = create((set) => ({
@@ -80,6 +80,16 @@ const useAccountStore = create((set) => ({
             });
         }
     },
+
+    // 삭제
+    deleteAccountData: async (acct_num) => {
+        try {
+            await deleteAccount(acct_num);
+        } catch (error) {
+            throw error;
+        }
+    },
+
 
     // updateAccountData
     updateAccountData: async (acct_num, payload) => {

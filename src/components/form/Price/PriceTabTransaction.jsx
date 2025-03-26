@@ -5,8 +5,10 @@ import { AdjustmentHistoryTableColumns } from '@/columns/AdjustmentTableColumns.
 import { AdjustmentHistoryTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import { TiPlus } from "react-icons/ti";
 import { Tooltip } from '@mui/material';
+import usePriceStore from '@/stores/priceStore.js';
 
-const PriceTabTransaction = ({ selectedPriceId, adjustHistoryData, adjustHistoryLoading, adjustHistoryError  }) => {
+const PriceTabTransaction = ({ selectedPriceId }) => {
+    const { priceAdjustHistoryData, priceAdjustHistoryLoading, priceAdjustHistoryError } = usePriceStore();
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -15,13 +17,13 @@ const PriceTabTransaction = ({ selectedPriceId, adjustHistoryData, adjustHistory
             return;
         }
 
-        if (!adjustHistoryData || adjustHistoryData.length === 0) {
+        if (!priceAdjustHistoryData || priceAdjustHistoryData.length === 0) {
             // 🔹 조정 정보가 없으면 새로운 조정 추가 페이지로 이동
             console.log("Navigating to new PPID page");
             navigate(`/adjustment/new?adjustment_code=ppid&adjustment_code_value=${selectedPriceId.ppid}`);
         } else {
             // 🔹 조정 정보가 있으면 가장 최근 adjustment_index 가져와서 수정 페이지로 이동
-            const latestAdjustment = adjustHistoryData[0]; // 최신 데이터 (정렬이 되어 있다고 가정)
+            const latestAdjustment = priceAdjustHistoryData[0]; // 최신 데이터 (정렬이 되어 있다고 가정)
             console.log("Navigating to edit adjustment page:", latestAdjustment.adjustment_index);
             navigate(`/adjustment/${latestAdjustment.adjustment_index}/adjustment_code=ppid&edit?adjustment_code_value=${selectedPriceId.ppid}`);
         }
@@ -43,15 +45,15 @@ const PriceTabTransaction = ({ selectedPriceId, adjustHistoryData, adjustHistory
                     </button>
                 </Tooltip>
             </div>
-            {adjustHistoryLoading ? (
+            {priceAdjustHistoryLoading ? (
                 <LoadingSpinner />
-            ) : adjustHistoryError ? (
-                <p className="text-red-500">{adjustHistoryError}</p>
+            ) : priceAdjustHistoryError ? (
+                <p className="text-red-500">{priceAdjustHistoryError}</p>
             ) : (
                 <div>
                     <ReusableTable
                         columns={AdjustmentHistoryTableColumns}
-                        data={adjustHistoryData}
+                        data={priceAdjustHistoryData}
                         options={AdjustmentHistoryTableOptions}
                     />
                 </div>

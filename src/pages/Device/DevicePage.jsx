@@ -30,107 +30,56 @@ import DeviceTransactionTab from '@/components/form/Device/DeviceTransactionTab.
 import DeviceHistoryTab from '@/components/form/Device/DeviceHistoryTab.jsx';
 import DeviceTabItems from '@/components/form/Device/DeviceTabItems.jsx';
 import DeviceOverViewTab from '../../components/form/Device/DeviceOverViewTab.jsx';
+import useDeviceStore from '@/stores/deviceStore.js';
 
 const DevicePage = () => {
-    const { data: deviceData, loading: deviceLoading, error: deviceError, refetch: deviceRefetch } = useApiFetch(fetchDevices);
+    const {
+        deviceData,
+        deviceLoading,
+        deviceError,
+        fetchDeviceData,
+        fetchDeviceDetails,
+        deleteDeviceData,
+        devicePartData,
+        devicePartLoading,
+        historyData,
+        adjustHistoryData,
+        deviceHistoryLogData
+    } = useDeviceStore();
+
     const [selectedDeviceId, setSelectedDeviceId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
     const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
     const navigate = useNavigate();
 
-    // 이력 데이터 상태
-    const [historyData, setHistoryData] = useState(null);
-    const [historyDataLoading, setHistoryDataLoading] = useState(false);
-    const [historyDataError, setHistoryDataError] = useState(null);
-
-    // 부분 단말 데이터 상태
-    const [devicePartData, setDevicePartData] = useState(null);
-    const [partDataLoading, setPartDataLoading] = useState(false);
-    const [partDataError, setPartDataError] = useState(null);
-
-    // 조정 데이터 상태
-    const [adjustHistoryData, setAdjustHistoryData] = useState(null);
-    const [adjustHistoryLoading, setAdjustHistoryLoading] = useState(false);
-    const [adjustHistoryError, setAdjustHistoryError] = useState(null);
-
-    // Account 변경 이력 데이터 상태
-    const [deviceHistoryLogData, setDeviceHistoryLogData] = useState(null);
-    const [deviceHistoryLogLoading, setDeviceHistoryLogLoading] = useState(false);
-    const [deviceHistoryLogError, setDeviceHistoryLogError] = useState(null);
-
-
-    // 선택된 serial_number 변경 시만 이력 데이터 가져오기
     useEffect(() => {
-        const fetchHistory = async () => {
-            if (!selectedDeviceId) return;  // 선택된 값이 없으면 호출하지 않음
+        fetchDeviceData();
+    }, []);
 
-            // 부분 계정 데이터 가져오기
-            setHistoryDataLoading(true);
-            setHistoryDataError(null);
-            try {
-                const partResponse = await fetchDeviceHistory(selectedDeviceId.serial_number);
-                setHistoryData(partResponse);
-            } catch (error) {
-                setHistoryDataError(error.message || 'Failed to fetch device details');
-            } finally {
-                setHistoryDataLoading(false);
-            }
+    useEffect(() => {
+        if (selectedDeviceId?.serial_number) {
+            fetchDeviceDetails(selectedDeviceId.serial_number);
+        }
+    }, [selectedDeviceId]);
 
-            // 부분 계정 데이터 가져오기
-            setPartDataLoading(true);
-            setPartDataError(null);
-            try {
-                const partResponse = await fetchDevicePart(selectedDeviceId.serial_number);
-                setDevicePartData(partResponse);
-            } catch (error) {
-                setPartDataError(error.message || 'Failed to fetch device details');
-            } finally {
-                setPartDataLoading(false);
-            }
-
-            setAdjustHistoryLoading(true);
-            setAdjustHistoryError(null);
-            try {
-                const adjustResponse = await fetchAdjustmentValueHistory(selectedDeviceId.serial_number);
-                setAdjustHistoryData(adjustResponse);
-            } catch (error) {
-                setAdjustHistoryError(error.message || 'Failed to fetch device details');
-            } finally {
-                setAdjustHistoryLoading(false);
-            }
-
-            setDeviceHistoryLogLoading(true);
-            setDeviceHistoryLogError(null);
-            try {
-                const adjustResponse = await fetchDeviceHistoryLog(selectedDeviceId.serial_number);
-                setDeviceHistoryLogData(adjustResponse);
-            } catch (error) {
-                setDeviceHistoryLogError(error.message || 'Failed to fetch device details');
-            } finally {
-                setDeviceHistoryLogLoading(false);
-            }
-        };
-
-        fetchHistory();
-    }, [selectedDeviceId]);  // selectedDeviceId가 변경될 때만 실행
-
-    // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
-    const handleDeleteSuccess = () => {
-        deviceRefetch();  // 데이터 새로고침
-        setSelectedDeviceId(null);  // 선택 해제
-        setIsExpanded(false); // Grid 초기 화면 복구
+    const handleDeleteSuccess = async (serial_number) => {
+        try {
+            await deleteDeviceData(serial_number);
+            fetchDeviceData(); // 삭제 후 새로고침
+            setSelectedDeviceId(null);
+            setIsExpanded(false);
+        } catch (error) {
+            alert("삭제에 실패했습니다.");
+        }
     };
 
-    // Edit & Delete 메뉴
-    const toggleDropdown = () => setIsOpenDropdown(!isOpenDropdown);
-    const closeDropdown = () => setIsOpenDropdown(false);
-
-
+    const latestDeviceLog = deviceHistoryLogData?.sort((a, b) => b.row_number - a.row_number)?.[0];
     const highestRowData = deviceHistoryLogData?.length
         ? deviceHistoryLogData.sort((a, b) => b.row_number - a.row_number)[0]
         : null;
     console.log('deviceData :', deviceData)
     console.log(highestRowData);
+    console.log(latestDeviceLog);
 
     console.log('historyData', historyData)
     console.log('deviceHistoryLogData', deviceHistoryLogData)
@@ -227,31 +176,9 @@ const DevicePage = () => {
 
                         {/* Tab */}
                         <TabComponent tabs={[
-                            {
-                                id: 1,
-                                label: 'Overview',
-                                content:
-                                <>
-                                    <DeviceOverViewTab devicePartData={devicePartData} partDataLoading={partDataLoading} partDataError={partDataError}/>
-                                </>
-                            },
-                            {
-                                id: 2,
-                                label: 'Transaction',
-                                content:
-                                    <>
-                                        <DeviceTransactionTab selectedDeviceId={selectedDeviceId} adjustHistoryData={adjustHistoryData} adjustHistoryLoading={adjustHistoryLoading} adjustHistoryError={adjustHistoryError}/>
-                                    </>
-                            },
-                            {
-                                id: 3,
-                                label: 'History',
-                                content:
-                                    <>
-                                        <DeviceHistoryTab selectedDeviceId={selectedDeviceId} historyData={historyData} historyDataLoading={historyDataLoading} historyDataError={historyDataError} deviceHistoryLogData={deviceHistoryLogData} deviceHistoryLogLoading={deviceHistoryLogLoading} deviceHistoryLogError={deviceHistoryLogError}/>
-                                    </>
-                            },
-
+                            { id: 1, label: 'Overview', content: <DeviceOverViewTab /> },
+                            { id: 2, label: 'Transaction', content: <DeviceTransactionTab selectedDeviceId={selectedDeviceId} /> },
+                            { id: 3, label: 'History', content: <DeviceHistoryTab selectedDeviceId={selectedDeviceId} /> },
                         ]} />
                         {/*<TabComponent tabs={DeviceTabItems({*/}
                         {/*    devicePartData,*/}
