@@ -3,6 +3,7 @@ import { formatDateTime, formatNumber, formatValue } from '@/utils/formatHelpers
 import BasicDropdownForm from '@/components/form/Monthly/Edit/BasicDropdownForm.jsx';
 import UsageDetailDropdownForm from '@/components/form/Monthly/Edit/UsageDetailDropdownForm.jsx';
 import PaymentDropdownForm from '@/components/form/Monthly/Edit/PaymentDropdownForm.jsx';
+import useKOMonthlyStore from '@/stores/koMonthlyStore.js';
 
 /**
  * @desc: 단마기별 청구서 수정 페이지_Device Left Form
@@ -11,7 +12,8 @@ import PaymentDropdownForm from '@/components/form/Monthly/Edit/PaymentDropdownF
  * @param (Array) paymentFeeDetail: 요금 사용 세부 정보
  * @param (Array) paymentAdjustmentInfo: 조정 세부 정보
  * */
-export const accordionItems = ({ detailData, paymentInfo, version, fetchDetailData }) => {
+export const accordionItems = ({ detailData, paymentInfo, version, yearMonth }) => {
+    const { fetchDetailData } = useKOMonthlyStore();
 
     const hasVersion = typeof version === "number" // ✅ version 데이터가 존재하고, 숫자인지 확인
     console.log('version: ', version)
@@ -25,7 +27,7 @@ export const accordionItems = ({ detailData, paymentInfo, version, fetchDetailDa
                     <div className="relative text-sm p-3 rounded-md">
                         {hasVersion && (
                             <div className="absolute top-0 right-2">
-                                <BasicDropdownForm detailData={detailData} fetchDetailData={fetchDetailData} />
+                                <BasicDropdownForm detailData={detailData} fetchDetailData={fetchDetailData} yearMonth={yearMonth}/>
                             </div>
                         )}
                         {[

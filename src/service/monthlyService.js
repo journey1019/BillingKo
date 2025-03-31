@@ -58,6 +58,9 @@ export const fetchKOMonthlyData = async (yearMonth) => {
     }
 };
 
+/**
+ * @desc: 상세 조회
+ *  */
 export const fetchKOMonthlyDetailIndexData = async (data_index) => {
     try {
         return await get(`/monthly/saveData/detail/${data_index}`);
@@ -67,6 +70,9 @@ export const fetchKOMonthlyDetailIndexData = async (data_index) => {
     }
 };
 
+/**
+ * @desc: 버전별 상세 조회
+ * */
 export const fetchKOMonthlyDetailVersionIndexData = async (serial_number, version_index) => {
     try {
         return await get(`/monthly/saveData/version/${serial_number}/${version_index}`);

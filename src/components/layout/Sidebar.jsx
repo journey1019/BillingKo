@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import { useActivePath } from '@/utils/navigationHelpers.js';
 import { useState } from "react";
-import { FaFileCsv, FaAddressCard, FaChalkboard, FaCalculator } from "react-icons/fa";
+import { FaAddressCard, FaChalkboard, FaCalculator } from "react-icons/fa";
+import { FaFileCsv } from "react-icons/fa6";
 import { FaSackDollar } from "react-icons/fa6";
 
 const Sidebar = ({ isSidebarOpen }) => {

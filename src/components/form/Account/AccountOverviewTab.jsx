@@ -3,7 +3,7 @@ import AccountPartForm from '@/components/form/AccountPartForm.jsx';
 import useAccountStore from '@/stores/accountStore';
 
 const AccountOverviewTab = () => {
-    const { accountPartData, accountPartLoading, accountPartError } = useAccountStore();
+    const { accountPartData, accountPartLoading, accountPartError, adjustDetailData, adjustDetailLoading, adjustDetailError } = useAccountStore();
     return(
         <>
             {/* Account Part Information */}
@@ -13,7 +13,7 @@ const AccountOverviewTab = () => {
                 ) : accountPartError ? (
                     <p className="text-red-500">{accountPartError}</p>
                 ) : accountPartData ? (
-                    <AccountPartForm accountPartData={accountPartData} />
+                    <AccountPartForm accountPartData={accountPartData} adjustDetailData={adjustDetailData}/>
                 ) : (
                     <p>Select an account to view details</p>
                 )}

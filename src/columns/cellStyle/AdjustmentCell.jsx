@@ -41,6 +41,7 @@ export const AdjustmentCell_Category = ({ cell }) => {
 };
 
 export const AdjustmentCell_Type = ({ cell }) => {
+    const codeMappings = useAdjustmentMappings();
     const value = cell.getValue() || "-";
 
     // 맨 앞 글자만 대문자로 변환
@@ -48,7 +49,21 @@ export const AdjustmentCell_Type = ({ cell }) => {
     const colorClass = value.toLowerCase() === 'discount' ? 'text-green-500' : 'text-red-500';
 
     return <span className={`font-bold ${colorClass}`}>{formattedValue}</span>;
+    // return <span className={`font-bold ${colorClass}`}>{formattedValue.adjustment_type[value]}</span>;
 };
+
+export const AdjustmentCell_Amount = ({ cell }) => {
+    const value = cell.getValue() || "-";
+
+    let formatValue = ""
+    if(value === 'pay') {
+        formatValue = `요금(${value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()})`
+    } else{
+        formatValue = `요율(${value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()})`
+    }
+    return <span>{formatValue}</span>;
+};
+
 
 export const AdjustmentCell_Mount_Value = ({ cell }) => {
     const value = cell.getValue();

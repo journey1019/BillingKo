@@ -227,7 +227,7 @@ const AccountPage = () => {
                                 content: (
                                     <>
                                         <div className="flex flex-row justify-between">
-                                            <h1 className="font-bold my-2">단말기 조정 정보 이력</h1>
+                                            <h1 className="font-bold my-2">단말기 조정 정보</h1>
                                             <Tooltip title="단말기 조정 정보 추가">
                                                 <button
                                                     className="bg-blue-500 rounded-md text-white px-4 py-2 mb-2 hover:bg-blue-600"

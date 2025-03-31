@@ -10,12 +10,15 @@ import { accordionDeviceItems, accordionItems } from '@/components/form/AccountM
 import AccountDeviceItem from '@/components/form/AccountMonthly/AccountDeviceItem.jsx';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 
+import useAccountMonthlyStore from '@/stores/accountMonthlyStore.js';
 
 /**
  * @desc: 청구 기본 자료 폼
  * @param yearMonth: Device Detail Click -> Move to Device Version Info Page
  * */
-const AccountMonthlyForm = ({ yearMonth, accountDetailData, accountDetailLoading, accountDetailError, onAdjustmentRefresh }) => {
+const AccountMonthlyForm = ({ yearMonth, accountDetailData, accountDetailLoading, accountDetailError }) => {
+    const { fetchAccountDetailData } = useAccountMonthlyStore();
+
     // ✅ 기본값 설정 (빈 배열)
     const safeAccountDetailData = Array.isArray(accountDetailData) ? accountDetailData : [];
 
@@ -51,7 +54,7 @@ const AccountMonthlyForm = ({ yearMonth, accountDetailData, accountDetailLoading
                 <Accordion items={accordionItems({ accountData, accountInfo, deviceDetail, adjustmentInfo, nonePayInfo })} />
             </div>
             <div className="col-span-1 2xl:col-span-3">
-                <AccountDeviceItem yearMonth={yearMonth} accountData={accountData} deviceDetail={deviceDetail} adjustmentInfo={adjustmentInfo} nonePayInfo={nonePayInfo} onAdjustmentRefresh={onAdjustmentRefresh}/>
+                <AccountDeviceItem yearMonth={yearMonth} accountData={accountData} deviceDetail={deviceDetail} adjustmentInfo={adjustmentInfo} nonePayInfo={nonePayInfo} onAdjustmentRefresh={() => fetchAccountDetailData(yearMonth, accountData.acct_num)}/>
                 {/*<Accordion items={accordionDeviceItems({ accountData, accountInfo, deviceDetail, adjustmentInfo, nonePayInfo })} />*/}
             </div>
             {/*<div className="col-span-1">*/}

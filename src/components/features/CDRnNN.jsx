@@ -32,14 +32,14 @@ const CDRnNN = () => {
     return(
         <div className="grid col-span-4 2xl:col-span-3 space-y-3 py-6">
             <div className="flex flex-row items-center justify-between border-b pb-4 border-gray-400">
-                <h1 className="text-xl font-bold">CDR & Network Report 원본 테이블</h1>
+                <h1 className="text-xl font-bold hover:underline hover:cursor-pointer" onClick={() => navigate('/cdr_nn')}>CDR & Network Report 원본 테이블</h1>
                 <div className="flex flex-row z-10 items-center space-x-5">
                     <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
-                    {location.pathname !== "/cdr_nn" && (
-                        <div className="p-2 rounded-full hover:bg-gray-200 cursor-pointer" onClick={() => navigate("/cdr_nn")}>
-                            <FaExpand className="w-7 h-7" />
-                        </div>
-                    )}
+                    {/*{location.pathname !== "/cdr_nn" && (*/}
+                    {/*    <div className="p-2 rounded-full hover:bg-gray-200 cursor-pointer" onClick={() => navigate("/cdr_nn")}>*/}
+                    {/*        <FaExpand className="w-7 h-7" />*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
                 </div>
             </div>
 

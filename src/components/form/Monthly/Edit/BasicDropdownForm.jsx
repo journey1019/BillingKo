@@ -6,8 +6,13 @@ import FormInput from "@/components/dropdown/FormInput.jsx";
 import { formatDateAddTime, formatNumberWithCommas } from '@/utils/formatHelpers.jsx';
 import { LuRefreshCw } from "react-icons/lu";
 import AlertBox from '@/components/common/AlertBox';
+import { useNavigate } from 'react-router-dom';
 
-const BasicDropdownForm = ({ detailData, fetchDetailData }) => {
+
+const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
+    const navigate = useNavigate();
+
+    console.log(detailData)
     const [alertBox, setAlertBox] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({});
@@ -113,25 +118,49 @@ const BasicDropdownForm = ({ detailData, fetchDetailData }) => {
     };
 
     // ✅ 새로고침
-    const handleRefresh = async () => {
-        if (!fetchDetailData) return;
-        try {
-            await fetchDetailData();
-            setAlertBox({
-                type: "info",
-                title: "데이터 불러오기 성공!",
-                message: "수정한 데이터를 성공적으로 불러왔습니다.",
-            });
-        } catch (error) {
-            setAlertBox({
-                type: "danger",
-                title: "데이터 불러오기 실패!",
-                message: "데이터를 다시 불러오는 데 실패했습니다.",
-            });
-        }
+    // const handleRefresh = async () => {
+    //     if (!fetchDetailData) return;
+    //     try {
+    //         await fetchDetailData();
+    //         setAlertBox({
+    //             type: "info",
+    //             title: "데이터 불러오기 성공!",
+    //             message: "수정한 데이터를 성공적으로 불러왔습니다.",
+    //         });
+    //     } catch (error) {
+    //         setAlertBox({
+    //             type: "danger",
+    //             title: "데이터 불러오기 실패!",
+    //             message: "데이터를 다시 불러오는 데 실패했습니다.",
+    //         });
+    //     }
+    //
+    //     setTimeout(() => setAlertBox(null), 3000);
+    // };
+    const handleGoToKOMonthlyPage = () => {
+        if (!yearMonth || !detailData?.serial_number) return;
 
-        setTimeout(() => setAlertBox(null), 3000);
+        const query = new URLSearchParams({
+            yearMonth,
+            serial: detailData.serial_number,
+        }).toString();
+
+        navigate(`/ko_monthly?yearMonth=${yearMonth}&serial=${detailData.serial_number}`, { replace: true });
     };
+    const handleForceNavigate = () => {
+        const query = `yearMonth=${yearMonth}&serial=${detailData.serial_number}`;
+        const targetUrl = `/ko_monthly?${query}`;
+        const currentUrl = `${location.pathname}${location.search}`;
+
+        if (currentUrl === targetUrl) {
+            // ✅ 현재 주소와 같으면 강제 새로고침
+            navigate(0); // window.location.reload()와 동일한 효과
+        } else {
+            // ✅ 주소 다르면 정상 이동
+            navigate(targetUrl);
+        }
+    };
+
 
     return (
         <div className="relative inline-block float-right">
@@ -141,7 +170,10 @@ const BasicDropdownForm = ({ detailData, fetchDetailData }) => {
             )}
 
             {/* ✅ Refresh 버튼 */}
-            <button className="hover:text-blue-500 pr-2" onClick={handleRefresh}>
+            {/*<button className="hover:text-blue-500 pr-2" onClick={handleGoToKOMonthlyPage}>*/}
+            {/*    <LuRefreshCw />*/}
+            {/*</button>*/}
+            <button className="hover:text-blue-500 pr-2" onClick={() => navigate(handleForceNavigate)}>
                 <LuRefreshCw />
             </button>
 

@@ -9,7 +9,7 @@ export const AccountTableColumns = [
     {
         accessorKey: 'acct_num',
         header: '고객 번호',
-        enableClickToCopy: true,  // 클릭 시 복사 가능
+        // enableClickToCopy: true,  // 클릭 시 복사 가능
     },
     {
         accessorKey: 'account_type',

@@ -8,7 +8,7 @@ export const FileUploadHistoryTableColumns = [
     {
         accessorKey: 'sp_id',
         header: 'SPID',
-        enableClickToCopy : true,
+        // enableClickToCopy : true,
     },
     {
         accessorKey: 'alias',

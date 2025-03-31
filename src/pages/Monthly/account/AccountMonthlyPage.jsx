@@ -4,7 +4,7 @@ import KOMonthlyAccountTableColumns from '@/columns/KOMonthlyAccountTableColumns
 import { KOMonthlyAccountTableOptions } from '@/options/KOMonthlyAccountTableOptions.jsx';
 import useYearMonth from '@/hooks/useYearMonth.js';
 import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchKOMonthlyAccountDetailData, fetchKOMonthlyAccountIndexData, fetchMonthlyAccountIncludeDeviceDetailData } from '@/service/monthlyAccountService.js';
+import { fetchKOMonthlyAccountIndexData, fetchKOMonthlyAccountDetailData, fetchMonthlyAccountIncludeDeviceDetailData } from '@/service/monthlyAccountService.js';
 import { useState, useEffect } from 'react';
 import AccountMonthlyOverview from '@/components/form/AccountMonthly/AccountMonthlyOverview.jsx';
 import AccountMonthlyOverviewBefo from '@/components/form/AccountMonthly/AccountMonthlyOverviewBefo.jsx';
@@ -14,47 +14,40 @@ import AccountMonthlyForm from '@/components/form/AccountMonthly/AccountMonthlyF
 import InvoiceSaveButton from '@/components/common/InvoiceSaveButton.jsx';
 import { IoMdClose } from 'react-icons/io';
 
+
+import useAccountMonthlyStore from '@/stores/accountMonthlyStore.js';
+
+
 /**
  * @desc: 고객별 청구서 수정 페이지
  * */
 const AccountMonthlyPage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
-    const { data: monthlyAcctData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountIndexData, yearMonth);
+    const {
+        monthlyAcctData,
+        loading,
+        error,
+        selectedRowId,
+        isExpanded,
+        accountDetailData,
+        accountDetailLoading,
+        accountDetailError,
+        fetchMonthlyAcctData,
+        fetchAccountDetailData,
+        selectRow,
+        resetSelection
+    } = useAccountMonthlyStore();
 
-    const [selectedRowId, setSelectedRowId] = useState(null);
-    const [isExpanded, setIsExpanded] = useState(false);
 
-    console.log("monthlyAcctData: ", monthlyAcctData);
-
-    const [accountDetailData, setAccountDetailData] = useState(null);
-    const [accountDetailLoading, setAccountDetailLoading] = useState(false);
-    const [accountDetailError, setAccountDetailError] = useState(null);
-
-    const fetchDetailData = async () => {
-        if (!selectedRowId?.acct_num) return;
-
-        setAccountDetailLoading(true);
-        setAccountDetailError(null);
-        try {
-            const response = await fetchKOMonthlyAccountDetailData(yearMonth, selectedRowId.acct_num);
-            setAccountDetailData(response);
-        } catch (error) {
-            setAccountDetailError(error.message || 'Failed to fetch Account Monthly Detail');
-        } finally {
-            setAccountDetailLoading(false);
-        }
-    };
     useEffect(() => {
-        fetchDetailData();
+        fetchMonthlyAcctData(yearMonth);
+    }, [yearMonth]);
+
+    useEffect(() => {
+        if (selectedRowId) {
+            fetchAccountDetailData(yearMonth, selectedRowId.acct_num);
+        }
     }, [selectedRowId, yearMonth]);
-
-    console.log(accountDetailData)
-
-
-    const tabs = [
-        { id: 1, label: 'Overview', content: <AccountMonthlyOverview accountDetailData={accountDetailData} accountDetailLoading={accountDetailLoading} accountDetailError={accountDetailError}/>},
-        // { id: 2, label: 'Transaction', content: <AccountMonthlyTransaction /> },
-    ];
 
     return(
         <>
@@ -82,16 +75,19 @@ const AccountMonthlyPage = () => {
                             error={error}
                             options={{
                                 ...KOMonthlyAccountTableOptions,
+                                // meta: {
+                                //     onRowSelect: (selectedRow) => {
+                                //         if (selectedRowId && selectedRowId.acct_num === selectedRow.acct_num) {
+                                //             setSelectedRowId(null);
+                                //             setIsExpanded(false);
+                                //         } else {
+                                //             setSelectedRowId(selectedRow);
+                                //             setIsExpanded(true);
+                                //         }
+                                //     }
+                                // }
                                 meta: {
-                                    onRowSelect: (selectedRow) => {
-                                        if (selectedRowId && selectedRowId.acct_num === selectedRow.acct_num) {
-                                            setSelectedRowId(null);
-                                            setIsExpanded(false);
-                                        } else {
-                                            setSelectedRowId(selectedRow);
-                                            setIsExpanded(true);
-                                        }
-                                    }
+                                    onRowSelect: selectRow,
                                 }
                             }}
                         />
@@ -109,10 +105,7 @@ const AccountMonthlyPage = () => {
                             {/*    <span>삭제</span>*/}
                             {/*</div>*/}
                             <button
-                                onClick={() => {
-                                    setIsExpanded(false);
-                                    setSelectedRowId(null);
-                                }}
+                                onClick={resetSelection}
                                 className="p-2 rounded-md text-black hover:text-gray-500"
                             >
                                 <IoMdClose />
@@ -122,7 +115,6 @@ const AccountMonthlyPage = () => {
                             <AccountMonthlyForm yearMonth={yearMonth} accountDetailData={accountDetailData}
                                                 accountDetailLoading={accountDetailLoading}
                                                 accountDetailError={accountDetailError}
-                                                onAdjustmentRefresh={fetchDetailData} // 리프레시 함수 전달
                             />
                         </div>
                         {/*<div className="flex flex-col p-4 bg-white">*/}

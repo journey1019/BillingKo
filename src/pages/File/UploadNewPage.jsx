@@ -67,7 +67,7 @@ const UploadNewPage = () => {
         <div className="container mx-auto">
             {/* 🔹 헤더 */}
             <div className="flex flex-row justify-between mb-3">
-                <h1 className="py-1 text-lg font-bold">새로운 파일 업로드</h1>
+                <h1 className="py-1 text-lg font-bold">새로운 SPID 생성</h1>
                 <button onClick={() => navigate('/file')} className="flex items-center p-2 text-xl text-gray-600 hover:text-gray-900 transition">
                     <IoMdClose />
                 </button>

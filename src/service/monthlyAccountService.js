@@ -63,3 +63,13 @@ export const fetchMonthlyAccountIncludeDeviceDetailData = async (year_month, ser
         throw error;
     }
 }
+
+
+export const fetchAccountPayment = async (acct_num) => {
+    try {
+        return await getWithAuth(`/monthly/saveData/account/acct_num/${acct_num}`);
+    } catch (error) {
+        console.error("Failed to fetch AccountPayment", error.response?.data || error.message);
+        throw error;
+    }
+}

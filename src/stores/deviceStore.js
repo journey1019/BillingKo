@@ -93,6 +93,7 @@ const useDeviceStore = create((set) => ({
         try {
             await deleteDevice(serial_number);
         } catch (error) {
+            console.error(`단말기를 삭제하는데 실패했습니다.:`, error.message);
             throw error;
         }
     },

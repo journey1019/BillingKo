@@ -31,6 +31,7 @@ import AccountMonthlyPage from '@/pages/Monthly/account/AccountMonthlyPage.jsx';
 import UploadNewPage from '@/pages/File/UploadNewPage.jsx';
 import UploadEditPage from '@/pages/File/UploadEditPage.jsx';
 import CDRnNNPage from '@/pages/File/CDRnNNPage.jsx';
+import PaymentPage from './pages/Payment/PaymentPage.jsx';
 
 const checkAuth = () => {
     const token = localStorage.getItem("token");
@@ -132,6 +133,8 @@ const App = () => {
                                 {/* File Upload Page */}
                                 <Route path="/upload/new" element={<UploadNewPage />} />
                                 <Route path="/upload/:sp_id/edit" element={<UploadEditPage />} />
+
+                                <Route path="/payment" element={<PaymentPage />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>

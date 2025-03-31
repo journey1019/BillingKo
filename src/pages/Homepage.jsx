@@ -1,3 +1,4 @@
+import { useEffect, useState, useMemo } from "react";
 import { BiBuildings } from "react-icons/bi";
 import Move from '@/components/construct/main/Move.jsx';
 import Receivables from '@/components/construct/main/Receivables.jsx';
@@ -11,13 +12,28 @@ import { fetchKOMonthlyAccountSaveIndexData, fetchPaymentConfirm } from '@/servi
 import Stock from '@/components/construct/main/Stock.jsx';
 import Sales from '@/components/construct/main/Sales.jsx';
 
-const Homepage = () => {
-    const user_name = localStorage.getItem("user_name");
-    console.log(localStorage.getItem("token"))
+import usePaymentStore from '@/stores/paymentStore.js';
+import InlineEditableTable from '@/components/construct/main/InlineEditableTable.jsx';
 
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
+
+
+const Homepage = () => {
     // ✅ 공통으로 사용할 상태 (yearMonth & monthlyAcctSaveData)
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
-    const { data: monthlyAcctSaveData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountSaveIndexData, yearMonth);
+
+    const { monthlyAcctSaveData, loading, error, fetchMonthlyAcctSaveData } = usePaymentStore();
+
+    useEffect(() => {
+        fetchMonthlyAcctSaveData(yearMonth);
+    }, [yearMonth]);
+
+    const user_name = localStorage.getItem("user_name");
+    const token = localStorage.getItem("token");
+    console.log(token);
+
 
     return (
         <div className="grid gap-0 grid-cols-1">
@@ -53,19 +69,26 @@ const Homepage = () => {
             {/*    handleDateChange={handleDateChange}*/}
             {/*    yearMonth={yearMonth}*/}
             {/*    monthlyAcctSaveData={monthlyAcctSaveData}*/}
+            {/*/>*/}
+
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <InlineEditableTable
+                    selectedDate={selectedDate}
+                    handleDateChange={handleDateChange}
+                    yearMonth={yearMonth}
+                    monthlyAcctSaveData={monthlyAcctSaveData}
+                />
+            </LocalizationProvider>
+
+
+            {/*<PaymentStatus*/}
+            {/*    selectedDate={selectedDate}*/}
+            {/*    handleDateChange={handleDateChange}*/}
+            {/*    yearMonth={yearMonth}*/}
+            {/*    monthlyAcctSaveData={monthlyAcctSaveData}*/}
             {/*    loading={loading}*/}
             {/*    error={error}*/}
             {/*/>*/}
-
-
-            <PaymentStatus
-                selectedDate={selectedDate}
-                handleDateChange={handleDateChange}
-                yearMonth={yearMonth}
-                monthlyAcctSaveData={monthlyAcctSaveData}
-                loading={loading}
-                error={error}
-            />
 
             {/*<div className="flex flex-row w-1/2">*/}
             {/*    <HorizontalNonLinearStepper/>*/}

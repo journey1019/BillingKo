@@ -78,52 +78,61 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                 <div>
                     <div className="flex flex-row justify-between items-center border-b border-gray-400 pb-2 mb-4">
                         <h2 className="text-lg font-semibold col-span-3">조정 내역</h2>
-
                         <div className="flex flex-row space-x-2">
                             <button
                                 className="hover:text-blue-500"
-                                onClick={onAdjustmentRefresh} // 리프레시 함수 호출
+                                onClick={onAdjustmentRefresh}
                             >
                                 <LuRefreshCw />
                             </button>
                             <AdjustDropdownForm acctNum={accountData.acct_num} yearMonth={yearMonth} />
                         </div>
                     </div>
-                    <div className="col-span-3">
-                        {Array.isArray(adjustmentInfo) && adjustmentInfo.length > 0 ? (
-                            <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md">
-                                <table className="w-full text-sm text-center">
-                                    <thead className="bg-gray-200">
-                                    <tr>
-                                        {['번호', '조정 유형', '조정 대상', '조정 분류', '조정 타입', '요금 기준', '설명', '부가세 포함 여부', '조정 금액'].map((header, index) => (
-                                            <th key={index}
-                                                className="px-4 py-1 2xl:py-2 border font-medium whitespace-nowrap">{header}</th>
-                                        ))}
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {adjustmentInfo.map((adj, index) => (
-                                        <tr key={index} className="text-center text-sm whitespace-nowrap bg-white px-4 py-1 2xl:py-2">
-                                            <td className="px-4 py-1 2xl:p-2 border">{index + 1}</td>
-                                            <td className="px-4 py-2 border">{codeMappings.adjustment_code[adj.adjustment_code] || formatValue(adj.adjustment_code)}</td>
-                                            <td className="px-4 py-2 border">{formatValue(adj.adjustment_value)}</td>
-                                            <td className="px-4 py-2 border">{codeMappings.adjustment_category[adj.adjustment_category] || formatValue(adj.adjustment_category)}</td>
-                                            <td className="px-4 py-2 border">{codeMappings.adjustment_type[adj.adjustment_type] || formatValue(adj.adjustment_type)}</td>
-                                            <td className="px-4 py-2 border">{codeMappings.mount_type[adj.mount_type] || formatValue(adj.mount_type)}</td>
-                                            <td className="px-4 py-2 border">{formatValue(adj.description)}</td>
-                                            <td className="px-4 py-2 border">{formatValue(adj.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>
-                                            <td className="px-4 py-2 border text-right">{formatNumber(adj.adjustment_fee)}</td>
-                                        </tr>
+
+                    {Array.isArray(adjustmentInfo) && adjustmentInfo.length > 0 ? (
+                        <div className="max-h-60 overflow-y-auto border border-gray-300 rounded-md">
+                            <table className="w-full text-sm text-center border-separate border-spacing-0">
+                                <thead className="bg-gray-200 sticky top-0 z-10">
+                                <tr>
+                                    {[
+                                        '번호', '조정 유형', '조정 대상', '조정 분류', '조정 타입',
+                                        '요금 기준', '설명', '부가세 포함 여부', '조정 금액'
+                                    ].map((header, index) => (
+                                        <th
+                                            key={index}
+                                            className="px-4 py-1 2xl:py-2 border font-medium whitespace-nowrap bg-gray-200"
+                                        >
+                                            {header}
+                                        </th>
                                     ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        ) : (
-                            <p className="mt-2 text-gray-500 text-sm">조정 내역 없음</p>
-                        )}
-                    </div>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {adjustmentInfo.map((adj, index) => (
+                                    <tr
+                                        key={index}
+                                        className="text-center text-sm whitespace-nowrap bg-white"
+                                    >
+                                        <td className="px-4 py-1 2xl:p-2 border">{index + 1}</td>
+                                        <td className="px-4 py-2 border">{codeMappings.adjustment_code[adj.adjustment_code] || formatValue(adj.adjustment_code)}</td>
+                                        <td className="px-4 py-2 border">{formatValue(adj.adjustment_value)}</td>
+                                        <td className="px-4 py-2 border">{codeMappings.adjustment_category[adj.adjustment_category] || formatValue(adj.adjustment_category)}</td>
+                                        <td className="px-4 py-2 border">{codeMappings.adjustment_type[adj.adjustment_type] || formatValue(adj.adjustment_type)}</td>
+                                        <td className="px-4 py-2 border">{codeMappings.mount_type[adj.mount_type] || formatValue(adj.mount_type)}</td>
+                                        <td className="px-4 py-2 border">{formatValue(adj.description)}</td>
+                                        <td className="px-4 py-2 border">{formatValue(adj.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>
+                                        <td className="px-4 py-2 border text-right">{formatNumber(adj.adjustment_fee)}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <p className="mt-2 text-gray-500 text-sm">조정 내역 없음</p>
+                    )}
                 </div>
             </div>
+
             <div className="col-span-3 space-x-2 pt-6 pb-2">
                 <div>
                     <div className="flex flex-row justify-between items-center border-b border-gray-400 pb-2 mb-4">

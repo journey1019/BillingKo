@@ -51,7 +51,7 @@ const MonthPicker = ({ value, onDateChange, placeholder = "Select month" }) => {
     };
 
     return (
-        <div className="flex items-center space-x-1"> {/* ✅ 간격 축소 */}
+        <div className="flex items-center space-x-1 z-10"> {/* ✅ 간격 축소 */}
             {/* 왼쪽 화살표 */}
             <button
                 type="button"

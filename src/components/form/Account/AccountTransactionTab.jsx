@@ -1,23 +1,32 @@
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
-import { AdjustmentHistoryTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
+import { AdjustmentReferencesTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
 import { AdjustmentHistoryTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import useAccountStore from '@/stores/accountStore';
 
 
 const AccountTransactionTab = () => {
-    const { adjustHistoryData, adjustHistoryLoading, adjustHistoryError } = useAccountStore();
+    const { adjustDetailData, adjustDetailLoading, adjustDetailError } = useAccountStore();
+    console.log(adjustDetailData)
+
     return(
         <div>
-            {adjustHistoryLoading ? (
+            {adjustDetailLoading ? (
                 <LoadingSpinner />
-            ) : adjustHistoryError ? (
-                <p className="text-red-500">{adjustHistoryError}</p>
-            ) : adjustHistoryData ? (
+            ) : adjustDetailError ? (
+                <p className="text-red-500">{adjustDetailError}</p>
+            ) : adjustDetailData ? (
                 <ReusableTable
-                    columns={AdjustmentHistoryTableColumns}
-                    data={adjustHistoryData}
-                    options={AdjustmentHistoryTableOptions}
+                    columns={AdjustmentReferencesTableColumns}
+                    data={adjustDetailData}
+                    options={{
+                        ...AdjustmentHistoryTableOptions,
+                        mate: {
+                            onRowSelect: (selectRow) => {
+                                console.log(selectRow);
+                            }
+                        }
+                    }}
                 />
             ) : (
                 <p>Select an account to view details</p>

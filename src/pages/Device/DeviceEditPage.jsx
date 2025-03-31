@@ -43,13 +43,24 @@ const DeviceEditPage = () => {
     // 빈 문자열을 null로 변환하는 함수
     const convertEmptyToNull = (data) => {
         const updatedData = { ...data };
+        console.log(updatedData)
+        // ✅ 제외할 필드를 명시적으로 제거
+        delete updatedData.update_date;
+        delete updatedData.update_user_id;
+        delete updatedData.regist_date;
+        delete updatedData.regist_user_id;
+
+        // ✅ null로 변환할 필드
         ["deactivated", "internet_mail_id", "alias", "remarks"].forEach((field) => {
-            if (!updatedData[field] || updatedData[field].trim() === "") {
+            if (!updatedData[field] || updatedData[field].trim?.() === "") {
                 updatedData[field] = null;
             }
         });
+        console.log(updatedData)
+
         return updatedData;
     };
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;

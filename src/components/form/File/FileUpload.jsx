@@ -14,6 +14,9 @@ import UploadFileTabOverview from './UploadFileTabOverview.jsx';
 import TabComponent from '../../layout/TabComponent.jsx';
 import { MdDelete, MdModeEditOutline } from 'react-icons/md';
 
+
+import useUploadStore from '@/stores/uploadStore.js';
+
 const FileUpload = () => {
     const navigate = useNavigate();
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
@@ -194,7 +197,16 @@ const FileUpload = () => {
                             content: (
                                 <UploadFileTabOverview detailData={uploadHistoryDetailData} uploadHistoryDetailLoading={uploadHistoryDetailLoading} uploadHistoryDetailError={uploadHistoryDetailError}/>
                             )
-                        }
+                        },
+
+                        // History 없음
+                        // {
+                        //     id: 2,
+                        //     label: 'History',
+                        //     content: (
+                        //         <UploadFileTabOverview detailData={uploadHistoryDetailData} uploadHistoryDetailLoading={uploadHistoryDetailLoading} uploadHistoryDetailError={uploadHistoryDetailError}/>
+                        //     )
+                        // },
                     ]}
                     />
                     {/*<UploadHistoryDetailForm detailData={uploadHistoryDetailData} />*/}

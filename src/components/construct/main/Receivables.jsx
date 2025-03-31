@@ -1,8 +1,12 @@
 import { useMemo } from 'react';
-import { formatNumber } from '@/utils/formatHelpers.jsx';
+import { formatNumber, formatYearMonth } from '@/utils/formatHelpers.jsx';
 import Popover from '@/components/ui/Popover.jsx';
+import { useNavigate } from "react-router-dom";
 
 const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
+    const navigate = useNavigate();
+    console.log('monthlyAcctSaveData: ', monthlyAcctSaveData)
+
     // ✅ `monthlyAcctSaveData`가 없을 경우 빈 배열을 사용하여 오류 방지
     const unconfirmedData = (monthlyAcctSaveData ?? []).filter(item => item.confirm_yn === "N");
 
@@ -21,28 +25,56 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
         [monthlyAcctSaveData, yearMonth]
     );
 
+    console.log(totalNonePayFee - currentNonePayFee)
     console.log('monthlyAcctSaveData: ', monthlyAcctSaveData)
     console.log('unconfirmedData: ', unconfirmedData);
     console.log('totalNonePayFee: ', totalNonePayFee);
     console.log('currentNonePayFee: ', currentNonePayFee);
+    // 미납료 납부 금액
+    const amountPaid = totalNonePayFee - currentNonePayFee;
+
 
 
     // ✅ 퍼센트 계산 (totalNonePay가 0이 아닐 때만 계산)
     const progress = useMemo(() => {
-        return totalNonePayFee > 0 ? (currentNonePayFee / totalNonePayFee) * 100 : 0;
-    }, [totalNonePayFee, currentNonePayFee]);
+        return totalNonePayFee > 0 ? (amountPaid / totalNonePayFee) * 100 : 0;
+    }, [totalNonePayFee, currentNonePayFee])
+    const paymentStatusPercent = progress.toFixed(2);
+    console.log(progress)
+    console.log(progress.toFixed(2))
 
     return(
         <div className="flex flex-col py-4">
             <div className="bg-white rounded-2xl shadow-md">
-                <h1 className="p-4 bg-neutral-200 rounded-t-2xl text-lg font-semibold">총 미수금</h1>
+                <h1
+                    onClick={() => navigate('/payment')}
+                    className="p-4 bg-neutral-200 rounded-t-2xl text-lg font-semibold hover:underline hover:cursor-pointer"
+                >
+                    {formatYearMonth(yearMonth)} 총 미수금 현황
+                </h1>
 
                 <div className="p-4 items-center">
-                    <div className="mb-2 text-sm text-gray-500 ">Total Receivables : {formatNumber(totalNonePayFee) || 0} 원</div>
+                    <div className="mb-2 text-sm text-gray-500 ">총 청구 금액 : {formatNumber(totalNonePayFee) || 0} 원</div>
                     {/* ✅ Popover가 Progress Bar를 감싸지 않고, Hover 시 Popover가 보이도록 설정 */}
                     <Popover
-                        title={`총 미수금: ${formatNumber(totalNonePayFee)} 원`}
-                        content={`Overdue: ${formatNumber(currentNonePayFee)} 원`}
+                        title={(
+                            <div className="flex flex-row justify-between items-center">
+                                <span>총 미수금: </span>
+                                <span>{formatNumber(totalNonePayFee)} 원</span>
+                            </div>
+                        )}
+                        content={(
+                            <>
+                                <div className="flex flex-row justify-between items-center">
+                                    <span>수납액: </span>
+                                    <span>{formatNumber(amountPaid)} 원</span>
+                                </div>
+                                <div className="flex flex-row justify-between items-center">
+                                    <span>납부율: </span>
+                                    <span>{paymentStatusPercent} %</span>
+                                </div>
+                            </>
+                        )}
                     >
                         {/* ✅ 항상 보이는 Progress Bar */}
                         <div className="w-full bg-gray-200 rounded-full h-2.5 relative">
@@ -56,17 +88,20 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
                     <div className="mt-4 border-b" />
                 </div>
 
-                <div className="px-4 pb-4 grid grid-cols-5 items-center space-x-4">
+                <div
+                    onClick={() => navigate('/payment')}
+                    className="px-4 pb-4 grid grid-cols-5 items-center space-x-4 cursor-pointer"
+                >
                     <div className="flex flex-col">
-                        <span className="text-xs text-blue-500">CURRENT PAYMENT</span>
-                        <span className="text-lg">0 원</span>
+                        <span className="text-xs text-blue-500">총 미납 금액</span>
+                        <span className="text-lg">{formatNumber(totalNonePayFee)} 원</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs text-orange-500">TOTAL OVERDUE</span>
-                        <span className="text-lg">{formatNumber(currentNonePayFee)} 원</span>
+                        <span className="text-xs text-orange-500">수납액</span>
+                        <span className="text-lg">{formatNumber(amountPaid)} 원</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs text-yellow-500">Payment - </span>
+                        <span className="text-xs text-yellow-500">잔여 미수금</span>
                         <span className="text-lg">{formatNumber(currentNonePayFee)} 원</span>
                     </div>
                 </div>

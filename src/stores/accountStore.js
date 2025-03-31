@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { fetchAccounts, fetchAccountPart, fetchAccountHistory, updateAccount, deleteAccount } from '@/service/accountService';
-import { fetchAdjustmentValueHistory } from '@/service/adjustmentService';
+import { fetchAdjustmentValue, fetchAdjustmentValueHistory } from '@/service/adjustmentService';
 
 const useAccountStore = create((set) => ({
     // 전체 계정 목록
@@ -17,6 +17,11 @@ const useAccountStore = create((set) => ({
     historyData: null,
     historyLoading: false,
     historyError: null,
+
+    // 조정 상세 정보
+    adjustDetailData: null,
+    adjustDetailLoading: false,
+    adjustDetailError: null,
 
     // 조정 정보
     adjustHistoryData: null,
@@ -52,30 +57,36 @@ const useAccountStore = create((set) => ({
             accountPartError: null,
             historyError: null,
             adjustHistoryError: null,
+            adjustDetailLoading: true,
+            adjustDetailError: null,
         });
 
         try {
-            const [part, history, adjustment] = await Promise.all([
+            const [part, history, adjustment, adjustmentHistory] = await Promise.all([
                 fetchAccountPart(acct_num),
                 fetchAccountHistory(acct_num),
+                fetchAdjustmentValue(acct_num),
                 fetchAdjustmentValueHistory(acct_num),
             ]);
 
             set({
                 accountPartData: part,
                 historyData: history,
-                adjustHistoryData: adjustment,
+                adjustDetailData: adjustment,
+                adjustHistoryData: adjustmentHistory,
             });
         } catch (error) {
             set({
                 accountPartError: error.message,
                 historyError: error.message,
+                adjustDetailError: error.message,
                 adjustHistoryError: error.message,
             });
         } finally {
             set({
                 accountPartLoading: false,
                 historyLoading: false,
+                adjustDetailLoading: false,
                 adjustHistoryLoading: false,
             });
         }

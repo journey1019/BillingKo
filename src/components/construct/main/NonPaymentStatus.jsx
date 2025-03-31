@@ -1,55 +1,99 @@
 import { useMemo, useState } from 'react';
-import {
-    MaterialReactTable,
-    useMaterialReactTable,
-} from 'material-react-table';
-import {
-    Box,
-    Button,
-    CircularProgress,
-    Typography,
-} from '@mui/material';
-import {
-    QueryClient,
-    QueryClientProvider,
-    useMutation,
-    useQueryClient,
-} from '@tanstack/react-query';
+import { MaterialReactTable, useMaterialReactTable, } from 'material-react-table';
+import { Box, Button, CircularProgress, Typography, } from '@mui/material';
+import { QueryClient, QueryClientProvider, useMutation, useQueryClient, } from '@tanstack/react-query';
 import { fetchPaymentConfirm } from '@/service/monthlyAccountService.js';
-import MonthPicker from '@/components/time/MonthPicker.jsx';
+import usePaymentStore from '@/stores/paymentStore.js';
+import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
+
 
 const Example = ({ selectedDate, handleDateChange, yearMonth, monthlyAcctSaveData }) => {
+    console.log(monthlyAcctSaveData)
+    const { updateConfirmStatus } = usePaymentStore();
     const [validationErrors, setValidationErrors] = useState({});
     const [editedUsers, setEditedUsers] = useState({});
 
+    const [saving, setSaving] = useState(false);
     // 유효성 검사 함수
     const validateRequired = (value) => !!value.length;
 
-    const handleTextFieldProps = ({ cell, row }) => ({
-        type: 'text',
-        required: true,
-        error: !!validationErrors?.[cell.id],
-        helperText: validationErrors?.[cell.id] || '',
-        onBlur: (event) => {
-            const value = event.target.value?.trim() || '';
-            setValidationErrors((prevErrors) => ({
-                ...prevErrors,
-                [cell.id]: value ? undefined : 'Required',
-            }));
-
-            setEditedUsers((prevUsers) => ({
-                ...prevUsers,
-                [row.acct_num]: {
-                    ...(prevUsers[row.acct_num] || {
+    const handleTextFieldProps = ({ cell, row }) => {
+        const key = `${row.acct_num}-${cell.column.id}`;
+        return {
+            type: 'text',
+            required: REQUIRED_FIELDS.includes(cell.column.id),
+            error: !!validationErrors?.[key],
+            helperText: validationErrors?.[key] || '',
+            onBlur: (event) => {
+                const value = event.target.value?.trim() || '';
+                setEditedUsers((prev) => ({
+                    ...prev,
+                    [row.acct_num]: {
+                        ...(prev[row.acct_num] || {}),
                         acct_num: row.acct_num,
-                        confirm_yn: row.confirm_yn,
-                        confirm_payment_method: row.confirm_payment_method,
-                    }),
-                    [cell.column.id]: value,
-                },
-            }));
-        },
-    });
+                        [cell.column.id]: value,
+                    },
+                }));
+                setValidationErrors((prevErrors) => ({
+                    ...prevErrors,
+                    [key]: REQUIRED_FIELDS.includes(cell.column.id) && !value ? '필수 항목입니다.' : undefined,
+                }));
+            },
+        };
+    };
+
+
+    const REQUIRED_FIELDS = ['confirm_yn', 'confirm_payment_method', 'confirm_payment_date'];
+
+    const handleSaveUsers = async () => {
+        const newValidationErrors = {};
+        const formattedUsers = [];
+
+        Object.entries(editedUsers).forEach(([acct_num, user]) => {
+            const userData = { acct_num };
+            let isValid = true;
+
+            REQUIRED_FIELDS.forEach((field) => {
+                const value = user[field];
+                if (!value || (typeof value === 'string' && value.trim() === '')) {
+                    newValidationErrors[`${acct_num}-${field}`] = '필수 항목입니다.';
+                    isValid = false;
+                } else {
+                    userData[field] = value;
+                }
+            });
+
+            if (isValid) {
+                // 모든 필수값 외의 수정값도 추가
+                const otherFields = Object.entries(user).filter(
+                    ([key]) => !['acct_num', ...REQUIRED_FIELDS].includes(key)
+                );
+                otherFields.forEach(([key, value]) => {
+                    userData[key] = value;
+                });
+
+                formattedUsers.push(userData);
+            }
+        });
+
+        // 유효성 오류 있을 경우 UI 표시
+        if (Object.keys(newValidationErrors).length > 0) {
+            setValidationErrors(newValidationErrors);
+            return;
+        }
+
+        setSaving(true);
+        try {
+            await updateConfirmStatus(yearMonth, formattedUsers);
+            setEditedUsers({});
+            setValidationErrors({});
+        } catch (err) {
+            console.error('업데이트 실패:', err);
+        } finally {
+            setSaving(false);
+        }
+    };
+
 
     const handleSelectFieldProps = ({ row, column }) => ({
         select: true,
@@ -84,26 +128,6 @@ const Example = ({ selectedDate, handleDateChange, yearMonth, monthlyAcctSaveDat
 
     const { mutateAsync: updateUsers, isPending: isUpdatingUsers } = useUpdateUsers(yearMonth);
 
-    const handleSaveUsers = async () => {
-        if (Object.values(validationErrors).some((error) => !!error)) return;
-
-        // API 요청을 위해 필터링된 데이터 생성
-        const formattedUsers = Object.values(editedUsers).map((user) => ({
-            acct_num: user.acct_num,
-            confirm_yn: user.confirm_yn,
-            confirm_payment_method: user.confirm_payment_method,
-            ...Object.fromEntries(
-                Object.entries(user).filter(
-                    ([key]) =>
-                        key !== 'acct_num' && key !== 'confirm_yn' && key !== 'confirm_payment_method'
-                )
-            ),
-        }));
-
-        await updateUsers(formattedUsers);
-        setEditedUsers({});
-    };
-
     const table = useMaterialReactTable({
         columns,
         data: monthlyAcctSaveData || [],
@@ -112,6 +136,7 @@ const Example = ({ selectedDate, handleDateChange, yearMonth, monthlyAcctSaveDat
         enableEditing: true,
         enableRowActions: true,
         positionActionsColumn: 'last',
+        initialState: { density: 'compact' },
     });
 
     return (
@@ -119,7 +144,7 @@ const Example = ({ selectedDate, handleDateChange, yearMonth, monthlyAcctSaveDat
             <div className="bg-white rounded-2xl shadow-md col-span-1">
                 <div className="flex flex-row justify-between bg-neutral-200 rounded-t-2xl items-center px-4 py-2">
                     <h1 className="text-lg font-semibold">납부 현황</h1>
-                    <MonthPicker value={selectedDate} onDateChange={handleDateChange} />
+                    <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                 </div>
                 <div className="px-4 pt-4">
                     <span className="text-red-500">납부현황을 체크할 데이터를 클릭해주세요.</span>

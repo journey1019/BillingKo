@@ -46,7 +46,7 @@ api.interceptors.request.use(
         if (token && !config.url.includes("/user/login/")) {
             config.headers.Authorization = token;
         }
-        console.log("Request Config:", config);
+        // console.log("Request Config:", config);
         return config;
     },
     (error) => {

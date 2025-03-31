@@ -4,6 +4,9 @@ import useApiFetch from '@/hooks/useApiFetch.js';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import { MdEdit } from "react-icons/md";
 import UploadFileModal from '@/components/layout/File/UploadFileModal.jsx';
+import { FaCircleCheck } from "react-icons/fa6";
+import { CiCircleCheck } from "react-icons/ci";
+
 
 const FileUploadStatus = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
@@ -53,8 +56,18 @@ const FileUploadStatus = () => {
                 <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
             </div>
 
-            <div className="mb-4">
+            <div className="flex flex-row justify-between items-center mb-4">
                 <UploadFileModal />
+                <div className="flex flex-row space-x-4 rounded-md ">
+                    <div className="flex flex-row text-sm items-center space-x-2">
+                        <FaCircleCheck className="text-green-500 w-4 h-4"/>
+                        <span>업로드 완료</span>
+                    </div>
+                    <div className="flex flex-row text-sm items-center space-x-2">
+                        <CiCircleCheck />
+                        <span>업로드 미완료</span>
+                    </div>
+                </div>
             </div>
 
             <div className="space-y-2">
@@ -76,8 +89,9 @@ const FileUploadStatus = () => {
 
                                     return (
                                         <div key={fileType} className="relative group cursor-pointer">
-                                            <span>
-                                              {fileType} {isUploaded ? '✅' : '☑️'}
+                                            <span className="flex flex-row items-center">
+                                                <span className="pr-2">{fileType}</span>
+                                                {isUploaded ? <><FaCircleCheck className="text-green-500 w-4 h-4"/></> : <><CiCircleCheck className="w-4 h-4"/></>}
                                             </span>
 
                                             {isUploaded && fileDetails && (

@@ -7,6 +7,12 @@ export const useAcctNumList = () => {
     return accountData.map((item) => item.acct_num);
 };
 
+// ✅ acct_num, acct_alias 배열만 추출하는 selector
+export const useAcctNumNameList = () => {
+    const accountData = useAccountStore((state) => state.accountData);
+    return accountData.map(({ acct_num, acct_name }) => ({ acct_num, acct_name }));
+};
+
 // ✅ 중복 제거 account_type 배열 추출
 // ['법인', '개인']
 export const useAcctTypeList = () => {
