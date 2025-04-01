@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
 import { AdjustmentReferencesTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
@@ -27,6 +28,7 @@ const AccountTransactionTab = ({ selectedAccountId }) => {
 
     const [selectedAdjustmentId, setSelectedAdjustmentId] = useState(null);
     const [isExpanded, setIsExpanded] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (selectedAccountId) {
@@ -52,6 +54,14 @@ const AccountTransactionTab = ({ selectedAccountId }) => {
         }
     };
 
+    const handleNewAdjustment = () => {
+        if(!selectedAccountId?.acct_num) {
+            console.error("고객번호를 클릭해야 합니다.")
+            return;
+        }
+        navigate(`/adjustment/new?adjustment_code=account_num&adjustment_code_value=${selectedAccountId.acct_num}`);
+    }
+
 
 
     return(
@@ -64,7 +74,7 @@ const AccountTransactionTab = ({ selectedAccountId }) => {
                             className="bg-blue-500 rounded-md text-white px-4 py-2 mb-2 hover:bg-blue-600"
                             onClick={() => {
                                 console.log('Button Clicked!');
-                                handleClick();
+                                handleNewAdjustment();
                             }}
                         >
                             <TiPlus />
