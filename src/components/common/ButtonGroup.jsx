@@ -23,6 +23,7 @@ const ButtonGroup = ({ entityType, id, deleteFunction, onDeleteSuccess }) => {
                 onDeleteSuccess();
             }
         } catch (err) {
+            alert(`${entityType} 삭제 중 오류 발생`);
             console.error(`${entityType}를 삭제하는데 실패했습니다.:`, err.message);
         } finally {
             setShowConfirmModal(false);
@@ -39,6 +40,15 @@ const ButtonGroup = ({ entityType, id, deleteFunction, onDeleteSuccess }) => {
                     >
                         <MdModeEditOutline className="mr-3" />
                         Edit
+                    </button>
+                </Tooltip>
+                <Tooltip title="리뉴얼 Account 수정">
+                    <button type="button"
+                            className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                            onClick={() => navigate(`/${entityType}/edit/${id}`)}
+                    >
+                        <MdModeEditOutline className="mr-3" />
+                        Edit (New)
                     </button>
                 </Tooltip>
                 <Tooltip title="데이터 삭제">

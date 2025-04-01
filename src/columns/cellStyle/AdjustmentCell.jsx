@@ -44,11 +44,12 @@ export const AdjustmentCell_Type = ({ cell }) => {
     const codeMappings = useAdjustmentMappings();
     const value = cell.getValue() || "-";
 
+    return(codeMappings.adjustment_type[value])
     // 맨 앞 글자만 대문자로 변환
-    const formattedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-    const colorClass = value.toLowerCase() === 'discount' ? 'text-green-500' : 'text-red-500';
-
-    return <span className={`font-bold ${colorClass}`}>{formattedValue}</span>;
+    // const formattedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    // const colorClass = value.toLowerCase() === 'discount' ? 'text-green-500' : 'text-red-500';
+    //
+    // return <span className={`font-bold ${colorClass}`}>{formattedValue}</span>;
     // return <span className={`font-bold ${colorClass}`}>{formattedValue.adjustment_type[value]}</span>;
 };
 
@@ -84,17 +85,24 @@ export const AdjustmentCell_Mount_Value = ({ cell }) => {
 };
 
 
+
 export const AdjustmentCell_Cycle = ({ cell }) => {
     const value = cell.getValue();
-
-    const CycleStyle = (value === 'monthly' ? 'bg-orange-100 text-orange-800' : 'bg-yellow-100 text-yellow-800')
-
-    return (
-        <span className={`px-2 py-1 rounded-full ${CycleStyle}`}>
-            {value}
-        </span>
-    );
+    if(value === 'monthly') {
+        return <span>정기(월)</span>
+    } else return <span>1회</span>
 };
+// export const AdjustmentCell_Cycle = ({ cell }) => {
+//     const value = cell.getValue();
+//
+//     const CycleStyle = (value === 'monthly' ? 'bg-orange-100 text-orange-800' : 'bg-yellow-100 text-yellow-800')
+//
+//     return (
+//         <span className={`px-2 py-1 rounded-full ${CycleStyle}`}>
+//             {value}
+//         </span>
+//     );
+// };
 
 
 export const AdjustmentCell_Use = ({ cell }) => {

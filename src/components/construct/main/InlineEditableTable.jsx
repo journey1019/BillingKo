@@ -4,7 +4,7 @@ import { Box, Button, CircularProgress, Typography, Tooltip } from '@mui/materia
 import usePaymentStore from '@/stores/paymentStore.js';
 import MonthPicker from '@/components/time/MonthPicker';
 import MonthPickerArrow from '../../time/MonthPickerArrow.jsx';
-import { formatDateTime } from '@/columns/cellStyle/AccountCell.jsx';
+import { formatDateTime, formatDateKSTTime } from '@/columns/cellStyle/AccountCell.jsx';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { convertUTCToKST, convertKSTToUTC } from '@/utils/time';
@@ -97,7 +97,13 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
     const columns = useMemo(() => [
         { accessorKey: 'acct_num', header: '고객번호', enableEditing: false, size: 50 },
         { accessorKey: 'confirm_user_id', header: '확인자', enableEditing: false, size: 50 },
-        { accessorKey: 'confirm_date', header: '확인일시', enableEditing: false, Cell: formatDateTime, size: 100 },
+        {
+            accessorKey: 'confirm_date',
+            header: '확인일시(KST)',
+            enableEditing: false,
+            Cell: formatDateKSTTime,
+            size: 100
+        },
         { accessorKey: 'none_pay_fee', header: '미납료', enableEditing: false, Cell: renderNumberCell, ...applyRightAlignStyles(), size: 150 },
         {
             accessorKey: 'confirm_yn',
@@ -202,7 +208,7 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
             header: '납부일자',
             Cell: getFormatDateTimeUTCtoKST(editedUsers),
             // muiEditTextFieldProps: undefined, // 사용 안 함
-            Header: <div style={{ color: 'red' }}>납부일자</div>,
+            Header: <div style={{ color: 'red' }}>납부일자(KST)</div>,
             Edit: ({ row }) => {
                 const acct_num = row.original.acct_num;
                 const rawValue =
@@ -272,6 +278,7 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
             density: 'compact'
         },
     });
+    console.log(monthlyAcctSaveData)
 
     return (
         <div className="py-4 grid gap-0 grid-cols-1">

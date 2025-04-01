@@ -11,6 +11,7 @@ import {
     FormatUseYnToggle,
 } from './cellStyle/AccountCell.jsx';
 
+
 export const AdjustmentTableColumns = [
     {
         accessorKey: 'adjustment_index',
@@ -67,6 +68,9 @@ export const AdjustmentTableColumns = [
     }
 ]
 
+/**
+ * @desc: AccountForm_Transaction Table Columns
+ * */
 export const AdjustmentReferencesTableColumns = [
     {
         accessorKey: 'use_yn',
@@ -111,20 +115,30 @@ export const AdjustmentReferencesTableColumns = [
 ]
 
 export const AdjustmentHistoryTableColumns = [
+    // {
+    //     accessorKey: 'adjustment_index',
+    //     header: 'Index',
+    //     size: 50,
+    // },
     {
-        accessorKey: 'adjustment_index',
-        header: 'Index',
-        size: 50,
+        accessorKey: 'use_yn',
+        header: '사용',
+        Cell: FormatUseYnToggle,
     },
     {
-        accessorKey: 'adjustment_code',
-        header: '조정 대상 종류',
-        Cell: AdjustmentCell_Code,
+        accessorKey: 'date_index',
+        header: 'Date Index',
+        Cell: formatDateIndex,
     },
-    {
-        accessorKey: 'adjustment_code_value',
-        header: '조정 대상',
-    },
+    // {
+    //     accessorKey: 'adjustment_code',
+    //     header: '조정 대상 종류',
+    //     Cell: AdjustmentCell_Code,
+    // },
+    // {
+    //     accessorKey: 'adjustment_code_value',
+    //     header: '조정 대상',
+    // },
     {
         accessorKey: 'adjustment_category',
         header: '조정 종류',
@@ -138,6 +152,12 @@ export const AdjustmentHistoryTableColumns = [
     {
         accessorKey: 'mount_type',
         header: '요금 적용 기준',
+        Cell: AdjustmentCell_Amount,
+    },
+    {
+        accessorKey: 'adjustment_cycle',
+        header: '조정 적용 주기',
+        Cell: AdjustmentCell_Cycle
     },
     {
         accessorKey: 'mount_value',
@@ -148,21 +168,6 @@ export const AdjustmentHistoryTableColumns = [
     {
         accessorKey: 'description',
         header: '설명',
-    },
-    {
-        accessorKey: 'adjustment_cycle',
-        header: '조정 적용 주기',
-        Cell: AdjustmentCell_Cycle
-    },
-    {
-        accessorKey: 'use_yn',
-        header: '사용',
-        Cell: AdjustmentCell_Use,
-    },
-    {
-        accessorKey: 'date_index',
-        header: 'Date Index',
-        Cell: formatDateIndex,
     },
     {
         accessorKey: 'user_id',

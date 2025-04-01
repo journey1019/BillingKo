@@ -87,6 +87,25 @@ export const formatDateTime = ({ cell }) => {
     return value.replace("T", " "); // UTC 변환 없이 "YYYY-MM-DD HH:mm:ss" 형태로 변환
 };
 
+// 'YYYY-MM-DDTHH:mm:ss' -> 'YYYY-MM-DD HH:mm:ss' (UTC -> KST)
+export const formatDateKSTTime = ({ cell }) => {
+    const utcValue = cell.getValue();
+    if (!utcValue) return '-';
+
+    const date = new Date(utcValue);
+    // KST 기준으로 변환: UTC + 9시간
+    const kstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+
+    const yyyy = kstDate.getFullYear();
+    const mm = String(kstDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(kstDate.getDate()).padStart(2, '0');
+    const hh = String(kstDate.getHours()).padStart(2, '0');
+    const mi = String(kstDate.getMinutes()).padStart(2, '0');
+    const ss = String(kstDate.getSeconds()).padStart(2, '0');
+
+    return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+};
+
 // 'YYYYMM' -> 'YYYY-MM'
 export const formatDateIndex = ({ cell }) => {
     const value = cell.getValue() || '-';

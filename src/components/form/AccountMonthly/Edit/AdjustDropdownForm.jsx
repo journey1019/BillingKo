@@ -108,6 +108,7 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
         }
     };
     console.log(formData)
+    console.log(adjustmentTypes)
 
     return (
         <div className="relative inline-block float-right">

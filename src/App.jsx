@@ -32,6 +32,8 @@ import UploadNewPage from '@/pages/File/UploadNewPage.jsx';
 import UploadEditPage from '@/pages/File/UploadEditPage.jsx';
 import CDRnNNPage from '@/pages/File/CDRnNNPage.jsx';
 import PaymentPage from './pages/Payment/PaymentPage.jsx';
+import EditPage from '@/pages/Account/EditPage.jsx';
+import AdjustmentTransactionDetailEditForm from './components/form/Account/AdjustmentTransactionDetailEditForm.jsx';
 
 const checkAuth = () => {
     const token = localStorage.getItem("token");
@@ -117,6 +119,7 @@ const App = () => {
 
                                 <Route path="/accounts/new" element={<AccountNewPage />} />
                                 <Route path="/accounts/:acct_num/edit" element={<AccountEditPage />} />
+                                <Route path="/accounts/edit/:acct_num" element={<EditPage />} />
 
                                 <Route path="/price/new" element={<PriceNewPage />} />
                                 <Route path="/price/:ppid/edit" element={<PriceEditPage />} />
@@ -135,6 +138,8 @@ const App = () => {
                                 <Route path="/upload/:sp_id/edit" element={<UploadEditPage />} />
 
                                 <Route path="/payment" element={<PaymentPage />} />
+
+                                <Route path="/adjustment/edit/:adjustment_index" element={<AdjustmentTransactionDetailEditForm/>} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>

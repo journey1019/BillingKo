@@ -25,17 +25,22 @@ import { TiPlus } from "react-icons/ti";
 import { Tooltip } from '@mui/material';
 import useAccountStore from '@/stores/accountStore';
 import { useAcctNumList, useAcctClassificationOptions } from '@/selectors/useAccountSelectors';
-
-
+import AccountTransactionHistoryTab from '../../components/form/Account/AccountTransactionHistoryTab.jsx';
+import { useSearchParams } from "react-router-dom";
+import useAdjustmentStore from '@/stores/adjustmentStore.js';
 
 const AccountPage = () => {
+    const [searchParams] = useSearchParams();
+    const urlValue = searchParams.get("value");
+    console.log(urlValue)
+
     const { accountData, fetchAccountData, fetchAccountDetails, accountLoading, accountError, accountPartData, historyData, adjustHistoryData, deleteAccountData } = useAccountStore();
     const classificationOptions = useAcctClassificationOptions();
 
     const navigate = useNavigate();
 
     // Account Table Row Select
-    const [selectedAccountId, setSelectedAccountId] = useState(null);
+    const [selectedAccountId, setSelectedAccountId] = useState(urlValue || null);
     const [isExpanded, setIsExpanded] = useState(false);
 
     useEffect(() => {
@@ -48,23 +53,16 @@ const AccountPage = () => {
         }
     }, [selectedAccountId]);
 
-
-    // FilterSelectOptions
-    // const [classificationOptions, setClassificationOptions] = useState([]);
-    // useEffect(() => {
-    //     if (accountData) {
-    //         const uniqueClassifiactions = Array.from(
-    //             new Set(accountData.map((item) => item.classification))
-    //         ).filter(Boolean);
-    //         setClassificationOptions(uniqueClassifiactions);
-    //     }
-    // }, [accountData]);
-    // const dynamicColumns = AccountTableColumns.map((col) => {
-    //     if (col.accessorKey === 'classification') {
-    //         return { ...col, filterSelectOptions: classificationOptions };
-    //     }
-    //     return col;
-    // });
+    // ✅ urlValue로 선택할 계정 자동 설정
+    useEffect(() => {
+        if (urlValue && accountData.length > 0) {
+            const matchedAccount = accountData.find(account => account.acct_num === urlValue);
+            if (matchedAccount) {
+                setSelectedAccountId(matchedAccount);
+                setIsExpanded(true);
+            }
+        }
+    }, [urlValue, accountData]);
 
     const dynamicColumns = useMemo(() => {
         return AccountTableColumns.map((col) =>
@@ -85,7 +83,6 @@ const AccountPage = () => {
             alert("삭제에 실패했습니다.");
         }
     };
-
 
     const handleClick = () => {
         if (!selectedAccountId?.acct_num) {
@@ -166,8 +163,6 @@ const AccountPage = () => {
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 console.log('onRowSelect called with id:', selectedRow);
-                                // setSelectedAccountId(selectedRow);
-                                // setIsExpanded(true);
 
                                 // 같은 Row 선택
                                 if (selectedAccountId && selectedAccountId.acct_num === selectedRow.acct_num) {
@@ -226,28 +221,22 @@ const AccountPage = () => {
                                 label: 'Transaction',
                                 content: (
                                     <>
-                                        <div className="flex flex-row justify-between">
-                                            <h1 className="font-bold my-2">단말기 조정 정보</h1>
-                                            <Tooltip title="단말기 조정 정보 추가">
-                                                <button
-                                                    className="bg-blue-500 rounded-md text-white px-4 py-2 mb-2 hover:bg-blue-600"
-                                                    onClick={() => {
-                                                        console.log("Button Clicked!");
-                                                        handleClick();
-                                                    }}
-                                                >
-                                                    <TiPlus />
-                                                </button>
-                                            </Tooltip>
-                                        </div>
-                                        <AccountTransactionTab />
+                                        <AccountTransactionTab selectedAccountId={selectedAccountId}/>
                                     </>
                                 )
                             },
                             {
                                 id: 3,
                                 label: 'History',
-                                content: <AccountHistoryTab AccountTableColumns={AccountTableColumns} />
+                                content: (
+                                    <>
+                                        <h1 className="font-bold my-2">고객 이력 정보</h1>
+                                        <AccountHistoryTab AccountTableColumns={AccountTableColumns} />
+
+                                        <h1 className="font-bold my-2 pt-4">고객 조정 이력 정보</h1>
+                                        <AccountTransactionHistoryTab selectedAccountId={selectedAccountId}/>
+                                    </>
+                                )
                             },
                         ]} />
                     </div>
