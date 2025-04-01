@@ -142,37 +142,37 @@ const AccountPartForm = ({ accountPartData, adjustDetailData }) => {
 
             {/* ✅ 최종 조정 정보 */}
             {/*<h2 className="text-md font-semibold text-gray-800 border-b pb-1">조정 정보</h2>*/}
-            {adjustDetailData?.length > 0 && adjustDetailData[0] ? (
-                <div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {[
-                            { label: '사용 여부', value: adjustDetailData[0].use_yn },
-                            {
-                                label: '조정 종류',
-                                value: codeMappings.adjustment_category[adjustDetailData[0].adjustment_category]
-                            },
-                            {
-                                label: '조정 타입',
-                                value: codeMappings.adjustment_type[adjustDetailData[0].adjustment_type]
-                            },
-                            { label: '요금 적용 기준', value: codeMappings.mount_type[adjustDetailData[0].mount_type] },
-                            {
-                                label: '조정 적용 주기',
-                                value: codeMappings.adjustment_cycle[adjustDetailData[0].adjustment_cycle]
-                            },
-                            { label: '조정 적용 날짜', value: formatDateIndex(adjustDetailData[0].date_index) },
-                            { label: '요금 적용 금액', value: adjustDetailData[0].mount_value },
-                            { label: '설명', value: adjustDetailData[0].description },
-                        ].map(({ label, value }, index) => (
-                            <div key={index} className="flex justify-between items-center">
-                                <label className="text-xs font-medium text-gray-500 w-1/6 md:w-1/3 p-1">{label}</label>
-                                <span
-                                    className="text-sm w-5/6 md:w-2/3 px-2 py-1 rounded-md bg-gray-100">{formatDisplayValue(value)}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            ) : (<div className="text-gray-500 text-sm"> No Data </div>)}
+            {/*{adjustDetailData?.length > 0 && adjustDetailData[0] ? (*/}
+            {/*    <div>*/}
+            {/*        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">*/}
+            {/*            {[*/}
+            {/*                { label: '사용 여부', value: adjustDetailData[0].use_yn },*/}
+            {/*                {*/}
+            {/*                    label: '조정 종류',*/}
+            {/*                    value: codeMappings.adjustment_category[adjustDetailData[0].adjustment_category]*/}
+            {/*                },*/}
+            {/*                {*/}
+            {/*                    label: '조정 타입',*/}
+            {/*                    value: codeMappings.adjustment_type[adjustDetailData[0].adjustment_type]*/}
+            {/*                },*/}
+            {/*                { label: '요금 적용 기준', value: codeMappings.mount_type[adjustDetailData[0].mount_type] },*/}
+            {/*                {*/}
+            {/*                    label: '조정 적용 주기',*/}
+            {/*                    value: codeMappings.adjustment_cycle[adjustDetailData[0].adjustment_cycle]*/}
+            {/*                },*/}
+            {/*                { label: '조정 적용 날짜', value: formatDateIndex(adjustDetailData[0].date_index) },*/}
+            {/*                { label: '요금 적용 금액', value: adjustDetailData[0].mount_value },*/}
+            {/*                { label: '설명', value: adjustDetailData[0].description },*/}
+            {/*            ].map(({ label, value }, index) => (*/}
+            {/*                <div key={index} className="flex justify-between items-center">*/}
+            {/*                    <label className="text-xs font-medium text-gray-500 w-1/6 md:w-1/3 p-1">{label}</label>*/}
+            {/*                    <span*/}
+            {/*                        className="text-sm w-5/6 md:w-2/3 px-2 py-1 rounded-md bg-gray-100">{formatDisplayValue(value)}</span>*/}
+            {/*                </div>*/}
+            {/*            ))}*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*) : (<div className="text-gray-500 text-sm"> No Data </div>)}*/}
 
 
             {/*<div className="flex flex-row justify-between items-center border-b border-gray-400 pb-2 mb-4">*/}

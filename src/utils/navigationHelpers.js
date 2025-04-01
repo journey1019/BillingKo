@@ -13,9 +13,6 @@ import { useLocation } from "react-router-dom";
 
 export const useActivePath = (itemPath) => {
     const location = useLocation();
-    console.log('path!!!!!!!!', location.pathname)
-    console.log('path!!!!!!!!', location.search)
-    console.log('path!!!!!!!!', location)
 
     // 현재 경로가 정확히 일치하거나, 해당 경로로 시작하면 활성화 처리
     const isActive =

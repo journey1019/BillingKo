@@ -15,6 +15,7 @@ import AlertBox from '@/components/common/AlertBox';
 import { applyCenterAlignStyles } from '../../../columns/cellStyle/PaymentCell.jsx';
 
 import AccountPayment from '@/components/form/Homepage/AccountPayment.jsx';
+import { formatDateIndex } from '../../../utils/formatHelpers.jsx';
 
 
 const REQUIRED_FIELDS = ['confirm_yn', 'confirm_payment_method', 'confirm_payment_date'];
@@ -284,7 +285,7 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
         <div className="py-4 grid gap-0 grid-cols-1">
             <div className="bg-white rounded-2xl shadow-md col-span-1">
                 <div className="flex flex-row justify-between bg-neutral-200 rounded-t-2xl items-center px-4 py-2">
-                    <h1 className="text-lg font-semibold">납부 현황</h1>
+                    <h1 className="text-lg font-semibold">{formatDateIndex(yearMonth)} 납부 현황</h1>
                     <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                 </div>
                 <div className="flex flex-row justify-between items-center">

@@ -121,7 +121,7 @@ export const formatDateAddTime = (dateString) => {
 };
 
 /**
- * @method: '202412' -> '2024-12' || 'YYYYMM' -> 'YYYY-MM'
+ * @method: '202412' -> '2024-12' || 'YYYYMM' -> 'YYYY-MM' / 'YYYYMM -> YYYY-MM'
  * */
 export const formatDateIndex = (dateIndex) => {
     if (!dateIndex || dateIndex.length !== 6) return "-"; // 유효성 검사

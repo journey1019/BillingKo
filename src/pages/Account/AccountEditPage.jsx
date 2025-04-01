@@ -35,8 +35,11 @@ const AccountEditPage = () => {
     }, [acct_num]);
     const normalizeNullToEmptyString = (obj) =>
         Object.fromEntries(
-            Object.entries(obj).map(([key, value]) => [key, value ?? ""])
+            Object.entries(obj).map(([key, value]) =>
+                key === "regist_date" ? [] : [key, value ?? ""]
+            )
         );
+
 
     // ✅ 데이터 불러오기
     useEffect(() => {
@@ -44,7 +47,7 @@ const AccountEditPage = () => {
             console.log(accountPartData.regist_date)
             const formatted = {
                 ...accountPartData,
-                regist_date: formatFormDate(accountPartData.regist_date),
+                // regist_date: formatFormDate(accountPartData.regist_date),
                 company_tel: formatPhoneNumber(accountPartData.company_tel),
                 director_tel: formatPhoneNumber(accountPartData.director_tel),
                 business_num: formatBusinessNumber(accountPartData.business_num),
@@ -78,7 +81,12 @@ const AccountEditPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await updateAccountData(acct_num, formData);
+            // formData를 얕은 복사한 뒤, regist_date를 삭제
+            const payload = { ...formData };
+            delete payload.regist_date;
+
+            console.log(payload)
+            await updateAccountData(acct_num, payload);
             alert('계정이 성공적으로 수정되었습니다.');
             navigate('/accounts');
         } catch (err) {
@@ -236,7 +244,10 @@ const AccountEditPage = () => {
 
                 {/* ☑️ 회사 주소 검색 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label className="col-start-1 text-sm font-medium text-gray-900">회사 주소</label>
+                    <label className="col-start-1 text-sm font-medium text-gray-900">
+                        회사 주소
+                        <span className="text-red-500">*</span>
+                    </label>
                     <div className="col-span-2 flex flex-col gap-2">
                         <div className="flex gap-2">
                             <input
@@ -272,7 +283,10 @@ const AccountEditPage = () => {
 
                 {/* ☑️ 청구지 주소 검색 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label className="col-start-1 text-sm font-medium text-gray-900">청구지 주소</label>
+                    <label className="col-start-1 text-sm font-medium text-gray-900">
+                        청구지 주소
+                        <span className="text-red-500">*</span>
+                    </label>
                     <div className="col-span-2 flex flex-col gap-2">
                         <div className="flex gap-2">
                             <input

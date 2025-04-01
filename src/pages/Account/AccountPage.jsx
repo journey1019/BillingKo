@@ -32,7 +32,6 @@ import useAdjustmentStore from '@/stores/adjustmentStore.js';
 const AccountPage = () => {
     const [searchParams] = useSearchParams();
     const urlValue = searchParams.get("value");
-    console.log(urlValue)
 
     const { accountData, fetchAccountData, fetchAccountDetails, accountLoading, accountError, accountPartData, historyData, adjustHistoryData, deleteAccountData } = useAccountStore();
     const classificationOptions = useAcctClassificationOptions();
