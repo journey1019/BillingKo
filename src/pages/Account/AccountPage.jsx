@@ -25,7 +25,7 @@ import { TiPlus } from "react-icons/ti";
 import { Tooltip } from '@mui/material';
 import useAccountStore from '@/stores/accountStore';
 import { useAcctNumList, useAcctClassificationOptions } from '@/selectors/useAccountSelectors';
-import AccountTransactionHistoryTab from '../../components/form/Account/AccountTransactionHistoryTab.jsx';
+import EachTransactionHistoryTab from '../../components/form/Adjustment/EachTransactionHistoryTab.jsx';
 import { useSearchParams } from "react-router-dom";
 import useAdjustmentStore from '@/stores/adjustmentStore.js';
 
@@ -233,7 +233,7 @@ const AccountPage = () => {
                                         <AccountHistoryTab AccountTableColumns={AccountTableColumns} />
 
                                         <h1 className="font-bold my-2 pt-4">고객 조정 이력 정보</h1>
-                                        <AccountTransactionHistoryTab selectedAccountId={selectedAccountId}/>
+                                        <EachTransactionHistoryTab selectedData={selectedAccountId}/>
                                     </>
                                 )
                             },

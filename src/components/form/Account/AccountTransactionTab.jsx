@@ -6,7 +6,7 @@ import { AdjustmentReferencesTableColumns } from '@/columns/AdjustmentTableColum
 import { AdjustmentValueTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import useAccountStore from '@/stores/accountStore';
 import useAdjustmentStore from '@/stores/adjustmentStore';
-import AccountTransactionDetailForm from './AccountTransactionDetailForm.jsx';
+import EachTransactionDetailForm from '../Adjustment/EachTransactionDetailForm.jsx';
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
 import { TiPlus } from "react-icons/ti";
 import { Tooltip } from '@mui/material';
@@ -122,9 +122,12 @@ const AccountTransactionTab = ({ selectedAccountId }) => {
                     </div>
 
                     <div className="flex flex-col">
-                        <AccountTransactionDetailForm adjustmentDetailData={adjustmentDetailData}
-                                                      adjustmentDetailLoading={adjustmentDetailLoading}
-                                                      adjustmentDetailError={adjustmentDetailError} />
+                        <EachTransactionDetailForm
+                            naming="account"
+                            adjustmentDetailData={adjustmentDetailData}
+                            adjustmentDetailLoading={adjustmentDetailLoading}
+                            adjustmentDetailError={adjustmentDetailError}
+                        />
                     </div>
                 </div>
             )}

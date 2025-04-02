@@ -5,6 +5,7 @@ import { DeviceTableOptions } from '@/options/DeviceTableOptions.jsx';
 import Buttons from '@/components/common/Buttons.jsx';
 import { DeviceHistoryLogTableColumns } from '@/columns/DeviceHistoryLogTableColumns.jsx';
 import useDeviceStore from '@/stores/deviceStore.js';
+import EachTransactionHistoryTab from '../Adjustment/EachTransactionHistoryTab.jsx';
 
 const DeviceHistoryTab = ({ selectedDeviceId }) => {
     const {historyData, historyDataLoading, historyDataError, deviceHistoryLogData, deviceHistoryLogLoading, deviceHistoryLogError } = useDeviceStore();
@@ -33,29 +34,11 @@ const DeviceHistoryTab = ({ selectedDeviceId }) => {
                     isLoading={historyDataLoading}
                     error={historyDataError}
                 />
-                <div className="flex flex-row justify-between">
-                    <h1 className="font-bold my-2">고객 매칭 정보 변경 이력</h1>
-                    {/*<div>*/}
-                    {/*    <Buttons*/}
-                    {/*        entityType="devices/changed"*/}
-                    {/*        id={selectedDeviceId.row_index}*/}
-                    {/*    />*/}
-                    {/*</div>*/}
-                </div>
-                <ReusableTable
-                    columns={DeviceHistoryLogTableColumns}
-                    data={deviceHistoryLogData ? deviceHistoryLogData : []}
-                    options={{
-                        initialState: {
-                            sorting: [{ id: 'row_number', desc: true }],
-                            // columnVisibility: { row_number: false, row_index: false },
-                        },
-                        enablePagination: true,
-                        enableSorting: true,
-                    }}
-                    isLoading={deviceHistoryLogLoading}
-                    error={deviceHistoryLogError}
-                />
+            </div>
+
+            <div className="pt-4">
+                <h1 className="font-bold mb-2">단말 조정 이력 정보</h1>
+                <EachTransactionHistoryTab selectedData={selectedDeviceId} />
             </div>
         </>
     )

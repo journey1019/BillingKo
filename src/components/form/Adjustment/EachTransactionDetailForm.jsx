@@ -69,8 +69,8 @@ const EachTransactionDetailForm = ({ naming, adjustmentDetailData, adjustmentDet
                                     <span
                                         className="text-sm w-1/2 2xl:w-2/3 px-2 py-1 rounded-md bg-gray-100 break-words whitespace-pre-wrap"
                                     >
-                {formatDisplayValue(value)}
-            </span>
+                                        {formatDisplayValue(value)}
+                                    </span>
                                 </div>
                             ))}
                         </div>

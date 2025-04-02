@@ -31,8 +31,12 @@ import DeviceHistoryTab from '@/components/form/Device/DeviceHistoryTab.jsx';
 import DeviceTabItems from '@/components/form/Device/DeviceTabItems.jsx';
 import DeviceOverViewTab from '../../components/form/Device/DeviceOverViewTab.jsx';
 import useDeviceStore from '@/stores/deviceStore.js';
+import { useSearchParams } from "react-router-dom";
 
 const DevicePage = () => {
+    const [searchParams] = useSearchParams();
+    const urlValue = searchParams.get("value");
+
     const {
         deviceData,
         deviceLoading,
@@ -47,7 +51,7 @@ const DevicePage = () => {
         deviceHistoryLogData
     } = useDeviceStore();
 
-    const [selectedDeviceId, setSelectedDeviceId] = useState(null);
+    const [selectedDeviceId, setSelectedDeviceId] = useState(urlValue || null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
     const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
     const navigate = useNavigate();
@@ -61,6 +65,17 @@ const DevicePage = () => {
             fetchDeviceDetails(selectedDeviceId.serial_number);
         }
     }, [selectedDeviceId]);
+
+    // ✅ urlValue로 선택할 계정 자동 설정
+    useEffect(() => {
+        if (urlValue && deviceData.length > 0) {
+            const matchedAccount = deviceData.find(device => device.serial_number === urlValue);
+            if (matchedAccount) {
+                setSelectedDeviceId(matchedAccount);
+                setIsExpanded(true);
+            }
+        }
+    }, [urlValue, deviceData]);
 
     const handleDeleteSuccess = async (serial_number) => {
         try {

@@ -4,24 +4,23 @@ import ReusableTable from '@/components/table/ReusableTable.jsx';
 import useAdjustmentStore from '@/stores/adjustmentStore';
 import { AdjustmentHistoryTableColumns } from '@/columns/AdjustmentTableColumns.jsx'
 
-const EachTransactionHistory = ({ selectedData }) => {
+const EachTransactionHistoryTab = ({ selectedData }) => {
     const { fetchAdjustmentValueHistory, adjustmentDetailHistoryData, adjustmentDetailHistoryLoading, adjustmentDetailHistoryError } = useAdjustmentStore();
-console.log(adjustmentDetailHistoryData)
-    // ✅ mainID를 조건에 따라 동적으로 결정
-    const mainID =
-        selectedData?.adjustment_code === 'account_num'
-            ? 'acct_num'
-            : selectedData?.adjustment_code === 'serial_number'
-                ? selectedData.adjustment_code_value
-                : selectedData?.adjustment_code === 'ppid'
-                    ? selectedData.adjustment_code_value
-                    : null;
+
+    // ✅ selectedData 안에서 어떤 key가 있는지에 따라 mainID 결정
+    const mainID = useMemo(() => {
+        if (!selectedData) return null;
+        if ('serial_number' in selectedData) return 'serial_number';
+        if ('acct_num' in selectedData) return 'acct_num';
+        if ('ppid' in selectedData) return 'acct_num'; // ✅ ppid는 acct_num으로 조회
+        return null;
+    }, [selectedData]);
 
     useEffect(() => {
-        if(mainID) {
-            fetchAdjustmentValueHistory(mainID)
+        if(selectedData && mainID) {
+            fetchAdjustmentValueHistory(selectedData[mainID])
         }
-    }, [mainID]);
+    }, [selectedData, mainID]);
     console.log('adjustmentDetailHistoryData: ', adjustmentDetailHistoryData)
 
     return (
@@ -51,4 +50,4 @@ console.log(adjustmentDetailHistoryData)
     )
 }
 
-export default EachTransactionHistory;
+export default EachTransactionHistoryTab;

@@ -33,7 +33,7 @@ import UploadEditPage from '@/pages/File/UploadEditPage.jsx';
 import CDRnNNPage from '@/pages/File/CDRnNNPage.jsx';
 import PaymentPage from './pages/Payment/PaymentPage.jsx';
 import EditPage from '@/pages/Account/EditPage.jsx';
-import AdjustmentTransactionDetailEditForm from './components/form/Account/AdjustmentTransactionDetailEditForm.jsx';
+import AdjustmentTransactionDetailEditForm from './components/form/Adjustment/AdjustmentTransactionDetailEditForm.jsx';
 
 const checkAuth = () => {
     const token = localStorage.getItem("token");

@@ -79,7 +79,7 @@ const AdjustmentTransactionDetailEditForm = () => {
             tax_free_yn: formData.tax_free_yn ? 'Y' : 'N',
         };
 
-        const route = (payload.adjustment_code === 'account_num') ? 'accounts' : (payload.adjustment_code === 'serial_number') ? 'devices' : (payload.adjustment_code === 'ppid') ? 'ppid' : 'adjustment';
+        const route = (payload.adjustment_code === 'account_num') ? "accounts" : (payload.adjustment_code === "serial_number") ? 'devices' : (payload.adjustment_code === 'ppid') ? "ppid" : "adjustment";
         try {
             await updateAdjustmentData(adjustment_index, payload); // ✅ 전달받은 update 함수 호출
             alert('성공적으로 수정되었습니다!');
@@ -89,6 +89,7 @@ const AdjustmentTransactionDetailEditForm = () => {
             alert('수정 실패');
         }
     };
+    console.log(formData)
 
     if (adjustmentDetailLoading || !formData) return <p>Loading...</p>;
     if (adjustmentDetailError) return <p className="text-red-500">{adjustmentDetailError}</p>;
@@ -142,7 +143,7 @@ const AdjustmentTransactionDetailEditForm = () => {
                             type="text"
                             value={formData.date_index || ''}
                             onChange={handleChange}
-                            className="text-base w-1/2 2xl:w-2/3 px-2 py-1 rounded-md bg-white border"
+                            className="text-sm w-1/2 2xl:w-2/3 px-2 py-1 rounded-md bg-white border"
                         />
                     </div>
                     <div className="flex justify-between items-center">
@@ -276,9 +277,9 @@ const AdjustmentTransactionDetailEditForm = () => {
                             id="description"
                             name="description"
                             type="text"
-                            value={formData.description || '-'}
+                            value={formData.description || ''}
                             onChange={handleChange}
-                            className="text-base w-1/2 2xl:w-2/3 px-2 py-1 rounded-md bg-white border"
+                            className="text-sm w-1/2 2xl:w-2/3 px-2 py-1 rounded-md bg-white border"
                         />
                     </div>
                 </div>
