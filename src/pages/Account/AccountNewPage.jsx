@@ -56,19 +56,22 @@ const AccountNewPage = () => {
     const handleToggleChange = (e) => {
         setFormData({ ...formData, use_yn: e.target.checked ? "Y" : "N" });
     };
-
+    console.log(formData)
     // ✅ 필수 필드 검증 함수
     const validateFormData = () => {
         const requiredFields = [
-            "acct_num",
-            "acct_name",
-            "acct_resident_num",
-            "classification",
-            "use_yn",
+            "acct_num", // 고객번호
+            "acct_type", // 고객구분(* 아니지만 포함)
+            "acct_name", // 고객명
+            "classification", // 분류
+            "acct_resident_num", // 분류
+            "tax_percent", // 부가 세율(%)
+            "use_yn", // 사용
         ];
 
         for (const field of requiredFields) {
             if (!formData[field]) {
+                console.log(field)
                 return `필수 입력 항목: ${field}`;
             }
         }
