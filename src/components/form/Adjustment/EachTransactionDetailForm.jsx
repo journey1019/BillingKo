@@ -5,7 +5,7 @@ import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
 import { formatDateIndex, formatNumber, formatValue, formatAnyWithCommas } from '@/utils/formatHelpers.jsx';
 import ReadOnlySwitch from '@/components/ui/switches/ReadOnlySwitch.jsx';
 
-const AccountTransactionDetailForm = ({ adjustmentDetailData, adjustmentDetailLoading, adjustmentDetailError }) => {
+const EachTransactionDetailForm = ({ naming, adjustmentDetailData, adjustmentDetailLoading, adjustmentDetailError }) => {
     const isSwitchOn = adjustmentDetailData.use_yn;
     const isSwitchOnTax = adjustmentDetailData.tax_free_yn;
 
@@ -41,40 +41,47 @@ const AccountTransactionDetailForm = ({ adjustmentDetailData, adjustmentDetailLo
                                 { label: '조정 적용 날짜', value: formatDateIndex(adjustmentDetailData.date_index) },
                                 {
                                     label: '조정 적용 주기',
-                                    value: codeMappings.adjustment_cycle[adjustmentDetailData.adjustment_cycle]
+                                    value: codeMappings.adjustment_cycle[adjustmentDetailData.adjustment_cycle],
                                 },
                                 {
                                     label: '조정 대상 구분',
-                                    value: codeMappings.adjustment_code[adjustmentDetailData.adjustment_code]
+                                    value: codeMappings.adjustment_code[adjustmentDetailData.adjustment_code],
                                 },
                                 { label: '조정 대상', value: adjustmentDetailData.adjustment_code_value },
                                 {
                                     label: '조정 종류',
-                                    value: codeMappings.adjustment_category[adjustmentDetailData.adjustment_category]
+                                    value: codeMappings.adjustment_category[adjustmentDetailData.adjustment_category],
                                 },
                                 {
                                     label: '조정 타입',
-                                    value: codeMappings.adjustment_type[adjustmentDetailData.adjustment_type]
+                                    value: codeMappings.adjustment_type[adjustmentDetailData.adjustment_type],
                                 },
                                 { label: '요금 적용 기준', value: codeMappings.mount_type[adjustmentDetailData.mount_type] },
                                 { label: '요금 적용 금액', value: formatNumber(adjustmentDetailData.mount_value) },
                                 { label: '설명', value: adjustmentDetailData.description },
                             ].map(({ label, value }, index) => (
-                                <div key={index} className="flex justify-between items-center">
+                                <div key={index} className="flex justify-between items-start gap-2">
                                     <label
-                                        className="text-xs font-medium text-gray-500 w-1/2 2xl:w-1/3 p-1">{label}</label>
+                                        className="text-xs font-medium text-gray-500 w-1/2 2xl:w-1/3 p-1 break-words"
+                                    >
+                                        {label}
+                                    </label>
                                     <span
-                                        className="text-sm w-1/2 2xl:w-2/3 px-2 py-1 rounded-md bg-gray-100">{formatDisplayValue(value)}</span>
+                                        className="text-sm w-1/2 2xl:w-2/3 px-2 py-1 rounded-md bg-gray-100 break-words whitespace-pre-wrap"
+                                    >
+                {formatDisplayValue(value)}
+            </span>
                                 </div>
                             ))}
                         </div>
+
                     </div>
                 ) : (
-                    <p>Select an account to view details</p>
+                    <p>Select an {naming} to view details</p>
                 )}
             </div>
         </>
     )
 }
 
-export default AccountTransactionDetailForm;
+export default EachTransactionDetailForm;

@@ -78,10 +78,12 @@ const AdjustmentTransactionDetailEditForm = () => {
             use_yn: formData.use_yn ? 'Y' : 'N',
             tax_free_yn: formData.tax_free_yn ? 'Y' : 'N',
         };
+
+        const route = (payload.adjustment_code === 'account_num') ? 'accounts' : (payload.adjustment_code === 'serial_number') ? 'devices' : (payload.adjustment_code === 'ppid') ? 'ppid' : 'adjustment';
         try {
             await updateAdjustmentData(adjustment_index, payload); // ✅ 전달받은 update 함수 호출
             alert('성공적으로 수정되었습니다!');
-            navigate(`/accounts/?value=${payload.adjustment_code_value}`, { replace: true });
+            navigate(`/${route}/?value=${payload.adjustment_code_value}`, { replace: true });
         } catch (err) {
             console.error(err);
             alert('수정 실패');
