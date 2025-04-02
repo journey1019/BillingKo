@@ -69,9 +69,9 @@ const DevicePage = () => {
     // ✅ urlValue로 선택할 계정 자동 설정
     useEffect(() => {
         if (urlValue && deviceData.length > 0) {
-            const matchedAccount = deviceData.find(device => device.serial_number === urlValue);
-            if (matchedAccount) {
-                setSelectedDeviceId(matchedAccount);
+            const matchedDevice = deviceData.find(device => device.serial_number === urlValue);
+            if (matchedDevice) {
+                setSelectedDeviceId(matchedDevice);
                 setIsExpanded(true);
             }
         }
@@ -79,12 +79,12 @@ const DevicePage = () => {
 
     const handleDeleteSuccess = async (serial_number) => {
         try {
-            await deleteDeviceData(serial_number);
-            fetchDeviceData(); // 삭제 후 새로고침
+            await fetchDeviceData(); // ❌ 삭제 다시 안함! (이미 됐음)
             setSelectedDeviceId(null);
             setIsExpanded(false);
+            console.log(`✅ 삭제 후 새로고침 완료 (ppid: ${serial_number})`);
         } catch (error) {
-            alert("삭제에 실패했습니다.");
+            alert("삭제 후 데이터 갱신에 실패했습니다.");
         }
     };
 
@@ -184,7 +184,7 @@ const DevicePage = () => {
                             <ButtonGroup
                                 entityType="devices"
                                 id={selectedDeviceId.serial_number}
-                                deleteFunction={deleteDevice}
+                                deleteFunction={deleteDeviceData}
                                 onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
                             />
                         </div>

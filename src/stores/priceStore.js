@@ -103,9 +103,18 @@ const usePriceStore = create((set, get) => ({
     },
 
     // 선택한 요금 데이터 삭제
+    // deletePriceData: async (ppid) => {
+    //     await deletePrice(ppid);
+    // },
     deletePriceData: async (ppid) => {
-        await deletePrice(ppid);
+        try {
+            await deletePrice(ppid);
+        } catch (err) {
+            console.error("요금 정보 삭제 실패:", err);
+            throw err; // 상위에서 핸들링하도록
+        }
     },
+
 
     // 새로운 요금 데이터 생성
     handleChange: (id, value) => {

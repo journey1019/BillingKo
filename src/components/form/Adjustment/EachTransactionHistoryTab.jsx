@@ -12,7 +12,7 @@ const EachTransactionHistoryTab = ({ selectedData }) => {
         if (!selectedData) return null;
         if ('serial_number' in selectedData) return 'serial_number';
         if ('acct_num' in selectedData) return 'acct_num';
-        if ('ppid' in selectedData) return 'acct_num'; // ✅ ppid는 acct_num으로 조회
+        if ('ppid' in selectedData) return 'ppid'; // ✅ ppid는 acct_num으로 조회
         return null;
     }, [selectedData]);
 

@@ -79,7 +79,7 @@ const AdjustmentTransactionDetailEditForm = () => {
             tax_free_yn: formData.tax_free_yn ? 'Y' : 'N',
         };
 
-        const route = (payload.adjustment_code === 'account_num') ? "accounts" : (payload.adjustment_code === "serial_number") ? 'devices' : (payload.adjustment_code === 'ppid') ? "ppid" : "adjustment";
+        const route = (payload.adjustment_code === 'account_num') ? "accounts" : (payload.adjustment_code === "serial_number") ? 'devices' : (payload.adjustment_code === 'ppid') ? "price" : "adjustment";
         try {
             await updateAdjustmentData(adjustment_index, payload); // ✅ 전달받은 update 함수 호출
             alert('성공적으로 수정되었습니다!');

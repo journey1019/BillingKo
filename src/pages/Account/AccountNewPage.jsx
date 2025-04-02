@@ -92,7 +92,9 @@ const AccountNewPage = () => {
         }
 
         try {
-            await createAccount(formData);
+            // 🔥 regist_date 키 제거
+            const { regist_date, ...payload } = formData;
+            await createAccount(payload);
             alert("계정이 성공적으로 생성되었습니다.");
             navigate("/accounts");
         } catch (err) {
@@ -246,6 +248,7 @@ const AccountNewPage = () => {
                             className="w-full bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
                         />
                         <input
+                            id="company_address2"
                             type="text"
                             name="company_address2"
                             value={formData.company_address2 ?? ''}
@@ -285,6 +288,7 @@ const AccountNewPage = () => {
                             className="w-full bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
                         />
                         <input
+                            id="invoice_address2"
                             type="text"
                             name="invoice_address2"
                             value={formData.invoice_address2 ?? ''}

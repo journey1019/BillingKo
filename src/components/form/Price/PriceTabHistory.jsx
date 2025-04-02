@@ -3,9 +3,11 @@ import ReusableTable from '@/components/table/ReusableTable.jsx';
 import { formatDateTime } from '@/columns/cellStyle/AccountCell.jsx';
 import { PriceTableColumns } from '@/columns/PriceTableColumns.jsx';
 import usePriceStore from '@/stores/priceStore.js';
+import EachTransactionHistoryTab from '../Adjustment/EachTransactionHistoryTab.jsx';
 
-const PriceTabHistory = () => {
+const PriceTabHistory = ({ selectedPriceId }) => {
     const { priceHistoryData, priceHistoryLoading, priceHistoryError } = usePriceStore();
+    console.log(selectedPriceId)
     return(
         <>
             <div>
@@ -26,7 +28,8 @@ const PriceTabHistory = () => {
                             options={{
                                 initialState: {
                                     sorting: [{ id: 'update_date', desc: true }],
-                                    showColumnFilters: true
+                                    showColumnFilters: true,
+                                    pagination: { pageIndex: 0, pageSize: 5 }
                                 },
                                 enablePagination: true,
                                 enableSorting: true,
@@ -35,6 +38,11 @@ const PriceTabHistory = () => {
                         />
                     </div>
                 )}
+            </div>
+
+            <div className="pt-4">
+                <h1 className="font-bold mb-2">요금 조정 이력 정보</h1>
+                <EachTransactionHistoryTab selectedData={selectedPriceId} />
             </div>
         </>
     )

@@ -19,8 +19,9 @@ const ButtonGroup = ({ entityType, id, deleteFunction, onDeleteSuccess }) => {
             await deleteFunction(id);
             alert(`${entityType.charAt(0).toUpperCase() + entityType.slice(1)} 성공적으로 삭제하였습니다.`);
 
+            // ✅ 삭제 후 추가 동작은 이곳에서 직접 수행
             if (onDeleteSuccess) {
-                onDeleteSuccess();
+                onDeleteSuccess(id); // 🔥 id를 넘기기만
             }
         } catch (err) {
             alert(`${entityType} 삭제 중 오류 발생`);

@@ -136,7 +136,22 @@ const AdjustmentNewPage = () => {
             console.log("POST 요청 보낼 데이터", validatedData);
             await createAdjustment(validatedData);
             alert("조정 데이터를 성공적으로 생성했습니다.");
-            navigate("/adjustment");
+
+            // ✅ searchParams 기반 경로 이동 로직
+            if (adjustment_code && adjustment_code_value) {
+                if (adjustment_code === "serial_number") {
+                    navigate(`/devices/?value=${adjustment_code_value}`);
+                } else if (adjustment_code === "account_num") {
+                    navigate(`/accounts/?value=${adjustment_code_value}`);
+                } else if (adjustment_code === "ppid") {
+                    navigate(`/price/?value=${adjustment_code_value}`);
+                } else {
+                    navigate("/adjustment"); // fallback
+                }
+            } else {
+                navigate("/adjustment");
+            }
+
         } catch (err) {
             console.error(err.message);
             setError("조정 데이터 생성에 실패했습니다.");

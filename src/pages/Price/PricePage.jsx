@@ -26,8 +26,12 @@ import PriceTabOverview from '../../components/form/Price/PriceTabOverview.jsx';
 import PriceTabTransaction from '../../components/form/Price/PriceTabTransaction.jsx';
 import PriceTabHistory from '../../components/form/Price/PriceTabHistory.jsx';
 import usePriceStore from '@/stores/priceStore.js';
+import { useSearchParams } from "react-router-dom";
 
 const PricePage = () => {
+    const [searchParams] = useSearchParams();
+    const urlValue = searchParams.get("value");
+
     const {
         fetchPriceData,
         fetchPriceDetails,
@@ -37,9 +41,10 @@ const PricePage = () => {
         pricePartData,
         priceHistoryData,
         priceAdjustHistoryData,
+        deletePriceData
     } = usePriceStore();
 
-    const [selectedPriceId, setSelectedPriceId] = useState(null);
+    const [selectedPriceId, setSelectedPriceId] = useState(urlValue || null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
 
     const [isOpenNewDropdown, setIsOpenNewDropdown] = useState(false); // New icon Drop
@@ -55,6 +60,19 @@ const PricePage = () => {
         }
     }, [selectedPriceId]);
 
+    console.log(priceData)
+    // ✅ urlValue로 선택할 계정 자동 설정
+    useEffect(() => {
+        if (urlValue && priceData.length > 0) {
+            const matchedDevice = priceData.find(price => String(price.ppid) === urlValue);
+            if (matchedDevice) {
+                setSelectedPriceId(matchedDevice);
+                setIsExpanded(true);
+            }
+        }
+    }, [urlValue, priceData]);
+
+
 
     // Modal
     const [showModal, setShowModal] = useState(false);
@@ -62,12 +80,12 @@ const PricePage = () => {
     // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
     const handleDeleteSuccess = async (ppid) => {
         try {
-            await deletePrice(ppid);
-            fetchPriceData(); // 삭제 후 새로고침
+            await fetchPriceData(); // ❌ 삭제 다시 안함! (이미 됐음)
             setSelectedPriceId(null);
             setIsExpanded(false);
+            console.log(`✅ 삭제 후 새로고침 완료 (ppid: ${ppid})`);
         } catch (error) {
-            alert("삭제에 실패했습니다.");
+            alert("삭제 후 데이터 갱신에 실패했습니다.");
         }
     };
 
@@ -178,7 +196,7 @@ const PricePage = () => {
                             <ButtonGroup
                                 entityType="price"
                                 id={selectedPriceId.ppid}
-                                deleteFunction={deletePrice}
+                                deleteFunction={deletePriceData}
                                 onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
                             />
                         </div>
@@ -203,7 +221,7 @@ const PricePage = () => {
                                 id: 3,
                                 label: 'History',
                                 content: (
-                                    <PriceTabHistory />
+                                    <PriceTabHistory selectedPriceId={selectedPriceId}/>
                                 )
                             }
                         ]}

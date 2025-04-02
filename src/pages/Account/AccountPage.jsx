@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from 'react';
-import useApiFetch from '@/hooks/useApiFetch.js';
 import { fetchAccounts, deleteAccount, fetchAccountHistory, fetchAccountPart } from '@/service/accountService.js';
 import { fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
 import { AccountTableColumns } from '@/columns/AccountTableColumns.jsx';
@@ -74,12 +73,12 @@ const AccountPage = () => {
     // 계정 삭제 후 데이터를 다시 불러오기 위한 콜백
     const handleDeleteSuccess = async (acct_num) => {
         try {
-            await deleteAccountData(acct_num);
-            fetchAccountData(); // 삭제 후 새로고침
+            await fetchAccountData(); // ❌ 삭제 다시 안함! (이미 됐음)
             setSelectedAccountId(null);
             setIsExpanded(false);
+            console.log(`✅ 삭제 후 새로고침 완료 (Account: ${acct_num})`);
         } catch (error) {
-            alert("삭제에 실패했습니다.");
+            alert("삭제 후 데이터 갱신에 실패했습니다.");
         }
     };
 
@@ -193,7 +192,7 @@ const AccountPage = () => {
                                 <ButtonGroup
                                     entityType="accounts"
                                     id={selectedAccountId.acct_num}
-                                    deleteFunction={deleteAccount}
+                                    deleteFunction={deleteAccountData}
                                     onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
                                 />
                                 <button
