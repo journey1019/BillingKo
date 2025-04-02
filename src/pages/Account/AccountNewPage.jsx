@@ -228,6 +228,7 @@ const AccountNewPage = () => {
                     <div className="col-span-2 flex flex-col gap-2">
                         <div className="flex gap-2">
                             <input
+                                id="company_postcode"
                                 type="text"
                                 name="company_postcode"
                                 value={formData.company_postcode ?? ''}
@@ -240,6 +241,7 @@ const AccountNewPage = () => {
                             </button>
                         </div>
                         <input
+                            id="company_address"
                             type="text"
                             name="company_address"
                             value={formData.company_address ?? ''}
@@ -265,6 +267,7 @@ const AccountNewPage = () => {
                     <div className="col-span-2 flex flex-col gap-2">
                         <div className="flex gap-2">
                             <input
+                                id="invoice_postcode"
                                 type="text"
                                 name="invoice_postcode"
                                 value={formData.invoice_postcode ?? ''}
@@ -280,6 +283,7 @@ const AccountNewPage = () => {
                             </button>
                         </div>
                         <input
+                            id="invoice_address"
                             type="text"
                             name="invoice_address"
                             value={formData.invoice_address ?? ''}

@@ -4,7 +4,7 @@ export const defaultAccountFormData = {
     acct_name: "",
     acct_resident_num: "",
     regist_date: "",
-    use_yn: "",
+    use_yn: "Y",
     classification: "",
     invoice_postcode: "",
     invoice_address: "",
@@ -36,6 +36,7 @@ export const inputAccountFormData = [
         max: 100,
         step: 0.1,
         placeholder: '1.0',
+        required: true
     },
     { id: 'company_name', label: '회사명', type: 'text', placeholder: '코리아오브컴' },
     { id: 'business_num', label: '사업자 등록 번호', type: 'text', placeholder: '000-00-00000' },
