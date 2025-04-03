@@ -30,7 +30,7 @@ export const renderStandardInputField = (id, label, type, value, onChange, dataL
 export const renderInputField = (id, label, type, value, onChange, required, errorMessage, placeholder, extraProps = {}) => (
     <div className="grid grid-cols-6 flex items-center space-x-4" key={id}>
         <label htmlFor={id} className="col-span-1 w-32 text-sm font-medium text-gray-900">
-            {label} {required && <span className="text-red-500">*</span>}
+            {label}{required && <span className="text-red-500">*</span>}
         </label>
         <div className="col-span-2 flex-1">
             <input id={id} type={type} value={value} onChange={onChange} placeholder={placeholder}
@@ -41,10 +41,10 @@ export const renderInputField = (id, label, type, value, onChange, required, err
     </div>
 );
 
-export const renderSelectFiled = (id, label, type, value, onChange, required, list) => (
+export const renderSelectFiled = (id, label, type, value, onChange, list, required, placeholder) => (
     <div className="grid grid-cols-6 flex items-center space-x-4">
         <label className="col-span-1 w-32 text-sm font-medium text-gray-900">
-            {label} {required && <span className="text-red-500">*</span>}
+            {label}{required && <span className="text-red-500">*</span>}
         </label>
         <input
             list="account-type-options"
@@ -52,6 +52,7 @@ export const renderSelectFiled = (id, label, type, value, onChange, required, li
             name={id}
             value={value ?? ''}
             onChange={onChange}
+            placeholder={placeholder}
             className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
         />
         <datalist id="account-type-options">

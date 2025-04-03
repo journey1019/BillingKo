@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateAccount, fetchAccountPart } from "@/service/accountService.js";
-import { IoMdClose } from "react-icons/io";
-import LoadingSpinner from "@/components/common/LoadingSpinner.jsx";
-import { formatPhoneNumber, formatBusinessNumber, formatFormDate } from "@/utils/formatHelpers.jsx";
-import { Switch } from "@mui/material";
+
 import useAccountStore from '@/stores/accountStore';
 import { useAcctTypeList, useAcctClassificationOptions, useAcctResidentNumOptions } from '@/selectors/useAccountSelectors.js';
 import { defaultAccountFormData, inputAccountFormData } from '@/contents/accountFormDefault.js';
+import LoadingSpinner from "@/components/common/LoadingSpinner.jsx";
+import { formatPhoneNumber, formatBusinessNumber, formatFormDate } from "@/utils/formatHelpers.jsx";
+
+import { IoMdClose } from "react-icons/io";
+import { Switch } from "@mui/material";
+
 
 const AccountEditPage = () => {
     const { acct_num } = useParams();
+
     const acctTypeList = useAcctTypeList();
     const acctClassification = useAcctClassificationOptions();
     const acctResidentList = useAcctResidentNumOptions();
@@ -85,7 +88,6 @@ const AccountEditPage = () => {
             const payload = { ...formData };
             delete payload.regist_date;
 
-            console.log(payload)
             await updateAccountData(acct_num, payload);
             alert('계정이 성공적으로 수정되었습니다.');
             navigate('/accounts');
@@ -124,8 +126,6 @@ const AccountEditPage = () => {
     };
 
 
-
-    console.log(formData)
     return (
         <div className="container mx-auto">
             {/* ✅ 상단 영역 */}
@@ -137,11 +137,11 @@ const AccountEditPage = () => {
             </div>
 
             {/* ✅ 입력 폼 */}
-            <form className="bg-white p-5 rounded-xl space-y-6" onSubmit={handleSubmit}>
+            <form className="bg-white p-5 rounded-xl space-y-4" onSubmit={handleSubmit}>
                 {/* ☑️ 고객 번호 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
                     <label htmlFor="acct_num" className="col-start-1 text-sm font-medium text-gray-900">
-                        고객 번호
+                        고객번호
                         <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -159,7 +159,7 @@ const AccountEditPage = () => {
                 {/* ☑️ 고객 구분 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
                     <label htmlFor="account_type" className="col-start-1 text-sm font-medium text-gray-900">
-                        고객 구분
+                        고객구분
                         <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -177,53 +177,6 @@ const AccountEditPage = () => {
                         ))}
                     </datalist>
                 </div>
-
-                {/*{inputAccountFormData.map(({ id, label, type, required, ...rest }) => {*/}
-                {/*    if (id === "company_postcode") {*/}
-                {/*        return (*/}
-                {/*            <div className="grid grid-cols-6 items-center space-x-4" key={id}>*/}
-                {/*                <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">*/}
-                {/*                    {label}{required && <span className="text-red-500">*</span>}*/}
-                {/*                </label>*/}
-                {/*                <div className="col-span-2 flex gap-2">*/}
-                {/*                    <input*/}
-                {/*                        id={id}*/}
-                {/*                        name={id}*/}
-                {/*                        type="text"*/}
-                {/*                        value={formData[id] ?? ''}*/}
-                {/*                        onChange={handleChange}*/}
-                {/*                        className="flex-1 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"*/}
-                {/*                        {...rest}*/}
-                {/*                    />*/}
-                {/*                    <button*/}
-                {/*                        type="button"*/}
-                {/*                        onClick={handleAddressSearch}*/}
-                {/*                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm"*/}
-                {/*                    >*/}
-                {/*                        주소 검색*/}
-                {/*                    </button>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*        );*/}
-                {/*    }*/}
-
-                {/*    return (*/}
-                {/*        <div className="grid grid-cols-6 items-center space-x-4" key={id}>*/}
-                {/*            <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">*/}
-                {/*                {label}{required && <span className="text-red-500">*</span>}*/}
-                {/*            </label>*/}
-                {/*            <input*/}
-                {/*                id={id}*/}
-                {/*                name={id}*/}
-                {/*                type={type === 'number' ? 'text' : type}*/}
-                {/*                value={formData[id] ?? ''}*/}
-                {/*                onChange={handleChange}*/}
-                {/*                className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"*/}
-                {/*                {...rest}*/}
-                {/*            />*/}
-                {/*        </div>*/}
-                {/*    );*/}
-                {/*})}*/}
 
                 {inputAccountFormData.map(({ id, label, type, required, ...rest }) => (
                     <div className="grid grid-cols-6 items-center space-x-4">
@@ -322,26 +275,6 @@ const AccountEditPage = () => {
                         />
                     </div>
                 </div>
-
-
-
-                {/* 나머지 필드 */}
-                {/*{inputAccountFormData.map(({ id, label, type, required, ...rest }) => (*/}
-                {/*    <div className="grid grid-cols-6 items-center space-x-4">*/}
-                {/*        <label htmlFor={id}*/}
-                {/*               className="col-start-1 text-sm font-medium text-gray-900">{label}{required &&*/}
-                {/*            <span className="text-red-500">*</span>}</label>*/}
-                {/*        <input*/}
-                {/*            id={id}*/}
-                {/*            name={id}*/}
-                {/*            type={type === 'number' ? 'text' : type}*/}
-                {/*            value={formData[id] ?? ''} // null 방지*/}
-                {/*            onChange={handleChange}*/}
-                {/*            className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"*/}
-                {/*            {...rest}*/}
-                {/*        />*/}
-                {/*    </div>*/}
-                {/*))}*/}
 
                 {/* ✅ 사용 여부 (토글 스위치) */}
                 <div className="grid grid-cols-6 items-center space-x-4">

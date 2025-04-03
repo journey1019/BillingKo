@@ -1,27 +1,29 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { createAccount } from "@/service/accountService.js";
-import { IoMdClose } from "react-icons/io";
-import { Switch } from "@mui/material";
+import { useAcctNumList, useAcctTypeList } from '@/selectors/useAccountSelectors.js';
+import { defaultAccountFormData, inputAccountFormData } from '@/contents/accountFormDefault.js';
 import { formatPhoneNumber } from '@/utils/formatPhoneNumber.jsx';
+import { formatBusinessNumber } from '@/utils/formatBusinessNumber';
 import useAccountStore from '@/stores/accountStore';
-import { useAcctNumList } from '@/selectors/useAccountSelectors.js';
-import { defaultAccountFormData } from '@/contents/accountFormDefault.js';
-import { inputAccountFormData } from '../../contents/accountFormDefault.js';
-import { useAcctTypeList } from '../../selectors/useAccountSelectors.js';
 import { renderInputField, renderSelectFiled } from '@/utils/renderHelpers.jsx';
 
-const AccountNewPage = () => {
-    const { accountData, fetchAccountData, isDuplicateAcctNm, accountLoading, accountError } = useAccountStore();
-    const acctNumList = useAcctNumList();
-    const acctTypeList = useAcctTypeList();
+import { Switch } from "@mui/material";
+import { IoMdClose } from "react-icons/io";
 
+
+const AccountNewPage = () => {
+    const { fetchAccountData } = useAccountStore();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchAccountData(); // 초기 accountData 불러오기
-    }, []);
+    // Select Field
+    const acctNumList = useAcctNumList(); // acct_num 중복 검사
+    const acctTypeList = useAcctTypeList(); // account_type (법인/개인)
 
+    useEffect(() => {
+        fetchAccountData(); // 초기 accountData 불러 오기 (중복 검사)
+    }, []);
 
     // ✅ 폼 데이터 상태 관리
     const [formData, setFormData] = useState(defaultAccountFormData);
@@ -34,15 +36,12 @@ const AccountNewPage = () => {
         const { id, value } = e.target;
         setFormData({ ...formData, [id]: value || null });
 
-        if (id === "acct_num") {
-            if (acctNumList.includes(value)) {
-                setAcctNumError("이미 존재하는 계정 번호입니다.");
-            } else {
-                setAcctNumError("");
-            }
-        }
-
         let formattedValue = value;
+
+        // ✅ 사업자등록번호 자동 포맷
+        if (id === "business_num") {
+            formattedValue = formatBusinessNumber(value);
+        }
 
         // ✅ 전화번호 필드 자동 포맷 적용
         if (id === "company_tel" || id === "director_tel") {
@@ -50,18 +49,25 @@ const AccountNewPage = () => {
         }
 
         setFormData((prev) => ({ ...prev, [id]: formattedValue }));
+
+        if (id === "acct_num") {
+            if (acctNumList.includes(value)) {
+                setAcctNumError("이미 존재하는 계정 번호입니다.");
+            } else {
+                setAcctNumError("");
+            }
+        }
     };
 
     // ✅ 토글 버튼 핸들러 (사용 유무)
     const handleToggleChange = (e) => {
         setFormData({ ...formData, use_yn: e.target.checked ? "Y" : "N" });
     };
-    console.log(formData)
     // ✅ 필수 필드 검증 함수
     const validateFormData = () => {
         const requiredFields = [
             "acct_num", // 고객번호
-            "acct_type", // 고객구분(* 아니지만 포함)
+            "account_type", // 고객구분(* 아니지만 포함)
             "acct_name", // 고객명
             "classification", // 분류
             "acct_resident_num", // 분류
@@ -152,12 +158,7 @@ const AccountNewPage = () => {
             <form className="bg-white p-5 rounded-xl space-y-4" onSubmit={handleSubmit}>
                 {/* ✅ 고객 번호 (중복 검사 포함) */}
                 {renderInputField("acct_num", "고객번호", "text", formData['acct_num'], handleInputChange, true, acctNumError, "KO_99999")}
-                {renderSelectFiled("account_type", "고객구분", "text", formData['account_type'], handleInputChange, true, acctTypeList)}
-
-                {/* ✅ account_type 포함된 전체 필드 */}
-                {/*{extendedFormData.map((*/}
-                {/*    { id, label, type, required, placeholder, ...rest }*/}
-                {/*) => renderInputField(id, label, type, required, "", placeholder , rest))}*/}
+                {renderSelectFiled("account_type", "고객구분", "text", formData['account_type'], handleInputChange, acctTypeList, true, "법인")}
 
                 {extendedFormData.map(({ id, label, type, required, ...rest }) => (
                     <div className="grid grid-cols-6 items-center space-x-4">
@@ -176,58 +177,12 @@ const AccountNewPage = () => {
                     </div>
                 ))}
 
-                {/*{extendedFormData.map(({ id, label, type, required, placeholder, ...rest }) => {*/}
-                {/*    if (id === "company_postcode") {*/}
-                {/*        return (*/}
-                {/*            <div className="grid grid-cols-6 items-center space-x-4" key={id}>*/}
-                {/*                <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">*/}
-                {/*                    {label}{required && <span className="text-red-500">*</span>}*/}
-                {/*                </label>*/}
-                {/*                <div className="col-span-2 flex gap-2">*/}
-                {/*                    <input*/}
-                {/*                        id={id}*/}
-                {/*                        name={id}*/}
-                {/*                        type="text"*/}
-                {/*                        value={formData[id] ?? ''}*/}
-                {/*                        placeholder={placeholder}*/}
-                {/*                        onChange={handleToggleChange}*/}
-                {/*                        className="flex-1 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"*/}
-                {/*                        {...rest}*/}
-                {/*                    />*/}
-                {/*                    <button*/}
-                {/*                        type="button"*/}
-                {/*                        onClick={handleAddressSearch}*/}
-                {/*                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm"*/}
-                {/*                    >*/}
-                {/*                        주소 검색*/}
-                {/*                    </button>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*        );*/}
-                {/*    }*/}
-
-                {/*    return (*/}
-                {/*        <div className="grid grid-cols-6 items-center space-x-4" key={id}>*/}
-                {/*            <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">*/}
-                {/*                {label}{required && <span className="text-red-500">*</span>}*/}
-                {/*            </label>*/}
-                {/*            <input*/}
-                {/*                id={id}*/}
-                {/*                name={id}*/}
-                {/*                type={type === 'number' ? 'text' : type}*/}
-                {/*                value={formData[id] ?? ''}*/}
-                {/*                placeholder={placeholder}*/}
-                {/*                onChange={handleToggleChange}*/}
-                {/*                className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"*/}
-                {/*                {...rest}*/}
-                {/*            />*/}
-                {/*        </div>*/}
-                {/*    );*/}
-                {/*})}*/}
-
                 {/* ☑️ 회사 주소 검색 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label className="col-start-1 text-sm font-medium text-gray-900">회사 주소</label>
+                    <label className="col-start-1 text-sm font-medium text-gray-900">
+                        회사 주소
+                        <span className="text-red-500">*</span>
+                    </label>
                     <div className="col-span-2 flex flex-col gap-2">
                         <div className="flex gap-2">
                             <input
@@ -266,7 +221,10 @@ const AccountNewPage = () => {
 
                 {/* ☑️ 청구지 주소 검색 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label className="col-start-1 text-sm font-medium text-gray-900">청구지 주소</label>
+                    <label className="col-start-1 text-sm font-medium text-gray-900">
+                        청구지 주소
+                        <span className="text-red-500">*</span>
+                    </label>
                     <div className="col-span-2 flex flex-col gap-2">
                         <div className="flex gap-2">
                             <input
