@@ -1,13 +1,14 @@
 export const renderStandardInputField = (id, label, type, value, onChange, dataList, required, readOnly, errorMessage, placeholder, extraProps = {}) => {
-    const listId = dataList ? `${id}-options` : undefined;
+    const listId = dataList ? `${id}-type-options` : undefined;
     return (
         <div key={id} className="grid grid-cols-6 items-center space-x-4">
             <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
             <input
-                type={type}
                 id={id}
+                name={id}
+                type={type}
                 list={listId}
                 value={value ?? ''}
                 onChange={onChange}

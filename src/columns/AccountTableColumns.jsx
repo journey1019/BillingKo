@@ -43,7 +43,7 @@ export const AccountTableColumns = [
     },
     {
         accessorKey: 'company_name',
-        header: '직장명',
+        header: '회사명',
     },
     {
         accessorKey: 'business_num',

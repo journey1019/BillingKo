@@ -41,3 +41,8 @@ export const useAcctResidentNumOptions = () => {
     const accountData = useAccountStore((state) => state.accountData);
     return Array.from(new Set(accountData.map((item) => item.acct_resident_num))).filter(Boolean);
 };
+
+export const useAcctCompanyNameOptions = () => {
+    const accountData = useAccountStore((state) => state.accountData);
+    return Array.from(new Set(accountData.map((item) => item.company_name))).filter(Boolean);
+};

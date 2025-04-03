@@ -11,7 +11,7 @@ const acctAccordionItem= ({ accountData, accountInfo }) => [
             <>
                 <div className="text-xs px-3">
                     {[
-                        ['직장명', accountInfo.company_name],
+                        ['회사명', accountInfo.company_name],
                         ['담당 부서', accountInfo.company_team],
                         ['담당자', accountData.company_director],
                         ['이메일', accountInfo.director_email],

@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import useAccountStore from '@/stores/accountStore';
-import { useAcctTypeList, useAcctClassificationOptions, useAcctResidentNumOptions } from '@/selectors/useAccountSelectors.js';
+import { useAcctTypeList, useAcctClassificationOptions, useAcctResidentNumOptions, useAcctCompanyNameOptions } from '@/selectors/useAccountSelectors.js';
+// import { defaultAccountFormData, useInputAccountFormData, inputAccountFormData } from '@/contents/accountFormDefault.js';
 import { defaultAccountFormData, inputAccountFormData } from '@/contents/accountFormDefault.js';
 import LoadingSpinner from "@/components/common/LoadingSpinner.jsx";
 import { formatPhoneNumber, formatBusinessNumber, formatFormDate } from "@/utils/formatHelpers.jsx";
+import { renderStandardInputField } from '@/utils/renderHelpers'
 
 import { IoMdClose } from "react-icons/io";
 import { Switch } from "@mui/material";
@@ -17,9 +19,12 @@ const AccountEditPage = () => {
     const acctTypeList = useAcctTypeList();
     const acctClassification = useAcctClassificationOptions();
     const acctResidentList = useAcctResidentNumOptions();
+    const acctCompanyNameList = useAcctCompanyNameOptions();
+
     console.log(acctTypeList)
     console.log(acctClassification)
     console.log(acctResidentList)
+    console.log(acctCompanyNameList)
 
 
     const navigate = useNavigate();
@@ -124,6 +129,7 @@ const AccountEditPage = () => {
             invoice_address2: prev.company_address2,
         }));
     };
+    // const inputFields = useInputAccountFormData();
 
 
     return (
@@ -178,22 +184,63 @@ const AccountEditPage = () => {
                     </datalist>
                 </div>
 
-                {inputAccountFormData.map(({ id, label, type, required, ...rest }) => (
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor={id}
-                               className="col-start-1 text-sm font-medium text-gray-900">{label}{required &&
-                            <span className="text-red-500">*</span>}</label>
-                        <input
-                            id={id}
-                            name={id}
-                            type={type === 'number' ? 'text' : type}
-                            value={formData[id] ?? ''} // null 방지
-                            onChange={handleChange}
-                            className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
-                            {...rest}
-                        />
-                    </div>
-                ))}
+                {/*{inputFields.map(({ id, label, type, placeholder, dataList, required, ...rest }) => (*/}
+                {/*    renderStandardInputField(*/}
+                {/*        id,*/}
+                {/*        label,*/}
+                {/*        type,*/}
+                {/*        formData[id],*/}
+                {/*        handleChange,*/}
+                {/*        dataList,*/}
+                {/*        required,*/}
+                {/*        "", // 에러 메시지 있으면 여기에*/}
+                {/*        placeholder*/}
+                {/*    )*/}
+                {/*))}*/}
+
+                {[
+                    { id: 'acct_name', label: '고객명', type: 'text', placeholder: '코리아오브컴', required: true },
+                    { id: 'classification', label: '분류', type: 'text', placeholder: '홍수통제소',  dataList: acctClassification, required: true },
+                    { id: 'acct_resident_num', label: '등록 번호', type: 'number', placeholder: '0',  dataList: acctResidentList, required: true },
+                    { id: 'tax_percent', label: '부가 세율(%)', type: 'number', min: 0, max: 100, step: 0.1, placeholder: '1.0', required: true },
+                    { id: 'company_name', label: '회사명', type: 'text', placeholder: '코리아오브컴', dataList: acctCompanyNameList },
+                    { id: 'business_num', label: '사업자 등록 번호', type: 'text', placeholder: '000-00-00000' },
+                    { id: 'recognize_id', label: '법인(주민) 번호', type: 'text', placeholder: '000-0000' },
+                    { id: 'company_tel', label: '회사 전화 번호', type: 'tel', pattern: '[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}', placeholder: '00-0000-0000' },
+                    { id: 'company_team', label: '팀명', type: 'text', placeholder: '기술부' },
+                    { id: 'company_director', label: '담당자', type: 'text', placeholder: '홍길동' },
+                    { id: 'director_email', label: '담당자 이메일', type: 'email', placeholder: 'example@gmail.com' },
+                    { id: 'director_tel', label: '담당 전화 번호', type: 'tel', placeholder: '000-0000-0000', pattern: '[0-9]{3}-[0-9]{3,4}-[0-9]{4}' }
+                ].map(({ id, label, type, dataList, placeholder, required }) =>
+                    renderStandardInputField(
+                        id,
+                        label,
+                        type,
+                        formData[id],
+                        handleChange,
+                        dataList,
+                        required,
+                        "", // 에러 메시지 있으면 여기에
+                        placeholder
+                    )
+                )}
+
+                {/*{inputAccountFormData.map(({ id, label, type, required, ...rest }) => (*/}
+                {/*    <div className="grid grid-cols-6 items-center space-x-4">*/}
+                {/*        <label htmlFor={id}*/}
+                {/*               className="col-start-1 text-sm font-medium text-gray-900">{label}{required &&*/}
+                {/*            <span className="text-red-500">*</span>}</label>*/}
+                {/*        <input*/}
+                {/*            id={id}*/}
+                {/*            name={id}*/}
+                {/*            type={type === 'number' ? 'text' : type}*/}
+                {/*            value={formData[id] ?? ''} // null 방지*/}
+                {/*            onChange={handleChange}*/}
+                {/*            className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"*/}
+                {/*            {...rest}*/}
+                {/*        />*/}
+                {/*    </div>*/}
+                {/*))}*/}
 
                 {/* ☑️ 회사 주소 검색 */}
                 <div className="grid grid-cols-6 items-center space-x-4">

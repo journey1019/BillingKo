@@ -61,7 +61,7 @@ export const AccountPaymentDetailTableColumns = [
     },
     {
         accessorKey: 'company_name',
-        header: '직장명',
+        header: '회사명',
     },
     {
         accessorKey: 'company_team',

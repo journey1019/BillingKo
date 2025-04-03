@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdClose } from 'react-icons/io';
 import DeviceNewFile from '@/components/form/Device/DeviceNewFile';
-import { getTodayDate } from '@/utils/formatHelpers';
 import useDeviceFormStore from '@/stores/deviceFormStore';
 import useAccountStore from '@/stores/accountStore';
 import usePriceStore from '@/stores/priceStore.js';
@@ -16,7 +15,6 @@ const DeviceNewPage = () => {
     const navigate = useNavigate();
     const {
         formData,
-        deviceError,
         setDeviceField,
         toggleUseYN,
         submitDeviceForm
