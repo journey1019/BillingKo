@@ -4,43 +4,95 @@ import { useNavigate } from 'react-router-dom';
 import { IoMdClose } from 'react-icons/io';
 import { renderInputField } from '@/utils/renderHelpers.jsx';
 import { usePPIDList } from '@/selectors/usePriceSelectors';
-
-const fieldLabels = {
-    ppid: "PPID",
-    basic_fee: "기본료",
-    subscription_fee: "가입비",
-    free_byte: "무료 데이터",
-    surcharge_unit: "추가 사용 과금 단위",
-    each_surcharge_fee: "추가 사용 과금 금액",
-    apply_company: "적용 회사",
-    remarks: "비고",
-    note: "메모"
-};
+import { defaultPriceFormData } from '@/contents/priceFormDefault.js';
+import { formatAnyWithCommas, formatNumber, removeCommas } from '@/utils/formatHelpers.jsx';
+import { createPrice } from '@/service/priceService.js';
+import { renderStandardInputField } from '@/utils/renderHelpers.jsx';
 
 const PriceNewPage = () => {
+    const { fetchPriceData, handleChange, submitPriceForm, } = usePriceStore();
     const navigate = useNavigate();
-    const {
-        fetchPriceData,
-        priceData,
-        formData,
-        handleChange,
-        submitPriceForm,
-        ppidError,
-        priceError
-    } = usePriceStore();
-    const pricePPIDList = usePPIDList();
 
-
-    const [error, setError] = useState(null);
+    const pricePPIDList = usePPIDList(defaultPriceFormData);
 
     useEffect(() => {
         fetchPriceData();
     }, []);
 
+    const [formData, setFormData] = useState(defaultPriceFormData);
+
+    const [error, setError] = useState("");
+    const [ppidError, setPpidError] = useState("");
+
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+
+        let cleanedValue = value;
+
+        if (["basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"].includes(id)) {
+            cleanedValue = value.replace(/[^0-9]/g, "");
+        }
+
+        if (id === "ppid") {
+            const isDuplicate = pricePPIDList.map(String).includes(String(value).trim());
+            setPpidError(isDuplicate ? "이미 존재하는 PPID 입니다." : "");
+        }
+
+        setFormData((prev) => ({ ...prev, [id]: cleanedValue }));
+    };
+
+
+
+    const validateFormData = () => {
+        const requiredFields = [
+            "ppid",
+            "basic_fee",
+            "subscription_fee",
+            "free_byte",
+            "surcharge_unit",
+            "each_surcharge_fee",
+        ];
+
+        for (const field of requiredFields) {
+            if (!formData[field]) {
+                console.log(field)
+                return `필수 입력 항목: ${field}`;
+            }
+        }
+        return null;
+    };
+
+
+    console.log(formData)
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (pricePPIDList.includes(formData.ppid)) {
+            setPpidError("이미 존재하는 PPID 번호입니다.");
+            return;
+        }
+
+        const validationError = validateFormData();
+        if (validationError) {
+            setError(validationError);
+            return;
+        }
+
+        // ✅ 숫자형 필드들 변환
+        const numericFields = ["ppid", "basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"];
+        const cleanedData = { ...formData };
+
+        numericFields.forEach((field) => {
+            cleanedData[field] = Number(String(formData[field]).replace(/[^0-9]/g, ""));
+        });
+
+        // ✅ null 또는 빈 문자열 처리
+        cleanedData.apply_company = formData.apply_company || "-";
+        cleanedData.remarks = formData.remarks || "-";
+        cleanedData.note = formData.note || "-";
+
         try {
-            await submitPriceForm();
+            await createPrice(cleanedData); // 👈 변환된 데이터로 요청
             alert("요금이 성공적으로 등록되었습니다.");
             navigate("/price");
         } catch (err) {
@@ -59,22 +111,31 @@ const PriceNewPage = () => {
             </div>
 
             <form className="bg-white p-5 rounded-xl space-y-4" onSubmit={handleSubmit}>
-                {renderInputField("ppid", "PPID", "text", formData['ppid'], (e) => handleChange("ppid", e.target.value), true, ppidError, "999")}
 
-                {Object.entries(fieldLabels).map(([id, label]) => {
-                    if (id === 'ppid') return null;
-                    const type = id.includes("fee") || id.includes("byte") || id.includes("unit") ? 'number' : 'text';
-                    const isRequired = !['apply_company', 'remarks', 'note'].includes(id);
-                    return renderInputField(
+                {[
+                    { id: "ppid", label: "PPID", type: "text", placeholder: "999", error: ppidError, required: true },
+                    { id: "apply_company", label: "적용회사", type: "text", placeholder: "코리아오브컴" },
+                    { id: "basic_fee", label: "기본료", type: "text", placeholder: "0", required: true },
+                    { id: "subscription_fee", label: "가입비", type: "text", placeholder: "0", required: true },
+                    { id: "free_byte", label: "무료 데이터", type: "text", placeholder: "0", required: true },
+                    { id: "surcharge_unit", label: "추가 사용 과금 단위", type: "text", placeholder: "0", required: true },
+                    { id: "each_surcharge_fee", label: "추가 사용 과금 금액", type: "text", placeholder: "0", required: true },
+                    { id: "remarks", label: "비고", type: "text", placeholder: "비고" },
+                    { id: "note", label: "메모", type: "text", placeholder: "메모" },
+                ].map(({ id, label, type, placeholder, required, errorMessage }) =>
+                    renderStandardInputField(
                         id,
                         label,
                         type,
                         formData[id],
-                        (e) => handleChange(id, e.target.value), // ✅ 여기 수정!
-                        isRequired
-                    );
-                })}
-
+                        handleInputChange,
+                        null,                         // dataList 없음
+                        required,
+                        errorMessage,
+                        id === "ppid" ? ppidError : "", // ✅ errorMessage 여기서 명시적으로 전달
+                        placeholder
+                    )
+                )}
 
                 <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-lg">
                     저장

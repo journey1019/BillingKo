@@ -26,6 +26,19 @@ export const formatNumberWithCommasNumber = (value) => {
     return number.toLocaleString();
 };
 
+
+// export const formatWithCommas = (value) => {
+//     if (!value) return "";
+//     const num = Number(String(value).replace(/[^0-9]/g, ""));
+//     return num.toLocaleString("en-US");
+// };
+//
+// export const removeCommas = (value) => {
+//     if (!value) return 0;
+//     return Number(String(value).replace(/,/g, ""));
+// };
+
+
 /**
  * 숫자 또는 문자열을 받아 천 단위 구분자 추가
  * - 값이 없거나 유효하지 않으면 "-"

@@ -81,7 +81,6 @@ const AccountNewPage = () => {
                 return `필수 입력 항목: ${field}`;
             }
         }
-
         return null;
     };
 
