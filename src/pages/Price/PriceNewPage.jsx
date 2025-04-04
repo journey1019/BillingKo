@@ -5,7 +5,7 @@ import { createPrice } from '@/service/priceService.js';
 import usePriceStore from '@/stores/priceStore';
 import { usePPIDList } from '@/selectors/usePriceSelectors';
 import { defaultPriceFormData } from '@/contents/priceFormDefault.js';
-import { formatWithCommas, removeCommas } from '@/utils/formatHelpers.jsx';
+import { formatWithCommas, removeCommas, formatWithCommasPoint } from '@/utils/formatHelpers.jsx';
 import { renderStandardInputField } from '@/utils/renderHelpers.jsx';
 
 import { IoMdClose } from 'react-icons/io';
@@ -31,10 +31,15 @@ const PriceNewPage = () => {
 
         let cleanedValue = value;
 
+        // 소수점 허용 필드
+        const floatFields = ["each_surcharge_fee"];
+
         // 숫자 필드라면 쉼표 제거 후 다시 쉼표 포함 형식으로 보여줌
-        if (["basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"].includes(id)) {
-            // 숫자만 남긴 후 쉼표 추가
-            cleanedValue = formatWithCommas(value);
+        if (["basic_fee", "subscription_fee", "free_byte", "surcharge_unit"].includes(id)) {
+            cleanedValue = formatWithCommasPoint(value.replace(/[^0-9]/g, ""));
+        } else if (floatFields.includes(id)) {
+            // 숫자 + 소수점만 허용
+            cleanedValue = formatWithCommasPoint(value.replace(/[^0-9.]/g, ""));
         }
 
         setFormData((prev) => ({
@@ -122,7 +127,7 @@ const PriceNewPage = () => {
                     { id: "subscription_fee", label: "가입비", type: "text", placeholder: "0", required: true },
                     { id: "free_byte", label: "무료 데이터", type: "text", placeholder: "0", required: true },
                     { id: "surcharge_unit", label: "추가 사용 과금 단위", type: "text", placeholder: "0", required: true },
-                    { id: "each_surcharge_fee", label: "추가 사용 과금 금액", type: "text", placeholder: "0", required: true },
+                    { id: "each_surcharge_fee", label: "추가 사용 과금 금액", type: "text", min: 0, max: 100, step: 0.1, placeholder: "0.0", required: true },
                     { id: "remarks", label: "비고", type: "text", placeholder: "비고" },
                     { id: "note", label: "메모", type: "text", placeholder: "메모" },
                 ].map(({ id, label, type, placeholder, required, errorMessage }) =>

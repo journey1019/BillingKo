@@ -27,16 +27,21 @@ export const formatNumberWithCommasNumber = (value) => {
 };
 
 // 숫자 입력시 ',' 구분자
+// 정수
 export const formatWithCommas = (value) => {
     if (!value) return "";
     const num = Number(String(value).replace(/[^0-9]/g, ""));
     return num.toLocaleString("en-US");
 };
-//
-// export const removeCommas = (value) => {
-//     if (!value) return 0;
-//     return Number(String(value).replace(/,/g, ""));
-// };
+// 소수점 허용한 ',' 천 단위 구분자
+export const formatWithCommasPoint = (value) => {
+    if (!value) return "";
+    const cleaned = String(value).replace(/[^0-9.]/g, ""); // 소수점도 허용
+    const [intPart, decimalPart] = cleaned.split(".");
+
+    const formattedInt = Number(intPart).toLocaleString("en-US");
+    return decimalPart !== undefined ? `${formattedInt}.${decimalPart}` : formattedInt;
+};
 
 
 /**
@@ -48,12 +53,21 @@ export const formatWithCommas = (value) => {
  * @param {string|number|null|undefined} value - 변환할 값
  * @returns {string} 변환된 값 ('-', '1,000', '10,000.50' 등)
  */
+// export const formatAnyWithCommas = (value) => {
+//     if (value === null || value === undefined || value === "" || isNaN(Number(value))) {
+//         return "-"; // 유효하지 않은 값이면 "-"
+//     }
+//     return Number(value).toLocaleString("en-US"); // 천 단위 구분자 추가
+// };
+// PriceEditPage
 export const formatAnyWithCommas = (value) => {
-    if (value === null || value === undefined || value === "" || isNaN(Number(value))) {
-        return "-"; // 유효하지 않은 값이면 "-"
-    }
-    return Number(value).toLocaleString("en-US"); // 천 단위 구분자 추가
+    if (value === null || value === undefined || value === "" || isNaN(Number(value))) return "-";
+
+    const parts = String(value).split(".");
+    const integerPart = Number(parts[0].replace(/[^0-9]/g, "")).toLocaleString("en-US");
+    return parts.length > 1 ? `${integerPart}.${parts[1]}` : integerPart;
 };
+
 
 /**
  * 천 단위 ',' 구분자를 제거하고 숫자로 변환

@@ -52,17 +52,21 @@ const PriceEditPage = () => {
         const { name, value } = e.target;
         let formattedValue = value;
 
-        // 숫자 필드일 경우 천 단위 구분자 적용
-        const numericFields = ["basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"];
+        const decimalFields = ["each_surcharge_fee"]; // ✅ 소수점 허용 필드
+        const integerFields = ["basic_fee", "subscription_fee", "free_byte", "surcharge_unit"];
 
-        if (numericFields.includes(name)) {
-            // 입력 값에서 , 제거하고 숫자 → 다시 천 단위로 포맷
-            const cleaned = removeCommas(value);
-            formattedValue = formatAnyWithCommas(cleaned);
+        if (decimalFields.includes(name)) {
+            formattedValue = formatAnyWithCommas(value.replace(/[^0-9.]/g, ""));
+        } else if (integerFields.includes(name)) {
+            formattedValue = formatAnyWithCommas(value.replace(/[^0-9]/g, ""));
         }
 
-        setFormData((prev) => ({ ...prev, [name]: formattedValue }));
+        setFormData((prev) => ({
+            ...prev,
+            [name]: formattedValue,
+        }));
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -72,7 +76,7 @@ const PriceEditPage = () => {
             subscription_fee: removeCommas(formData.subscription_fee),
             free_byte: removeCommas(formData.free_byte),
             surcharge_unit: removeCommas(formData.surcharge_unit),
-            each_surcharge_fee: removeCommas(formData.each_surcharge_fee),
+            each_surcharge_fee: parseFloat(String(formData.each_surcharge_fee).replace(/,/g, "")),  // ✅ 소수점 유지
         };
         // console.log("PUT 요청 보내기 직전 데이터", formData);
         try {
@@ -111,8 +115,8 @@ const PriceEditPage = () => {
                         { id: 'ppid', label: 'PPID', type: 'number', placeholder: 999, required: true, readOnly: true },
                         { id: 'basic_fee', label: '기본료', type: 'text', placeholder: '0', required: true },
                         { id: 'subscription_fee', label: '가입비', type: 'text', placeholder: '0', required: true },
-                        { id: 'surcharge_unit', label: '추가 사용 과금 단위', type: 'text', min: 0, max: 100, step: 0.1, placeholder: '1.0', required: true },
-                        { id: 'each_surcharge_fee', label: '추가 사용 과금 금액', type: 'text', required: true },
+                        { id: 'surcharge_unit', label: '추가 사용 과금 단위', type: 'text', placeholder: '1.0', required: true },
+                        { id: 'each_surcharge_fee', label: '추가 사용 과금 금액', type: 'text', min: 0, max: 100, step: 0.1, required: true },
                         { id: 'apply_company', label: '적용 회사', type: 'text', placeholder: '코리아오브컴', required: true },
                         { id: 'remarks', label: '비고', type: 'text', placeholder: '비고' },
                         { id: 'note', label: '메모', type: 'text', placeholder: '메모' },
