@@ -1,5 +1,7 @@
 export const renderStandardInputField = (id, label, type, value, onChange, dataList, required, readOnly, errorMessage, placeholder, extraProps = {}) => {
     const listId = dataList ? `${id}-type-options` : undefined;
+    const isValueEmpty = value === null || value === undefined || value === "";
+
     return (
         <div key={id} className="grid grid-cols-6 items-center space-x-4">
             <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">
@@ -12,10 +14,13 @@ export const renderStandardInputField = (id, label, type, value, onChange, dataL
                 list={listId}
                 value={value ?? ''}
                 onChange={onChange}
-                className="col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                placeholder={placeholder}
+                placeholder={isValueEmpty ? placeholder : ''}
                 required={required}
                 readOnly={readOnly}
+                className={`col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 ${
+                    readOnly ? 'bg-gray-100' : ''
+                }`}
+                {...extraProps}
             />
             {dataList && (
                 <datalist id={listId}>

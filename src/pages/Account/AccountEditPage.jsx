@@ -129,8 +129,6 @@ const AccountEditPage = () => {
             invoice_address2: prev.company_address2,
         }));
     };
-    // const inputFields = useInputAccountFormData();
-
 
     return (
         <div className="container mx-auto">
@@ -144,61 +142,9 @@ const AccountEditPage = () => {
 
             {/* ✅ 입력 폼 */}
             <form className="bg-white p-5 rounded-xl space-y-4" onSubmit={handleSubmit}>
-                {/* ☑️ 고객 번호 */}
-                <div className="grid grid-cols-6 items-center space-x-4">
-                    <label htmlFor="acct_num" className="col-start-1 text-sm font-medium text-gray-900">
-                        고객번호
-                        <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        id="acct_num"
-                        name="acct_num"
-                        type="text"
-                        value={formData.acct_num ?? ''} // null 방지
-                        onChange={handleChange}
-                        className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
-                        readOnly={true}
-                        required={true}
-                    />
-                </div>
-
-                {/* ☑️ 고객 구분 */}
-                <div className="grid grid-cols-6 items-center space-x-4">
-                    <label htmlFor="account_type" className="col-start-1 text-sm font-medium text-gray-900">
-                        고객구분
-                        <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        list="account-type-options"
-                        id="account_type"
-                        name="account_type"
-                        value={formData.account_type ?? ''}
-                        onChange={handleChange}
-                        placeholder="예: 법인, 개인, 내부 등"
-                        className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
-                    />
-                    <datalist id="account-type-options">
-                        {acctTypeList.map((type, index) => (
-                            <option key={index} value={type} />
-                        ))}
-                    </datalist>
-                </div>
-
-                {/*{inputFields.map(({ id, label, type, placeholder, dataList, required, ...rest }) => (*/}
-                {/*    renderStandardInputField(*/}
-                {/*        id,*/}
-                {/*        label,*/}
-                {/*        type,*/}
-                {/*        formData[id],*/}
-                {/*        handleChange,*/}
-                {/*        dataList,*/}
-                {/*        required,*/}
-                {/*        "", // 에러 메시지 있으면 여기에*/}
-                {/*        placeholder*/}
-                {/*    )*/}
-                {/*))}*/}
-
                 {[
+                    { id: 'acct_num', label: '고객번호', type: 'text', required: true, readOnly: true },
+                    { id: 'account_type', label: '고객구분', type: 'text', placeholder: '예: 법인, 개인, 내부 등', dataList: acctTypeList, required: true },
                     { id: 'acct_name', label: '고객명', type: 'text', placeholder: '코리아오브컴', required: true },
                     { id: 'classification', label: '분류', type: 'text', placeholder: '홍수통제소',  dataList: acctClassification, required: true },
                     { id: 'acct_resident_num', label: '등록 번호', type: 'number', placeholder: '0',  dataList: acctResidentList, required: true },
@@ -211,7 +157,7 @@ const AccountEditPage = () => {
                     { id: 'company_director', label: '담당자', type: 'text', placeholder: '홍길동' },
                     { id: 'director_email', label: '담당자 이메일', type: 'email', placeholder: 'example@gmail.com' },
                     { id: 'director_tel', label: '담당 전화 번호', type: 'tel', placeholder: '000-0000-0000', pattern: '[0-9]{3}-[0-9]{3,4}-[0-9]{4}' }
-                ].map(({ id, label, type, dataList, placeholder, required }) =>
+                ].map(({ id, label, type, dataList, placeholder, required, readOnly }) =>
                     renderStandardInputField(
                         id,
                         label,
@@ -220,27 +166,11 @@ const AccountEditPage = () => {
                         handleChange,
                         dataList,
                         required,
+                        readOnly || false,
                         "", // 에러 메시지 있으면 여기에
                         placeholder
                     )
                 )}
-
-                {/*{inputAccountFormData.map(({ id, label, type, required, ...rest }) => (*/}
-                {/*    <div className="grid grid-cols-6 items-center space-x-4">*/}
-                {/*        <label htmlFor={id}*/}
-                {/*               className="col-start-1 text-sm font-medium text-gray-900">{label}{required &&*/}
-                {/*            <span className="text-red-500">*</span>}</label>*/}
-                {/*        <input*/}
-                {/*            id={id}*/}
-                {/*            name={id}*/}
-                {/*            type={type === 'number' ? 'text' : type}*/}
-                {/*            value={formData[id] ?? ''} // null 방지*/}
-                {/*            onChange={handleChange}*/}
-                {/*            className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"*/}
-                {/*            {...rest}*/}
-                {/*        />*/}
-                {/*    </div>*/}
-                {/*))}*/}
 
                 {/* ☑️ 회사 주소 검색 */}
                 <div className="grid grid-cols-6 items-center space-x-4">

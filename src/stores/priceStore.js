@@ -102,10 +102,6 @@ const usePriceStore = create((set, get) => ({
         await updatePrice(ppid, payload);
     },
 
-    // 선택한 요금 데이터 삭제
-    // deletePriceData: async (ppid) => {
-    //     await deletePrice(ppid);
-    // },
     deletePriceData: async (ppid) => {
         try {
             await deletePrice(ppid);
@@ -122,8 +118,14 @@ const usePriceStore = create((set, get) => ({
 
         // 중복 검사
         if (id === 'ppid') {
-            const isDuplicate = priceData.some((p) => p.ppid === value);
-            set({ ppidError: isDuplicate ? '이미 존재하는 PPID 입니다.' : '' });
+            // 숫자 변환 + 중복 검사
+            const numericValue = Number(value);
+            const isDuplicate = priceData.some((p) => Number(p.ppid) === numericValue);
+            set({
+                ppidError: isDuplicate ? '이미 존재하는 PPID 입니다.' : '',
+                formData: { ...get().formData, [id]: numericValue }
+            });
+            return;
         }
 
         // 숫자 필드 처리
@@ -143,7 +145,7 @@ const usePriceStore = create((set, get) => ({
 
         const requiredFields = ["ppid", "basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"];
         for (const field of requiredFields) {
-            if (!formData[field] && formData[field] !== 0) {
+            if (formData[field] === undefined || formData[field] === "") {
                 throw new Error(`필수 입력 항목: ${field}`);
             }
         }

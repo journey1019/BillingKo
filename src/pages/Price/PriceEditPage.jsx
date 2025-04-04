@@ -6,6 +6,8 @@ import { IoMdClose } from 'react-icons/io';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import { formatAnyWithCommas, formatNumber, removeCommas } from '../../utils/formatHelpers.jsx';
 
+import { renderStandardInputField } from '@/utils/renderHelpers'
+
 const PriceEditPage = () => {
     const { ppid } = useParams();
     const navigate = useNavigate();
@@ -35,17 +37,7 @@ const PriceEditPage = () => {
                     surcharge_unit: formatAnyWithCommas(price.surcharge_unit),
                     each_surcharge_fee: formatAnyWithCommas(price.each_surcharge_fee),
                 })
-                // 숫자 필드에 대해서 천 단위 포맷 적용
-                // const formattedPrice = {
-                //     ...price,
-                //     basic_fee: price.basic_fee ? Number(price.basic_fee).toLocaleString() : "",
-                //     subscription_fee: price.subscription_fee ? Number(price.subscription_fee).toLocaleString() : "",
-                //     free_byte: price.free_byte ? Number(price.free_byte).toLocaleString() : "",
-                //     surcharge_unit: price.surcharge_unit ? Number(price.surcharge_unit).toLocaleString() : "",
-                //     each_surcharge_fee: price.each_surcharge_fee ? Number(price.each_surcharge_fee).toLocaleString() : "",
-                // };
-                //
-                // setFormData(formattedPrice);
+                console.log(formData)
             } catch (err) {
                 setError("Failed to fetch price data");
                 console.error(err);
@@ -64,20 +56,29 @@ const PriceEditPage = () => {
         const numericFields = ["basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"];
 
         if (numericFields.includes(name)) {
-            // 숫자만 남기기
-            // const onlyNums = value.replace(/[^0-9]/g, "");
-            // formattedValue = onlyNums ? Number(onlyNums).toLocaleString() : "";
-            formattedValue = removeCommas(value);
+            // 입력 값에서 , 제거하고 숫자 → 다시 천 단위로 포맷
+            const cleaned = removeCommas(value);
+            formattedValue = formatAnyWithCommas(cleaned);
         }
+
 
         setFormData((prev) => ({ ...prev, [name]: formattedValue }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const payload = {
+            ...formData,
+            basic_fee: removeCommas(formData.basic_fee),
+            subscription_fee: removeCommas(formData.subscription_fee),
+            free_byte: removeCommas(formData.free_byte),
+            surcharge_unit: removeCommas(formData.surcharge_unit),
+            each_surcharge_fee: removeCommas(formData.each_surcharge_fee),
+        };
+        console.log("PUT 요청 보내기 직전 데이터", formData);
         try {
-            console.log("PUT 요청 보낼 데이터", formData);
-            await updatePrice(ppid, formData);
+            console.log("PUT 요청 보낼 데이터", payload);
+            await updatePrice(ppid, payload);
             alert("Price updated successfully!");
             navigate("/price");
         } catch (err) {
@@ -89,7 +90,6 @@ const PriceEditPage = () => {
     if (loading) return <LoadingSpinner/>;
     if (error) return <p>Error: {error}</p>;
 
-    console.log(formData)
     return (
         <>
             <div className="container mx-auto">
@@ -105,161 +105,32 @@ const PriceEditPage = () => {
                     </button>
                 </div>
 
-
                 {/* Input Form Contents */}
-                <form className="bg-white p-5 rounded-xl space-y-6"
-                      onSubmit={handleSubmit}
-                >
-                    {/* PPID */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label
-                            htmlFor="ppid"
-                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                        >
-                            PPID
-                        </label>
-                        <input
-                            type="number"
-                            id="ppid"
-                            name="ppid"
-                            value={formData.ppid}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            readOnly // 수정 불가 설정(기본키가 변경되면 백에서 기존 데이터를 찾지 못하고 새롭게 생성하게 됨)
-                            placeholder="999"
-                        />
-                    </div>
-                    {/* Basic_Fee */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label
-                            htmlFor="basic_fee"
-                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                        >
-                            기본료
-                        </label>
-                        <input
-                            type="text"
-                            id="basic_fee"
-                            name="basic_fee"
-                            value={formData.basic_fee}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 text-right"
-                            placeholder="0"
-                            required
-                        />
-                    </div>
-                    {/* Subscription_Fee */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label
-                            htmlFor="subscription_fee"
-                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                        >
-                            가입비
-                        </label>
-                        <input
-                            type="text"
-                            id="subscription_fee"
-                            name="subscription_fee"
-                            value={formData.subscription_fee}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 text-right"
-                            placeholder="0"
-                            required
-                        />
-                    </div>
-                    {/* Surcharge_Unit */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label
-                            htmlFor="surcharge_unit"
-                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                        >
-                            추가 사용 과금 단위
-                        </label>
-                        <input
-                            type="text"
-                            id="surcharge_unit"
-                            name="surcharge_unit"
-                            value={formData.surcharge_unit}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 text-right"
-                            placeholder="0"
-                            required
-                        />
-                    </div>
-                    {/* Each_Surcharge_Fee */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label
-                            htmlFor="each_surcharge_fee"
-                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                        >
-                            추가 사용 과금 금액
-                        </label>
-                        <input
-                            type="text"
-                            id="each_surcharge_fee"
-                            name="each_surcharge_fee"
-                            value={formData.each_surcharge_fee}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 text-right"
-                            placeholder="0"
-                            required
-                        />
-                    </div>
-                    {/* Apply_Company */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label
-                            htmlFor="apply_company"
-                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                        >
-                            적용 회사
-                        </label>
-                        <input
-                            type="text"
-                            id="apply_company"
-                            name="apply_company"
-                            value={formData.apply_company}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                            placeholder="0"
-                            required
-                        />
-                    </div>
-                    {/* Remarks */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label
-                            htmlFor="remarks"
-                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                        >
-                            비고
-                        </label>
-                        <input
-                            type="text"
-                            id="remarks"
-                            name="remarks"
-                            value={formData.remarks}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="비고"
-                        />
-                    </div>
-                    {/* Note */}
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label
-                            htmlFor="note"
-                            className="col-start-1 col-end-1 text-sm font-medium text-gray-900 dark:text-white truncate"
-                        >
-                            메모
-                        </label>
-                        <input
-                            type="text"
-                            id="note"
-                            name="note"
-                            value={formData.note}
-                            onChange={handleChange}
-                            className="col-span-2 col-start-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="메모"
-                        />
-                    </div>
+                <form className="bg-white p-5 rounded-xl space-y-6" onSubmit={handleSubmit}>
+
+                    {[
+                        { id: 'ppid', label: 'PPID', type: 'number', placeholder: 999, required: true, readOnly: true },
+                        { id: 'basic_fee', label: '기본료', type: 'text', placeholder: '0', required: true },
+                        { id: 'subscription_fee', label: '가입비', type: 'text', placeholder: '0', required: true },
+                        { id: 'surcharge_unit', label: '추가 사용 과금 단위', type: 'text', min: 0, max: 100, step: 0.1, placeholder: '1.0', required: true },
+                        { id: 'each_surcharge_fee', label: '추가 사용 과금 금액', type: 'text', required: true },
+                        { id: 'apply_company', label: '적용 회사', type: 'text', placeholder: '코리아오브컴', required: true },
+                        { id: 'remarks', label: '비고', type: 'text', placeholder: '비고' },
+                        { id: 'note', label: '메모', type: 'text', placeholder: '메모' },
+                    ].map(({ id, label, type, dataList, placeholder, required, readOnly }) =>
+                        renderStandardInputField(
+                            id,
+                            label,
+                            type,
+                            formData[id],
+                            handleChange,
+                            dataList,
+                            required,
+                            readOnly || false,
+                            "", // 에러 메시지 있으면 여기에
+                            placeholder
+                        )
+                    )}
 
                     <button type="submit"
                             className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit

@@ -27,10 +27,6 @@ const PriceNewPage = () => {
         ppidError,
         priceError
     } = usePriceStore();
-    console.log(priceError)
-    console.log(ppidError) // ['pplan with this ppid already exists.']
-    console.log(ppidError[0]);
-
 
     const [error, setError] = useState(null);
 
