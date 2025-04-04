@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdClose } from 'react-icons/io';
 import { renderInputField } from '@/utils/renderHelpers.jsx';
+import { usePPIDList } from '@/selectors/usePriceSelectors';
 
 const fieldLabels = {
     ppid: "PPID",
@@ -27,6 +28,8 @@ const PriceNewPage = () => {
         ppidError,
         priceError
     } = usePriceStore();
+    const pricePPIDList = usePPIDList();
+
 
     const [error, setError] = useState(null);
 
@@ -62,8 +65,16 @@ const PriceNewPage = () => {
                     if (id === 'ppid') return null;
                     const type = id.includes("fee") || id.includes("byte") || id.includes("unit") ? 'number' : 'text';
                     const isRequired = !['apply_company', 'remarks', 'note'].includes(id);
-                    return renderInputField(id, label, type, formData[id], (e) => handleChange("ppid", e.target.value), isRequired);
+                    return renderInputField(
+                        id,
+                        label,
+                        type,
+                        formData[id],
+                        (e) => handleChange(id, e.target.value), // ✅ 여기 수정!
+                        isRequired
+                    );
                 })}
+
 
                 <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded-lg">
                     저장

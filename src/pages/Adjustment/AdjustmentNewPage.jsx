@@ -174,24 +174,6 @@ const AdjustmentNewPage = () => {
             {/* 🔹 Form */}
             <form className="bg-white p-5 rounded-xl space-y-6" onSubmit={handleSubmit}>
 
-                {/* 사용 여부 스위치 */}
-                <div className="grid grid-cols-6 items-center space-x-4">
-                    <label className="col-span-2 text-sm font-medium text-gray-900">사용 여부 *</label>
-                    <div className="col-span-4">
-                        <Switch checked={formData.use_yn === 'Y'} onChange={handleToggleChange} />
-                        <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
-                    </div>
-                </div>
-
-                {/* 부가세 포함 여부 */}
-                <div className="grid grid-cols-6 items-center space-x-4">
-                    <label className="col-span-2 text-sm font-medium text-gray-900">부가세 포함 여부 *</label>
-                    <div className="col-span-4">
-                        <Switch checked={formData.tax_free_yn === 'Y'} onChange={handleToggleTaxChange} />
-                        <span className="text-sm text-gray-700">{formData.tax_free_yn === 'Y' ? 'Yes' : 'No'}</span>
-                    </div>
-                </div>
-
                 {/* ✅ 조정 대상 구분 */}
                 <div key="adjustment_code" className="grid grid-cols-6 items-center space-x-4">
                     <label htmlFor="adjustment_code" className="col-span-2 text-sm font-medium text-gray-900">조정 대상
@@ -329,6 +311,24 @@ const AdjustmentNewPage = () => {
                     <textarea id="description" name="description" value={formData.description} onChange={handleChange}
                               placeholder="메모"
                               className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"></textarea>
+                </div>
+
+                {/* 사용 여부 스위치 */}
+                <div className="grid grid-cols-6 items-center space-x-4">
+                    <label className="col-span-2 text-sm font-medium text-gray-900">사용 여부 *</label>
+                    <div className="col-span-4">
+                        <Switch checked={formData.use_yn === 'Y'} onChange={handleToggleChange} />
+                        <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
+                    </div>
+                </div>
+
+                {/* 부가세 포함 여부 */}
+                <div className="grid grid-cols-6 items-center space-x-4">
+                    <label className="col-span-2 text-sm font-medium text-gray-900">부가세 포함 여부 *</label>
+                    <div className="col-span-4">
+                        <Switch checked={formData.tax_free_yn === 'Y'} onChange={handleToggleTaxChange} />
+                        <span className="text-sm text-gray-700">{formData.tax_free_yn === 'Y' ? 'Yes' : 'No'}</span>
+                    </div>
                 </div>
 
                 {/* ✅ 버튼 */}

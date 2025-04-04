@@ -3,10 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import useAccountStore from '@/stores/accountStore';
 import { useAcctTypeList, useAcctClassificationOptions, useAcctResidentNumOptions, useAcctCompanyNameOptions } from '@/selectors/useAccountSelectors.js';
-// import { defaultAccountFormData, useInputAccountFormData, inputAccountFormData } from '@/contents/accountFormDefault.js';
-import { defaultAccountFormData, inputAccountFormData } from '@/contents/accountFormDefault.js';
+import { defaultAccountFormData } from '@/contents/accountFormDefault.js';
 import LoadingSpinner from "@/components/common/LoadingSpinner.jsx";
-import { formatPhoneNumber, formatBusinessNumber, formatFormDate } from "@/utils/formatHelpers.jsx";
+import { formatPhoneNumber, formatBusinessNumber } from "@/utils/formatHelpers.jsx";
 import { renderStandardInputField } from '@/utils/renderHelpers'
 
 import { IoMdClose } from "react-icons/io";

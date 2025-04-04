@@ -43,7 +43,7 @@ export const renderInputField = (id, label, type, value, onChange, required, err
         </label>
         <div className="col-span-2 flex-1">
             <input id={id} type={type} value={value} onChange={onChange} placeholder={placeholder}
-                   className={`w-full bg-gray-50 border ${errorMessage ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg p-2.5`}
+                   className={`w-full bg-gray-50 border ${errorMessage ? 'border-red-500' : 'border-gray-300'} ${errorMessage ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg p-2.5`}
                    {...extraProps} required={required} />
             {errorMessage && <p className="text-red-500 text-xs mt-1">{errorMessage}</p>}
         </div>

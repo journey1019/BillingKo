@@ -39,7 +39,6 @@ export const formatAnyWithCommas = (value) => {
     if (value === null || value === undefined || value === "" || isNaN(Number(value))) {
         return "-"; // 유효하지 않은 값이면 "-"
     }
-
     return Number(value).toLocaleString("en-US"); // 천 단위 구분자 추가
 };
 

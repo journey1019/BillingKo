@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoMdClose } from 'react-icons/io';
-import DeviceNewFile from '@/components/form/Device/DeviceNewFile';
+
+
+import { createDevice } from '@/service/deviceService'; // ✅ 추가
 import useDeviceFormStore from '@/stores/deviceFormStore';
 import useAccountStore from '@/stores/accountStore';
 import usePriceStore from '@/stores/priceStore.js';
@@ -9,18 +10,19 @@ import { useAcctNumList } from '@/selectors/useAccountSelectors.js';
 import { usePPIDList } from '@/selectors/usePriceSelectors.js';
 import { useDevModelNameList } from '@/selectors/useDeviceSelectors.js';
 import useDeviceStore from '@/stores/deviceStore.js';
-import { renderStandardInputField } from '@/utils/renderHelpers.jsx';
 import { useSerialNumberList } from '@/selectors/useDeviceSelectors.js'
+import { renderStandardInputField } from '@/utils/renderHelpers.jsx';
+
 import { Switch } from "@mui/material";
-import { createDevice } from '@/service/deviceService'; // ✅ 추가
+import { IoMdClose } from 'react-icons/io';
+import DeviceNewFile from '@/components/form/Device/DeviceNewFile';
 
 
 const DeviceNewPage = () => {
     const navigate = useNavigate();
     const {
         formData,
-        setDeviceField,
-        submitDeviceForm
+        setDeviceField
     } = useDeviceFormStore();
 
     const { fetchAccountData } = useAccountStore();
@@ -90,8 +92,7 @@ const DeviceNewPage = () => {
             setError(err.message || 'Failed to create device.');
         }
     };
-    console.log(formData)
-
+    // console.log(formData)
 
     return (
         <div className="container mx-auto">
@@ -163,7 +164,6 @@ const DeviceNewPage = () => {
                         <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
                     </div>
                 </div>
-
 
                 <button type="submit"
                         className="text-white bg-blue-600 hover:bg-blue-700 rounded-lg text-sm px-5 py-2.5">

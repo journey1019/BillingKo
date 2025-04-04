@@ -116,7 +116,6 @@ const usePriceStore = create((set, get) => ({
     handleChange: (id, value) => {
         const { priceData } = get();
 
-        // 중복 검사
         if (id === 'ppid') {
             // 숫자 변환 + 중복 검사
             const numericValue = Number(value);
@@ -128,7 +127,6 @@ const usePriceStore = create((set, get) => ({
             return;
         }
 
-        // 숫자 필드 처리
         const numericFields = ["basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"];
         if (numericFields.includes(id)) {
             value = value === '' ? 0 : Number(value.replace(/[^0-9]/g, ""));
@@ -138,6 +136,7 @@ const usePriceStore = create((set, get) => ({
             formData: { ...state.formData, [id]: value }
         }));
     },
+
 
     submitPriceForm: async () => {
         const { formData, ppidError } = get();

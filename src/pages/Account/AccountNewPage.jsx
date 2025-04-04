@@ -7,7 +7,7 @@ import { defaultAccountFormData, inputAccountFormData } from '@/contents/account
 import { formatPhoneNumber } from '@/utils/formatPhoneNumber.jsx';
 import { formatBusinessNumber } from '@/utils/formatBusinessNumber';
 import useAccountStore from '@/stores/accountStore';
-import { renderInputField, renderSelectFiled } from '@/utils/renderHelpers.jsx';
+import { renderStandardInputField } from '@/utils/renderHelpers.jsx';
 
 import { Switch } from "@mui/material";
 import { IoMdClose } from "react-icons/io";
@@ -157,25 +157,24 @@ const AccountNewPage = () => {
             {/* ✅ 입력 폼 */}
             <form className="bg-white p-5 rounded-xl space-y-4" onSubmit={handleSubmit}>
                 {/* ✅ 고객 번호 (중복 검사 포함) */}
-                {renderInputField("acct_num", "고객번호", "text", formData['acct_num'], handleInputChange, true, acctNumError, "KO_99999")}
-                {renderSelectFiled("account_type", "고객구분", "text", formData['account_type'], handleInputChange, acctTypeList, true, "법인")}
-
-                {extendedFormData.map(({ id, label, type, required, ...rest }) => (
-                    <div className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor={id}
-                               className="col-start-1 text-sm font-medium text-gray-900">{label}{required &&
-                            <span className="text-red-500">*</span>}</label>
-                        <input
-                            id={id}
-                            name={id}
-                            type={type === 'number' ? 'text' : type}
-                            value={formData[id] ?? ''} // null 방지
-                            onChange={handleInputChange}
-                            className="col-span-2 bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5"
-                            {...rest}
-                        />
-                    </div>
-                ))}
+                {[
+                    { id: "acct_num", label: "고객번호", type: "text", placeholder: "KO_99999", error: acctNumError, required: true },
+                    { id: "account_type", label: "고객구분", type: "text", dataList: acctTypeList, required: true, placeholder: "예: 법인, 개인" },
+                    ...extendedFormData
+                ].map(({ id, label, type, dataList, placeholder, required, errorMessage }) =>
+                    renderStandardInputField(
+                        id,
+                        label,
+                        type,
+                        formData[id],
+                        handleInputChange,
+                        dataList,
+                        required,
+                        errorMessage,
+                        id === "acct_num" ? acctNumError : "", // ✅ 조건부 에러 메시지 전달
+                        placeholder
+                    )
+                )}
 
                 {/* ☑️ 회사 주소 검색 */}
                 <div className="grid grid-cols-6 items-center space-x-4">

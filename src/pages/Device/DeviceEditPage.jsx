@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateDevice, fetchDevicePart } from '@/service/deviceService.js';
-import { IoMdClose } from 'react-icons/io';
+
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
-import { Switch } from "@mui/material";
-import { formatFormDate } from "@/utils/formatHelpers";
-import { defaultDeviceFormData } from '@/contents/deviceFormDefault.js';
-import { useAcctNumList } from '@/selectors/useAccountSelectors.js';
-import { useDevProfileList, useDevModelNameList } from '@/selectors/useDeviceSelectors.js';
-import { renderStandardInputField } from '@/utils/renderHelpers'
-import { usePPIDList } from '@/selectors/usePriceSelectors.js';
+import { updateDevice, fetchDevicePart } from '@/service/deviceService.js';
 import usePriceStore from '@/stores/priceStore';
+import { useDevProfileList, useDevModelNameList } from '@/selectors/useDeviceSelectors.js';
+import { useAcctNumList } from '@/selectors/useAccountSelectors.js';
+import { usePPIDList } from '@/selectors/usePriceSelectors.js';
+import { defaultDeviceFormData } from '@/contents/deviceFormDefault.js';
+
+import { renderStandardInputField } from '@/utils/renderHelpers'
+import { formatFormDate } from "@/utils/formatHelpers";
+
+import { IoMdClose } from 'react-icons/io';
+import { Switch } from "@mui/material";
 
 const DeviceEditPage = () => {
     const { serial_number } = useParams();
@@ -47,12 +50,11 @@ const DeviceEditPage = () => {
         };
         loadDeviceData();
     }, [serial_number]);
-    console.log(formData)
 
     // 빈 문자열을 null로 변환하는 함수
     const convertEmptyToNull = (data) => {
         const updatedData = { ...data };
-        console.log(updatedData)
+
         // ✅ 제외할 필드를 명시적으로 제거
         delete updatedData.update_date;
         delete updatedData.update_user_id;
@@ -65,7 +67,6 @@ const DeviceEditPage = () => {
                 updatedData[field] = null;
             }
         });
-        console.log(updatedData)
 
         return updatedData;
     };
@@ -86,12 +87,12 @@ const DeviceEditPage = () => {
         const updatedData = convertEmptyToNull(formData);
 
         try {
-            console.log("PUT 요청 보낼 데이터:", updatedData);
+            // console.log("PUT 요청 보낼 데이터:", updatedData);
             await updateDevice(serial_number, updatedData);
             alert("Device updated successfully!");
             navigate("/devices");
         } catch (err) {
-            console.error(err);
+            // console.error(err);
             setError("Failed to update device");
         }
     };
@@ -99,7 +100,6 @@ const DeviceEditPage = () => {
     if (loading) return <LoadingSpinner />;
     if (error) return <p>Error: {error}</p>;
 
-    console.log(formData)
     return (
         <>
             <div className="container mx-auto">
