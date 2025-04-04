@@ -26,12 +26,12 @@ export const formatNumberWithCommasNumber = (value) => {
     return number.toLocaleString();
 };
 
-
-// export const formatWithCommas = (value) => {
-//     if (!value) return "";
-//     const num = Number(String(value).replace(/[^0-9]/g, ""));
-//     return num.toLocaleString("en-US");
-// };
+// 숫자 입력시 ',' 구분자
+export const formatWithCommas = (value) => {
+    if (!value) return "";
+    const num = Number(String(value).replace(/[^0-9]/g, ""));
+    return num.toLocaleString("en-US");
+};
 //
 // export const removeCommas = (value) => {
 //     if (!value) return 0;

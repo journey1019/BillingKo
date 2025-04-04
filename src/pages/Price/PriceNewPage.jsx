@@ -1,18 +1,20 @@
-import usePriceStore from '@/stores/priceStore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoMdClose } from 'react-icons/io';
-import { renderInputField } from '@/utils/renderHelpers.jsx';
+
+import { createPrice } from '@/service/priceService.js';
+import usePriceStore from '@/stores/priceStore';
 import { usePPIDList } from '@/selectors/usePriceSelectors';
 import { defaultPriceFormData } from '@/contents/priceFormDefault.js';
-import { formatAnyWithCommas, formatNumber, removeCommas } from '@/utils/formatHelpers.jsx';
-import { createPrice } from '@/service/priceService.js';
+import { formatWithCommas, removeCommas } from '@/utils/formatHelpers.jsx';
 import { renderStandardInputField } from '@/utils/renderHelpers.jsx';
 
+import { IoMdClose } from 'react-icons/io';
+
 const PriceNewPage = () => {
-    const { fetchPriceData, handleChange, submitPriceForm, } = usePriceStore();
+    const { fetchPriceData } = usePriceStore();
     const navigate = useNavigate();
 
+    // PPID 중복검사
     const pricePPIDList = usePPIDList(defaultPriceFormData);
 
     useEffect(() => {
@@ -29,19 +31,22 @@ const PriceNewPage = () => {
 
         let cleanedValue = value;
 
+        // 숫자 필드라면 쉼표 제거 후 다시 쉼표 포함 형식으로 보여줌
         if (["basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"].includes(id)) {
-            cleanedValue = value.replace(/[^0-9]/g, "");
+            // 숫자만 남긴 후 쉼표 추가
+            cleanedValue = formatWithCommas(value);
         }
+
+        setFormData((prev) => ({
+            ...prev,
+            [id]: cleanedValue,
+        }));
 
         if (id === "ppid") {
             const isDuplicate = pricePPIDList.map(String).includes(String(value).trim());
             setPpidError(isDuplicate ? "이미 존재하는 PPID 입니다." : "");
         }
-
-        setFormData((prev) => ({ ...prev, [id]: cleanedValue }));
     };
-
-
 
     const validateFormData = () => {
         const requiredFields = [
@@ -62,8 +67,6 @@ const PriceNewPage = () => {
         return null;
     };
 
-
-    console.log(formData)
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -78,13 +81,13 @@ const PriceNewPage = () => {
             return;
         }
 
-        // ✅ 숫자형 필드들 변환
+        // ✅ 숫자형 필드들 변환 (string -> number)
         const numericFields = ["ppid", "basic_fee", "subscription_fee", "free_byte", "surcharge_unit", "each_surcharge_fee"];
         const cleanedData = { ...formData };
-
         numericFields.forEach((field) => {
-            cleanedData[field] = Number(String(formData[field]).replace(/[^0-9]/g, ""));
+            cleanedData[field] = removeCommas(formData[field]);
         });
+
 
         // ✅ null 또는 빈 문자열 처리
         cleanedData.apply_company = formData.apply_company || "-";

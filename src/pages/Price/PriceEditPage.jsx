@@ -4,7 +4,7 @@ import { updatePrice, fetchPricePart } from "@/service/priceService.js";
 
 import { IoMdClose } from 'react-icons/io';
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
-import { formatAnyWithCommas, formatNumber, removeCommas } from '../../utils/formatHelpers.jsx';
+import { formatAnyWithCommas, removeCommas } from '@/utils/formatHelpers.jsx';
 
 import { renderStandardInputField } from '@/utils/renderHelpers'
 
@@ -61,7 +61,6 @@ const PriceEditPage = () => {
             formattedValue = formatAnyWithCommas(cleaned);
         }
 
-
         setFormData((prev) => ({ ...prev, [name]: formattedValue }));
     };
 
@@ -75,14 +74,14 @@ const PriceEditPage = () => {
             surcharge_unit: removeCommas(formData.surcharge_unit),
             each_surcharge_fee: removeCommas(formData.each_surcharge_fee),
         };
-        console.log("PUT 요청 보내기 직전 데이터", formData);
+        // console.log("PUT 요청 보내기 직전 데이터", formData);
         try {
-            console.log("PUT 요청 보낼 데이터", payload);
+            // console.log("PUT 요청 보낼 데이터", payload);
             await updatePrice(ppid, payload);
             alert("Price updated successfully!");
             navigate("/price");
         } catch (err) {
-            console.error(err.message);
+            // console.error(err.message);
             setError("Failed to update price");
         }
     };
