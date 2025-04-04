@@ -9,6 +9,8 @@ import { defaultDeviceFormData } from '@/contents/deviceFormDefault.js';
 import { useAcctNumList } from '@/selectors/useAccountSelectors.js';
 import { useDevProfileList, useDevModelNameList } from '@/selectors/useDeviceSelectors.js';
 import { renderStandardInputField } from '@/utils/renderHelpers'
+import { usePPIDList } from '@/selectors/usePriceSelectors.js';
+import usePriceStore from '@/stores/priceStore';
 
 const DeviceEditPage = () => {
     const { serial_number } = useParams();
@@ -17,9 +19,15 @@ const DeviceEditPage = () => {
     const [error, setError] = useState(null);
     const [formData, setFormData] = useState(defaultDeviceFormData);
 
+    const { fetchPriceData } = usePriceStore();
     const acctNumList = useAcctNumList();
     const devProfileList = useDevProfileList();
     const devModelNameList = useDevModelNameList();
+    const pricePPIDList = usePPIDList();
+
+    useEffect(() => {
+        fetchPriceData();
+    }, [])
 
     useEffect(() => {
         const loadDeviceData = async () => {
@@ -117,14 +125,14 @@ const DeviceEditPage = () => {
                         { id: 'serial_number', label: '단말기', type: 'text', required: true },
                         { id: 'acct_num', label: '고객번호', type: 'text', placeholder: 'KO_99999',  dataList: acctNumList, required: true },
                         { id: 'profile_id', label: 'Profile ID', type: 'text =', placeholder: '0',  dataList: devProfileList, required: true },
-                        { id: 'PPID', label: 'PPID', type: 'number', placeholder: 999, required: true },
+                        { id: 'PPID', label: 'PPID', type: 'text', placeholder: '999', required: true, dataList: pricePPIDList },
                         { id: 'model_name', label: '모델명', type: 'text', placeholder: 'ST6100', dataList: devModelNameList, required: true },
                         { id: 'internet_mail_id', label: 'ORBCOMM 별칭', type: 'text' },
                         { id: 'alias', label: '별칭', type: 'text' },
                         { id: 'activated', label: '활성화 날짜', type: 'date', required: true },
                         { id: 'deactivated', label: '비활성화 날짜', type: 'date' },
                         { id: 'remarks', label: '비고', type: 'text' }
-                    ].map(({ id, label, type, dataList, placeholder, required }) =>
+                    ].map(({ id, label, type, dataList, placeholder, required, readOnly }) =>
                         renderStandardInputField(
                             id,
                             label,
@@ -133,6 +141,7 @@ const DeviceEditPage = () => {
                             handleChange,
                             dataList,
                             required,
+                            readOnly || false,
                             "", // 에러 메시지 있으면 여기에
                             placeholder
                         )

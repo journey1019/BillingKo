@@ -1,16 +1,22 @@
 import useDeviceStore from '@/stores/deviceStore.js';
 
-// ✅ profile_id 배열만 추출하는 selector
-// ['60002798', '60003193']
-// export const useDevProfileList = () => {
-//     const accountData = useDeviceStore((state) => state.deviceData);
-//     return accountData.map((item) => item.profile_id);
-// };
 
-// ✅ 중복 제거 profile_id 배열만 추출하는 selector
-// ['60002798', '60003193']
+// ✅ profile_id 배열만 추출하는 selector
+export const useSerialNumberList = () => {
+    const deviceData = useDeviceStore((state) => state.deviceData);
+    const uniqueSerialNUmber = Array.from(
+        new Set(
+            deviceData
+                .map((item) => item.serial_number)
+                .filter((type) => type !== null && type !== undefined && type !== "")
+        )
+    )
+    return uniqueSerialNUmber;
+};
+
 export const useDevProfileList = () => {
     const deviceData = useDeviceStore((state) => state.deviceData);
+    // console.log(deviceData)
 
     const uniqueDevProfile = Array.from(
         new Set(

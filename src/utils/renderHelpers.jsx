@@ -7,28 +7,31 @@ export const renderStandardInputField = (id, label, type, value, onChange, dataL
             <label htmlFor={id} className="col-start-1 text-sm font-medium text-gray-900">
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
-            <input
-                id={id}
-                name={id}
-                type={type}
-                list={listId}
-                value={value ?? ''}
-                onChange={onChange}
-                placeholder={isValueEmpty ? placeholder : ''}
-                required={required}
-                readOnly={readOnly}
-                className={`col-span-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 ${
-                    readOnly ? 'bg-gray-100' : ''
-                }`}
-                {...extraProps}
-            />
-            {dataList && (
-                <datalist id={listId}>
-                    {dataList?.map((num, index) => (
-                        <option key={index} value={num} />
-                    ))}
-                </datalist>
-            )}
+            <div className="col-span-2 flex-1">
+                <input
+                    id={id}
+                    name={id}
+                    type={type}
+                    list={listId}
+                    value={value ?? ''}
+                    onChange={onChange}
+                    placeholder={isValueEmpty ? placeholder : ''}
+                    required={required}
+                    readOnly={readOnly}
+                    className={`w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 ${errorMessage ? 'border-red-500' : 'border-gray-300'} ${readOnly ? 'bg-gray-100' : ''}`}
+                    {...extraProps}
+                />
+                {errorMessage && (
+                    <p className="text-sm text-red-500 mt-1">{errorMessage}</p>
+                )}
+                {dataList && (
+                    <datalist id={listId}>
+                        {dataList?.map((num, index) => (
+                            <option key={index} value={num} />
+                        ))}
+                    </datalist>
+                )}
+            </div>
         </div>
     )
 }
