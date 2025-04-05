@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from 'react-router-dom';
+
 import { createAdjustment } from '@/service/adjustmentService.js';
 import { createCode } from '@/service/codeService.js';
-import { IoMdClose } from 'react-icons/io';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+
 import { Switch } from "@mui/material";
 import { CiCirclePlus } from "react-icons/ci";
+import { IoMdClose } from 'react-icons/io';
 
 
 const AdjustmentNewPage = () => {

@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchAdjustment, fetchAdjustmentPart, deleteAdjustment, fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
 import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
 import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
@@ -14,110 +12,58 @@ import ButtonGroup from '@/components/common/ButtonGroup.jsx';
 import { IoIosArrowDown } from 'react-icons/io';
 import AdjustmentTabItems from '@/components/form/Adjustment/AdjustmentTabItems.jsx';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+import useAdjustmentStore from '@/stores/adjustmentStore.js';
+import { TiPlus } from "react-icons/ti";
 
 const AdjustmentPage = () => {
-    const { data: adjustmentData, loading: adjustmentLoading, error: adjustmentError, refetch: adjustmentRefetch } = useApiFetch(fetchAdjustment);
+    const {
+        // 전체 데이터
+        adjustmentData,
+        adjustmentLoading,
+        adjustmentError,
+        fetchAdjustmentData,
+
+        // 부분 데이터 상태
+        adjustmentDetailData,
+        adjustmentDetailLoading,
+        adjustmentDetailError,
+        fetchAdjustmentDetailData,
+
+        // 이력 데이터 상태
+        adjustmentDetailHistoryData,
+        adjustmentDetailHistoryLoading,
+        adjustmentDetailHistoryError,
+        fetchAdjustmentValueHistory,
+        deleteAdjustmentData,
+    } = useAdjustmentStore();
+
     const [selectedAdjustId, setSelectedAdjustId] = useState(null);
     const [isAdjustExpanded, setIsAdjustExpanded] = useState(false); // Drawer 확장
-    const [isOpenNewDropdown, setIsOpenNewDropdown] = useState(false); // New icon Drop
     const navigate = useNavigate();
 
     const codeMappings = useAdjustmentMappings();
 
-    // 부분 데이터 상태
-    const [adjustPartData, setAdjustPartData] = useState(null);
-    const [adjustPartLoading, setAdjustPartLoading] = useState(false);
-    const [adjustPartError, setAdjustPartError] = useState(null);
+    useEffect(() => {
+        fetchAdjustmentData();
+    }, []);
 
-    // 이력 데이터 상태
-    const [adjustHistoryData, setAdjustHistoryData] = useState(null);
-    const [adjustHistoryLoading, setAdjustHistoryLoading] = useState(false);
-    const [adjustHistoryError, setAdjustHistoryError] = useState(null);
-
-
-    useEffect(()=> {
-        const fetchParticular = async () => {
-            if(!selectedAdjustId) return;
-
-            // 조정 데이터 가져오기
-            setAdjustPartLoading(true);
-            setAdjustPartError(null);
-            try {
-                const adjustResponse = await fetchAdjustmentPart(selectedAdjustId.adjustment_index);
-                setAdjustPartData(adjustResponse);
-            } catch (error) {
-                setAdjustPartError(error.message || 'Failed to fetch account details');
-            } finally {
-                setAdjustPartLoading(false);
-            }
-
-            // 조정 데이터 가져오기
-            setAdjustHistoryLoading(true);
-            setAdjustHistoryError(null);
-            try {
-                const adjustResponse = await fetchAdjustmentValueHistory(selectedAdjustId.adjustment_code_value);
-                setAdjustHistoryData(adjustResponse);
-            } catch (error) {
-                setAdjustHistoryError(error.message || 'Failed to fetch account details');
-            } finally {
-                setAdjustHistoryLoading(false);
-            }
-        }
-
-        fetchParticular();
+    useEffect(() => {
+        if (!selectedAdjustId) return;
+        fetchAdjustmentDetailData(selectedAdjustId.adjustment_index);
+        fetchAdjustmentValueHistory(selectedAdjustId.adjustment_code_value);
     }, [selectedAdjustId]);
 
-    const handleDeleteSuccess = () => {
-        adjustmentRefetch();
-        setSelectedAdjustId(null);
-        setIsAdjustExpanded(false);
-    }
+    const handleDeleteSuccess = async (index) => {
+        try {
+            await fetchAdjustmentData(); // ❌ 삭제 다시 안함! (이미 됐음)
+            setSelectedAdjustId(null);
+            setIsAdjustExpanded(false);
+            console.log(`✅ 삭제 후 새로고침 완료 (Adjustment: ${index})`);
+        } catch (error) {
+            alert("삭제 후 데이터 갱신에 실패했습니다.");
+        }
+    };
 
-    // New Button Toggle
-    const toggleNewDropdown = () => setIsOpenNewDropdown(!isOpenNewDropdown);
-    const closeNewDropdown = () => setIsOpenNewDropdown(false);
-
-    const OverviewTab = () => {
-        return(
-            <div>
-                {adjustPartLoading ? (
-                    <LoadingSpinner/>
-                ) : adjustPartError ? (
-                    <p className="text-red-500">Error loading history: {adjustPartError}</p>
-                ) : adjustPartData ? (
-                    <AdjustmentPartForm adjustPartData={adjustPartData}/>
-                ) : (
-                    <p>Select an price to view details</p>
-                )}
-            </div>
-        )
-    }
-    const HistoryTab = () => {
-        return(
-            <div>
-                {adjustHistoryLoading ? (
-                    <LoadingSpinner/>
-                ) : adjustHistoryError ? (
-                    <p className="text-red-500">Error loading history: {adjustHistoryError}</p>
-                ) : adjustHistoryData ? (
-                    <ReusableTable
-                        data={adjustHistoryData}
-                        columns={AdjustmentHistoryTableColumns}
-                        options={{
-                            ...AdjustmentHistoryTableOptions,
-
-                        }}
-                    />
-                ) : (
-                    <p>Select an price to view details</p>
-                )}
-            </div>
-        )
-    }
-    const tabs = [
-        { id: 1, label: 'Overview', content: <OverviewTab/>},
-        { id: 2, label: 'History', content: <HistoryTab /> },
-    ];
 
 
     return(
@@ -142,31 +88,7 @@ const AdjustmentPage = () => {
                                     <span>New</span>
                                 </button>
                             </Tooltip>
-                            {/*<button type="button"*/}
-                            {/*        className="inline-flex items-center px-1 py-2 text-sm font-medium text-white bg-blue-500 border border-gray-200 rounded-e-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"*/}
-                            {/*        onClick={toggleNewDropdown}*/}
-                            {/*>*/}
-                            {/*    <IoIosArrowDown />*/}
-                            {/*</button>*/}
-                            {/*{isOpenNewDropdown && (*/}
-                            {/*    <div*/}
-                            {/*        className="absolute right-5 z-10 mt-10 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"*/}
-                            {/*        onMouseLeave={closeNewDropdown}>*/}
-                            {/*        <div className="p-2 text-sm text-gray-700">*/}
-                            {/*            <button onClick={() => navigate('/adjustment/new')}*/}
-                            {/*                    className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">*/}
-                            {/*                조정 생성*/}
-                            {/*            </button>*/}
-                            {/*        </div>*/}
-                            {/*        <ul className="p-2 text-sm text-gray-700">*/}
-                            {/*            <li>*/}
-                            {/*                <button onClick={() => navigate('/code/new')}*/}
-                            {/*                        className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition whitespace-nowrap">조정 세부 단위 생성*/}
-                            {/*                </button>*/}
-                            {/*            </li>*/}
-                            {/*        </ul>*/}
-                            {/*    </div>*/}
-                            {/*)}*/}
+
                         </div>
                     </div>
                 </div>
@@ -208,19 +130,66 @@ const AdjustmentPage = () => {
                             <ButtonGroup
                                 entityType="adjustment"
                                 id={selectedAdjustId.adjustment_index}
-                                deleteFunction={deleteAdjustment}
+                                deleteFunction={deleteAdjustmentData}
                                 onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
                             />
                         </div>
 
+                        {/*<TabComponent tab={[*/}
+                        {/*    {*/}
+                        {/*        id: 1,*/}
+                        {/*        label: 'Overview',*/}
+                        {/*        content:*/}
+                        {/*            <div>*/}
+                        {/*                {adjustmentDetailLoading ? (*/}
+                        {/*                    <LoadingSpinner />*/}
+                        {/*                ) : adjustmentDetailError ? (*/}
+                        {/*                    <p className="text-red-500">Error loading history: {adjustmentDetailError}</p>*/}
+                        {/*                ) : adjustmentDetailData ? (*/}
+                        {/*                    <AdjustmentPartForm adjustPartData={adjustmentDetailData} />*/}
+                        {/*                ) : (*/}
+                        {/*                    <p>Select an price to view details</p>*/}
+                        {/*                )}*/}
+                        {/*            </div>*/}
+                        {/*    },*/}
+                        {/*    {*/}
+                        {/*        id: 2,*/}
+                        {/*        label: 'History',*/}
+                        {/*        content:*/}
+                        {/*            <div>*/}
+                        {/*                <div className="flex flex-row justify-between">*/}
+                        {/*                    <h1 className="font-bold my-2">고객 조정 정보 이력</h1>*/}
+                        {/*                    <Tooltip title="고객 조정 정보 추가">*/}
+                        {/*                        <button className="bg-blue-500 rounded-md text-white px-4 py-2 mb-2 hover:bg-blue-600">*/}
+                        {/*                            <TiPlus />*/}
+                        {/*                        </button>*/}
+                        {/*                    </Tooltip>*/}
+                        {/*                </div>*/}
+                        {/*                {adjustmentDetailHistoryLoading ? (*/}
+                        {/*                    <LoadingSpinner />*/}
+                        {/*                ) : adjustmentDetailHistoryError ? (*/}
+                        {/*                    <p className="text-red-500">Error loading history: {adjustmentDetailHistoryError}</p>*/}
+                        {/*                ) : adjustmentDetailHistoryData ? (*/}
+                        {/*                    <ReusableTable*/}
+                        {/*                        data={adjustmentDetailHistoryData}*/}
+                        {/*                        columns={AdjustmentHistoryTableColumns}*/}
+                        {/*                        options={AdjustmentHistoryTableOptions}*/}
+                        {/*                    />*/}
+                        {/*                ) : (*/}
+                        {/*                    <p>Select an price to view details</p>*/}
+                        {/*                )}*/}
+                        {/*            </div>*/}
+                        {/*    }*/}
+                        {/*]}*/}
+                        {/*/>*/}
                         <TabComponent tabs={AdjustmentTabItems({
                             selectedAdjustId,
-                            adjustPartData,
-                            adjustPartLoading,
-                            adjustPartError,
-                            adjustHistoryData,
-                            adjustHistoryLoading,
-                            adjustHistoryError,
+                            adjustmentDetailData,
+                            adjustmentDetailLoading,
+                            adjustmentDetailError,
+                            adjustmentDetailHistoryData,
+                            adjustmentDetailHistoryLoading,
+                            adjustmentDetailHistoryError,
                         })} />
                     </div>
                 </div>

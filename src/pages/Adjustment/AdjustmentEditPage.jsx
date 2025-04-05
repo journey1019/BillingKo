@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+
 import { updateAdjustment, fetchAdjustmentPart } from '@/service/adjustmentService.js';
-import { IoMdClose } from 'react-icons/io';
-import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
+
 import { Switch } from "@mui/material";
+import { IoMdClose } from 'react-icons/io';
 
 const AdjustmentEditPage = () => {
     const { adjustment_index } = useParams();
     const navigate = useNavigate();
-    const codeMappings = useAdjustmentMappings();
+
     const [searchParams] = useSearchParams();
-    // ✅ URL에서 전달된 인자 추출
     const adjustment_code = searchParams.get("adjustment_code") || "";
     const adjustment_code_value = searchParams.get("adjustment_code_value") || "";
     console.log('adjustment_code: ', adjustment_code, 'adjustment_code_value: ', adjustment_code_value);
+
+    const codeMappings = useAdjustmentMappings();
 
     const [formData, setFormData] = useState({
         adjustment_code: adjustment_code || "",
