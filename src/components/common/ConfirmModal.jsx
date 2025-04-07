@@ -19,7 +19,7 @@ const ConfirmModal = ({ show, onClose, onConfirm, message, status }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="relative w-full max-w-md p-4 h-auto">
+            <div className="relative w-full max-w-md md:max-w-lg p-4 h-auto">
                 <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     {/* Close button */}
                     <button
@@ -35,7 +35,7 @@ const ConfirmModal = ({ show, onClose, onConfirm, message, status }) => {
 
                     <div className="p-4 text-center">
                         <StatusIcon statusIcon={status}/>
-                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{message}</h3>
+                        <h3 className="mb-5 text-base md:text-lg font-normal text-gray-500">{message}</h3>
 
                         <button
                             onClick={onConfirm}

@@ -63,8 +63,8 @@ const Navbar = () => {
                         </li>
                         <li>
                             <NavLink
-                                to="/monthly/account"
-                                className={`flex items-center space-x-2 p-2 transition hover:text-blue-400 ${useActivePath("/monthly/account")}`}
+                                to="/ko_monthly_account"
+                                className={`flex items-center space-x-2 p-2 transition hover:text-blue-400 ${useActivePath("/ko_monthly_account")}`}
                             >
                                 <BiSolidUserAccount />
                                 <span>고객별 청구서 수정 페이지</span>

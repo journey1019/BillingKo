@@ -81,7 +81,7 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                         <div className="flex flex-row space-x-2">
                             <button
                                 className="hover:text-blue-500"
-                                onClick={() => { window.location.href = `/monthly/account?yearMonth=${yearMonth}&acctNum=${accountData.acct_num}` }}
+                                onClick={() => { window.location.href = `/ko_monthly_account?yearMonth=${yearMonth}&acctNum=${accountData.acct_num}` }}
                             >
                                 <LuRefreshCw />
                             </button>
