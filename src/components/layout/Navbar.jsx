@@ -72,8 +72,8 @@ const Navbar = () => {
                         </li>
                         <li>
                             <NavLink
-                                to="/ko_monthly/account/save"
-                                className={`flex items-center space-x-2 p-2 transition hover:text-blue-400 ${useActivePath("/ko_monthly/account/save")}`}
+                                to="/ko_monthly_result"
+                                className={`flex items-center space-x-2 p-2 transition hover:text-blue-400 ${useActivePath("/ko_monthly_result")}`}
                             >
                                 <FaPrint />
                                 <span>최종 청구서 페이지</span>

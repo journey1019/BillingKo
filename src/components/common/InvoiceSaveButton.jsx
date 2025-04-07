@@ -39,7 +39,7 @@ const InvoiceSaveButton = ({ yearMonth }) => {
             });
 
             setTimeout(() => {
-                navigate("/ko_monthly/account/save"); // 페이지 이동
+                navigate("/ko_monthly_result"); // 페이지 이동
             }, 3000);
         } catch (error) {
             console.error(error);

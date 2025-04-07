@@ -110,7 +110,7 @@ const App = () => {
                                 <Route path="/ko_monthly/account" element={<KOMonthlyAccountPage />} />
                                 <Route path="/ko_monthly" element={<KOMonthlyPage />} /> {/* 단말별 */}
                                 <Route path="/monthly/account" element={<AccountMonthlyPage />} /> {/* 고객별 */}
-                                <Route path="/ko_monthly/account/save" element={<KOMonthlyAccountSavePage />} /> {/* 청구서 */}
+                                <Route path="/ko_monthly_result" element={<KOMonthlyAccountSavePage />} /> {/* 청구서 */}
 
                                 <Route path="/font_convert" element={<FontConvertPage />} />
 
