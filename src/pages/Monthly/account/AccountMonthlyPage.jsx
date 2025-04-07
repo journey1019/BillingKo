@@ -13,7 +13,7 @@ import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import AccountMonthlyForm from '@/components/form/AccountMonthly/AccountMonthlyForm.jsx';
 import InvoiceSaveButton from '@/components/common/InvoiceSaveButton.jsx';
 import { IoMdClose } from 'react-icons/io';
-
+import { useSearchParams } from "react-router-dom";
 
 import useAccountMonthlyStore from '@/stores/accountMonthlyStore.js';
 
@@ -22,7 +22,10 @@ import useAccountMonthlyStore from '@/stores/accountMonthlyStore.js';
  * @desc: 고객별 청구서 수정 페이지
  * */
 const AccountMonthlyPage = () => {
-    const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
+    const [searchParams] = useSearchParams();
+    const urlYearMonth = searchParams.get("yearMonth"); // ex) '202402'
+    const urlAcct = searchParams.get("acctNum");
+    const { selectedDate, handleDateChange, yearMonth } = useYearMonth(urlYearMonth || null);
     const {
         monthlyAcctData,
         loading,
@@ -38,6 +41,12 @@ const AccountMonthlyPage = () => {
         resetSelection
     } = useAccountMonthlyStore();
 
+    const [columnFilters, setColumnFilters] = useState(() => {
+        return urlAcct
+            ? [{ id: "acct_num", value: urlAcct }]
+            : [];
+    });
+
 
     useEffect(() => {
         fetchMonthlyAcctData(yearMonth);
@@ -45,9 +54,9 @@ const AccountMonthlyPage = () => {
 
     useEffect(() => {
         if (selectedRowId) {
-            fetchAccountDetailData(yearMonth, selectedRowId.acct_num);
+            fetchAccountDetailData(yearMonth, urlAcct ? urlAcct : selectedRowId.acct_num);
         }
-    }, [selectedRowId, yearMonth]);
+    }, [selectedRowId, yearMonth, urlAcct]);
 
     return(
         <>
@@ -88,7 +97,11 @@ const AccountMonthlyPage = () => {
                                 // }
                                 meta: {
                                     onRowSelect: selectRow,
-                                }
+                                },
+                                state: {
+                                    columnFilters,
+                                },
+                                onColumnFiltersChange: setColumnFilters,
                             }}
                         />
                     </div>

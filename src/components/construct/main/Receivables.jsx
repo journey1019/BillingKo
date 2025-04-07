@@ -47,8 +47,9 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
         <div className="flex flex-col py-4">
             <div className="bg-white rounded-2xl shadow-md">
                 <h1
-                    onClick={() => navigate('/payment')}
-                    className="p-4 bg-neutral-200 rounded-t-2xl text-lg font-semibold hover:underline hover:cursor-pointer"
+                    // onClick={() => navigate('/payment')}
+                    // className="p-4 bg-neutral-200 rounded-t-2xl text-lg font-semibold hover:underline hover:cursor-pointer"
+                    className="p-4 bg-neutral-200 rounded-t-2xl text-lg font-semibold"
                 >
                     {formatYearMonth(yearMonth)} 총 미수금 현황
                 </h1>
@@ -89,8 +90,8 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
                 </div>
 
                 <div
-                    onClick={() => navigate('/payment')}
-                    className="px-4 pb-4 grid grid-cols-5 items-center space-x-4 cursor-pointer"
+                    // onClick={() => navigate('/payment')}
+                    className="px-4 pb-4 grid grid-cols-4 items-center space-x-4"
                 >
                     <div className="flex flex-col">
                         <span className="text-xs text-blue-500">총 미납 금액</span>

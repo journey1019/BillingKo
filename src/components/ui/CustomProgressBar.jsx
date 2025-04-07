@@ -2,8 +2,9 @@ import { useMemo } from 'react';
 import { formatNumber, formatYearMonth } from '@/utils/formatHelpers.jsx';
 import Popover from '@/components/ui/Popover.jsx';
 import { useNavigate } from "react-router-dom";
+import { Tooltip, List, ListItem, ListItemText, ListSubheader, CircularProgress, Box, TextField } from '@mui/material';
 
-const CustomProgressBar = ({ acct_num, monthlyAcctSaveData  }) => {
+const CustomProgressBar = ({ acct_num, monthlyAcctSaveData, totalUnpaidFee, confirmedFee, unpaidFee }) => {
     if(!monthlyAcctSaveData) return null;
     // ✅ `monthlyAcctSaveData`가 없을 경우 빈 배열을 사용하여 오류 방지
     const unconfirmedData = (monthlyAcctSaveData ?? []).filter(item => item.confirm_yn === "N");
@@ -45,7 +46,7 @@ const CustomProgressBar = ({ acct_num, monthlyAcctSaveData  }) => {
         <div className="flex flex-col py-4">
             <div className="bg-white rounded-2xl shadow-md">
                 <h1 className="p-4 bg-neutral-200 rounded-t-2xl text-lg font-semibold">
-                    총 미수금 현황
+                    {acct_num} 총 미수금 현황
                     {/*{formatYearMonth(yearMonth)} 총 미수금 현황*/}
                 </h1>
 
@@ -84,20 +85,34 @@ const CustomProgressBar = ({ acct_num, monthlyAcctSaveData  }) => {
                     <div className="mt-4 border-b" />
                 </div>
 
-                <div className="px-4 pb-4 grid grid-cols-5 items-center space-x-4">
-                    <div className="flex flex-col">
-                        <span className="text-xs text-blue-500">총 미납 금액</span>
-                        <span className="text-lg">{formatNumber(totalNonePayFee)} 원</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-xs text-orange-500">수납액</span>
-                        <span className="text-lg">{formatNumber(amountPaid)} 원</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-xs text-yellow-500">잔여 미수금</span>
-                        <span className="text-lg">{formatNumber(currentNonePayFee)} 원</span>
-                    </div>
-                </div>
+                {/*<div className="px-4 pb-4 grid grid-cols-5 items-center space-x-4">*/}
+                {/*    <div className="flex flex-col">*/}
+                {/*        <span className="text-xs text-blue-500">총 미납 금액</span>*/}
+                {/*        <span className="text-lg">{formatNumber(totalNonePayFee)} 원</span>*/}
+                {/*    </div>*/}
+                {/*    <div className="flex flex-col">*/}
+                {/*        <span className="text-xs text-orange-500">수납액</span>*/}
+                {/*        <span className="text-lg">{formatNumber(amountPaid)} 원</span>*/}
+                {/*    </div>*/}
+                {/*    <div className="flex flex-col">*/}
+                {/*        <span className="text-xs text-yellow-500">잔여 미수금</span>*/}
+                {/*        <span className="text-lg">{formatNumber(currentNonePayFee)} 원</span>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+                <Box className="flex flex-col md:flex-row gap-4 py-2 px-2">
+                    <Box className="bg-gray-100 text-gray-800 border border-gray-300 rounded-md p-3 w-full md:w-1/3">
+                        <div className="text-sm font-medium">💰 총 미납금</div>
+                        <div className="text-xl font-bold">{formatNumber(totalUnpaidFee)} 원</div>
+                    </Box>
+                    <Box className="bg-blue-50 text-blue-800 border border-blue-200 rounded-md p-3 w-full md:w-1/3">
+                        <div className="text-sm font-medium">💳 납부 완료 금액</div>
+                        <div className="text-xl font-bold">{formatNumber(confirmedFee)} 원</div>
+                    </Box>
+                    <Box className="bg-red-50 text-red-800 border border-red-200 rounded-md p-3 w-full md:w-1/3">
+                        <div className="text-sm font-medium">🧾 미납 금액</div>
+                        <div className="text-xl font-bold">{formatNumber(unpaidFee)} 원</div>
+                    </Box>
+                </Box>
             </div>
         </div>
     )

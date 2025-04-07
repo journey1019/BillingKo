@@ -4,7 +4,7 @@ import DropdownMenu from '@/components/dropdown/DropdownMenu.jsx';
 import FormInput from '@/components/dropdown/FormInput.jsx';
 import { createAdjustment, fetchAdjustmentCodeName } from '@/service/adjustmentService.js';
 
-const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
+const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, taxFreeYn }) => {
     const [isOpen, setIsOpen] = useState(false);
     const toggleDropdown = () => setIsOpen(!isOpen);
     const closeDropdown = () => setIsOpen(false);
@@ -55,8 +55,8 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
 
     // ✅ 조정 정보 초기 데이터
     const initialFormData = {
-        adjustment_code: "account_num", // 고정 값
-        adjustment_code_value: acctNum, // 고정 값 (선택한 계정 번호)
+        adjustment_code: adjustmentCode, // 고정 값
+        adjustment_code_value: adjustmentCodeValue, // 고정 값 (선택한 계정 번호)
         adjustment_category: "", // API로 가져온 옵션
         adjustment_type: "", // 선택 목록 제공
         mount_type: "", // 선택 목록 제공
@@ -65,7 +65,7 @@ const AdjustDropdownForm = ({ acctNum, yearMonth }) => {
         adjustment_cycle: "", // 선택 목록 제공
         date_index: yearMonth, // 사용자가 입력
         use_yn: "Y", // boolean toggle
-        tax_free_yn: "Y", // boolean toggle
+        tax_free_yn: taxFreeYn, // boolean toggle
     };
 
     const [formData, setFormData] = useState(initialFormData);

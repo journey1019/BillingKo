@@ -3,8 +3,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { formatDateTime, formatNumber, formatValue } from '@/utils/formatHelpers.jsx';
 import { formatPeriod, getTypeClass } from '@/options/DeviceDetailOption.jsx';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+import AdjustDropdownForm from '@/components/form/AccountMonthly/Edit/AdjustDropdownForm.jsx';
+
 import { FaExpand } from "react-icons/fa";
 import { LuRefreshCw } from "react-icons/lu";
+import { MdEdit } from "react-icons/md";
+
 
 /**
  * @desc: 단말기별 청구서 수정 페이지_Device Right Form
@@ -12,7 +16,7 @@ import { LuRefreshCw } from "react-icons/lu";
  * @param (Array) dProductDetail: 사용 바이트 상세 정보 (D_Product)
  * @param (Array) paymentAdjustmentInfo: 조정 상세 정보 (Adjustment)
  * */
-const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProductDetail, paymentAdjustmentInfo }) => {
+const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProductDetail, paymentAdjustmentInfo, yearMonth }) => {
     console.log(paymentFeeDetail)
     console.log(paymentAdjustmentInfo)
 
@@ -98,15 +102,25 @@ const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProduct
                 <div className="flex flex-row justify-between items-center">
                     <h2 className="text-lg font-semibold pb-2">조정 상세 정보</h2>
                     <div className="flex flex-row items-center">
-                        <button className="hover:text-blue-500">
+                        <button
+                            className="hover:text-blue-500"
+                            onClick={() => { window.location.href = `/ko_monthly?yearMonth=${yearMonth}&serial=${detailData.serial_number}` }}
+                        >
                             <LuRefreshCw />
                         </button>
-                        {location.pathname !== '/adjustment' && (
-                            <div className="p-2 rounded-full hover:bg-gray-200 cursor-pointer"
-                                 onClick={() => navigate('/adjustment')}>
-                                <FaExpand className="w-5 h-5" />
-                            </div>
-                        )}
+                        {/*<button*/}
+                        {/*    className="hover:text-blue-500"*/}
+                        {/*    onClick={() => navigate(`/ko_monthly?yearMonth=${yearMonth}&serial=${detailData.serial_number}`)}*/}
+                        {/*>*/}
+                        {/*    <LuRefreshCw />*/}
+                        {/*</button>*/}
+                        <AdjustDropdownForm adjustmentCode="serial_number" adjustmentCodeValue={detailData?.serial_number} yearMonth={yearMonth} taxFreeYn="N"/>
+                        {/*{location.pathname !== '/adjustment' && (*/}
+                        {/*    <div className="p-2 rounded-full hover:bg-gray-200 cursor-pointer"*/}
+                        {/*         onClick={() => navigate('/adjustment')}>*/}
+                        {/*        <FaExpand className="w-5 h-5" />*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
                     </div>
                 </div>
                 {paymentAdjustmentInfo.length > 0 ? (

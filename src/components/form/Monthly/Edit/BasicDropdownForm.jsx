@@ -13,6 +13,7 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
     const navigate = useNavigate();
 
     console.log(detailData)
+    console.log(yearMonth)
     const [alertBox, setAlertBox] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({});
@@ -137,16 +138,16 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
     //
     //     setTimeout(() => setAlertBox(null), 3000);
     // };
-    const handleGoToKOMonthlyPage = () => {
-        if (!yearMonth || !detailData?.serial_number) return;
-
-        const query = new URLSearchParams({
-            yearMonth,
-            serial: detailData.serial_number,
-        }).toString();
-
-        navigate(`/ko_monthly?yearMonth=${yearMonth}&serial=${detailData.serial_number}`, { replace: true });
-    };
+    // const handleGoToKOMonthlyPage = () => {
+    //     if (!yearMonth || !detailData?.serial_number) return;
+    //
+    //     const query = new URLSearchParams({
+    //         yearMonth,
+    //         serial: detailData.serial_number,
+    //     }).toString();
+    //
+    //     navigate(`/ko_monthly?yearMonth=${yearMonth}&serial=${detailData.serial_number}`, { replace: true });
+    // };
     const handleForceNavigate = () => {
         const query = `yearMonth=${yearMonth}&serial=${detailData.serial_number}`;
         const targetUrl = `/ko_monthly?${query}`;
@@ -173,7 +174,16 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
             {/*<button className="hover:text-blue-500 pr-2" onClick={handleGoToKOMonthlyPage}>*/}
             {/*    <LuRefreshCw />*/}
             {/*</button>*/}
-            <button className="hover:text-blue-500 pr-2" onClick={() => navigate(handleForceNavigate)}>
+            {/*<button */}
+            {/*    className="hover:text-blue-500 pr-2" */}
+            {/*    onClick={() => navigate(handleForceNavigate)}*/}
+            {/*>*/}
+            {/*    <LuRefreshCw />*/}
+            {/*</button>*/}
+            <button
+                className="hover:text-blue-500 pr-2"
+                onClick={() => { window.location.href = `/ko_monthly?yearMonth=${yearMonth}&serial=${detailData.serial_number}` }}
+            >
                 <LuRefreshCw />
             </button>
 

@@ -139,7 +139,7 @@ const MonthlyPage = () => {
                         </div>
                         <div className="bg-gray-100 rounded-lg">
                             {Array.isArray(detailData) && detailData.length > 0 ? (
-                                <DeviceMonthlyForm detailData={detailData[0]} />
+                                <DeviceMonthlyForm detailData={detailData[0]} yearMonth={yearMonth}/>
                             ) : (
                                 <p>No data available</p>
                             )}

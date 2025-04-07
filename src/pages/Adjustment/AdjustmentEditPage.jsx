@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import { updateAdjustment, fetchAdjustmentPart } from '@/service/adjustmentService.js';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+import { renderStandardInputField } from '@/utils/renderHelpers'
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 
 import { Switch } from "@mui/material";
@@ -121,6 +122,131 @@ const AdjustmentEditPage = () => {
 
             {/* 🔹 Form */}
             <form className="bg-white p-5 rounded-xl space-y-6" onSubmit={handleSubmit}>
+                {/*{[*/}
+                {/*    { id: 'adjustment_code', label: '조정 대상 구분', type: 'text', required: true, readOnly: true },*/}
+                {/*    { id: 'adjustment_code_value', label: '조정 대상', type: 'text', required: true, readOnly: true },*/}
+                {/*    { id: 'adjustment_category', label: '조정 종류', type: 'text', dataList: Object.keys(codeMappings[id], required: true },*/}
+                {/*    { id: 'adjustment_type', label: '가산/할인 여부', type: 'text', dataList: Object.keys(codeMappings[id], required: true },*/}
+                {/*    { id: 'mount_type', label: '지불 방법', type: 'text', dataList: Object.keys(codeMappings[id], required: true },*/}
+                {/*    { id: 'adjustment_cycle', label: '조정 적용 기간', type: 'text', dataList: Object.keys(codeMappings[id], required: true },*/}
+                {/*    { id: 'mount_value', label: '금액', type: 'text', required: true },*/}
+                {/*    { id: 'date_index', label: '적용 날짜', type: 'text' },*/}
+                {/*    { id: 'description', label: '설명', type: 'text' },*/}
+                {/*].map(({ id, label, type, dataList, placeholder, required, readOnly, codeMapping }) =>*/}
+                {/*    renderStandardInputField(*/}
+                {/*        id,*/}
+                {/*        label,*/}
+                {/*        type,*/}
+                {/*        formData[id],*/}
+                {/*        handleChange,*/}
+                {/*        dataList,*/}
+                {/*        required,*/}
+                {/*        readOnly || false,*/}
+                {/*        "", // 에러 메시지 있으면 여기에*/}
+                {/*        placeholder*/}
+                {/*    )*/}
+                {/*)}*/}
+                {[
+                    {
+                        id: 'adjustment_code',
+                        label: '조정 대상 구분',
+                        type: 'text',
+                        required: true,
+                        readOnly: true,
+                        value: codeMappings.adjustment_code?.[formData.adjustment_code] ?? ''
+                    },
+                    {
+                        id: 'adjustment_code_value',
+                        label: '조정 대상',
+                        type: 'text',
+                        required: true,
+                        readOnly: true,
+                        value: formData.adjustment_code_value
+                    },
+                    {
+                        id: 'adjustment_category',
+                        label: '조정 종류',
+                        type: 'text',
+                        required: true,
+                        dataList: Object.keys(codeMappings.adjustment_category ?? {}),
+                        value: codeMappings.adjustment_category?.[formData.adjustment_category] ?? ''
+                    },
+                    {
+                        id: 'adjustment_type',
+                        label: '가산/할인 여부',
+                        type: 'text',
+                        required: true,
+                        dataList: Object.keys(codeMappings.adjustment_type ?? {}),
+                        value: codeMappings.adjustment_type?.[formData.adjustment_type] ?? ''
+                    },
+                    {
+                        id: 'mount_type',
+                        label: '지불 방법',
+                        type: 'text',
+                        required: true,
+                        dataList: Object.keys(codeMappings.mount_type ?? {}),
+                        value: codeMappings.mount_type?.[formData.mount_type] ?? ''
+                    },
+                    {
+                        id: 'adjustment_cycle',
+                        label: '조정 적용 기간',
+                        type: 'text',
+                        required: true,
+                        dataList: Object.keys(codeMappings.adjustment_cycle ?? {}),
+                        value: codeMappings.adjustment_cycle?.[formData.adjustment_cycle] ?? ''
+                    },
+                    {
+                        id: 'mount_value',
+                        label: '금액',
+                        type: 'text',
+                        required: true,
+                        value: formatNumberWithCommas(formData.mount_value)
+                    },
+                    {
+                        id: 'date_index',
+                        label: '적용 날짜',
+                        type: 'text',
+                        value: formData.date_index
+                    },
+                    {
+                        id: 'description',
+                        label: '설명',
+                        type: 'text',
+                        value: formData.description
+                    }
+                ].map(({ id, label, type, dataList, placeholder, required, readOnly, value }) =>
+                    renderStandardInputField(
+                        id,
+                        label,
+                        type,
+                        value,
+                        handleChange,
+                        dataList,
+                        required,
+                        readOnly || false,
+                        "", // 에러 메시지
+                        placeholder
+                    )
+                )}
+
+
+                <div className="grid grid-cols-6 items-center space-x-4">
+                    <label className="col-start-1  w-32 text-sm font-medium text-gray-900">사용 여부 *</label>
+                    <div className="col-start-2">
+                        <Switch checked={formData.use_yn === 'Y'} onChange={handleToggleChange} />
+                        <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-6 items-center space-x-4">
+                    <label className="col-start-1  w-32 text-sm font-medium text-gray-900">사용 여부 *</label>
+                    <div className="col-start-2">
+                        <Switch checked={formData.tax_free_yn === 'Y'} onChange={handleToggleChange} />
+                        <span className="text-sm text-gray-700">{formData.tax_free_yn === 'Y' ? 'Yes' : 'No'}</span>
+                    </div>
+                </div>
+
+                {/* ------------------------------------------------------------------------------------------------------------------------------------ */}
 
                 {/* ✅ 수정 불가능한 필드 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
@@ -199,10 +325,10 @@ const AdjustmentEditPage = () => {
                         id="date_index"
                         name="date_index"
                         value={
-                        formData.date_index && formData.date_index.length === 6
-                            ? `${formData.date_index.slice(0, 4)}-${formData.date_index.slice(4, 6)}`
-                            : ''
-                    }
+                            formData.date_index && formData.date_index.length === 6
+                                ? `${formData.date_index.slice(0, 4)}-${formData.date_index.slice(4, 6)}`
+                                : ''
+                        }
                         onChange={(e) => {
                             const selectedDate = e.target.value.replace("-", ""); // YYYY-MM → YYYYMM 변환
                             setFormData((prev) => ({ ...prev, date_index: selectedDate }));

@@ -7,7 +7,7 @@ import { deleteRecentMonthly } from "@/service/monthlyService.js";
 import Swal from 'sweetalert2';
 
 
-const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData, fetchDetailData, originalSerialNumber }) => {
+const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData, fetchDetailData, originalSerialNumber, yearMonth }) => {
     if (!detailData) return <p>No data available</p>;
 
 
@@ -170,7 +170,7 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
 
                     <UseByteDetailItem detailData={detailData} paymentInfo={paymentInfo}
                                        paymentFeeDetail={paymentFeeDetail} dProductDetail={dProductDetail}
-                                       paymentAdjustmentInfo={paymentAdjustmentInfo} />
+                                       paymentAdjustmentInfo={paymentAdjustmentInfo} yearMonth={yearMonth}/>
                 </div>
             </div>
         </>

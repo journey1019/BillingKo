@@ -25,7 +25,6 @@ const AccountPayment = () => {
         accountPaymentLoading,
         accountPaymentError
     } = usePaymentStore();
-    console.log('accountPaymentData: ', accountPaymentData)
 
     // FullScreenDialog Open
     const [open, setOpen] = useState(false);
@@ -75,8 +74,6 @@ const AccountPayment = () => {
         return { totalUnpaidFee, confirmedFee, unpaidFee };
     }, [accountPaymentData, columnFilters]);
 
-
-
     useEffect(() => {
         fetchAccountData();
     }, []);
@@ -95,6 +92,7 @@ const AccountPayment = () => {
             )
             .sort((a, b) => b.acct_num.localeCompare(a.acct_num)); // 내림차순
     }, [acctNumAliasList, searchKeyword]);
+
 
     return (
         <>
@@ -139,6 +137,7 @@ const AccountPayment = () => {
                                 onClick={() => handleSelectAcctNum(acct_num)}
                                 selected={acct_num === selectedAcctNum}
                                 sx={{ borderBottom: '1px solid #eee' }}
+                                className={`${acct_num === selectedAcctNum ? 'bg-gray-200' : ''} hover:cursor-pointer`}
                             >
                                 <ListItemText
                                     primary={acct_name}
@@ -158,23 +157,23 @@ const AccountPayment = () => {
                             <p className="text-red-500">{accountPaymentError}</p>
                         ) : accountPaymentData ? (
                             <>
-                                <CustomProgressBar monthlyAcctSaveData={accountPaymentData} />
+                                <CustomProgressBar acct_num={selectedAcctNum} monthlyAcctSaveData={accountPaymentData} totalUnpaidFee={totalUnpaidFee} confirmedFee={confirmedFee} unpaidFee={unpaidFee}/>
 
                                 {/* 💰 납부 집계 요약 */}
-                                <Box className="flex flex-col md:flex-row gap-4 py-2 px-2">
-                                    <Box className="bg-gray-100 text-gray-800 border border-gray-300 rounded-md p-3 w-full md:w-1/3">
-                                        <div className="text-sm font-medium">💰 총 미납금</div>
-                                        <div className="text-xl font-bold">{formatNumber(totalUnpaidFee)} 원</div>
-                                    </Box>
-                                    <Box className="bg-blue-50 text-blue-800 border border-blue-200 rounded-md p-3 w-full md:w-1/3">
-                                        <div className="text-sm font-medium">💳 납부 완료 금액</div>
-                                        <div className="text-xl font-bold">{formatNumber(confirmedFee)} 원</div>
-                                    </Box>
-                                    <Box className="bg-red-50 text-red-800 border border-red-200 rounded-md p-3 w-full md:w-1/3">
-                                        <div className="text-sm font-medium">🧾 미납 금액</div>
-                                        <div className="text-xl font-bold">{formatNumber(unpaidFee)} 원</div>
-                                    </Box>
-                                </Box>
+                                {/*<Box className="flex flex-col md:flex-row gap-4 py-2 px-2">*/}
+                                {/*    <Box className="bg-gray-100 text-gray-800 border border-gray-300 rounded-md p-3 w-full md:w-1/3">*/}
+                                {/*        <div className="text-sm font-medium">💰 총 미납금</div>*/}
+                                {/*        <div className="text-xl font-bold">{formatNumber(totalUnpaidFee)} 원</div>*/}
+                                {/*    </Box>*/}
+                                {/*    <Box className="bg-blue-50 text-blue-800 border border-blue-200 rounded-md p-3 w-full md:w-1/3">*/}
+                                {/*        <div className="text-sm font-medium">💳 납부 완료 금액</div>*/}
+                                {/*        <div className="text-xl font-bold">{formatNumber(confirmedFee)} 원</div>*/}
+                                {/*    </Box>*/}
+                                {/*    <Box className="bg-red-50 text-red-800 border border-red-200 rounded-md p-3 w-full md:w-1/3">*/}
+                                {/*        <div className="text-sm font-medium">🧾 미납 금액</div>*/}
+                                {/*        <div className="text-xl font-bold">{formatNumber(unpaidFee)} 원</div>*/}
+                                {/*    </Box>*/}
+                                {/*</Box>*/}
 
 
                                 <ReusableTable

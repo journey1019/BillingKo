@@ -37,7 +37,6 @@ const KOMonthlyPage = () => {
             : [];
     });
 
-
     /** API 데이터 호출 */
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth(urlYearMonth);
     const [selectedMonthlyIndex, setSelectedMonthlyIndex] = useState(null);
@@ -58,9 +57,22 @@ const KOMonthlyPage = () => {
     const [detailVersionLoading, setDetailVersionLoading] = useState(false);
     const [detailVersionError, setDetailVersionError] = useState(null)
 
+    useEffect(() => {
+        if (!data || !urlSerial) return;
+
+        const matchedItem = data.find(item => item.serial_number === urlSerial);
+        if (matchedItem) {
+            console.log(matchedItem)
+            setSelectedMonthlyIndex(matchedItem.data_index);
+        }
+    }, [data, urlSerial]);
+    console.log(selectedMonthlyIndex)
+
+
     // 선택이 바뀔 때 상세 기본 데이터
     useEffect(() => {
         if (!selectedMonthlyIndex) return;
+        console.log(selectedMonthlyIndex)
         fetchDetailData(selectedMonthlyIndex.data_index);
     }, [selectedMonthlyIndex]);
 
@@ -176,6 +188,7 @@ const KOMonthlyPage = () => {
                                         fetchVersionData={fetchVersionData}
                                         fetchDetailData={fetchDetailData}
                                         originalSerialNumber={selectedMonthlyIndex.monthly_primary_key}
+                                        yearMonth={yearMonth}
                                     />
                                 </>
                             )}

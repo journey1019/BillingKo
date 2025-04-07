@@ -6,7 +6,7 @@ import PaymentDropdownForm from '@/components/form/Monthly/Edit/PaymentDropdownF
 import useKOMonthlyStore from '@/stores/koMonthlyStore.js';
 
 /**
- * @desc: 단마기별 청구서 수정 페이지_Device Left Form
+ * @desc: 단말기별 청구서 수정 페이지_Device Left Form
  * @param (Object) detailData: 전체 단말 정보
  * @param (Object) paymentInfo: 단말 요금 정보
  * @param (Array) paymentFeeDetail: 요금 사용 세부 정보

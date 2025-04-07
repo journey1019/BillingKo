@@ -81,11 +81,17 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                         <div className="flex flex-row space-x-2">
                             <button
                                 className="hover:text-blue-500"
-                                onClick={onAdjustmentRefresh}
+                                onClick={() => { window.location.href = `/monthly/account?yearMonth=${yearMonth}&acctNum=${accountData.acct_num}` }}
                             >
                                 <LuRefreshCw />
                             </button>
-                            <AdjustDropdownForm acctNum={accountData.acct_num} yearMonth={yearMonth} />
+                            {/*<button*/}
+                            {/*    className="hover:text-blue-500"*/}
+                            {/*    onClick={onAdjustmentRefresh}*/}
+                            {/*>*/}
+                            {/*    <LuRefreshCw />*/}
+                            {/*</button>*/}
+                            <AdjustDropdownForm adjustmentCode="account_num" adjustmentCodeValue={accountData.acct_num} yearMonth={yearMonth} taxFreeYn="Y"/>
                         </div>
                     </div>
 
@@ -96,7 +102,7 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                                 <tr>
                                     {[
                                         '번호', '조정 유형', '조정 대상', '조정 분류', '조정 타입',
-                                        '요금 기준', '설명', '부가세 포함 여부', '조정 금액'
+                                        '요금 기준', '설명', '부가세 포함 여부', '조정 금액',
                                     ].map((header, index) => (
                                         <th
                                             key={index}
@@ -108,23 +114,27 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {adjustmentInfo.map((adj, index) => (
-                                    <tr
-                                        key={index}
-                                        className="text-center text-sm whitespace-nowrap bg-white"
-                                    >
-                                        <td className="px-4 py-1 2xl:p-2 border">{index + 1}</td>
-                                        <td className="px-4 py-2 border">{codeMappings.adjustment_code[adj.adjustment_code] || formatValue(adj.adjustment_code)}</td>
-                                        <td className="px-4 py-2 border">{formatValue(adj.adjustment_value)}</td>
-                                        <td className="px-4 py-2 border">{codeMappings.adjustment_category[adj.adjustment_category] || formatValue(adj.adjustment_category)}</td>
-                                        <td className="px-4 py-2 border">{codeMappings.adjustment_type[adj.adjustment_type] || formatValue(adj.adjustment_type)}</td>
-                                        <td className="px-4 py-2 border">{codeMappings.mount_type[adj.mount_type] || formatValue(adj.mount_type)}</td>
-                                        <td className="px-4 py-2 border">{formatValue(adj.description)}</td>
-                                        <td className="px-4 py-2 border">{formatValue(adj.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>
-                                        <td className="px-4 py-2 border text-right">{formatNumber(adj.adjustment_fee)}</td>
-                                    </tr>
-                                ))}
+                                {[...adjustmentInfo]  // 배열을 복사해서 원본을 건드리지 않음
+                                    .slice()            // 복사 안전하게
+                                    .reverse()          // 배열 순서를 뒤집음
+                                    .map((adj, index) => (
+                                        <tr
+                                            key={index}
+                                            className="text-center text-sm whitespace-nowrap bg-white"
+                                        >
+                                            <td className="px-4 py-1 2xl:p-2 border">{index + 1}</td>
+                                            <td className="px-4 py-2 border">{codeMappings.adjustment_code[adj.adjustment_code] || formatValue(adj.adjustment_code)}</td>
+                                            <td className="px-4 py-2 border">{formatValue(adj.adjustment_value)}</td>
+                                            <td className="px-4 py-2 border">{codeMappings.adjustment_category[adj.adjustment_category] || formatValue(adj.adjustment_category)}</td>
+                                            <td className="px-4 py-2 border">{codeMappings.adjustment_type[adj.adjustment_type] || formatValue(adj.adjustment_type)}</td>
+                                            <td className="px-4 py-2 border">{codeMappings.mount_type[adj.mount_type] || formatValue(adj.mount_type)}</td>
+                                            <td className="px-4 py-2 border">{formatValue(adj.description)}</td>
+                                            <td className="px-4 py-2 border">{formatValue(adj.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>
+                                            <td className="px-4 py-2 border text-right">{formatNumber(adj.adjustment_fee)}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
+
                             </table>
                         </div>
                     ) : (
