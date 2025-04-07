@@ -63,6 +63,10 @@ const UploadFileModal = ({ onUploadComplete }) => {
                     accept=".csv,.cdr"
                 />
 
+                <span className="flex flex-cols pb-4 text-red-500 text-xs font-semibold">
+                    업로드 시 창을 이탈하지 마세요.
+                </span>
+
                 <button
                     onClick={handleFileUpload}
                     className={`flex flex-row items-center space-x-2 p-2 rounded-md text-sm text-white transition ${

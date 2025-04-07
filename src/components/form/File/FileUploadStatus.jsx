@@ -1,19 +1,36 @@
-import { fetchUploadHistoryAllFiles, fetchUploadFileMonthly } from '@/service/fileService.js';
+import { useEffect } from 'react';
+import useFileUploadStore from '@/stores/fileStore.js';
 import useYearMonth from '@/hooks/useYearMonth.js';
-import useApiFetch from '@/hooks/useApiFetch.js';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
-import { MdEdit } from "react-icons/md";
 import UploadFileModal from '@/components/layout/File/UploadFileModal.jsx';
 import { FaCircleCheck } from "react-icons/fa6";
 import { CiCircleCheck } from "react-icons/ci";
 
 
 const FileUploadStatus = () => {
-    const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
-    const { data: uploadHistoryAllData, loading: uploadHistoryAllLoading, error: uploadHistoryAllError } = useApiFetch(fetchUploadHistoryAllFiles);
-    const { data: uploadMonthlyData, loading: uploadMonthlyLoading, error: uploadMonthlyError } = useApiFetch(fetchUploadFileMonthly, yearMonth);
+    // const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
+    // const { data: uploadHistoryAllData, loading: uploadHistoryAllLoading, error: uploadHistoryAllError } = useApiFetch(fetchUploadHistoryAllFiles);
+    // const { data: uploadMonthlyData, loading: uploadMonthlyLoading, error: uploadMonthlyError } = useApiFetch(fetchUploadFileMonthly, yearMonth);
 
-    console.log('uploadHistoryAllData : ', uploadHistoryAllData)
+
+    const {
+        uploadHistoryAllData,
+        uploadMonthlyData,
+        fetchAll,
+        fetchMonthly,
+        loading,
+    } = useFileUploadStore();
+
+    const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
+
+
+    useEffect(() => {
+        fetchAll();
+    }, []);
+
+    useEffect(() => {
+        if (yearMonth) fetchMonthly(yearMonth);
+    }, [yearMonth]);
 
     // 조건을 만족하는 데이터 필터링
     const filteredData = uploadHistoryAllData?.filter(item => {
@@ -86,6 +103,10 @@ const FileUploadStatus = () => {
                                 {uploadData.include_files.map((fileType) => {
                                     const fileDetails = getFileDetails(uploadData.sp_id, fileType);
                                     const isUploaded = uploadedFiles.has(fileType);
+                                    console.log(uploadData)
+                                    console.log(uploadData)
+                                    console.log(fileDetails)
+                                    console.log(fileType)
 
                                     return (
                                         <div key={fileType} className="relative group cursor-pointer">

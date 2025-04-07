@@ -2,7 +2,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import { formatDateTime, formatDateIndex } from '@/utils/formatHelpers.jsx';
 
 const UploadFileTabOverview = ({ detailData, uploadHistoryDetailLoading, uploadHistoryDetailError }) => {
-
+    if (!detailData) return null;
     return(
         <>
             <div>

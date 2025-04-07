@@ -11,6 +11,7 @@ import { renderStandardInputField } from '@/utils/renderHelpers.jsx';
 
 import { Switch } from "@mui/material";
 import { IoMdClose } from "react-icons/io";
+import { useAcctResidentNumOptions } from '../../selectors/useAccountSelectors.js';
 
 
 const AccountNewPage = () => {
@@ -20,6 +21,7 @@ const AccountNewPage = () => {
     // Select Field
     const acctNumList = useAcctNumList(); // acct_num 중복 검사
     const acctTypeList = useAcctTypeList(); // account_type (법인/개인)
+    const acctRegistNumList  = useAcctResidentNumOptions(); // account_type (법인/개인)
 
     useEffect(() => {
         fetchAccountData(); // 초기 accountData 불러 오기 (중복 검사)

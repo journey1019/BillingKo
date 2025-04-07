@@ -1,34 +1,48 @@
-import { fetchUploadHistoryAllFiles, fetchUploadFileMonthly, fetchUploadHistoryDetailFiles } from '@/service/fileService.js';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import useFileUploadStore from '@/stores/fileStore.js';
 import useYearMonth from '@/hooks/useYearMonth.js';
-import { deleteUpload } from '@/service/fileService.js';
 import useAlert from '@/hooks/useAlert';
-import useApiFetch from '@/hooks/useApiFetch.js';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
 import { FileUploadHistoryTableColumns } from '@/columns/FileUploadHistoryTableColumns.jsx';
 import { FileUploadTableOptions } from '@/options/FileUploadTableOptions.jsx';
-import React, { useEffect, useState } from 'react';
-import UploadHistoryDetailForm from '@/components/form/File/UploadHistoryDetailForm.jsx';
-import { FiPlus } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
-import UploadFileTabOverview from './UploadFileTabOverview.jsx';
 import TabComponent from '../../layout/TabComponent.jsx';
+import UploadFileTabOverview from './UploadFileTabOverview.jsx';
+
+import { FiPlus } from 'react-icons/fi';
 import { MdDelete, MdModeEditOutline } from 'react-icons/md';
 
 
-import useUploadStore from '@/stores/uploadStore.js';
 
 const FileUpload = () => {
     const navigate = useNavigate();
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
     const { showConfirm, showSuccess, showError } = useAlert(); // ✅ 커스텀 훅 사용
 
-    const [selectedRowData, setSelectedRowData] = useState(null);
-    const [isExpanded, setIsExpanded] = useState(false);
+    const {
+        selectedRowData,
+        isExpanded,
+        uploadHistoryAllData,
+        uploadMonthlyData,
+        uploadDetailData,
+        loading,
+        error,
+        setSelectedRowData,
+        fetchAll,
+        fetchMonthly,
+        fetchDetail,
+        handleDelete
+    } = useFileUploadStore();
 
-    const { data: uploadHistoryAllData, loading: uploadHistoryAllLoading, error: uploadHistoryAllError } = useApiFetch(fetchUploadHistoryAllFiles);
-    const { data: uploadMonthlyData, loading: uploadMonthlyLoading, error: uploadMonthlyError } = useApiFetch(fetchUploadFileMonthly, yearMonth);
-    const { data: uploadHistoryDetailData, loading: uploadHistoryDetailLoading, error: uploadHistoryDetailError } = useApiFetch(fetchUploadHistoryDetailFiles, selectedRowData?.sp_id);
 
+    useEffect(() => {
+        fetchMonthly();
+    }, [yearMonth]);
+
+    useEffect(() => {
+        fetchDetail();
+    }, [selectedRowData]);
 
     // 조건을 만족하는 데이터 필터링
     const filteredData = uploadHistoryAllData?.filter(item => {
@@ -61,36 +75,11 @@ const FileUpload = () => {
 
     console.log('uploadHistoryAllData : ', uploadHistoryAllData)
     console.log('uploadMonthlyData : ', uploadMonthlyData)
-    console.log('uploadHistoryDetailData : ', uploadHistoryDetailData)
-
-
-    const handleDelete = async () => {
-        if (!selectedRowData.sp_id) {
-            showError('SP ID가 필요합니다.');
-            return;
-        }
-
-        // ✅ 커스텀 훅 사용 (모달)
-        const result = await showConfirm('정말 삭제하시겠습니까?', '삭제하면 복구할 수 없습니다!');
-        if (!result.isConfirmed) return;
-
-        try {
-            await deleteUpload(selectedRowData.sp_id);
-            showSuccess('삭제 완료!', '업로드 항목이 성공적으로 삭제되었습니다!');
-            setTimeout(() => window.location.reload(), 2000); // 2초 후 새로고침
-        } catch (err) {
-            console.error(err);
-            showError('삭제 중 오류가 발생했습니다.');
-        }
-    };
+    console.log('uploadDetailData : ', uploadDetailData)
 
     const enrichedUploadData = uploadHistoryAllData?.map((item) => {
         if (item.use_yn === 'N') {
-            return {
-                ...item,
-                uploadStatus: null,
-                isAllUploaded: null,
-            };
+            return { ...item, uploadStatus: null, isAllUploaded: null };
         }
 
         const requiredFiles = item.include_files;
@@ -115,12 +104,67 @@ const FileUpload = () => {
 
         const isAllUploaded = uploadStatus.every((f) => f.isUploaded);
 
-        return {
-            ...item,
-            uploadStatus,
-            isAllUploaded,
-        };
+        return { ...item, uploadStatus, isAllUploaded };
     });
+
+
+    // const handleDelete = async () => {
+    //     if (!selectedRowData.sp_id) {
+    //         showError('SP ID가 필요합니다.');
+    //         return;
+    //     }
+    //
+    //     // ✅ 커스텀 훅 사용 (모달)
+    //     const result = await showConfirm('정말 삭제하시겠습니까?', '삭제하면 복구할 수 없습니다!');
+    //     if (!result.isConfirmed) return;
+    //
+    //     try {
+    //         await deleteUpload(selectedRowData.sp_id);
+    //         showSuccess('삭제 완료!', '업로드 항목이 성공적으로 삭제되었습니다!');
+    //         setTimeout(() => window.location.reload(), 2000); // 2초 후 새로고침
+    //     } catch (err) {
+    //         console.error(err);
+    //         showError('삭제 중 오류가 발생했습니다.');
+    //     }
+    // };
+
+    // const enrichedUploadData = uploadHistoryAllData?.map((item) => {
+    //     if (item.use_yn === 'N') {
+    //         return {
+    //             ...item,
+    //             uploadStatus: null,
+    //             isAllUploaded: null,
+    //         };
+    //     }
+    //
+    //     const requiredFiles = item.include_files;
+    //     const uploadedFiles = uploadMonthlyData?.filter((file) =>
+    //         file.file_name.startsWith(`${item.sp_id}_`)
+    //     );
+    //
+    //     const uploadStatus = requiredFiles.map((fileType) => {
+    //         const matchedFile = uploadedFiles.find((file) =>
+    //             file.file_name.endsWith(fileType)
+    //         );
+    //
+    //         return {
+    //             fileType,
+    //             isUploaded: Boolean(matchedFile),
+    //             file_update_date: matchedFile?.update_date || null,
+    //             file_update_index: matchedFile?.update_index || null,
+    //             file_user_id: matchedFile?.user_id || null,
+    //             file_size: matchedFile?.file_size || null,
+    //         };
+    //     });
+    //
+    //     const isAllUploaded = uploadStatus.every((f) => f.isUploaded);
+    //
+    //     return {
+    //         ...item,
+    //         uploadStatus,
+    //         isAllUploaded,
+    //     };
+    // });
 
     console.log(enrichedUploadData)
 
@@ -135,24 +179,36 @@ const FileUpload = () => {
                         <span>New</span>
                     </button>
                 </div>
+                {/*<ReusableTable*/}
+                {/*    data={enrichedUploadData || []}*/}
+                {/*    columns={FileUploadHistoryTableColumns}*/}
+                {/*    isLoading={uploadHistoryAllLoading}*/}
+                {/*    error={uploadHistoryAllError}*/}
+                {/*    options={{*/}
+                {/*        ...FileUploadTableOptions,*/}
+                {/*        meta: {*/}
+                {/*            onRowSelect: (selectedRow) => {*/}
+                {/*                console.log(selectedRow);*/}
+                {/*                if (selectedRowData && selectedRowData.sp_id === selectedRow.sp_id) {*/}
+                {/*                    setSelectedRowData(null);*/}
+                {/*                    setIsExpanded(false);*/}
+                {/*                } else {*/}
+                {/*                    setSelectedRowData(selectedRow);*/}
+                {/*                    setIsExpanded(true);*/}
+                {/*                }*/}
+                {/*            },*/}
+                {/*        },*/}
+                {/*    }}*/}
+                {/*/>*/}
                 <ReusableTable
                     data={enrichedUploadData || []}
                     columns={FileUploadHistoryTableColumns}
-                    isLoading={uploadHistoryAllLoading}
-                    error={uploadHistoryAllError}
+                    isLoading={loading}
+                    error={error}
                     options={{
                         ...FileUploadTableOptions,
                         meta: {
-                            onRowSelect: (selectedRow) => {
-                                console.log(selectedRow);
-                                if (selectedRowData && selectedRowData.sp_id === selectedRow.sp_id) {
-                                    setSelectedRowData(null);
-                                    setIsExpanded(false);
-                                } else {
-                                    setSelectedRowData(selectedRow);
-                                    setIsExpanded(true);
-                                }
-                            },
+                            onRowSelect: (row) => setSelectedRowData(row),
                         },
                     }}
                 />
@@ -168,50 +224,37 @@ const FileUpload = () => {
 
                             {/* Buttons - Edit & Mail & . */}
                             <div className="flex flex-row">
-                                <button
-                                    type="button"
-                                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700"
-                                    onClick={() => navigate(`/upload/${selectedRowData.sp_id}/edit`)}
+                                <button onClick={() => navigate(`/upload/${selectedRowData.sp_id}/edit`)}
+                                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700"
                                 >
-                                    <MdModeEditOutline className="mr-3" />
-                                    Edit
+                                    <MdModeEditOutline className="mr-3" /> Edit
                                 </button>
                                 <button
-                                    type="button"
+                                    onClick={() => handleDelete(selectedRowData.sp_id, showConfirm, showSuccess, showError)}
                                     className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700"
-                                    onClick={handleDelete}
                                 >
-                                    <MdDelete className="mr-3" />
-                                    Delete
+                                    <MdDelete className="mr-3" /> Delete
                                 </button>
                             </div>
                         </div>
 
                     </div>
 
-
-                    <TabComponent tabs={[
-                        {
-                            id: 1,
-                            label: 'Overview',
-                            content: (
-                                <UploadFileTabOverview detailData={uploadHistoryDetailData} uploadHistoryDetailLoading={uploadHistoryDetailLoading} uploadHistoryDetailError={uploadHistoryDetailError}/>
-                            )
-                        },
-
-                        // History 없음
-                        // {
-                        //     id: 2,
-                        //     label: 'History',
-                        //     content: (
-                        //         <UploadFileTabOverview detailData={uploadHistoryDetailData} uploadHistoryDetailLoading={uploadHistoryDetailLoading} uploadHistoryDetailError={uploadHistoryDetailError}/>
-                        //     )
-                        // },
-                    ]}
+                    <TabComponent
+                        tabs={[
+                            {
+                                id: 1,
+                                label: 'Overview',
+                                content: (
+                                    <UploadFileTabOverview
+                                        detailData={uploadDetailData}
+                                        uploadHistoryDetailLoading={loading}
+                                        uploadHistoryDetailError={error}
+                                    />
+                                ),
+                            },
+                        ]}
                     />
-                    {/*<UploadHistoryDetailForm detailData={uploadHistoryDetailData} />*/}
-
-
 
                     {/*<div className="flex flex-row justify-between">*/}
                     {/*    <h1 className="text-2xl p-2">{selectedRowData.sp_id}</h1>*/}
@@ -219,7 +262,7 @@ const FileUpload = () => {
 
                     {/* Detail & Edit Page */}
                     {/*<div className="grid-cols-2">*/}
-                    {/*    <UploadHistoryDetailForm detailData={uploadHistoryDetailData} />*/}
+                    {/*    <UploadHistoryDetailForm detailData={uploadDetailData} />*/}
                     {/*</div>*/}
                 </div>
             )}
