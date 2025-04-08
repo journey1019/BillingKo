@@ -1,10 +1,14 @@
 import { useEffect } from 'react';
 import useFileUploadStore from '@/stores/fileStore.js';
 import useYearMonth from '@/hooks/useYearMonth.js';
+
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import UploadFileModal from '@/components/layout/File/UploadFileModal.jsx';
+import { Tooltip } from '@mui/material';
+
 import { FaCircleCheck } from "react-icons/fa6";
 import { CiCircleCheck } from "react-icons/ci";
+import { CiCircleQuestion } from "react-icons/ci";
 
 
 const FileUploadStatus = () => {
@@ -69,7 +73,21 @@ const FileUploadStatus = () => {
     return (
         <div className="p-5 bg-white rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-2">
-                <h2 className="text-xl font-bold">파일 업로드 상태</h2>
+                <h2 className="text-xl font-bold flex flex-row items-center space-x-2">
+                    <span>파일 업로드 상태</span>
+                    <Tooltip arrow placement="right"
+                             title={
+                                 <div>
+                                     IDP Skywave 파일을 업로드하고,<br />
+                                     업로드 현황을 확인할 수 있습니다.
+                                 </div>
+                             }
+                    >
+                        <span>
+                            <CiCircleQuestion className="text-gray-800 hover:cursor-pointer" />
+                        </span>
+                    </Tooltip>
+                </h2>
                 <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
             </div>
 

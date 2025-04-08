@@ -125,7 +125,7 @@ const KOMonthlyAccountSavePage = () => {
                         isLoading={loading}
                         error={error}
                         options={{
-                            ...KOMonthlyAccountTableOptions,
+                            ...KOMonthlyAccountTableOptions(selectedRowData),
                             meta: {
                                 onRowSelect: (selectedRow) => {
                                     console.log('Account Monthly Table Row Selected: ', selectedRow);

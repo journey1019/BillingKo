@@ -206,7 +206,7 @@ const FileUpload = () => {
                     isLoading={loading}
                     error={error}
                     options={{
-                        ...FileUploadTableOptions,
+                        ...FileUploadTableOptions(selectedRowData),
                         meta: {
                             onRowSelect: (row) => setSelectedRowData(row),
                         },

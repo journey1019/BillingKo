@@ -1,12 +1,12 @@
-export const AccountTableOptions = {
+export const AccountTableOptions = (selectedAccountId) => ({
     initialState: {
         sorting: [{ id: 'acct_num', desc: true }],
         showColumnFilters: true,
     },
-    enableRowSelection: true,
     enableMultiRowSelection: false,
     enablePagination: true,
     enableFilters: true,
+    enableColumnVisibility: false,
     positionToolbarAlertBanner: 'none',
 
 
@@ -22,10 +22,11 @@ export const AccountTableOptions = {
         },
         sx: {
             cursor: 'pointer',
-            // backgroundColor: row.getIsSelected() ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-            // '&:hover': {
-            //     backgroundColor: 'rgba(59, 130, 246, 0.2)',
-            // },
+            backgroundColor:
+                selectedAccountId?.acct_num === row.original.acct_num ? '#e2e8f0' : 'transparent', // ✅ 선택된 row 배경색
+            '&:hover': {
+                backgroundColor: selectedAccountId?.acct_num === row.original.acct_num ? '#cbd5e1' : '#f1f5f9',
+            },
         },
     }),
-};
+});

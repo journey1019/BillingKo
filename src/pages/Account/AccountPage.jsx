@@ -157,7 +157,7 @@ const AccountPage = () => {
                     columns={dynamicColumns || []}
                     data={accountData || []}
                     options={{
-                        ...AccountTableOptions,
+                        ...AccountTableOptions(selectedAccountId),
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 console.log('onRowSelect called with id:', selectedRow);

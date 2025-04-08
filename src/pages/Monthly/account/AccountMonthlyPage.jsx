@@ -83,7 +83,7 @@ const AccountMonthlyPage = () => {
                             isLoading={loading}
                             error={error}
                             options={{
-                                ...KOMonthlyAccountTableOptions,
+                                ...KOMonthlyAccountTableOptions(selectedRowId),
                                 // meta: {
                                 //     onRowSelect: (selectedRow) => {
                                 //         if (selectedRowId && selectedRowId.acct_num === selectedRow.acct_num) {

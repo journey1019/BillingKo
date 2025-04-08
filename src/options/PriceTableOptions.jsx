@@ -1,12 +1,13 @@
-export const PriceTableOptions = {
+export const PriceTableOptions = (selectedPriceId) => ({
     initialState: {
         sorting: [{ id: 'ppid', desc: false }], // 기본 정렬 설정
         showColumnFilters: true // 렌더링시 각 컬럼의 필터가 보여지도록 설정
     },
-    enableRowSelection: true, // 행 선택 활성화
+    // enableRowSelection: true, // 행 선택 활성화
     enableMultiRowSelection: false,
     enablePagination: true, // 페이지네이션 활성화
     enableFilters: true, // 전체 테이블에 필터링을 활성화
+    enableColumnVisibility: false,
     positionToolbarAlertBanner: 'none', // 경고를 표시하되, Column 제목 가림
     // positionToolbarAlertBanner: 'head-overlay', // 경고를 표시하되, Column 제목 가림
 
@@ -22,10 +23,11 @@ export const PriceTableOptions = {
         },
         sx: {
             cursor: 'pointer',
-            // backgroundColor: row.getIsSelected() ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-            // '&:hover': {
-            //     backgroundColor: 'rgba(59, 130, 246, 0.2)',
-            // },
+            backgroundColor:
+                selectedPriceId?.ppid === row.original.ppid ? '#e2e8f0' : 'transparent', // ✅ 선택된 row 배경색
+            '&:hover': {
+                backgroundColor: selectedPriceId?.ppid === row.original.ppid ? '#cbd5e1' : '#f1f5f9',
+            },
         },
     }),
-};
+});

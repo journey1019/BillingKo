@@ -1,13 +1,14 @@
-export const MonthlyTableOptions = {
+export const MonthlyTableOptions = (selectedRowData) => ({
     initialState: {
         sorting: [{ id: "profile_id", desc: false }], // 기본 정렬 설정
         showColumnFilters: true // 렌더링시 각 컬럼의 필터가 보여지도록 설정
     },
-    enableRowSelection: true, // 행 선택 활성화
+    // enableRowSelection: true, // 행 선택 활성화
     enableMultiRowSelection: false, // 체크박스 -> 라디오 버튼
     enablePagination: true, // 페이지네이션 활성화
     // enableClickToCopy: true, // 모든 셀에 대해 복사 활성화
     enableFilters: true, // 전체 테이블에 필터링을 활성화
+    enableColumnVisibility: false,
     positionToolbarAlertBanner: 'none',
 
     muiTableBodyRowProps: ({ row, table }) => ({
@@ -19,8 +20,13 @@ export const MonthlyTableOptions = {
             table.options.meta?.onRowSelect?.(row.original);
         },
         sx: {
-            cursor:' pointer',
-        }
+            cursor: 'pointer',
+            backgroundColor:
+                selectedRowData?.serial_number === row.original.serial_number ? '#e2e8f0' : 'transparent', // ✅ 선택된 row 배경색
+            '&:hover': {
+                backgroundColor: selectedRowData?.serial_number === row.original.serial_number ? '#cbd5e1' : '#f1f5f9',
+            },
+        },
     }),
 
     // renderDetailPanel: ({ row }) => (
@@ -103,4 +109,4 @@ export const MonthlyTableOptions = {
     //         </ul>
     //     </div>
     // ),
-};
+})

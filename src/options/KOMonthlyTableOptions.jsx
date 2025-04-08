@@ -1,10 +1,10 @@
-export const KOMonthlyTableOptions = {
+export const KOMonthlyTableOptions = (selectedMonthlyIndex) => ({
     initialState: {
         sorting: [{ id: "data_index", desc: false }], // 기본 정렬 설정
         showColumnFilters: true, // 렌더링시 각 컬럼의 필터가 보여지도록 설정
         columnVisibility: { data_index: false }
     },
-    enableRowSelection: true, // 행 선택 활성화
+    // enableRowSelection: true, // 행 선택 활성화
     enableMultiRowSelection: false, // 체크박스 -> 라디오 버튼
     enablePagination: true, // 페이지네이션 활성화
     // enableClickToCopy: true, // 모든 셀에 대해 복사 활성화
@@ -21,7 +21,12 @@ export const KOMonthlyTableOptions = {
             table.options.meta?.onRowSelect?.(row.original);
         },
         sx: {
-            cursor:' pointer',
+            cursor: 'pointer',
+            backgroundColor:
+                selectedMonthlyIndex?.data_index === row.original.data_index ? '#e2e8f0' : 'transparent', // ✅ 선택된 row 배경색
+            '&:hover': {
+                backgroundColor: selectedMonthlyIndex?.data_index === row.original.data_index ? '#cbd5e1' : '#f1f5f9',
+            },
         }
     }),
 
@@ -115,4 +120,4 @@ export const KOMonthlyTableOptions = {
     //         </ul>
     //     </div>
     // ),
-};
+})

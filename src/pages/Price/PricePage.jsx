@@ -157,7 +157,7 @@ const PricePage = () => {
                     columns={PriceTableColumns}
                     data={priceData || []}
                     options={{
-                        ...PriceTableOptions,
+                        ...PriceTableOptions(selectedPriceId),
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 console.log('onRowSelect called with id:', selectedRow);

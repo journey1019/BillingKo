@@ -100,7 +100,7 @@ const MonthlyPage = () => {
                     data={data || []}
                     columns={MonthlyTableColumns}
                     options={{
-                        ...MonthlyTableOptions,
+                        ...MonthlyTableOptions(selectedRowData),
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 if (selectedRowData && selectedRowData.serial_number === selectedRow.serial_number) {

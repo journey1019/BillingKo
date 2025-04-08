@@ -97,7 +97,7 @@ const AdjustmentPage = () => {
                     columns={AdjustmentTableColumns}
                     data={adjustmentData || []}
                     options={{
-                        ...AdjustmentTableOptions,
+                        ...AdjustmentTableOptions(selectedAdjustId),
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 console.log('onRowSelect called with id: ', selectedRow);

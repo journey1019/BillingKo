@@ -4,15 +4,15 @@ import { Switch } from "@mui/material";
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { Box, Typography } from "@mui/material";
 
-export const KOMonthlyAccountTableOptions = {
+export const KOMonthlyAccountTableOptions = (selectedRowId) => ({
     initialState: {
         sorting: [{ id: "acct_num", desc: true }],
         showColumnFilters: true,
     },
-    enableRowSelection: true,
     enableMultiRowSelection: false,
     enablePagination: true,
     enableFilters: true,
+    enableColumnVisibility: false,
     positionToolbarAlertBanner: "none",
     enableSorting: true,
 
@@ -28,6 +28,11 @@ export const KOMonthlyAccountTableOptions = {
         },
         sx: {
             cursor: 'pointer',
+            backgroundColor:
+                selectedRowId?.acct_num === row.original.acct_num ? '#e2e8f0' : 'transparent', // ✅ 선택된 row 배경색
+            '&:hover': {
+                backgroundColor: selectedRowId?.acct_num === row.original.acct_num ? '#cbd5e1' : '#f1f5f9',
+            },
         },
     }),
 
@@ -238,4 +243,4 @@ export const KOMonthlyAccountTableOptions = {
     //         </div>
     //     );
     // },
-};
+});

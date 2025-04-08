@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { createUpload } from '@/service/fileService.js';
+import { Switch, Tooltip } from "@mui/material";
+
 import { IoMdClose } from 'react-icons/io';
-import { Switch } from "@mui/material";
+import { CiCircleQuestion } from "react-icons/ci";
 
 const UploadNewPage = () => {
     const navigate = useNavigate();
@@ -78,7 +80,14 @@ const UploadNewPage = () => {
 
                 {/* ✅ SPID */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label htmlFor="sp_id" className="col-span-2 text-sm font-medium text-gray-900">SPID</label>
+                    <label htmlFor="sp_id" className="flex flex-row items-center space-x-1 col-span-2 text-sm font-medium text-gray-900">
+                        <span>SPID</span>
+                        <Tooltip arrow placement="right" title="Service Provicder ID">
+                            <span>
+                                <CiCircleQuestion className="text-gray-800 hover:cursor-pointer" />
+                            </span>
+                        </Tooltip>
+                    </label>
                     <input type="number" id="sp_id" name="sp_id" value={formData.sp_id} onChange={handleChange}
                            className="col-span-4 border p-2.5 rounded-lg" required />
                 </div>
@@ -128,9 +137,24 @@ const UploadNewPage = () => {
 
                 {/* ✅ 포함된 파일 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label htmlFor="include_files" className="col-span-2 text-sm font-medium text-gray-900">포함된 파일 (',' 구분)</label>
+                    <label htmlFor="include_files" className="flex flex-row items-center space-x-1 col-span-2 text-sm font-medium text-gray-900">
+                        <span>포함된 파일 (',' 구분)</span>
+                        <Tooltip arrow placement="right"
+                                 title={
+                                     <div>
+                                         파일에 들어올 수 있는 항목은 다음과 같다.<br />
+                                         CDRv3.csv, NetworkReport.csv
+                                     </div>
+                                 }
+                        >
+                            <span>
+                                <CiCircleQuestion className="text-gray-800 hover:cursor-pointer" />
+                            </span>
+                        </Tooltip>
+                    </label>
                     <input type="text" id="include_files" name="include_files" value={formData.include_files.join(', ')}
-                           onChange={handleFileChange} className="col-span-4 border p-2.5 rounded-lg" placeholder="CDRv3.csv, NetworkReport.csv" />
+                           onChange={handleFileChange} className="col-span-4 border p-2.5 rounded-lg"
+                           placeholder="CDRv3.csv, NetworkReport.csv" />
                 </div>
 
                 {/* ✅ 제출 버튼 */}

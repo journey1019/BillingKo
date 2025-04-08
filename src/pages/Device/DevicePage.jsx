@@ -148,7 +148,7 @@ const DevicePage = () => {
                     columns={DeviceTableColumns}
                     data={deviceData || []}
                     options={{
-                        ...DeviceTableOptions,
+                        ...DeviceTableOptions(selectedDeviceId),
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 console.log('onRowSelect called with id:', selectedRow);

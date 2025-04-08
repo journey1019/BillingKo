@@ -125,7 +125,7 @@ const DeviceEditPage = () => {
                         { id: 'serial_number', label: '단말기', type: 'text', required: true },
                         { id: 'acct_num', label: '고객번호', type: 'text', placeholder: 'KO_99999',  dataList: acctNumList, required: true },
                         { id: 'profile_id', label: 'Profile ID', type: 'text =', placeholder: '0',  dataList: devProfileList, required: true },
-                        { id: 'PPID', label: 'PPID', type: 'text', placeholder: '999', required: true, dataList: pricePPIDList },
+                        { id: 'ppid', label: 'ppid', type: 'text', placeholder: '999', dataList: pricePPIDList, required: true },
                         { id: 'model_name', label: '모델명', type: 'text', placeholder: 'ST6100', dataList: devModelNameList, required: true },
                         { id: 'internet_mail_id', label: 'ORBCOMM 별칭', type: 'text' },
                         { id: 'alias', label: '별칭', type: 'text' },

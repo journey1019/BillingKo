@@ -133,7 +133,7 @@ const KOMonthlyPage = () => {
                             showExportButton={true} // ✅ 이 테이블에서는 CSV 버튼 활성화
                             columns={[{ accessorKey: "data_index", header: "Data Index", enableHiding: true }, ...MonthlyTableColumns]}
                             options={{
-                                ...KOMonthlyTableOptions,
+                                ...KOMonthlyTableOptions(selectedMonthlyIndex),
                                 meta: {
                                     onRowSelect: (selectedRow) => {
                                         if (selectedMonthlyIndex?.data_index === selectedRow.data_index) {
