@@ -63,19 +63,6 @@ const KOMonthlyAccountSavePage = () => {
     console.log('monthlyAcctSaveData : ', monthlyAcctSaveData)
     console.log('monthlyAcctSaveDetailData : ', monthlyAcctSaveDetailData)
 
-    const tabs = [
-        { id: 1, label: 'Invoice PDF', content: <InvoicePDFPreview
-                yearMonth={yearMonth}
-                invoiceBasicData={invoiceBasicData}
-                accountDetailData={monthlyAcctSaveDetailData}
-            />},
-        { id: 2, label: 'Giro PDF', content: <GiroPDFPreview
-                yearMonth={yearMonth}
-                invoiceBasicData={invoiceBasicData}
-                accountDetailData={monthlyAcctSaveDetailData}
-            />
-        },
-    ];
     return(
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             {/* 상단 제목 및 월 선택 */}
@@ -167,7 +154,19 @@ const KOMonthlyAccountSavePage = () => {
                             </button>
                         </div>
                     </div>
-                    <TabComponent tabs={tabs} />
+                    <TabComponent tabs={[
+                        { id: 1, label: 'Invoice PDF', content: <InvoicePDFPreview
+                                yearMonth={yearMonth}
+                                invoiceBasicData={invoiceBasicData}
+                                accountDetailData={monthlyAcctSaveDetailData}
+                            />},
+                        { id: 2, label: 'Giro PDF', content: <GiroPDFPreview
+                                yearMonth={yearMonth}
+                                invoiceBasicData={invoiceBasicData}
+                                accountDetailData={monthlyAcctSaveDetailData}
+                            />
+                        },
+                    ]} drag="Y"/>
                 </div>
             )}
         </div>

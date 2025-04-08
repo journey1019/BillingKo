@@ -76,6 +76,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     const total_fee = formatNumberWithCommas(accountData.total_fee); // 공급가액
     const tax_fee = formatNumberWithCommas(accountData.tax_fee); // 부가가치세
     const monthly_final_fee = formatNumberWithCommas(accountData.monthly_final_fee); // 합계금액
+    const raw_cut_off_fee = accountData.cut_off_fee; // 원본 숫자 그대로 둬야, '-' 조건 판단 가능
     const cut_off_fee = formatNumberWithCommas(accountData.cut_off_fee); // 10원미만 절사금액
     const final_fee = formatNumberWithCommas(accountData.final_fee); // 당월납부액 ❓(당월납부액 == 총 납부액)
     // Details of Unpaid Table (Third Table)
@@ -260,7 +261,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
         ["", "", ""],
         ["공급가액", total_fee, ""],
         ["부가가치세", tax_fee, ""],
-        ["10원미만 절사금액", `- ${cut_off_fee}`, ""],
+        ["10원미만 절사금액", (raw_cut_off_fee && Number(raw_cut_off_fee) !== 0) ? `- ${cut_off_fee}` : `${cut_off_fee || ''}`, ""],
         ["당월납부액", monthly_final_fee, ""]
     ];
     doc.autoTable({
@@ -469,7 +470,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
         },
         columnStyles: {
             0: { cellWidth: fixedColWidthFourth },
-            1: { cellWidth: fixedColWidthFourth },
+            1: { cellWidth: fixedColWidthFourth, halign: 'right' },
             2: { cellWidth: fixedColWidthFourth }
         }
     });

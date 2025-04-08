@@ -165,7 +165,7 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
         currentY = doc.autoTable.previous.finalY; // ✅ 테이블 바로 아래 붙이기
 
         // ✅ deviceDetails 간격을 벌려 가독성 확보
-        currentY += 8;
+        currentY += 5;
     });
 
     // ✅ `yearMonthAccount`을 마지막 한 번만 표시
