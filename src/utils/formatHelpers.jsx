@@ -21,9 +21,13 @@ export const formatNumberWithCommasString = (number) => {
 
 export const formatNumberWithCommasNumber = (value) => {
     if (value === null || value === undefined || value === "") return "";
-    const number = Number(value.toString().replace(/,/g, ""));
+
+    const number = parseFloat(value.toString().replace(/,/g, ""));
     if (isNaN(number)) return value;
-    return number.toLocaleString();
+
+    return number.toLocaleString("en-US", {
+        maximumFractionDigits: 6, // 원하는 자릿수까지 표시 가능
+    });
 };
 
 // 숫자 입력시 ',' 구분자

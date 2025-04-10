@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Rnd } from 'react-rnd';
+import { MdArrowDropDown } from "react-icons/md";
 
 const TabComponent = ({ tabs, drag }) => {
     const [activeTab, setActiveTab] = useState(tabs[0]?.id || 1);
@@ -43,19 +44,40 @@ const TabComponent = ({ tabs, drag }) => {
                     height: height,
                 }}
                 enableResizing={{
-                    bottom: true, // 아래 방향만 리사이징 가능
+                    bottom: true,
                 }}
-                disableDragging={true} // 드래그 이동 비활성화
+                disableDragging={true}
                 onResizeStop={(e, direction, ref, delta, position) => {
                     setHeight(ref.offsetHeight);
                 }}
+                resizeHandleComponent={{
+                    bottom: (
+                        <div
+                            className="flex justify-center items-center cursor-ns-resize transition hover:bg-gray-200"
+                            style={{
+                                height: '36px',
+                                marginTop: '-18px',
+                                backgroundColor: '#eef1f8', // 은은한 회색 (tailwind: gray-100)
+                                borderBottomLeftRadius: '8px',
+                                borderBottomRightRadius: '8px',
+                                boxShadow: '0 -1px 4px rgba(0, 0, 0, 0.05)',
+                            }}
+                        >
+                            <MdArrowDropDown size={40} color="#4B5563" />
+                        </div>
+                    ),
+                }}
+
                 style={{
                     width: '100%',
-                    position: 'relative', // 🔥 문맥 내 배치
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
                 }}
             >
                 {tabContent}
             </Rnd>
+
         );
     }
 

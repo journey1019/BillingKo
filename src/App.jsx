@@ -34,6 +34,7 @@ import CDRnNNPage from '@/pages/File/CDRnNNPage.jsx';
 import PaymentPage from './pages/Payment/PaymentPage.jsx';
 import EditPage from '@/pages/Account/EditPage.jsx';
 import AdjustmentTransactionDetailEditForm from './components/form/Adjustment/AdjustmentTransactionDetailEditForm.jsx';
+import Example from '@/pages/Example.jsx';
 
 const checkAuth = () => {
     const token = localStorage.getItem("token");
@@ -140,6 +141,9 @@ const App = () => {
                                 <Route path="/payment" element={<PaymentPage />} />
 
                                 <Route path="/adjustment/edit/:adjustment_index" element={<AdjustmentTransactionDetailEditForm/>} />
+
+
+                                <Route path="/example" element={<Example />} />
                             </Routes>
                         </RootLayout>
                     </ProtectedRoute>
