@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
-import useApiFetch from '@/hooks/useApiFetch.js';
-import { fetchPrice, deletePrice, fetchPriceHistory, fetchPricePart } from '@/service/priceService.js';
+import { useSearchParams } from "react-router-dom";
+
 import { PriceTableColumns } from '@/columns/PriceTableColumns.jsx';
 import { PriceTableOptions } from '@/options/PriceTableOptions.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
-import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
+
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
 import Modal from '@/components/common/Modal.jsx';
-
-import { FiPlus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowDown } from "react-icons/io";
 
@@ -26,7 +24,11 @@ import PriceTabOverview from '../../components/form/Price/PriceTabOverview.jsx';
 import PriceTabTransaction from '../../components/form/Price/PriceTabTransaction.jsx';
 import PriceTabHistory from '../../components/form/Price/PriceTabHistory.jsx';
 import usePriceStore from '@/stores/priceStore.js';
-import { useSearchParams } from "react-router-dom";
+
+import NewButton from '@/components/common/NewButton.jsx';
+import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { exportToCSV } from '@/utils/csvExporter';
+import { exportToExcel } from '@/utils/excelExporter';
 
 const PricePage = () => {
     const [searchParams] = useSearchParams();
@@ -38,9 +40,6 @@ const PricePage = () => {
         priceData,
         priceLoading,
         priceError,
-        pricePartData,
-        priceHistoryData,
-        priceAdjustHistoryData,
         deletePriceData
     } = usePriceStore();
 
@@ -60,7 +59,6 @@ const PricePage = () => {
         }
     }, [selectedPriceId]);
 
-    console.log(priceData)
     // ✅ urlValue로 선택할 계정 자동 설정
     useEffect(() => {
         if (urlValue && priceData.length > 0) {
@@ -73,7 +71,6 @@ const PricePage = () => {
     }, [urlValue, priceData]);
 
 
-
     // Modal
     const [showModal, setShowModal] = useState(false);
 
@@ -83,16 +80,11 @@ const PricePage = () => {
             await fetchPriceData(); // ❌ 삭제 다시 안함! (이미 됐음)
             setSelectedPriceId(null);
             setIsExpanded(false);
-            console.log(`✅ 삭제 후 새로고침 완료 (ppid: ${ppid})`);
+            // console.log(`✅ 삭제 후 새로고침 완료 (ppid: ${ppid})`);
         } catch (error) {
             alert("삭제 후 데이터 갱신에 실패했습니다.");
         }
     };
-
-
-    // New Button Toggle
-    const toggleNewDropdown = () => setIsOpenNewDropdown(!isOpenNewDropdown);
-    const closeNewDropdown = () => setIsOpenNewDropdown(false);
 
 
     return (
@@ -108,48 +100,13 @@ const PricePage = () => {
                 <div className="flex flex-row justify-between mb-3">
                     <h1 className="py-1 text-lg font-bold">고객별 및 단말별 요금제(PPID) 설정</h1>
                     <div className="flex space-x-2 items-center">
-                        <div className="inline-flex rounded-md shadow-xs" role="group">
-                            <Tooltip message="Create Price Plan">
-                                <button type="button"
-                                        className="inline-flex items-center space-x-2 px-4 py-2 text-sm text-white font-medium bg-blue-500 border border-gray-200 rounded-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
-                                        onClick={() => navigate('/price/new')}
-                                >
-                                    <FiPlus />
-                                    <span>New</span>
-                                </button>
-                            </Tooltip>
+                        <NewButton to="/price/new" />
 
-                            {/*<button type="button"*/}
-                            {/*        className="inline-flex items-center px-1 py-2 text-sm font-medium text-white bg-blue-500 border border-gray-200 rounded-e-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"*/}
-                            {/*        onClick={toggleNewDropdown}*/}
-                            {/*>*/}
-                            {/*    <IoIosArrowDown />*/}
-                            {/*</button>*/}
-                            {/*{isOpenNewDropdown && (*/}
-                            {/*    <div*/}
-                            {/*        className="absolute z-10 mt-10 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"*/}
-                            {/*        onMouseLeave={closeNewDropdown}>*/}
-                            {/*        <div className="p-2 text-sm text-gray-700">*/}
-                            {/*            <button onClick={() => navigate('/price/new')}*/}
-                            {/*                    className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">*/}
-                            {/*                New PPID*/}
-                            {/*            </button>*/}
-                            {/*        </div>*/}
-                            {/*        <ul className="p-2 text-sm text-gray-700">*/}
-                            {/*            <li>*/}
-                            {/*                <button onClick={() => console.log('adjustment')}*/}
-                            {/*                   className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">Modify</button>*/}
-                            {/*            </li>*/}
-                            {/*            <li>*/}
-                            {/*                <a href="#"*/}
-                            {/*                   className="block px-4 py-2 text-start w-full hover:bg-blue-500 hover:text-white rounded-md transition">Delete</a>*/}
-                            {/*            </li>*/}
-                            {/*        </ul>*/}
-                            {/*    </div>*/}
-                            {/*)}*/}
-                        </div>
-                        {/*<AdditionButtons/>*/}
-
+                        <DataActionDropdown
+                            onExportCSV={() => exportToCSV(priceData, 'Prices.csv')}
+                            onExportExcel={() => exportToExcel(priceData, 'Prices.xlsx')}
+                            onRefresh={fetchPriceData}
+                        />
                     </div>
                 </div>
                 {/* Bottom */}
@@ -160,10 +117,6 @@ const PricePage = () => {
                         ...PriceTableOptions(selectedPriceId),
                         meta: {
                             onRowSelect: (selectedRow) => {
-                                console.log('onRowSelect called with id:', selectedRow);
-                                // setSelectedPriceId(selectedRow);
-                                // setIsExpanded(true);
-
                                 // 같은 Row 선택
                                 if (selectedPriceId && selectedPriceId.ppid === selectedRow.ppid) {
                                     setSelectedPriceId(null);

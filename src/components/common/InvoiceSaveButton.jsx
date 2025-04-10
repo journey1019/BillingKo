@@ -67,11 +67,23 @@ const InvoiceSaveButton = ({ yearMonth }) => {
         <>
             <Tooltip title="모든 수정을 마친 후 눌러주세요">
                 <button
-                    className="flex flex-row items-center p-2 bg-blue-500 rounded-md text-white"
                     onClick={() => setShowConfirmModal(true)}
+                    className={`flex flex-row items-center space-x-2 p-2 rounded-md text-white transition ${
+                        isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+                    }`}
+                    disabled={isLoading}
                 >
-                    {isLoading ? <LoadingSpinner /> : <FaSave />}
-                    <span className="pl-2">{isLoading ? 'Saving...' : 'SAVE'}</span>
+                    {isLoading ? (
+                        <svg className="w-5 h-5 animate-spin mr-2 text-white" xmlns="http://www.w3.org/2000/svg"
+                             fill="none" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="4"
+                                  strokeLinecap="round"></path>
+                        </svg>
+                    ) : (
+                        <FaSave />
+                    )}
+                    <span>{isLoading ? 'Saving...' : 'Save Invoice'}</span>
                 </button>
             </Tooltip>
 

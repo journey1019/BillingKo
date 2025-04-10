@@ -1,37 +1,21 @@
 import { useEffect, useState } from 'react';
-import useApiFetch from '@/hooks/useApiFetch.js';
-import {
-    fetchDevices,
-    deleteDevice,
-    fetchDeviceHistory,
-    fetchDevicePart,
-    fetchDeviceHistoryLog, deleteDeviceHistoryLog,
-} from '@/service/deviceService.js';
+import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+
+import ReusableTable from '@/components/table/ReusableTable.jsx';
+import ButtonGroup from '@/components/common/ButtonGroup.jsx';
 import { DeviceTableColumns } from '@/columns/DeviceTableColumns.jsx';
 import { DeviceTableOptions } from '@/options/DeviceTableOptions.jsx';
-import ReusableTable from '@/components/table/ReusableTable.jsx';
-import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
-import ButtonGroup from '@/components/common/ButtonGroup.jsx';
-import DevicePartForm from '@/components/form/DevicePartForm.jsx';
+import NewButton from '@/components/common/NewButton.jsx';
+import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { exportToCSV } from '@/utils/csvExporter';
+import { exportToExcel } from '@/utils/excelExporter';
 
-import { useNavigate } from "react-router-dom";
-
-import { FiPlus } from 'react-icons/fi';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { RiSettings3Fill } from 'react-icons/ri';
 import TabComponent from '@/components/layout/TabComponent.jsx';
-import { fetchAdjustmentPart, fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
-import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
-import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
-import { DeviceHistoryLogTableColumns } from '@/columns/DeviceHistoryLogTableColumns.jsx';
-import Buttons from '@/components/common/Buttons.jsx';
-import DeviceOverviewTab from '@/components/form/Device/DeviceOverViewTab.jsx';
 import DeviceTransactionTab from '@/components/form/Device/DeviceTransactionTab.jsx';
 import DeviceHistoryTab from '@/components/form/Device/DeviceHistoryTab.jsx';
-import DeviceTabItems from '@/components/form/Device/DeviceTabItems.jsx';
-import DeviceOverViewTab from '../../components/form/Device/DeviceOverViewTab.jsx';
+import DeviceOverViewTab from '@/components/form/Device/DeviceOverViewTab.jsx';
 import useDeviceStore from '@/stores/deviceStore.js';
-import { useSearchParams } from "react-router-dom";
 
 const DevicePage = () => {
     const [searchParams] = useSearchParams();
@@ -44,17 +28,13 @@ const DevicePage = () => {
         fetchDeviceData,
         fetchDeviceDetails,
         deleteDeviceData,
-        devicePartData,
-        devicePartLoading,
         historyData,
-        adjustHistoryData,
         deviceHistoryLogData
     } = useDeviceStore();
 
     const [selectedDeviceId, setSelectedDeviceId] = useState(urlValue || null);
     const [isExpanded, setIsExpanded] = useState(false); // Drawer 확장
     const [isOpenDropdown, setIsOpenDropdown] = useState(false); // 설정 Icon
-    const navigate = useNavigate();
 
     useEffect(() => {
         fetchDeviceData();
@@ -82,7 +62,7 @@ const DevicePage = () => {
             await fetchDeviceData(); // ❌ 삭제 다시 안함! (이미 됐음)
             setSelectedDeviceId(null);
             setIsExpanded(false);
-            console.log(`✅ 삭제 후 새로고침 완료 (ppid: ${serial_number})`);
+            // console.log(`✅ 삭제 후 새로고침 완료 (ppid: ${serial_number})`);
         } catch (error) {
             alert("삭제 후 데이터 갱신에 실패했습니다.");
         }
@@ -92,12 +72,12 @@ const DevicePage = () => {
     const highestRowData = deviceHistoryLogData?.length
         ? deviceHistoryLogData.sort((a, b) => b.row_number - a.row_number)[0]
         : null;
-    console.log('deviceData :', deviceData)
-    console.log(highestRowData);
-    console.log(latestDeviceLog);
+    // console.log('deviceData :', deviceData)
+    // console.log(highestRowData);
+    // console.log(latestDeviceLog);
 
-    console.log('historyData', historyData)
-    console.log('deviceHistoryLogData', deviceHistoryLogData)
+    // console.log('historyData', historyData)
+    // console.log('deviceHistoryLogData', deviceHistoryLogData)
 
     return (
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
@@ -112,31 +92,13 @@ const DevicePage = () => {
                 <div className="flex flex-row justify-between mb-3">
                     <h1 className="py-1 text-lg font-bold">단말기 기본 정보 및 매핑 수정</h1>
                     <div className="flex space-x-2 items-center">
-                        <button onClick={() => navigate('/devices/new')}
-                                className="flex flex-row items-center space-x-2 p-2 rounded-md bg-blue-500 text-sm text-white hover:bg-blue-600 transition">
-                            <FiPlus />
-                            <span>New</span>
-                        </button>
-                        {/*<button onClick={toggleDropdown}*/}
-                        {/*        className="flex flex-row items-center p-2 rounded-md bg-gray-200 border border-gray-300 hover:bg-gray-300 transition">*/}
-                        {/*    <BsThreeDotsVertical />*/}
-                        {/*</button>*/}
-                        {/*{isOpenDropdown && (*/}
-                        {/*    <div*/}
-                        {/*        className="absolute z-10 mt-32 w-36 bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 border border-gray-300"*/}
-                        {/*        onMouseLeave={closeDropdown}>*/}
-                        {/*        <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">*/}
-                        {/*            <li>*/}
-                        {/*                <a href="#"*/}
-                        {/*                   className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Modify</a>*/}
-                        {/*            </li>*/}
-                        {/*            <li>*/}
-                        {/*                <a href="#"*/}
-                        {/*                   className="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>*/}
-                        {/*            </li>*/}
-                        {/*        </ul>*/}
-                        {/*    </div>*/}
-                        {/*)}*/}
+                        <NewButton to="/devices/new"/>
+
+                        <DataActionDropdown
+                            onExportCSV={() => exportToCSV(deviceData, 'Devices.csv')}
+                            onExportExcel={() => exportToExcel(deviceData, 'Devices.xlsx')}
+                            onRefresh={fetchDeviceData}
+                        />
                         {/*<button onClick={() => console.log('device_setting')}*/}
                         {/*        className="flex flex-row items-center p-2 rounded-md bg-gray-200 border border-gray-300 hover:bg-gray-300 transition">*/}
                         {/*    <RiSettings3Fill />*/}
@@ -152,8 +114,6 @@ const DevicePage = () => {
                         meta: {
                             onRowSelect: (selectedRow) => {
                                 console.log('onRowSelect called with id:', selectedRow);
-                                // setSelectedDeviceId(selectedRow);
-                                // setIsExpanded(true);
 
                                 // 같은 Row 선택
                                 if (selectedDeviceId && selectedDeviceId.serial_number === selectedRow.serial_number) {

@@ -1,33 +1,48 @@
 import { useEffect, useState, useMemo } from "react";
-import {
-    fetchKOMonthlyData,
-    fetchKOMonthlyDetailIndexData,
-    fetchKOMonthlyDetailVersionIndexData,
-} from "@/service/monthlyService.js";
-import useApiFetch from "@/hooks/useApiFetch.js";
+import { useSearchParams } from "react-router-dom";
+
+
 import ReusableTable from "@/components/table/ReusableTable.jsx";
 import LoadingSpinner from "@/components/common/LoadingSpinner.jsx";
 import { MonthlyTableColumns } from "@/columns/MonthlyTableColumns.jsx";
-import MonthPicker from "@/components/time/MonthPicker.jsx";
 import { KOMonthlyTableOptions } from "@/options/KOMonthlyTableOptions.jsx";
-import DeviceMonthlyFormBefo from "@/components/form/Monthly/DeviceMonthlyFormBefo.jsx";
-import { MdModeEditOutline } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
 import useYearMonth from '@/hooks/useYearMonth.js';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import DeviceMonthlyForm from '@/components/form/Monthly/DeviceMonthlyForm.jsx';
-import { useSearchParams } from "react-router-dom";
 import { IoMdClose } from 'react-icons/io';
-
+import useKOMonthlyStore from '@/stores/koMonthlyStore.js';
 
 /**
  * @desc: 단말기별 청구서 수정 페이지
  * */
 const KOMonthlyPage = () => {
     const [searchParams] = useSearchParams();
-
     const urlYearMonth = searchParams.get("yearMonth"); // ex) '202402'
     const urlSerial = searchParams.get("serial");
+
+    const { selectedDate, handleDateChange, yearMonth } = useYearMonth(urlYearMonth);
+
+    const {
+        koMonthlyData,
+        koMonthlyLoading,
+        koMonthlyError,
+        fetchKOMonthlyData,
+        selectedMonthlyIndex,
+        setSelectedMonthlyIndex,
+        resetSelection,
+        isExpanded,
+        detailData,
+        detailError,
+        detailLoading,
+        fetchDetailData,
+        detailVersionData,
+        detailVersionLoading,
+        detailVersionError,
+        fetchVersionData,
+        version,
+        latestVersion,
+        setVersion
+    } = useKOMonthlyStore();
 
     // '고객별 청구' 페이지에서 단말기 상세 정보 보려고 할때
     // 필터 초기값 구성
@@ -37,37 +52,23 @@ const KOMonthlyPage = () => {
             : [];
     });
 
-    /** API 데이터 호출 */
-    const { selectedDate, handleDateChange, yearMonth } = useYearMonth(urlYearMonth);
-    const [selectedMonthlyIndex, setSelectedMonthlyIndex] = useState(null);
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    const { data, loading, error } = useApiFetch(fetchKOMonthlyData, yearMonth);
-
-    // Detail Data
-    const [version, setVersion] = useState(0);
-    const [latestVersion, setLatestVersion] = useState(0); // 최신 버전 저장
-
-    const [detailData, setDetailData] = useState(null);
-    const [detailLoading, setDetailLoading] = useState(false);
-    const [detailError, setDetailError] = useState(null);
-
-    // Detail Version Data
-    const [detailVersionData, setDetailVersionData] = useState(null);
-    const [detailVersionLoading, setDetailVersionLoading] = useState(false);
-    const [detailVersionError, setDetailVersionError] = useState(null)
-
     useEffect(() => {
-        if (!data || !urlSerial) return;
+        fetchKOMonthlyData(yearMonth);
+    }, [yearMonth]);
+    // console.log(koMonthlyData)
 
-        const matchedItem = data.find(item => item.serial_number === urlSerial);
+    console.log(urlSerial)
+    useEffect(() => {
+        if (!koMonthlyData || !urlSerial) return;
+
+        const matchedItem = koMonthlyData.find(item => item.serial_number === urlSerial);
         if (matchedItem) {
             console.log(matchedItem)
-            setSelectedMonthlyIndex(matchedItem.data_index);
+            setSelectedMonthlyIndex(matchedItem);
+            fetchDetailData(matchedItem.data_index);
         }
-    }, [data, urlSerial]);
+    }, [koMonthlyData, urlSerial]);
     console.log(selectedMonthlyIndex)
-
 
     // 선택이 바뀔 때 상세 기본 데이터
     useEffect(() => {
@@ -76,39 +77,9 @@ const KOMonthlyPage = () => {
         fetchDetailData(selectedMonthlyIndex.data_index);
     }, [selectedMonthlyIndex]);
 
-    // 선택된 data_index에 대한 detail fetch 함수
-    const fetchDetailData = async (dataIndex) => {
-        if (!dataIndex) return;
-        setDetailLoading(true);
-        setDetailError(null);
-        try {
-            const response = await fetchKOMonthlyDetailIndexData(dataIndex);
-            setDetailData(response);
-            setVersion(response.update_version || 0);
-            setLatestVersion(response.update_version || 0);
-        } catch (error) {
-            setDetailError(error.message || "Failed to fetch detail data");
-        } finally {
-            setDetailLoading(false);
-        }
-    };
-
-    const fetchVersionData = async (serial_number, version_index) => {
-        setDetailVersionLoading(true);
-        setDetailVersionError(null);
-        try {
-            const response = await fetchKOMonthlyDetailVersionIndexData(serial_number, version_index);
-            setDetailVersionData(response);
-            setVersion(version_index);
-        } catch (error) {
-            setDetailVersionError(error.message || "Failed to fetch version detail data");
-        } finally {
-            setDetailVersionLoading(false);
-        }
-    };
-
     console.log('detailData: ', detailData)
     console.log(selectedMonthlyIndex)
+    console.log(yearMonth)
 
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
@@ -122,26 +93,24 @@ const KOMonthlyPage = () => {
                         <h1 className="text-xl font-bold">단말기 청구서 테이블</h1>
                         <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                     </div>
-                    {loading ? (
+                    {koMonthlyLoading ? (
                         <LoadingSpinner />
-                    ) : error ? (
-                        <p className="text-red-500">{error}</p>
+                    ) : koMonthlyError ? (
+                        <p className="text-red-500">{koMonthlyError}</p>
                     ) : (
                         <ReusableTable
-                            data={data || []}
+                            data={koMonthlyData || []}
                             exportFileName="KO_Monthly_Report"
                             showExportButton={true} // ✅ 이 테이블에서는 CSV 버튼 활성화
                             columns={[{ accessorKey: "data_index", header: "Data Index", enableHiding: true }, ...MonthlyTableColumns]}
                             options={{
                                 ...KOMonthlyTableOptions(selectedMonthlyIndex),
                                 meta: {
-                                    onRowSelect: (selectedRow) => {
-                                        if (selectedMonthlyIndex?.data_index === selectedRow.data_index) {
-                                            setSelectedMonthlyIndex(null);
-                                            setIsExpanded(false);
+                                    onRowSelect: (row) => {
+                                        if (selectedMonthlyIndex?.data_index === row.data_index) {
+                                            resetSelection(); // 명시적 해제
                                         } else {
-                                            setSelectedMonthlyIndex(selectedRow);
-                                            setIsExpanded(true);
+                                            setSelectedMonthlyIndex(row); // 명시적 선택
                                         }
                                     },
                                 },

@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
 import { BiBuildings } from "react-icons/bi";
-import Move from '@/components/construct/main/Move.jsx';
 import Receivables from '@/components/construct/main/Receivables.jsx';
 import HorizontalNonLinearStepper from '@/components/module/HorizontalNonLinearStepper.jsx';
 import PaymentStatus from '@/components/construct/main/PaymentStatus.jsx';
@@ -45,8 +44,6 @@ const Homepage = () => {
             </div>
 
 
-            {/*<Move />*/}
-
             <div className="grid gap-4 grid-cols-2">
                 <Receivables
                     yearMonth={yearMonth}
@@ -81,6 +78,7 @@ const Homepage = () => {
             </LocalizationProvider>
 
 
+            {/* Left - Right 영역 구분 */}
             {/*<PaymentStatus*/}
             {/*    selectedDate={selectedDate}*/}
             {/*    handleDateChange={handleDateChange}*/}

@@ -12,12 +12,13 @@ import useKOMonthlyStore from '@/stores/koMonthlyStore.js';
  * @param (Array) paymentFeeDetail: 요금 사용 세부 정보
  * @param (Array) paymentAdjustmentInfo: 조정 세부 정보
  * */
-export const accordionItems = ({ detailData, paymentInfo, version, yearMonth }) => {
-    const { fetchDetailData } = useKOMonthlyStore();
+export const accordionItems = ({ detailData, paymentInfo, version, fetchDetailData, yearMonth }) => {
+    // const { fetchDetailData } = useKOMonthlyStore();
 
     const hasVersion = typeof version === "number" // ✅ version 데이터가 존재하고, 숫자인지 확인
     console.log('version: ', version)
     console.log(detailData)
+    console.log(yearMonth)
 
     return [
         {

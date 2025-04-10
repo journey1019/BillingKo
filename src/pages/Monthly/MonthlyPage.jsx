@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Tooltip } from '@mui/material'; // ✅ MUI Alert 추가
 import useApiFetch from "@/hooks/useApiFetch.js";
 import { fetchMonthlyData, saveMonthlyData, fetchMonthlyDetailData } from '@/service/monthlyService.js'; // API 호출 함수
@@ -14,66 +14,51 @@ import SaveButton from '@/components/common/SaveButton.jsx';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import { IoMdClose } from "react-icons/io";
 import DeviceMonthlyForm from '@/components/form/Monthly/DeviceMonthlyForm.jsx';
-
-
+import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { exportToCSV } from '@/utils/csvExporter';
+import { exportToExcel } from '@/utils/excelExporter';
+import useMonthlyStore from '@/stores/monthlyStore.js';
 /**
  * @desc: 계산관리 페이지(monthly Page)
  * */
 const MonthlyPage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
+    const {
+        fetchMonthlyData,
+        monthlyData,
+        monthlyLoading,
+        monthlyError,
 
-    // API 호출: useApiFetch를 활용
-    const { data, loading, error } = useApiFetch(fetchMonthlyData, yearMonth);
+        fetchDetailData,
+        detailData,
+        detailLoading,
+        detailError,
 
-    // Table Row Click
-    const [selectedRowData, setSelectedRowData] = useState(null); // 선택된 Row의 데이터 저장
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    const [detailData, setDetailData] = useState(null);
-    const [detailLoading, setDetailLoading] = useState(false);
-    const [detailError, setDetailError] = useState(null);
+        selectedRowData,
+        isExpanded,
+        selectedRow,
+        resetSelection,
+    } = useMonthlyStore();
 
 
-    console.log(yearMonth)
+    // 월별 데이터 fetch
     useEffect(() => {
-        const fetchMonthlyDetail = async () => {
-            if(!selectedRowData) return;
+        fetchMonthlyData(yearMonth);
+    }, [yearMonth]);
 
-            console.log(selectedRowData)
-            setDetailLoading(true);
-            setDetailError(null);
-            try{
-                const response = await fetchMonthlyDetailData(yearMonth, selectedRowData.serial_number);
-                setDetailData(response);
-            } catch (error) {
-                setDetailError(error.message || "Failed to fetch detail data");
-            } finally {
-                setDetailLoading(false);
-            }
+    // 선택된 row가 있을 때 상세 데이터 fetch
+    useEffect(() => {
+        if (selectedRowData) {
+            fetchDetailData(yearMonth, selectedRowData);
         }
-
-        fetchMonthlyDetail();
     }, [selectedRowData]);
-    console.log('detail monthly data', detailData)
 
-    // useEffect(() => {
-    //     const handleOutsideClick = (event) => {
-    //         if (
-    //             isExpanded &&
-    //             !event.target.closest(".expanded-container") // ✅ 상세정보 영역 클릭 제외
-    //         ) {
-    //             setIsExpanded(false);
-    //             setSelectedRowData(null);
-    //         }
-    //     };
-    //
-    //     document.addEventListener("click", handleOutsideClick);
-    //     return () => {
-    //         document.removeEventListener("click", handleOutsideClick);
-    //     };
-    // }, [isExpanded]);
+
+    console.log('monthlyData', monthlyData)
+    console.log('detail monthly data', detailData)
     console.log(selectedRowData)
 
+    const tableRef = useRef();
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
             {/* Save */}
@@ -92,46 +77,42 @@ const MonthlyPage = () => {
                             month: 'long',
                         })}
                     </h1>
-                    <div className="flex flex-row z-10">
+                    <div className="flex flex-row z-10 items-center space-x-4">
                         <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
+                        <DataActionDropdown
+                            onExportCSV={() => exportToCSV(monthlyData, 'Monthly.csv')}
+                            onExportExcel={() => exportToExcel(monthlyData, 'Monthly.xlsx')}
+                            onRefresh={fetchMonthlyData}
+                        />
                     </div>
                 </div>
                 <ReusableTable
-                    data={data || []}
+                    data={monthlyData || []}
                     columns={MonthlyTableColumns}
                     options={{
                         ...MonthlyTableOptions(selectedRowData),
                         meta: {
-                            onRowSelect: (selectedRow) => {
-                                if (selectedRowData && selectedRowData.serial_number === selectedRow.serial_number) {
-                                    // ✅ 이미 선택된 Row를 다시 클릭하면 닫기
-                                    setSelectedRowData(null);
-                                    setIsExpanded(false);
-                                } else {
-                                    // ✅ 새 Row를 선택하면 열기
-                                    setSelectedRowData(selectedRow);
-                                    setIsExpanded(true);
-                                }
-                            }
+                            onRowSelect: (row) => selectedRow(row),
                         }
                     }}
+                    // showExportButton={true}
                     isLoading={detailLoading}
                     error={detailError}
                 />
             </div>
 
+            {/* Detail Panel */}
             {isExpanded && selectedRowData && (
                 <div className="p-2 col-span-4">
                     <div className="flex flex-col">
                         <div className="flex flex-row justify-between mb-4">
                             <div className="flex flex-row items-center">
-                                <h1 className="py-1 text-xl font-bold">{selectedRowData.acct_num} _ {selectedRowData.serial_number}</h1>
+                                <h1 className="py-1 text-xl font-bold">
+                                    {selectedRowData.acct_num} _ {selectedRowData.serial_number}
+                                </h1>
                             </div>
                             <button
-                                onClick={() => {
-                                    setIsExpanded(false);
-                                    setSelectedRowData(null);
-                                }}
+                                onClick={resetSelection}
                                 className="p-2 rounded-md text-black hover:text-gray-500"
                             >
                                 <IoMdClose/>

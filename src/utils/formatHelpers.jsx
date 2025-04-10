@@ -108,6 +108,13 @@ export const formatValue = (value, defaultText = "-") => {
     return value;
 };
 
+// 'YYYY-MM-DDTHH:mm:ss' -> 'YYYY-MM-DD'
+export const formatUntilDate = (dateString) => {
+    if (!dateString) return '-';
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('ko-KR', options);
+};
+
 export const formatDate = (datetime) => {
     if (!datetime) return "";
     return new Date(datetime).toISOString().slice(0, 10);

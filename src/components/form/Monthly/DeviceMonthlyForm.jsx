@@ -5,6 +5,7 @@ import { formatDateTime } from '@/utils/formatHelpers.jsx';
 import { FaTrash } from "react-icons/fa";
 import { deleteRecentMonthly } from "@/service/monthlyService.js";
 import Swal from 'sweetalert2';
+import { Tooltip } from "@mui/material";
 
 
 const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData, fetchDetailData, originalSerialNumber, yearMonth }) => {
@@ -33,6 +34,7 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
     console.log(fetchVersionData)
     console.log(version)
     console.log(latestVersion)
+    console.log(yearMonth)
 
 
     // 삭제 핸들러 함수
@@ -92,7 +94,7 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
                             </div>
                         )}
 
-                        <Accordion items={accordionItems({ detailData, paymentInfo, version, fetchDetailData })} />
+                        <Accordion items={accordionItems({ detailData, paymentInfo, version, fetchDetailData, yearMonth })} />
                     </div>
                 </div>
 
@@ -130,13 +132,15 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
                                         </button>
                                     </div>
 
-                                    <button
-                                        className="text-gray-700 hover:text-red-500 hover:bg-gray-100 rounded-full p-2 disabled:opacity-30 disabled:hover:bg-white disabled:text-gray-700"
-                                        onClick={handleDelete}
-                                        disabled={latestVersion <= 0}
-                                    >
-                                        <FaTrash className="w-4 h-4" />
-                                    </button>
+                                    <Tooltip title="가장 마지막 버전이 삭제됩니다.">
+                                        <button
+                                            className="text-gray-700 hover:text-red-500 hover:bg-gray-100 rounded-full p-2 disabled:opacity-30 disabled:hover:bg-white disabled:text-gray-700"
+                                            onClick={handleDelete}
+                                            disabled={latestVersion <= 0}
+                                        >
+                                            <FaTrash className="w-4 h-4" />
+                                        </button>
+                                    </Tooltip>
                                 </div>
                             )}
 

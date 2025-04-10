@@ -41,6 +41,7 @@
     "react-tooltip": "^5.28.0",
     "sweetalert2": "^11.17.2",
     "sweetalert2-react-content": "^5.1.0",
+    "xlsx": "^0.18.5",
     "zustand": "^5.0.3"
   },
   "devDependencies": {

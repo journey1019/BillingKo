@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
-import { AdjustmentHistoryTableColumns, AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
-import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
-import TabComponent from '@/components/layout/TabComponent.jsx';
-import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
-import AdjustmentPartForm from '@/components/form/AdjustmentPartForm.jsx';
-import Tooltip from '@/components/common/Tooltip.jsx';
-import { FiPlus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import useAdjustmentStore from '@/stores/adjustmentStore.js';
+import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+
 import ReusableTable from '@/components/table/ReusableTable.jsx';
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
-import { IoIosArrowDown } from 'react-icons/io';
+import NewButton from '@/components/common/NewButton.jsx';
+import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { exportToCSV } from '@/utils/csvExporter';
+import { exportToExcel } from '@/utils/excelExporter';
+
 import AdjustmentTabItems from '@/components/form/Adjustment/AdjustmentTabItems.jsx';
-import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
-import useAdjustmentStore from '@/stores/adjustmentStore.js';
-import { TiPlus } from "react-icons/ti";
+import { AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
+import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
+import TabComponent from '@/components/layout/TabComponent.jsx';
+
 
 const AdjustmentPage = () => {
     const {
@@ -58,13 +59,11 @@ const AdjustmentPage = () => {
             await fetchAdjustmentData(); // ❌ 삭제 다시 안함! (이미 됐음)
             setSelectedAdjustId(null);
             setIsAdjustExpanded(false);
-            console.log(`✅ 삭제 후 새로고침 완료 (Adjustment: ${index})`);
+            // console.log(`✅ 삭제 후 새로고침 완료 (Adjustment: ${index})`);
         } catch (error) {
             alert("삭제 후 데이터 갱신에 실패했습니다.");
         }
     };
-
-
 
     return(
         <div className={`grid gap-0 ${isAdjustExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
@@ -78,18 +77,13 @@ const AdjustmentPage = () => {
                 <div className="flex flex-row justify-between mb-3">
                     <h1 className="py-1 text-lg font-bold">할인, 가산 요금 등 조정 내역 삽입, 수정, 삭제</h1>
                     <div className="flex space-x-2 items-center">
-                        <div className="inline-flex rounded-md shadow-xs" role="group">
-                            <Tooltip message="Create Price Plan">
-                                <button type="button"
-                                        className="inline-flex items-center space-x-2 px-4 py-2 text-sm text-white font-medium bg-blue-500 border border-gray-200 rounded-lg hover:bg-blue-600 focus:z-10 focus:ring-2 focus:ring-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white transition"
-                                        onClick={() => navigate('/adjustment/new')}
-                                >
-                                    <FiPlus />
-                                    <span>New</span>
-                                </button>
-                            </Tooltip>
+                        <NewButton to="/price/new" />
 
-                        </div>
+                        <DataActionDropdown
+                            onExportCSV={() => exportToCSV(adjustmentData, 'Adjustments.csv')}
+                            onExportExcel={() => exportToExcel(adjustmentData, 'Adjustments.xlsx')}
+                            onRefresh={fetchAdjustmentData}
+                        />
                     </div>
                 </div>
                 {/* Bottom */}
@@ -125,7 +119,6 @@ const AdjustmentPage = () => {
                             <div className="flex flex-row items-center">
                                 <h2 className="py-1 text-lg font-bold">{codeMappings.adjustment_code[selectedAdjustId.adjustment_code]} _ {selectedAdjustId.adjustment_code_value}</h2>
                             </div>
-
 
                             <ButtonGroup
                                 entityType="adjustment"

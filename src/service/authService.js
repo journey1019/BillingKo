@@ -17,7 +17,7 @@ export const login = async (userId, userPw) => {
         return response.data; // {user_id, user_nm, user_token, token_expired}
     } catch (error) {
         throw new Error(
-            error.response?.data?.detail || "Failed to log in. Please try again."
+            error.response?.data?.detail || "로그인에 실패하였습니다. 다시 시도해주세요."
         );
     }
 };

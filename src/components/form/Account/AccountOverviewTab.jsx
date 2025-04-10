@@ -6,7 +6,6 @@ const AccountOverviewTab = () => {
     const { accountPartData, accountPartLoading, accountPartError, adjustDetailData, adjustDetailLoading, adjustDetailError } = useAccountStore();
     return(
         <>
-            {/* Account Part Information */}
             <div>
                 {accountPartLoading ? (
                     <LoadingSpinner />
