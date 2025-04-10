@@ -22,39 +22,56 @@ import Accordion from '@/components/ui/Accordions/Accordion.jsx';
 import SimpleAccordion from '@/components/ui/Accordions/SimpleAccordion.jsx';
 import { IoMdClose } from 'react-icons/io';
 
+import useKOMonthlyAccountSaveStore from '@/stores/koMonthlySaveStore.js';
+import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { exportToCSV } from '@/utils/csvExporter';
+import { exportToExcel } from '@/utils/excelExporter';
 
 /**
  * @desc: 청구서 페이지
  * */
 const KOMonthlyAccountSavePage = () => {
     const { selectedDate, handleDateChange, yearMonth } = useYearMonth();
-    const { data: invoiceBasicData, loading: invoiceBasicLoading, error:invoiceBasicError } = useApiFetch(fetchInvoicePrint); // 청구서 필요 양식
-    const { data: monthlyAcctSaveData = [], loading, error } = useApiFetch(fetchKOMonthlyAccountSaveIndexData, yearMonth); // 청구서 양식에 삽입될 데이터
 
-    const [selectedRowData, setSelectedRowData] = useState(null);
-    const [isExpanded, setIsExpanded] = useState(false);
+    const {
+        invoiceBasicData,
+        invoiceBasicLoading,
+        invoiceBasicError,
+        fetchInvoiceBasicData,
 
-    const [monthlyAcctSaveDetailData, setMonthlyAcctSaveDetailData] = useState(null);
-    const [monthlyAcctSaveDetailLoading, setMonthlyAcctSaveDetailLoading] = useState(false);
-    const [monthlyAcctSaveDetailError, setMonthlyAcctSaveDetailError] = useState(null);
+        monthlyAcctSaveData,
+        monthlyAcctSaveLoading,
+        monthlyAcctSaveError,
+        fetchMonthlyAcctSaveData,
+
+        selectedRowData,
+        setSelectedRowData,
+        resetSelection,
+        isExpanded,
+        setYearMonth,
+
+        monthlyAcctSaveDetailData,
+        monthlyAcctSaveDetailLoading,
+        monthlyAcctSaveDetailError,
+        fetchMonthlyAcctSaveDetailData,
+    } = useKOMonthlyAccountSaveStore();
 
     useEffect(() => {
-        const fetchMonthlyDetail = async () => {
-            if (!selectedRowData?.acct_num) return;
+        if (yearMonth) setYearMonth(yearMonth);
+    }, [yearMonth]);
 
-            setMonthlyAcctSaveDetailLoading(true);
-            setMonthlyAcctSaveDetailError(null);
-            try {
-                const response = await fetchKOMonthlyAccountSaveIndexDetailData(yearMonth, selectedRowData.acct_num);
-                setMonthlyAcctSaveDetailData(response);
-            } catch (error) {
-                setMonthlyAcctSaveDetailError(error.message || 'Failed to fetch monthly detail');
-            } finally {
-                setMonthlyAcctSaveDetailLoading(false);
-            }
-        };
+    useEffect(() => {
+        fetchInvoiceBasicData();
+    }, []);
 
-        fetchMonthlyDetail(); // `return fetchMonthlyDetail;`이 아니라 함수 실행!
+    useEffect(() => {
+        if (yearMonth) fetchMonthlyAcctSaveData();
+    }, [yearMonth]);
+
+    useEffect(() => {
+        if (selectedRowData?.acct_num) {
+            fetchMonthlyAcctSaveDetailData(selectedRowData.acct_num);
+        }
     }, [selectedRowData]);
 
     if (invoiceBasicLoading) return <div>로딩중...</div>;
@@ -101,7 +118,14 @@ const KOMonthlyAccountSavePage = () => {
             <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-xl font-bold">최종 청구서 테이블</h1>
-                    <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
+                    <div className="flex flex-row items-center space-x-4">
+                        <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
+                        <DataActionDropdown
+                            onExportCSV={() => exportToCSV(monthlyAcctSaveData, 'Final_Bill.csv')}
+                            onExportExcel={() => exportToExcel(monthlyAcctSaveData, 'Final_Bill.xlsx')}
+                            onRefresh={fetchMonthlyAcctSaveData}
+                        />
+                    </div>
                 </div>
 
                 {/* 테이블 UI */}
@@ -109,24 +133,13 @@ const KOMonthlyAccountSavePage = () => {
                     <ReusableTable
                         data={monthlyAcctSaveData || []} // 데이터가 null이면 빈 배열로 설정
                         columns={KOMonthlyAccountTableColumns}
-                        isLoading={loading}
-                        error={error}
+                        isLoading={monthlyAcctSaveLoading}
+                        error={monthlyAcctSaveError}
                         options={{
                             ...KOMonthlyAccountTableOptions(selectedRowData),
                             meta: {
-                                onRowSelect: (selectedRow) => {
-                                    console.log('Account Monthly Table Row Selected: ', selectedRow);
-                                    if (selectedRowData && selectedRowData.acct_num === selectedRow.acct_num) {
-                                        // ✅ 같은 Row를 클릭한 경우 isExpanded를 false로 변경하여 닫기
-                                        setSelectedRowData(null);
-                                        setIsExpanded(false);
-                                    } else {
-                                        // ✅ 다른 Row를 클릭한 경우 isExpanded 유지
-                                        setSelectedRowData(selectedRow);
-                                        setIsExpanded(true);
-                                    }
-                                }
-                            }
+                                onRowSelect: (row) => setSelectedRowData(row),
+                            },
                         }}
                     />
                 </div>
@@ -144,10 +157,7 @@ const KOMonthlyAccountSavePage = () => {
                                           accountDetailData={monthlyAcctSaveDetailData}
                                           monthlyAcctSaveData={monthlyAcctSaveData} />
                             <button
-                                onClick={() => {
-                                    setIsExpanded(false);
-                                    setSelectedRowData(null);
-                                }}
+                                onClick={resetSelection}
                                 className="p-2 rounded-md text-black hover:text-gray-500"
                             >
                                 <IoMdClose />
