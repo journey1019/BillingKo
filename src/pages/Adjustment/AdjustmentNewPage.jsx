@@ -5,9 +5,10 @@ import { createAdjustment } from '@/service/adjustmentService.js';
 import { createCode } from '@/service/codeService.js';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
 
-import { Switch } from "@mui/material";
+import { Switch, Tooltip } from "@mui/material";
 import { CiCirclePlus } from "react-icons/ci";
 import { IoMdClose } from 'react-icons/io';
+import { CiCircleQuestion } from "react-icons/ci";
 
 
 const AdjustmentNewPage = () => {
@@ -66,17 +67,6 @@ const AdjustmentNewPage = () => {
         } catch (err) {
             alert("코드 생성 실패");
         }
-    };
-
-    const openModalForCodeType = (type) => {
-        setCodeForm({
-            code_name: "",
-            code_type: type,
-            code_value: "",
-            code_alias: "",
-        });
-        setNewCodeType(type);
-        setIsModalOpen(true);
     };
 
 
@@ -167,7 +157,7 @@ const AdjustmentNewPage = () => {
             {/* 🔹 Header */}
             <div className="flex flex-row justify-between mb-3">
                 <h1 className="py-1 text-lg font-bold">조정 데이터 생성</h1>
-                <button onClick={() => navigate('/adjustment')}
+                <button type="button" onClick={() => navigate('/adjustment')}
                         className="p-2 text-xl text-gray-600 hover:text-gray-900 transition">
                     <IoMdClose />
                 </button>
@@ -178,8 +168,21 @@ const AdjustmentNewPage = () => {
 
                 {/* ✅ 조정 대상 구분 */}
                 <div key="adjustment_code" className="grid grid-cols-6 items-center space-x-4">
-                    <label htmlFor="adjustment_code" className="col-span-2 text-sm font-medium text-gray-900">조정 대상
-                        구분</label>
+                    <label htmlFor="adjustment_code" className="flex flex-row space-x-2 col-span-2 text-sm font-medium text-gray-900 items-center">
+                        <span>조정 대상 구분</span>
+                        <Tooltip arrow placement="right"
+                                 title={
+                                     <div>
+                                         무엇을 조정할지 선택하세요.<br />
+                                         Account, Serial Number, PPID 중 하나를 선택하여 어떤 항목에 조정을 적용할지 지정합니다.
+                                     </div>
+                                 }
+                        >
+                            <span>
+                                <CiCircleQuestion className="text-gray-800 hover:cursor-pointer" />
+                            </span>
+                        </Tooltip>
+                    </label>
                     <select id="adjustment_code" name="adjustment_code" value={formData.adjustment_code}
                             onChange={handleChange}
                             className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5">
@@ -203,13 +206,22 @@ const AdjustmentNewPage = () => {
 
                 {/* ✅ 선택 필드 */}
                 {[
-                    { id: 'adjustment_category', label: '조정 종류', mappingKey: "adjustment_category" },
-                    { id: "adjustment_type", label: "가산/할인 여부", mappingKey: "adjustment_type" },
-                    { id: "mount_type", label: "지불 방법", mappingKey: "mount_type" },
-                    { id: "adjustment_cycle", label: "조정 적용 기간", mappingKey: "adjustment_cycle" },
-                ].map(({ id, label, mappingKey }) => (
+                    { id: 'adjustment_category', label: '조정 종류', mappingKey: "adjustment_category", tooltip: true, tooltipContent: "조정하려는 항목을 선택합니다. ", tooltipContent2: "예를 들어 가입비, VMS 사용료, 미납금 등이 있습니다." },
+                    { id: "adjustment_type", label: "가산/할인 여부", mappingKey: "adjustment_type", tooltip: true, tooltipContent: "조정 방식이 할인인지, 추가 요금인지 선택합니다.", tooltipContent2: "'할인'은 요금을 줄이고, '가산'은 늘립니다." },
+                    { id: "mount_type", label: "지불 방법", mappingKey: "mount_type", tooltip: true, tooltipContent: "조정 금액이 '요금(정액)인지 '요율(&)'로 적용될지 선택합니다." },
+                    { id: "adjustment_cycle", label: "조정 적용 기간", mappingKey: "adjustment_cycle", tooltip: true, tooltipContent: "이 조정이 한 번만 적용될지, 매달 반복 적용될지를 선택합니다."},
+                ].map(({ id, label, mappingKey, tooltip, tooltipContent, tooltipContent2 }) => (
                     <div key={id} className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor={id} className="col-span-2 text-sm font-medium text-gray-900">{label}</label>
+                        <label htmlFor={id} className="flex flex-row items-center space-x-2 col-span-2 text-sm font-medium text-gray-900">
+                            <span>{label}</span>
+                            {tooltip && (
+                                <Tooltip arrow placement="right" title={<div>{tooltipContent} {tooltipContent2 && <><br/><div>{tooltipContent2}</div></>}</div>}>
+                                    <span>
+                                        <CiCircleQuestion className="text-gray-800 hover:cursor-pointer" />
+                                    </span>
+                                </Tooltip>
+                            )}
+                        </label>
                         <select id={id} name={id} value={formData[id]} onChange={handleChange}
                                 className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5">
                             {Object.keys(codeMappings[mappingKey]).map((optionKey, index) => (
@@ -264,10 +276,10 @@ const AdjustmentNewPage = () => {
                                     </div>
 
                                     <div className="flex justify-end space-x-2">
-                                        <button onClick={closeModal} className="px-4 py-2 bg-gray-300 rounded">
+                                        <button type="button" onClick={closeModal} className="px-4 py-2 bg-gray-300 rounded">
                                             취소
                                         </button>
-                                        <button onClick={handleModalSubmit} className="px-4 py-2 bg-blue-500 text-white rounded">
+                                        <button type="button" onClick={handleModalSubmit} className="px-4 py-2 bg-blue-500 text-white rounded">
                                             저장
                                         </button>
                                     </div>
@@ -291,7 +303,7 @@ const AdjustmentNewPage = () => {
 
                 {/* ✅ 날짜 입력 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label htmlFor="date_index" className="col-span-2 text-sm font-medium text-gray-900">날짜</label>
+                    <label htmlFor="date_index" className="col-span-2 text-sm font-medium text-gray-900">적용 날짜</label>
                     <input
                         type="month"
                         id="date_index"
@@ -317,7 +329,21 @@ const AdjustmentNewPage = () => {
 
                 {/* 사용 여부 스위치 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label className="col-span-2 text-sm font-medium text-gray-900">사용 여부 *</label>
+                    <label className="flex flex-row items-center space-x-2 col-span-2 text-sm font-medium text-gray-900">
+                        <span>사용 여부 *</span>
+                        <Tooltip arrow placement="right"
+                                 title={
+                                     <div>
+                                         작성한 조정 내용을 실제로 적용할지 여부를 선택합니다.<br />
+                                         ‘Y’는 적용, ‘N’은 미적용입니다.
+                                     </div>
+                                 }
+                        >
+                            <span>
+                                <CiCircleQuestion className="text-gray-800 hover:cursor-pointer" />
+                            </span>
+                        </Tooltip>
+                    </label>
                     <div className="col-span-4">
                         <Switch checked={formData.use_yn === 'Y'} onChange={handleToggleChange} />
                         <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
@@ -326,7 +352,21 @@ const AdjustmentNewPage = () => {
 
                 {/* 부가세 포함 여부 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label className="col-span-2 text-sm font-medium text-gray-900">부가세 포함 여부 *</label>
+                    <label className="flex flex-row items-center space-x-2 col-span-2 text-sm font-medium text-gray-900">
+                        <span>부가세 포함 여부 *</span>
+                        <Tooltip arrow placement="right"
+                                 title={
+                                     <div>
+                                         이 조정 금액이 부가세 계산 전에 적용될지, 후에 적용될지를 선택합니다.<br />
+                                         Y는 부가세 후, N은 부가세 전입니다.
+                                     </div>
+                                 }
+                        >
+                            <span>
+                                <CiCircleQuestion className="text-gray-800 hover:cursor-pointer" />
+                            </span>
+                        </Tooltip>
+                    </label>
                     <div className="col-span-4">
                         <Switch checked={formData.tax_free_yn === 'Y'} onChange={handleToggleTaxChange} />
                         <span className="text-sm text-gray-700">{formData.tax_free_yn === 'Y' ? 'Yes' : 'No'}</span>

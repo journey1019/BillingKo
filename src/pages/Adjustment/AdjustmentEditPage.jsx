@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import { updateAdjustment, fetchAdjustmentPart } from '@/service/adjustmentService.js';
+import { createCode } from '@/service/codeService.js';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
 import { renderStandardInputField } from '@/utils/renderHelpers'
 import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 
-import { Switch } from "@mui/material";
-import { IoMdClose } from 'react-icons/io';
+import { Switch, Tooltip } from "@mui/material";
+import { CiCirclePlus } from "react-icons/ci";
+import { IoMdClose } from 'react-icons/io'
+import { CiCircleQuestion } from "react-icons/ci";
 
 const AdjustmentEditPage = () => {
     const { adjustment_index } = useParams();
@@ -106,6 +109,56 @@ const AdjustmentEditPage = () => {
     };
 
 
+    /** CODE 형식 새로 생성 */
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMappingKey, setModalMappingKey] = useState(null);
+    const [modalInput, setModalInput] = useState({
+        code_type: 'bill',
+        code_value: '',
+        code_alias: '',
+    });
+    const openModal = (mappingKey) => {
+        setModalMappingKey(mappingKey);
+        setIsModalOpen(true);
+        setModalInput({
+            code_type: 'bill',
+            code_value: '',
+            code_alias: '',
+        });
+    };
+    // 모달 닫기
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setModalMappingKey(null);
+    };
+
+    // 입력 변경 핸들러
+    const handleModalChange = (e) => {
+        const { name, value } = e.target;
+        setModalInput((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+    // 저장
+    const handleModalSubmit = async () => {
+        try {
+            const payload = {
+                code_name: modalMappingKey,         // ✅ 버튼에서 받은 mappingKey
+                code_type: 'bill',
+                code_value: modalInput.code_value,
+                code_alias: modalInput.code_alias,
+            };
+            await createCode(payload);
+            alert("코드가 성공적으로 추가되었습니다.");
+            closeModal();
+            window.location.reload(); // ✅ 현재 페이지 전체 리로드
+        } catch (err) {
+            alert("코드 생성 실패");
+        }
+    };
+
+
     if (loading) return <LoadingSpinner />;
     if (error) return <p className="text-red-500 text-sm mt-3">{error}</p>;
 
@@ -114,7 +167,7 @@ const AdjustmentEditPage = () => {
             {/* 🔹 Header */}
             <div className="flex flex-row justify-between mb-3">
                 <h1 className="py-1 text-lg font-bold">조정 데이터 수정</h1>
-                <button onClick={() => navigate('/adjustment')}
+                <button type="button" onClick={() => navigate('/adjustment')}
                         className="p-2 text-xl text-gray-600 hover:text-gray-900 transition">
                     <IoMdClose />
                 </button>
@@ -146,105 +199,104 @@ const AdjustmentEditPage = () => {
                 {/*        placeholder*/}
                 {/*    )*/}
                 {/*)}*/}
-                {[
-                    {
-                        id: 'adjustment_code',
-                        label: '조정 대상 구분',
-                        type: 'text',
-                        required: true,
-                        readOnly: true,
-                        value: codeMappings.adjustment_code?.[formData.adjustment_code] ?? ''
-                    },
-                    {
-                        id: 'adjustment_code_value',
-                        label: '조정 대상',
-                        type: 'text',
-                        required: true,
-                        readOnly: true,
-                        value: formData.adjustment_code_value
-                    },
-                    {
-                        id: 'adjustment_category',
-                        label: '조정 종류',
-                        type: 'text',
-                        required: true,
-                        dataList: Object.keys(codeMappings.adjustment_category ?? {}),
-                        value: codeMappings.adjustment_category?.[formData.adjustment_category] ?? ''
-                    },
-                    {
-                        id: 'adjustment_type',
-                        label: '가산/할인 여부',
-                        type: 'text',
-                        required: true,
-                        dataList: Object.keys(codeMappings.adjustment_type ?? {}),
-                        value: codeMappings.adjustment_type?.[formData.adjustment_type] ?? ''
-                    },
-                    {
-                        id: 'mount_type',
-                        label: '지불 방법',
-                        type: 'text',
-                        required: true,
-                        dataList: Object.keys(codeMappings.mount_type ?? {}),
-                        value: codeMappings.mount_type?.[formData.mount_type] ?? ''
-                    },
-                    {
-                        id: 'adjustment_cycle',
-                        label: '조정 적용 기간',
-                        type: 'text',
-                        required: true,
-                        dataList: Object.keys(codeMappings.adjustment_cycle ?? {}),
-                        value: codeMappings.adjustment_cycle?.[formData.adjustment_cycle] ?? ''
-                    },
-                    {
-                        id: 'mount_value',
-                        label: '금액',
-                        type: 'text',
-                        required: true,
-                        value: formatNumberWithCommas(formData.mount_value)
-                    },
-                    {
-                        id: 'date_index',
-                        label: '적용 날짜',
-                        type: 'text',
-                        value: formData.date_index
-                    },
-                    {
-                        id: 'description',
-                        label: '설명',
-                        type: 'text',
-                        value: formData.description
-                    }
-                ].map(({ id, label, type, dataList, placeholder, required, readOnly, value }) =>
-                    renderStandardInputField(
-                        id,
-                        label,
-                        type,
-                        value,
-                        handleChange,
-                        dataList,
-                        required,
-                        readOnly || false,
-                        "", // 에러 메시지
-                        placeholder
-                    )
-                )}
+                {/*{[*/}
+                {/*    {*/}
+                {/*        id: 'adjustment_code',*/}
+                {/*        label: '조정 대상 구분',*/}
+                {/*        type: 'text',*/}
+                {/*        required: true,*/}
+                {/*        readOnly: true,*/}
+                {/*        value: codeMappings.adjustment_code?.[formData.adjustment_code] ?? ''*/}
+                {/*    },*/}
+                {/*    {*/}
+                {/*        id: 'adjustment_code_value',*/}
+                {/*        label: '조정 대상',*/}
+                {/*        type: 'text',*/}
+                {/*        required: true,*/}
+                {/*        readOnly: true,*/}
+                {/*        value: formData.adjustment_code_value*/}
+                {/*    },*/}
+                {/*    {*/}
+                {/*        id: 'adjustment_category',*/}
+                {/*        label: '조정 종류',*/}
+                {/*        type: 'text',*/}
+                {/*        required: true,*/}
+                {/*        dataList: Object.keys(codeMappings.adjustment_category ?? {}),*/}
+                {/*        value: codeMappings.adjustment_category?.[formData.adjustment_category] ?? ''*/}
+                {/*    },*/}
+                {/*    {*/}
+                {/*        id: 'adjustment_type',*/}
+                {/*        label: '가산/할인 여부',*/}
+                {/*        type: 'text',*/}
+                {/*        required: true,*/}
+                {/*        dataList: Object.keys(codeMappings.adjustment_type ?? {}),*/}
+                {/*        value: codeMappings.adjustment_type?.[formData.adjustment_type] ?? ''*/}
+                {/*    },*/}
+                {/*    {*/}
+                {/*        id: 'mount_type',*/}
+                {/*        label: '지불 방법',*/}
+                {/*        type: 'text',*/}
+                {/*        required: true,*/}
+                {/*        dataList: Object.keys(codeMappings.mount_type ?? {}),*/}
+                {/*        value: codeMappings.mount_type?.[formData.mount_type] ?? ''*/}
+                {/*    },*/}
+                {/*    {*/}
+                {/*        id: 'adjustment_cycle',*/}
+                {/*        label: '조정 적용 기간',*/}
+                {/*        type: 'text',*/}
+                {/*        required: true,*/}
+                {/*        dataList: Object.keys(codeMappings.adjustment_cycle ?? {}),*/}
+                {/*        value: codeMappings.adjustment_cycle?.[formData.adjustment_cycle] ?? ''*/}
+                {/*    },*/}
+                {/*    {*/}
+                {/*        id: 'mount_value',*/}
+                {/*        label: '금액',*/}
+                {/*        type: 'text',*/}
+                {/*        required: true,*/}
+                {/*        value: formatNumberWithCommas(formData.mount_value)*/}
+                {/*    },*/}
+                {/*    {*/}
+                {/*        id: 'date_index',*/}
+                {/*        label: '적용 날짜',*/}
+                {/*        type: 'text',*/}
+                {/*        value: formData.date_index*/}
+                {/*    },*/}
+                {/*    {*/}
+                {/*        id: 'description',*/}
+                {/*        label: '설명',*/}
+                {/*        type: 'text',*/}
+                {/*        value: formData.description*/}
+                {/*    }*/}
+                {/*].map(({ id, label, type, dataList, placeholder, required, readOnly, value }) =>*/}
+                {/*    renderStandardInputField(*/}
+                {/*        id,*/}
+                {/*        label,*/}
+                {/*        type,*/}
+                {/*        value,*/}
+                {/*        handleChange,*/}
+                {/*        dataList,*/}
+                {/*        required,*/}
+                {/*        readOnly || false,*/}
+                {/*        "", // 에러 메시지*/}
+                {/*        placeholder*/}
+                {/*    )*/}
+                {/*)}*/}
 
+                {/*<div className="grid grid-cols-6 items-center space-x-4">*/}
+                {/*    <label className="col-start-1  w-32 text-sm font-medium text-gray-900">사용 여부 *</label>*/}
+                {/*    <div className="col-start-2">*/}
+                {/*        <Switch checked={formData.use_yn === 'Y'} onChange={handleToggleChange} />*/}
+                {/*        <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
-                <div className="grid grid-cols-6 items-center space-x-4">
-                    <label className="col-start-1  w-32 text-sm font-medium text-gray-900">사용 여부 *</label>
-                    <div className="col-start-2">
-                        <Switch checked={formData.use_yn === 'Y'} onChange={handleToggleChange} />
-                        <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-6 items-center space-x-4">
-                    <label className="col-start-1  w-32 text-sm font-medium text-gray-900">사용 여부 *</label>
-                    <div className="col-start-2">
-                        <Switch checked={formData.tax_free_yn === 'Y'} onChange={handleToggleChange} />
-                        <span className="text-sm text-gray-700">{formData.tax_free_yn === 'Y' ? 'Yes' : 'No'}</span>
-                    </div>
-                </div>
+                {/*<div className="grid grid-cols-6 items-center space-x-4">*/}
+                {/*    <label className="col-start-1  w-32 text-sm font-medium text-gray-900">사용 여부 *</label>*/}
+                {/*    <div className="col-start-2">*/}
+                {/*        <Switch checked={formData.tax_free_yn === 'Y'} onChange={handleToggleChange} />*/}
+                {/*        <span className="text-sm text-gray-700">{formData.tax_free_yn === 'Y' ? 'Yes' : 'No'}</span>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
                 {/* ------------------------------------------------------------------------------------------------------------------------------------ */}
 
@@ -272,34 +324,102 @@ const AdjustmentEditPage = () => {
                     {
                         id: "adjustment_category",
                         label: "조정 종류",
-                        mappingKey: "adjustment_category"
+                        mappingKey: "adjustment_category",
+                        tooltip: true,
+                        tooltipContent: "조정하려는 항목을 선택합니다. ",
+                        tooltipContent2: "예를 들어 가입비, VMS 사용료, 미납금 등이 있습니다."
                     },
                     {
                         id: "adjustment_type",
                         label: "가산/할인 여부",
-                        mappingKey: "adjustment_type"
+                        mappingKey: "adjustment_type",
+                        tooltip: true,
+                        tooltipContent: "조정 방식이 할인인지, 추가 요금인지 선택합니다.",
+                        tooltipContent2: "'할인'은 요금을 줄이고, '가산'은 늘립니다."
                     },
                     {
                         id: "mount_type",
                         label: "지불 방법",
-                        mappingKey: "mount_type"
+                        mappingKey: "mount_type",
+                        tooltip: true,
+                        tooltipContent: "조정 금액이 '요금(정액)인지 '요율(&)'로 적용될지 선택합니다."
                     },
                     {
                         id: "adjustment_cycle",
                         label: "조정 적용 기간",
-                        mappingKey: "adjustment_cycle"
+                        mappingKey: "adjustment_cycle",
+                        tooltip: true,
+                        tooltipContent: "이 조정이 한 번만 적용될지, 매달 반복 적용될지를 선택합니다."
                     }
-                ].map(({ id, label, mappingKey }) => (
+                ].map(({ id, label, mappingKey, tooltip, tooltipContent, tooltipContent2 }) => (
                     <div key={id} className="grid grid-cols-6 items-center space-x-4">
-                        <label htmlFor={id} className="col-span-2 text-sm font-medium text-gray-900">{label}</label>
+                        <label htmlFor={id}
+                               className="flex flex-row items-center space-x-2 col-span-2 text-sm font-medium text-gray-900">
+                            <span>{label}</span>
+                            {tooltip && (
+                                <Tooltip arrow placement="right"
+                                         title={<div>{tooltipContent} {tooltipContent2 && <><br />
+                                             <div>{tooltipContent2}</div>
+                                         </>}</div>}>
+                                    <span>
+                                        <CiCircleQuestion className="text-gray-800 hover:cursor-pointer" />
+                                    </span>
+                                </Tooltip>
+                            )}
+                        </label>
                         <select id={id} name={id} value={formData[id]} onChange={handleChange}
-                                className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5">
+                                className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5">
                             {Object.keys(codeMappings[mappingKey]).map((optionKey, index) => (
                                 <option key={optionKey} value={optionKey}>
                                     {Object.values(codeMappings[mappingKey])[index]} {/* 실제 표시되는 값 */}
                                 </option>
                             ))}
                         </select>
+                        <button
+                            type="button"
+                            className="col-span-1 justify-end items-center"
+                            onClick={() => openModal(mappingKey)}
+                        >
+                            <CiCirclePlus className="w-5 h-5" />
+                        </button>
+                        {isModalOpen && (
+                            <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
+                                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                                    <h2 className="text-lg font-semibold mb-4">새 코드 추가</h2>
+                                    <div className="mb-3">
+                                        <label className="block text-sm font-medium">코드(Code Value)</label>
+                                        <input
+                                            type="text"
+                                            name="code_value"
+                                            value={modalInput.code_value}
+                                            onChange={handleModalChange}
+                                            className="w-full border p-2 rounded"
+                                        />
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium">별칭(Code Alias)</label>
+                                        <input
+                                            type="text"
+                                            name="code_alias"
+                                            value={modalInput.code_alias}
+                                            onChange={handleModalChange}
+                                            className="w-full border p-2 rounded"
+                                        />
+                                    </div>
+
+                                    <div className="flex justify-end space-x-2">
+                                        <button type="button" onClick={closeModal} className="px-4 py-2 bg-gray-300 rounded">
+                                            취소
+                                        </button>
+                                        <button type="button" onClick={handleModalSubmit}
+                                                className="px-4 py-2 bg-blue-500 text-white rounded">
+                                            저장
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ))}
 
@@ -367,7 +487,7 @@ const AdjustmentEditPage = () => {
 
                 {/* ✅ 버튼 */}
                 <div className="flex space-x-4">
-                    <button type="submit"
+                    <button type="button"
                             className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                         저장
                     </button>

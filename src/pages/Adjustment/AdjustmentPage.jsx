@@ -77,7 +77,7 @@ const AdjustmentPage = () => {
                 <div className="flex flex-row justify-between mb-3">
                     <h1 className="py-1 text-lg font-bold">할인, 가산 요금 등 조정 내역 삽입, 수정, 삭제</h1>
                     <div className="flex space-x-2 items-center">
-                        <NewButton to="/price/new" />
+                        <NewButton to="/adjustment/new" />
 
                         <DataActionDropdown
                             onExportCSV={() => exportToCSV(adjustmentData, 'Adjustments.csv')}
