@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { fetchAdjustment, fetchAdjustmentPart, fetchAdjustmentValue, fetchAdjustmentValueHistory, deleteAdjustment } from '@/service/adjustmentService.js';
+import { fetchAdjustment, fetchAdjustmentPart, fetchAdjustmentValue, fetchAdjustmentValueHistory, deleteAdjustment, fetchAdjustmentCodeName } from '@/service/adjustmentService.js';
 import { updateAdjustment } from '../service/adjustmentService.js';
 
 const useAdjustmentStore = create((set, get) => ({
@@ -23,6 +23,13 @@ const useAdjustmentStore = create((set, get) => ({
     adjustmentDetailHistoryLoading: false,
     adjustmentDetailHistoryError: null,
 
+    // 각 항목의 리스트
+    adjustmentCategories: [],
+    adjustmentTypes: [],
+    mountTypes: [],
+    adjustmentCycles: [],
+    loading: false,
+    error: null,
 
     // 전체 조정 데이터
     fetchAdjustmentData: async () => {
@@ -85,7 +92,7 @@ const useAdjustmentStore = create((set, get) => ({
         }
     },
 
-    // 수
+    // 수정
     updateAdjustmentData: async (adjustment_index, payload) => {
         try {
             await updateAdjustment(adjustment_index, payload);
@@ -93,6 +100,31 @@ const useAdjustmentStore = create((set, get) => ({
             throw err;
         }
     },
+
+    // 각 항목의 리스트 추출
+    fetchOptions: async () => {
+        set({ loading: true, error: null });
+
+        try {
+            const [categories, types, mounts, cycles] = await Promise.all([
+                fetchAdjustmentCodeName("adjustment_category"),
+                fetchAdjustmentCodeName("adjustment_type"),
+                fetchAdjustmentCodeName("mount_type"),
+                fetchAdjustmentCodeName("adjustment_cycle"),
+            ]);
+
+            set({
+                adjustmentCategories: categories || [],
+                adjustmentTypes: types || [],
+                mountTypes: mounts || [],
+                adjustmentCycles: cycles || [],
+            });
+        } catch (error) {
+            set({ error: error.message || "Failed to fetch adjustment options" });
+        } finally {
+            set({ loading: false });
+        }
+    }
 }));
 
 export default useAdjustmentStore;

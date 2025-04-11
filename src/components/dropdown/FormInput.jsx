@@ -1,7 +1,7 @@
 import React from "react";
 import { formatNumberWithCommasNumber } from '@/utils/formatHelpers.jsx';
 
-const FormInput = ({ label, name, type, value, onChange, placeholder = "", direct = "" }) => {
+const FormInput = ({ label, name, type, value, onChange, placeholder = "", direct = "", disabled= false, dataList = [] }) => {
     const handleInputChange = (e) => {
         const rawValue = e.target.value;
 
@@ -31,16 +31,39 @@ const FormInput = ({ label, name, type, value, onChange, placeholder = "", direc
             <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">
                 {label}
             </label>
-            <input
-                type={type === "number" ? "text" : type}
-                name={name}
-                value={displayValue}
-                onChange={handleInputChange}
-                placeholder={placeholder}
-                className={`col-span-2 border rounded-md p-2 text-xs w-auto ${
-                    direct === "number" ? "text-right" : "text-left"
-                }`}
-            />
+            {type === 'select' ? (
+                <select
+                    name={name}
+                    value={value}
+                    onChange={handleInputChange}
+                    disabled={disabled}
+                    className="col-span-2 border rounded-md p-2 text-xs w-auto"
+                >
+                    {dataList.map((option) => (
+                        <option key={option.code_value} value={option.code_value}>
+                            {option.code_alias}
+                        </option>
+                    ))}
+                </select>
+            ) : (
+                <input
+                    disabled={disabled}
+                    type={type === "number" ? "text" : type}
+                    name={name}
+                    value={
+                        name === 'use_percent_of_month'
+                            ? value
+                            : type === 'number'
+                                ? formatNumberWithCommasNumber(value)
+                                : value
+                    }
+                    onChange={handleInputChange}
+                    placeholder={placeholder}
+                    className={`col-span-2 border rounded-md p-2 text-xs w-auto ${
+                        direct === "number" ? "text-right" : "text-left"
+                    }`}
+                />
+            )}
         </div>
     );
 };

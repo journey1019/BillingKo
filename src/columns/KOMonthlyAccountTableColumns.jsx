@@ -32,6 +32,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps, // 공통 정렬 적용
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "add_use_fee_total",
@@ -39,6 +40,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "modification_fee_total",
@@ -46,6 +48,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "subscribe_fee_total",
@@ -53,6 +56,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "total_fee",
@@ -60,6 +64,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "tax_fee",
@@ -67,6 +72,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "cut_off_fee",
@@ -74,6 +80,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "monthly_final_fee",
@@ -81,6 +88,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "modification_tax_free_total",
@@ -88,6 +96,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "late_payment_penalty_fee",
@@ -95,6 +104,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "none_pay_fee",
@@ -102,6 +112,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: "final_fee",
@@ -109,6 +120,7 @@ const KOMonthlyAccountTableColumns = [
         size: 100,
         ...numericColumnProps,
         Cell: ({ cell }) => formatNumber(cell.getValue()),
+        muiTableHeadCellProps: { align: 'right' },
     },
 ];
 

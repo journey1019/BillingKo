@@ -42,6 +42,12 @@ const useAccountMonthlyStore = create((set) => ({
         }
     },
 
+    setSelectedRowId: (row) =>
+        set({
+            selectedRowId: row,
+            isExpanded: true
+        }),
+
     selectRow: (row) =>
         set((state) => ({
             selectedRowId: state.selectedRowId?.acct_num === row.acct_num ? null : row,

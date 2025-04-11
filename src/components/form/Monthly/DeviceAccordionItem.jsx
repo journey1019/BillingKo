@@ -88,7 +88,6 @@ export const accordionItems = ({ detailData, paymentInfo, version, fetchDetailDa
                             ['기본료', formatNumber(paymentInfo.basic_fee)],
                             ['통신료', formatNumber(paymentInfo.add_use_fee)],
                             ['가입비', formatNumber(paymentInfo.subscribe_fee)],
-                            ['절사 금액', formatNumber(paymentInfo.cut_off_fee)],
                             ['부가 서비스료', formatNumber(paymentInfo.modification_fee)],
                         ].map(([label, value], index) => (
                             <p key={index} className="grid grid-cols-2 gap-4 py-0.5">

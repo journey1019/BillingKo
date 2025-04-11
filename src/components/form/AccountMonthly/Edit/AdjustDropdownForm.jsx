@@ -182,7 +182,7 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
                         <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">부가세 할인 여부</label>
                         <div className="col-span-2 flex flex-row space-x-2 items-center text-right">
                             <span className="text-blue-500">
-                                {formData.tax_free_yn === 'Y' ? '부가세 계산 전 조정' : '부가세 계산 후 조정'}
+                                {formData.tax_free_yn === 'Y' ? '부가세 계산 후 조정' : '부가세 계산 전 조정'}
                             </span>
                             <button
                                 className={`w-10 h-5 flex items-center transition duration-300 rounded-full p-1 ${formData.tax_free_yn === 'Y' ? 'bg-blue-500' : 'bg-gray-300'}`}

@@ -49,6 +49,7 @@ export const MonthlyTableColumns = [
         Cell: ({ cell }) => (
             <div className="text-right">{formatNumber(cell.getValue())}</div>
         ),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: 'use_byte_total',
@@ -56,6 +57,7 @@ export const MonthlyTableColumns = [
         Cell: ({ cell }) => (
             <div className="text-right">{formatNumber(cell.getValue())}</div>
         ),
+        muiTableHeadCellProps: { align: 'right' },
     },
     // {
     //     accessorKey: 'use_byte',
@@ -89,6 +91,7 @@ export const MonthlyTableColumns = [
         Cell: ({ cell }) => (
             <div className="text-right">{cell.getValue()}</div>
         ),
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: 'use_percent_of_month',

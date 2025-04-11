@@ -40,6 +40,9 @@ const MonthlyPage = () => {
         resetSelection,
     } = useMonthlyStore();
 
+    useEffect(() => {
+        resetSelection();
+    }, []);
 
     // 월별 데이터 fetch
     useEffect(() => {

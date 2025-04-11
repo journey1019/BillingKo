@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { formatDateTime, formatNumber, formatValue } from '@/utils/formatHelpers.jsx';
 import { formatPeriod, getTypeClass } from '@/options/DeviceDetailOption.jsx';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
-import AdjustDropdownForm from '@/components/form/AccountMonthly/Edit/AdjustDropdownForm.jsx';
+// import AdjustDropdownForm from '@/components/form/AccountMonthly/Edit/AdjustDropdownForm.jsx';
+import AdjustDropdownForm from '@/components/form/Monthly/Edit/AdjustDropdownForm.jsx';
 
 import { FaExpand } from "react-icons/fa";
 import { LuRefreshCw } from "react-icons/lu";
@@ -16,7 +17,9 @@ import { MdEdit } from "react-icons/md";
  * @param (Array) dProductDetail: 사용 바이트 상세 정보 (D_Product)
  * @param (Array) paymentAdjustmentInfo: 조정 상세 정보 (Adjustment)
  * */
-const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProductDetail, paymentAdjustmentInfo, yearMonth }) => {
+const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProductDetail, paymentAdjustmentInfo, version, fetchDetailData, yearMonth }) => {
+    const hasVersion = typeof version === "number" // ✅ version 데이터가 존재하고, 숫자인지 확인
+    console.log(detailData)
     console.log(paymentFeeDetail)
     console.log(paymentAdjustmentInfo)
 
@@ -102,25 +105,27 @@ const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProduct
                 <div className="flex flex-row justify-between items-center">
                     <h2 className="text-lg font-semibold pb-2">조정 상세 정보</h2>
                     <div className="flex flex-row items-center">
-                        <button
-                            className="hover:text-blue-500"
-                            onClick={() => { window.location.href = `/ko_monthly?yearMonth=${yearMonth}&serial=${detailData.serial_number}` }}
-                        >
-                            <LuRefreshCw />
-                        </button>
+
                         {/*<button*/}
                         {/*    className="hover:text-blue-500"*/}
                         {/*    onClick={() => navigate(`/ko_monthly?yearMonth=${yearMonth}&serial=${detailData.serial_number}`)}*/}
                         {/*>*/}
                         {/*    <LuRefreshCw />*/}
                         {/*</button>*/}
-                        <AdjustDropdownForm adjustmentCode="serial_number" adjustmentCodeValue={detailData?.serial_number} yearMonth={yearMonth} taxFreeYn="N"/>
+
+                        {/*<AdjustDropdownForm adjustmentCode="serial_number" adjustmentCodeValue={detailData?.serial_number} yearMonth={yearMonth} taxFreeYn="N"/>*/}
+
                         {/*{location.pathname !== '/adjustment' && (*/}
                         {/*    <div className="p-2 rounded-full hover:bg-gray-200 cursor-pointer"*/}
                         {/*         onClick={() => navigate('/adjustment')}>*/}
                         {/*        <FaExpand className="w-5 h-5" />*/}
                         {/*    </div>*/}
                         {/*)}*/}
+
+                        {/* Dropdown 수정 버튼 */}
+                        {hasVersion && (
+                            <AdjustDropdownForm detailData={detailData} fetchDetailData={fetchDetailData} yearMonth={yearMonth}/>
+                        )}
                     </div>
                 </div>
                 {paymentAdjustmentInfo.length > 0 ? (
@@ -128,7 +133,7 @@ const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProduct
                         <table className="w-full text-sm text-center border-collapse">
                             <thead className="bg-gray-200 sticky -top-0.5 z-10">
                             <tr>
-                                {["번호", "조정 유형", "조정 대상", "조정 분류", "조정 타입", "요금 기준", "설명", "부가세 포함 여부", "조정 금액"].map((header, index) => (
+                                {["번호", "조정 유형", "조정 대상", "조정 분류", "조정 타입", "요금 기준", "부가세 포함 여부", "조정 금액", "설명"].map((header, index) => (
                                     <th key={index}
                                         className="px-4 py-1 2xl:py-2 border font-medium whitespace-nowrap">{header}</th>
                                 ))}
@@ -144,10 +149,10 @@ const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProduct
                                         <td className="px-4 py-2 border">{formatValue(detail.adjustment_value)}</td>
                                         <td className="px-4 py-2 border">{codeMappings.adjustment_category[detail.adjustment_category] || formatValue(detail.adjustment_category)}</td>
                                         <td className="px-4 py-2 border">{codeMappings.adjustment_type[detail.adjustment_type] || formatValue(detail.adjustment_type)}</td>
-                                        <td className="px-4 py-2 border">{formatValue(detail.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>
                                         <td className="px-4 py-2 border">{codeMappings.mount_type[detail.mount_type] || formatValue(detail.mount_type)}</td>
-                                        <td className="px-4 py-2 border">{formatValue(detail.description)}</td>
+                                        <td className="px-4 py-2 border">{formatValue(detail.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>
                                         <td className="px-4 py-2 border text-right">{formatNumber(detail.adjustment_fee)}</td>
+                                        <td className="px-4 py-2 border">{formatValue(detail.description)}</td>
                                     </tr>
                                 ))}
                             </tbody>

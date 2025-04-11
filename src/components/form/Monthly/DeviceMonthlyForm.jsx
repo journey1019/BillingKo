@@ -174,7 +174,7 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
 
                     <UseByteDetailItem detailData={detailData} paymentInfo={paymentInfo}
                                        paymentFeeDetail={paymentFeeDetail} dProductDetail={dProductDetail}
-                                       paymentAdjustmentInfo={paymentAdjustmentInfo} yearMonth={yearMonth}/>
+                                       paymentAdjustmentInfo={paymentAdjustmentInfo} version={version} fetchDetailData={fetchDetailData} yearMonth={yearMonth}/>
                 </div>
             </div>
         </>

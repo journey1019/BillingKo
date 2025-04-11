@@ -123,7 +123,7 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
                     <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                 </div>
                 <div className="flex flex-row justify-between items-center">
-                    <div className="px-4 pt-4 text-red-500">납부 데이터를 셀에서 직접 수정할 수 있습니다.</div>
+                    <div className="px-4 pt-4 text-red-500">수정하고 싶은 셀을 <span className="font-bold underline">더블클릭</span>하여 수정할 수 있습니다.</div>
                     <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center', mt: 2, pr: 2 }}>
                         <Button
                             color="success"

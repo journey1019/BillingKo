@@ -21,9 +21,8 @@ export const FormatUseYnToggle = ({ cell }) => {
     const value = cell.getValue(); // "Y" 또는 "N"
 
     return (
-        <div className="flex items-center">
+        <div className="flex items-center justify-center w-full h-full">
             <label className="relative inline-flex items-center cursor-pointer">
-                {/* ✅ 비활성화된 토글 (수정 불가) */}
                 <input
                     type="checkbox"
                     checked={value === 'Y'}

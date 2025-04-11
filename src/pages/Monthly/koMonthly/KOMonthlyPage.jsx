@@ -53,6 +53,10 @@ const KOMonthlyPage = () => {
     });
 
     useEffect(() => {
+        resetSelection(); // ✅ 진입 시 선택 초기화
+    }, []);
+
+    useEffect(() => {
         fetchKOMonthlyData(yearMonth);
     }, [yearMonth]);
     // console.log(koMonthlyData)

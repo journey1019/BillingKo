@@ -10,18 +10,19 @@ import {
     applyRightAlignStyles,
     FormatUseYnToggle,
 } from './cellStyle/AccountCell.jsx';
-
+import { applyCenterAlignStyles } from './cellStyle/BasicCellStyle.jsx';
 
 export const AdjustmentTableColumns = [
-    {
-        accessorKey: 'adjustment_index',
-        header: '번호',
-        size: 50,
-    },
+    // {
+    //     accessorKey: 'adjustment_index',
+    //     header: '번호',
+    //     size: 50,
+    // },
     {
         accessorKey: 'use_yn',
         header: '사용',
         Cell: FormatUseYnToggle,
+        ...applyCenterAlignStyles(),
     },
     {
         accessorKey: 'adjustment_code',
@@ -55,7 +56,8 @@ export const AdjustmentTableColumns = [
         accessorKey: 'mount_value',
         header: '요금 적용 금액',
         Cell: renderNumberCell,
-        ...applyRightAlignStyles()
+        // ...applyRightAlignStyles()
+        muiTableHeadCellProps: { align: 'right' },
     },
     {
         accessorKey: 'description',

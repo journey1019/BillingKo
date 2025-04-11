@@ -31,6 +31,7 @@ const AccountMonthlyPage = () => {
         loading,
         error,
         selectedRowId,
+        setSelectedRowId,
         isExpanded,
         accountDetailData,
         accountDetailLoading,
@@ -47,16 +48,31 @@ const AccountMonthlyPage = () => {
             : [];
     });
 
+    useEffect(() => {
+        resetSelection(); // ✅ 진입 시 선택 초기화
+    }, []);
 
     useEffect(() => {
         fetchMonthlyAcctData(yearMonth);
     }, [yearMonth]);
 
     useEffect(() => {
-        if (selectedRowId) {
-            fetchAccountDetailData(yearMonth, urlAcct ? urlAcct : selectedRowId.acct_num);
+        if(!monthlyAcctData || !urlAcct) return;
+
+        const matchedItem = monthlyAcctData.find(item => item.acct_num === urlAcct);
+        if (matchedItem) {
+            setSelectedRowId(matchedItem)
+            fetchAccountDetailData(yearMonth, urlAcct);
         }
-    }, [selectedRowId, yearMonth, urlAcct]);
+    }, [monthlyAcctData, yearMonth, urlAcct]);
+    useEffect(() => {
+        if (!selectedRowId) return;
+        fetchAccountDetailData(yearMonth, selectedRowId.acct_num);
+    }, [selectedRowId])
+
+    console.log(selectedRowId)
+    console.log(selectRow)
+    console.log(accountDetailData)
 
     return(
         <>

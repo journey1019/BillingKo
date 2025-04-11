@@ -35,13 +35,11 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
             free_bytes: detailData.free_bytes ?? "",
             use_period: detailData.use_period || "",
             use_percent_of_month: detailData.use_percent_of_month || "",
-            use_byte_total: detailData.use_byte_total || "",
+            use_byte_total: detailData.use_byte_total ?? "",
             basic_fee: detailData.payment.basic_fee ?? "",
-            final_fee: detailData.payment.final_fee ?? "",
             total_fee: detailData.payment.total_fee ?? "",
             subscribe_fee: detailData.payment.subscribe_fee ?? "",
             add_use_fee: detailData.payment.add_use_fee ?? "",
-            cut_off_fee: detailData.payment.cut_off_fee ?? "",
             modification_fee: detailData.payment.modification_fee ?? "",
         });
     }, [detailData]);
@@ -87,11 +85,9 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
                 use_period: formData.use_period,
                 use_percent_of_month: formData.use_percent_of_month,
                 basic_fee: formData.basic_fee,
-                final_fee: formData.final_fee,
                 total_fee: formData.total_fee,
                 subscribe_fee: formData.subscribe_fee,
                 add_use_fee: formData.add_use_fee,
-                cut_off_fee: formData.cut_off_fee,
                 modification_fee: formData.modification_fee,
             };
 
@@ -228,9 +224,8 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
                         { label: "기본료", name: "basic_fee", type: "number" },
                         { label: "가입비", name: "subscribe_fee", type: "number" },
                         { label: "추가 사용료", name: "add_use_fee", type: "number" },
-                        { label: "절사 금액", name: "cut_off_fee", type: "number" },
                         { label: "부가 서비스료", name: "modification_fee", type: "number" },
-                        { label: "총 납부액", name: "final_fee", type: "number" },
+                        { label: "총 납부액", name: "total_fee", type: "number" },
                     ].map((field, index) => (
                         <FormInput
                             key={index}
