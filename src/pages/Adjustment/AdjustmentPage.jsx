@@ -14,9 +14,10 @@ import AdjustmentTabItems from '@/components/form/Adjustment/AdjustmentTabItems.
 import { AdjustmentTableColumns } from '@/columns/AdjustmentTableColumns.jsx';
 import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
-
+import useAdjustmentMappingStore from '@/stores/adjustmentMappingStore';
 
 const AdjustmentPage = () => {
+    const { fetchCodeMappings } = useAdjustmentMappingStore();
     const {
         // 전체 데이터
         adjustmentData,
@@ -47,6 +48,7 @@ const AdjustmentPage = () => {
 
     useEffect(() => {
         fetchAdjustmentData();
+        fetchCodeMappings(); // ✅ 여기서 한 번만 호출
     }, []);
 
     useEffect(() => {

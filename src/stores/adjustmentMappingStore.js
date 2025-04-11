@@ -8,7 +8,7 @@ const formatMapping = (arr) =>
         return acc;
     }, {});
 
-const useAdjustmentMappingStore = create((set) => ({
+const useAdjustmentMappingStore = create((set, get) => ({
     codeMappings: {
         adjustment_code: {},
         adjustment_category: {},
@@ -16,10 +16,14 @@ const useAdjustmentMappingStore = create((set) => ({
         mount_type: {},
         adjustment_cycle: {},
     },
+    fetched: false, // ✅ 추가
     loading: false,
     error: null,
 
     fetchCodeMappings: async () => {
+        const { fetched } = get();
+        if (fetched) return; // ✅ 이미 가져왔으면 재요청 안함
+
         set({ loading: true, error: null });
         try {
             const [codes, categories, types, mounts, cycles] = await Promise.all([
@@ -38,13 +42,14 @@ const useAdjustmentMappingStore = create((set) => ({
                     mount_type: formatMapping(mounts),
                     adjustment_cycle: formatMapping(cycles),
                 },
-                loading: false
+                loading: false,
+                fetched: true, // ✅ 한 번 실행 완료
             });
         } catch (err) {
             console.error("조정 코드 매핑 에러:", err);
             set({
                 error: err.message || '코드 매핑 불러오기 실패',
-                loading: false
+                loading: false,
             });
         }
     },

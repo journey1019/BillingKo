@@ -1,10 +1,10 @@
 import React from 'react';
 import clsx from 'clsx';
-import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
-
+// import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+import useAdjustmentMappingStore from '@/stores/adjustmentMappingStore.js';
 
 export const AdjustmentCell_Code = ({ cell }) => {
-    const codeMappings = useAdjustmentMappings();
+    const codeMappings = useAdjustmentMappingStore(state => state.codeMappings);
 
     const value = cell.getValue() || ''; // 값이 없으면 빈 문자열로 초기화
     const normalizedValue = value.toLowerCase().replace(/[^a-z0-9]/gi, ''); // 특수문자 제거 및 소문자로 변환
@@ -22,7 +22,7 @@ export const AdjustmentCell_Code = ({ cell }) => {
 };
 
 export const AdjustmentCell_Category = ({ cell }) => {
-    const codeMappings = useAdjustmentMappings();
+    const codeMappings = useAdjustmentMappingStore(state => state.codeMappings);
     const value = cell.getValue();
 
     // 첫 글자만 대문자로 변환
@@ -41,7 +41,7 @@ export const AdjustmentCell_Category = ({ cell }) => {
 };
 
 export const AdjustmentCell_Type = ({ cell }) => {
-    const codeMappings = useAdjustmentMappings();
+    const codeMappings = useAdjustmentMappingStore(state => state.codeMappings);
     const value = cell.getValue() || "-";
 
     return(codeMappings.adjustment_type[value])
