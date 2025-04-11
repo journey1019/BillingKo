@@ -182,26 +182,26 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
                     {/*/>*/}
 
                     {[
-                        { label: "조정 대상 구분", name: "adjustment_code", type: "select",
+                        { label: "조정 유형", name: "adjustment_code", type: "select",
                             dataList: Object.entries(codeMappings.adjustment_code).map(([value, label]) => ({ code_value: value, code_alias: label })),
                             disabled: true
                         },
                         { label: "조정 대상", name: "adjustment_value", type: "text", disabled: true },
-                        { label: "조정 구분", name: "adjustment_category", type: "select",
+                        { label: "조정 분류", name: "adjustment_category", type: "select",
                             dataList: Object.entries(codeMappings.adjustment_category).map(([value, label]) => ({
                                 code_value: value,
                                 code_alias: label,
                             })),
                             placeholder: "미납/과오납"
                         },
-                        { label: "할인/가산", name: "adjustment_type", type: "select",
+                        { label: "조정 타입", name: "adjustment_type", type: "select",
                             dataList: Object.entries(codeMappings.adjustment_type).map(([value, label]) => ({
                                 code_value: value,
                                 code_alias: label,
                             })),
                             placeholder: "할인/가산"
                         },
-                        { label: "요금/요율", name: "mount_type", type: "select",
+                        { label: "요금 기준", name: "mount_type", type: "select",
                             dataList: Object.entries(codeMappings.mount_type).map(([value, label]) => ({
                                 code_value: value,
                                 code_alias: label,

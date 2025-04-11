@@ -7,7 +7,7 @@ import AdjustDropdownForm from '@/components/form/AccountMonthly/Edit/AdjustDrop
 import { fetchAdjustmentCodeName } from '@/service/adjustmentService.js';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
 import { LuRefreshCw } from "react-icons/lu";
-
+import ReadOnlySwitch from '@/components/ui/switches/ReadOnlySwitch.jsx';
 
 
 /**
@@ -129,7 +129,10 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                                             <td className="px-4 py-2 border">{codeMappings.adjustment_type[adj.adjustment_type] || formatValue(adj.adjustment_type)}</td>
                                             <td className="px-4 py-2 border">{codeMappings.mount_type[adj.mount_type] || formatValue(adj.mount_type)}</td>
                                             <td className="px-4 py-2 border">{formatValue(adj.description)}</td>
-                                            <td className="px-4 py-2 border">{formatValue(adj.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>
+                                            <div className="px-4 py-2 border">
+                                                <ReadOnlySwitch isEnabled={adj.adjustment_tax_free_yn} labelOn="부가세 포함" labelOff="부가세 미포함" />
+                                            </div>
+                                            {/*<td className="px-4 py-2 border">{formatValue(adj.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>*/}
                                             <td className="px-4 py-2 border text-right">{formatNumber(adj.adjustment_fee)}</td>
                                         </tr>
                                     ))}

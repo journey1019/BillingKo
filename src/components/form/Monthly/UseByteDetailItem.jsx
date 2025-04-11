@@ -9,7 +9,7 @@ import AdjustDropdownForm from '@/components/form/Monthly/Edit/AdjustDropdownFor
 import { FaExpand } from "react-icons/fa";
 import { LuRefreshCw } from "react-icons/lu";
 import { MdEdit } from "react-icons/md";
-
+import ReadOnlySwitch from '@/components/ui/switches/ReadOnlySwitch.jsx';
 
 /**
  * @desc: 단말기별 청구서 수정 페이지_Device Right Form
@@ -143,15 +143,19 @@ const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProduct
                             {[...paymentAdjustmentInfo]
                                 .sort((a, b) => new Date(b.event_date).getTime() - new Date(a.event_date).getTime()) // event_date 기준 내림차순 정렬
                                 .map((detail, index) => (
-                                    <tr key={index} className="text-center text-sm 2xl:text-sm whitespace-nowrap bg-white">
+                                    <tr key={index}
+                                        className="text-center text-sm 2xl:text-sm whitespace-nowrap bg-white">
                                         <td className="px-4 py-2 border">{index + 1}</td>
                                         <td className="px-4 py-2 border">{codeMappings.adjustment_code[detail.adjustment_code] || formatValue(detail.adjustment_code)}</td>
                                         <td className="px-4 py-2 border">{formatValue(detail.adjustment_value)}</td>
                                         <td className="px-4 py-2 border">{codeMappings.adjustment_category[detail.adjustment_category] || formatValue(detail.adjustment_category)}</td>
                                         <td className="px-4 py-2 border">{codeMappings.adjustment_type[detail.adjustment_type] || formatValue(detail.adjustment_type)}</td>
                                         <td className="px-4 py-2 border">{codeMappings.mount_type[detail.mount_type] || formatValue(detail.mount_type)}</td>
-                                        <td className="px-4 py-2 border">{formatValue(detail.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>
                                         <td className="px-4 py-2 border text-right">{formatNumber(detail.adjustment_fee)}</td>
+                                        <div className="px-4 py-2 border">
+                                            <ReadOnlySwitch isEnabled={detail.adjustment_tax_free_yn} labelOn="부가세 포함" labelOff="부가세 미포함" />
+                                        </div>
+                                        {/*<td className="px-4 py-2 border">{formatValue(detail.adjustment_tax_free_yn === 'Y' ? '부가세 미포함' : '부가세 포함')}</td>*/}
                                         <td className="px-4 py-2 border">{formatValue(detail.description)}</td>
                                     </tr>
                                 ))}
