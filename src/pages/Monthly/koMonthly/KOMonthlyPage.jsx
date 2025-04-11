@@ -61,29 +61,29 @@ const KOMonthlyPage = () => {
     }, [yearMonth]);
     // console.log(koMonthlyData)
 
-    console.log(urlSerial)
+    // console.log(urlSerial)
     useEffect(() => {
         if (!koMonthlyData || !urlSerial) return;
 
         const matchedItem = koMonthlyData.find(item => item.serial_number === urlSerial);
         if (matchedItem) {
-            console.log(matchedItem)
+            // console.log(matchedItem)
             setSelectedMonthlyIndex(matchedItem);
             fetchDetailData(matchedItem.data_index);
         }
     }, [koMonthlyData, urlSerial]);
-    console.log(selectedMonthlyIndex)
+    // console.log(selectedMonthlyIndex)
 
     // 선택이 바뀔 때 상세 기본 데이터
     useEffect(() => {
         if (!selectedMonthlyIndex) return;
-        console.log(selectedMonthlyIndex)
+        // console.log(selectedMonthlyIndex)
         fetchDetailData(selectedMonthlyIndex.data_index);
     }, [selectedMonthlyIndex]);
 
-    console.log('detailData: ', detailData)
-    console.log(selectedMonthlyIndex)
-    console.log(yearMonth)
+    // console.log('detailData: ', detailData)
+    // console.log(selectedMonthlyIndex)
+    // console.log(yearMonth)
 
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>

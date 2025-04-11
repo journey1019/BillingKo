@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import PropTypes from "prop-types"; // ✅ PropTypes 추가
 import { FiChevronDown } from "react-icons/fi";
 
-const InnerAccordion = ({ items = [] }) => {
+const InnerAccordion = ({ items }) => {
+    const safeItems = items || []; // fallback 처리
     return (
         <div className="w-full rounded-lg">
-            {items.length > 0 ? (
-                items.map((item, index) => (
+            {safeItems.length > 0 ? (
+                safeItems.map((item, index) => (
                     <AccordionItem key={index} title={item.title} content={item.content} />
                 ))
             ) : (
@@ -33,15 +34,10 @@ const AccordionItem = ({ title, content }) => {
             </button>
 
             <div className={isOpen ? "block pt-2 border rounded-md my-2" : "hidden"}>
-                <p>{content}</p>
+                <div>{content}</div>
             </div>
         </div>
     );
-};
-
-// ✅ 기본 props 설정 (items가 전달되지 않을 경우 빈 배열로 설정)
-InnerAccordion.defaultProps = {
-    items: [],
 };
 
 // ✅ PropTypes로 타입 검증 추가

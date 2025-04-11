@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
     const navigate = useNavigate();
-    console.log('monthlyAcctSaveData: ', monthlyAcctSaveData)
+    // console.log('monthlyAcctSaveData: ', monthlyAcctSaveData)
 
     // ✅ `monthlyAcctSaveData`가 없을 경우 빈 배열을 사용하여 오류 방지
     const unconfirmedData = (monthlyAcctSaveData ?? []).filter(item => item.confirm_yn === "N");
@@ -25,11 +25,11 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
         [monthlyAcctSaveData, yearMonth]
     );
 
-    console.log(totalNonePayFee - currentNonePayFee)
-    console.log('monthlyAcctSaveData: ', monthlyAcctSaveData)
-    console.log('unconfirmedData: ', unconfirmedData);
-    console.log('totalNonePayFee: ', totalNonePayFee);
-    console.log('currentNonePayFee: ', currentNonePayFee);
+    // console.log(totalNonePayFee - currentNonePayFee)
+    // console.log('monthlyAcctSaveData: ', monthlyAcctSaveData)
+    // console.log('unconfirmedData: ', unconfirmedData);
+    // console.log('totalNonePayFee: ', totalNonePayFee);
+    // console.log('currentNonePayFee: ', currentNonePayFee);
     // 미납료 납부 금액
     const amountPaid = totalNonePayFee - currentNonePayFee;
 
@@ -40,8 +40,8 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
         return totalNonePayFee > 0 ? (amountPaid / totalNonePayFee) * 100 : 0;
     }, [totalNonePayFee, currentNonePayFee])
     const paymentStatusPercent = progress.toFixed(2);
-    console.log(progress)
-    console.log(progress.toFixed(2))
+    // console.log(progress)
+    // console.log(progress.toFixed(2))
 
     return(
         <div className="flex flex-col py-4">

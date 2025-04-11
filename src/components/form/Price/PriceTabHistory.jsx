@@ -7,7 +7,7 @@ import EachTransactionHistoryTab from '../Adjustment/EachTransactionHistoryTab.j
 
 const PriceTabHistory = ({ selectedPriceId }) => {
     const { priceHistoryData, priceHistoryLoading, priceHistoryError } = usePriceStore();
-    console.log(selectedPriceId)
+
     return(
         <>
             <div>

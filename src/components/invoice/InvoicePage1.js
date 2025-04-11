@@ -22,7 +22,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
 
     // 해당 월의 1일부터 말일까지 계산 (사용기간) 'YYYY-MM-DD ~ YYYY-MM-DD'
     const lastDayOfGivenMonth = new Date(year, Number(month), 0).getDate(); // 주어진 month의 말일 계산
-    console.log(lastDayOfGivenMonth)
+    // console.log(lastDayOfGivenMonth)
 
     // 청구서 출력 다음달
     const nextMonth = Number(month) + 1;
@@ -54,7 +54,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     ---------------------------- */
     const accountData = applyDefaultValues(accountDetailData?.[0] || {}, defaultAccountData);
 
-    console.log(accountData)
+    // console.log(accountData)
     const acct_num = accountData.acct_num; // 없으면 '-'
     const acct_name = accountData.account_info.acct_name;
     const utf8_acct_name = decodeURIComponent(encodeURIComponent(acct_name)); // `unescape()` 대체

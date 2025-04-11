@@ -32,17 +32,15 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
     //     adjustmentCycleOptions: toOptionList(adjustmentCycles),
     // };
 
-    console.log(codeMappings)
-    console.log(adjustmentTypes)
-    console.log(mountTypes)
+    // console.log(codeMappings)
+    // console.log(adjustmentTypes)
+    // console.log(mountTypes)
     useEffect(() => {
         fetchOptions(); // ✅ 마운트 시 옵션 불러오기
     }, []);
 
-    const navigate = useNavigate();
-
-    console.log(detailData)
-    console.log(yearMonth)
+    // console.log(detailData)
+    // console.log(yearMonth)
     const [alertBox, setAlertBox] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({});

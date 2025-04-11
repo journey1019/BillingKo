@@ -24,11 +24,11 @@ const CustomProgressBar = ({ acct_num, monthlyAcctSaveData, totalUnpaidFee, conf
         [monthlyAcctSaveData, acct_num]
     );
 
-    console.log(totalNonePayFee - currentNonePayFee)
-    console.log('monthlyAcctSaveData: ', monthlyAcctSaveData)
-    console.log('unconfirmedData: ', unconfirmedData);
-    console.log('totalNonePayFee: ', totalNonePayFee);
-    console.log('currentNonePayFee: ', currentNonePayFee);
+    // console.log(totalNonePayFee - currentNonePayFee)
+    // console.log('monthlyAcctSaveData: ', monthlyAcctSaveData)
+    // console.log('unconfirmedData: ', unconfirmedData);
+    // console.log('totalNonePayFee: ', totalNonePayFee);
+    // console.log('currentNonePayFee: ', currentNonePayFee);
     // 미납료 납부 금액
     const amountPaid = totalNonePayFee - currentNonePayFee;
 
@@ -39,8 +39,8 @@ const CustomProgressBar = ({ acct_num, monthlyAcctSaveData, totalUnpaidFee, conf
         return totalNonePayFee > 0 ? (amountPaid / totalNonePayFee) * 100 : 0;
     }, [totalNonePayFee, currentNonePayFee])
     const paymentStatusPercent = progress.toFixed(2);
-    console.log(progress)
-    console.log(progress.toFixed(2))
+    // console.log(progress)
+
 
     return(
         <div className="flex flex-col py-4">

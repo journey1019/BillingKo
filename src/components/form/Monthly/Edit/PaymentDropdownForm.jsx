@@ -6,7 +6,7 @@ import FormInput from "@/components/dropdown/FormInput.jsx";
 import { formatDateAddTime } from "@/utils/formatHelpers.jsx";
 
 const BasicDropdownForm = ({ detailData }) => {
-    console.log("Received Detail Data:", detailData);
+    // console.log("Received Detail Data:", detailData);
 
     // ✅ Dropdown 상태 관리
     const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +42,7 @@ const BasicDropdownForm = ({ detailData }) => {
         }
     }, [detailData]); // ✅ detailData가 변경될 때만 실행
 
-    console.log("Updated Form Data:", formData);
+    // console.log("Updated Form Data:", formData);
 
     // ✅ 입력 변경 핸들러
     const handleChange = (e) => {
@@ -74,7 +74,7 @@ const BasicDropdownForm = ({ detailData }) => {
             // ✅ 불필요한 필드 제거
             const { data_index, user_id, update_date, update_version, ...payload } = updatedData;
 
-            console.log("Sending payload:", payload);
+            // console.log("Sending payload:", payload);
 
             // ✅ API 요청 실행
             await saveKOMonthlyDetailData(detailData.data_index, payload);
@@ -85,7 +85,7 @@ const BasicDropdownForm = ({ detailData }) => {
             // ✅ 저장 성공 후 '/ko_monthly' 페이지 새로고침
             window.location.href = "/ko_monthly";
         } catch (error) {
-            console.error("Error updating data:", error);
+            // console.error("Error updating data:", error);
             alert("Failed to update data.");
         }
     };

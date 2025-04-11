@@ -59,8 +59,8 @@ const FileUploadStatus = () => {
         return acc;
     }, {}) || {};
 
-    console.log('업로드 : ', uploadMonthlyData)
-    console.log('이번달 : ', uploadedFilesMap)
+    // console.log('업로드 : ', uploadMonthlyData)
+    // console.log('이번달 : ', uploadedFilesMap)
 
     const getFileDetails = (spId, fileType) => {
         return uploadMonthlyData.find(file => {
@@ -121,10 +121,6 @@ const FileUploadStatus = () => {
                                 {uploadData.include_files.map((fileType) => {
                                     const fileDetails = getFileDetails(uploadData.sp_id, fileType);
                                     const isUploaded = uploadedFiles.has(fileType);
-                                    console.log(uploadData)
-                                    console.log(uploadData)
-                                    console.log(fileDetails)
-                                    console.log(fileType)
 
                                     return (
                                         <div key={fileType} className="relative group cursor-pointer">

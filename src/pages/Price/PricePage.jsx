@@ -8,7 +8,6 @@ import ReusableTable from '@/components/table/ReusableTable.jsx';
 import ButtonGroup from '@/components/common/ButtonGroup.jsx';
 import Modal from '@/components/common/Modal.jsx';
 import { useNavigate } from 'react-router-dom';
-import { IoIosArrowDown } from "react-icons/io";
 
 import PricePartForm from '@/components/form/PricePartForm.jsx';
 import Tooltip from '@/components/common/Tooltip.jsx';
@@ -18,7 +17,7 @@ import { AdjustmentHistoryTableOptions, AdjustmentTableOptions } from '@/options
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import { fetchAdjustmentValueHistory } from '@/service/adjustmentService.js';
 import AdjustmentPage from '@/pages/Adjustment/AdjustmentPage.jsx';
-import { TiPlus } from "react-icons/ti";
+
 import PriceTabItems from '../../components/form/Price/PriceTabItems.jsx';
 import PriceTabOverview from '../../components/form/Price/PriceTabOverview.jsx';
 import PriceTabTransaction from '../../components/form/Price/PriceTabTransaction.jsx';

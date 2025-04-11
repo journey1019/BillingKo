@@ -113,8 +113,6 @@ const DevicePage = () => {
                         ...DeviceTableOptions(selectedDeviceId),
                         meta: {
                             onRowSelect: (selectedRow) => {
-                                console.log('onRowSelect called with id:', selectedRow);
-
                                 // 같은 Row 선택
                                 if (selectedDeviceId && selectedDeviceId.serial_number === selectedRow.serial_number) {
                                     setSelectedDeviceId(null);

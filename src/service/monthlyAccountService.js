@@ -44,11 +44,11 @@ export const fetchKOMonthlyAccountDetailData = async (year_month, acct_num) => {
 
 export const fetchPaymentConfirm = async (yearMonth, confirmData) => {
     try {
-        console.log("📦 전송 데이터:", { yearMonth, confirmData });
-        console.log("POST 데이터:", confirmData);
+        // console.log("📦 전송 데이터:", { yearMonth, confirmData });
+        // console.log("POST 데이터:", confirmData);
         return await postWithBody(`/monthly/saveData/account_confirm/${yearMonth}`, confirmData);
     } catch (error) {
-        console.error("Failed to create adjustment", error.response?.data || error.message);
+        // console.error("Failed to create adjustment", error.response?.data || error.message);
         throw error;
     }
 }
@@ -59,7 +59,7 @@ export const fetchMonthlyAccountIncludeDeviceDetailData = async (year_month, ser
     try {
         return await getWithAuth(`/monthly/saveData/sn/${year_month}/${serial_number}`);
     } catch (error) {
-        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        // console.error("Failed to fetch account History:", error.response?.data || error.message);
         throw error;
     }
 }

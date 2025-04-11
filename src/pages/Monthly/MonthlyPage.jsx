@@ -56,10 +56,10 @@ const MonthlyPage = () => {
         }
     }, [selectedRowData]);
 
-
-    console.log('monthlyData', monthlyData)
-    console.log('detail monthly data', detailData)
-    console.log(selectedRowData)
+    //
+    // console.log('monthlyData', monthlyData)
+    // console.log('detail monthly data', detailData)
+    // console.log(selectedRowData)
 
     const tableRef = useRef();
     return (

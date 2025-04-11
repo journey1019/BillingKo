@@ -77,7 +77,7 @@ export const createAdjustment = async (adjustData) => {
     // const allowedNullField = "description";
 
     try {
-        console.log("POST 데이터:", adjustData);
+        // console.log("POST 데이터:", adjustData);
         return await postWithBody("/adjustment/", adjustData);
     } catch (error) {
         console.error("Failed to create adjustment", error.response?.data || error.message);
@@ -95,7 +95,7 @@ export const updateAdjustment = async (adjustment_index, adjustmentData) => {
     try {
         return await put(`/adjustment/${adjustment_index}`, adjustmentData);
     } catch (error) {
-        console.error("Failed to update adjustment:", error.response?.data || error.message);
+        // console.error("Failed to update adjustment:", error.response?.data || error.message);
         throw error;
     }
 };
@@ -109,7 +109,7 @@ export const deleteAdjustment = async (adjustment_index) => {
     try {
         return await del(`/adjustment/${adjustment_index}`);
     } catch (error) {
-        console.error("Failed to delete adjustment:", error.response?.data || error.message);
+        // console.error("Failed to delete adjustment:", error.response?.data || error.message);
         throw error;
     }
 };
@@ -122,7 +122,7 @@ export const fetchAdjustmentCodeName = async (code_name) => {
     try {
         return await get(`/codeInfo/codeName/${code_name}`);
     } catch (error) {
-        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        // console.error("Failed to fetch account History:", error.response?.data || error.message);
         throw error;
     }
 };

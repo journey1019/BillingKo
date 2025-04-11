@@ -12,7 +12,6 @@ export const AdjustmentTableOptions = (selectedAdjustId) => ({
 
     muiTableBodyRowProps: ({ row, table }) => ({
         onClick: (event) => {
-            console.log("Row Click:", row.original);
 
             event.stopPropagation(); // 이벤트 전파 차단
             row.getToggleSelectedHandler()(event); // 선택 핸들러 호출
@@ -43,8 +42,6 @@ export const AdjustmentValueTableOptions = {
 
     muiTableBodyRowProps: ({ row, table }) => ({
         onClick: (event) => {
-            // console.log('Row clicked:', row.original);
-
             // 선택 상태를 토글
             row.getToggleSelectedHandler()(event);
 

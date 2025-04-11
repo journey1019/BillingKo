@@ -84,7 +84,7 @@ const DeviceNewPage = () => {
                 activated: cleanedFormData.activated ? `${cleanedFormData.activated}T00:00:00` : null,
                 deactivated: cleanedFormData.deactivated ? `${cleanedFormData.deactivated}T00:00:00` : null,
             };
-            console.log(payload)
+            // console.log(payload)
             await createDevice(payload);
             alert("Device successfully created.");
             navigate("/devices");

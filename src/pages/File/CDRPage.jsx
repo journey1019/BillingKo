@@ -106,7 +106,7 @@ const CDRPage = () => {
                         ...DeviceTableOptions,
                         meta: {
                             onRowSelect: (selectedRow) => {
-                                console.log('onRowSelect called with id:', selectedRow);
+                                // console.log('onRowSelect called with id:', selectedRow);
                                 // setSelectedDeviceId(selectedRow);
                                 // setIsExpanded(true);
 

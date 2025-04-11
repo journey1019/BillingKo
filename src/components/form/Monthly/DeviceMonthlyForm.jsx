@@ -12,7 +12,7 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
     if (!detailData) return <p>No data available</p>;
 
 
-    console.log(detailData)
+    // console.log(detailData)
     const paymentInfo = detailData.payment || {};
     const paymentFeeDetail = paymentInfo.fee_detail || [];
     const paymentAdjustmentInfo = paymentInfo.adjustment_info || [];
@@ -30,11 +30,11 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
     };
     // 변환된 데이터
     const dProductDetail = transformDetailData(detailData);
-    console.log(dProductDetail)
-    console.log(fetchVersionData)
-    console.log(version)
-    console.log(latestVersion)
-    console.log(yearMonth)
+    // console.log(dProductDetail)
+    // console.log(fetchVersionData)
+    // console.log(version)
+    // console.log(latestVersion)
+    // console.log(yearMonth)
 
 
     // 삭제 핸들러 함수

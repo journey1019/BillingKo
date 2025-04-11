@@ -14,7 +14,7 @@ export const KOMonthlyTableOptions = (selectedMonthlyIndex) => ({
 
     muiTableBodyRowProps: ({ row, table }) => ({
         onClick: (event) => {
-            console.log('Row clicked', row.original);
+            // console.log('Row clicked', row.original);
 
             row.getToggleSelectedHandler()(event);
 

@@ -19,9 +19,9 @@ import ReadOnlySwitch from '@/components/ui/switches/ReadOnlySwitch.jsx';
  * */
 const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProductDetail, paymentAdjustmentInfo, version, fetchDetailData, yearMonth }) => {
     const hasVersion = typeof version === "number" // ✅ version 데이터가 존재하고, 숫자인지 확인
-    console.log(detailData)
-    console.log(paymentFeeDetail)
-    console.log(paymentAdjustmentInfo)
+    // console.log(detailData)
+    // console.log(paymentFeeDetail)
+    // console.log(paymentAdjustmentInfo)
 
     const location = useLocation();
     const navigate = useNavigate();

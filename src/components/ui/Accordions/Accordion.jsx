@@ -1,55 +1,13 @@
-// import React, { useState } from "react";
-// import { FiChevronDown } from "react-icons/fi";
-//
-// const Accordion = ({ items }) => {
-//     return (
-//         <div className="w-full rounded-lg">
-//             {items.map((item, index) => (
-//                 <AccordionItem key={index} title={item.title} content={item.content} />
-//             ))}
-//         </div>
-//     );
-// };
-//
-// const AccordionItem = ({ title, content }) => {
-//     const [isOpen, setIsOpen] = useState(false);
-//
-//     return (
-//         <div className="border-b border-gray-400">
-//             <button
-//                 type="button"
-//                 className="flex items-center justify-between w-full py-3 px-5 text-sm font-medium text-gray-800 hover:bg-gray-100 transition-all duration-300"
-//                 onClick={() => setIsOpen(!isOpen)}
-//             >
-//                 <span>{title}</span>
-//                 <FiChevronDown
-//                     className={`w-4 h-4 transform transition-transform duration-300 ${
-//                         isOpen ? "rotate-180" : ""
-//                     }`}
-//                 />
-//             </button>
-//
-//             <div
-//                 className={`transition-all duration-300 ease-in-out overflow-hidden ${
-//                     isOpen ? "max-h-[500px] opacity-100 py-3 px-5" : "max-h-0 opacity-0"
-//                 }`}
-//             >
-//                 <p className="text-gray-600">{content}</p>
-//             </div>
-//         </div>
-//     );
-// };
-//
-// export default Accordion;
 import React, { useState } from "react";
 import PropTypes from "prop-types"; // ✅ PropTypes 추가
 import { FiChevronDown } from "react-icons/fi";
 
-const Accordion = ({ items = [] }) => {
+const Accordion = ({ items }) => {
+    const safeItems = items || [];
     return (
         <div className="w-full rounded-lg">
-            {items.length > 0 ? (
-                items.map((item, index) => (
+            {safeItems.length > 0 ? (
+                safeItems.map((item, index) => (
                     <AccordionItem key={index} title={item.title} content={item.content} />
                 ))
             ) : (
@@ -76,16 +34,12 @@ const AccordionItem = ({ title, content }) => {
             </button>
 
             <div className={isOpen ? "block pt-2 border rounded-md my-2" : "hidden"}>
-                <p>{content}</p>
+                <div>{content}</div>
             </div>
         </div>
     );
 };
 
-// ✅ 기본 props 설정 (items가 전달되지 않을 경우 빈 배열로 설정)
-Accordion.defaultProps = {
-    items: [],
-};
 
 // ✅ PropTypes로 타입 검증 추가
 Accordion.propTypes = {

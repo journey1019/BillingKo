@@ -22,7 +22,7 @@ const SaveButton = ({ yearMonth }) => {
         setIsLoading(true); // ✅ 로딩 시작
 
         try {
-            console.log(`Saving data for: ${yearMonth}`);
+            // console.log(`Saving data for: ${yearMonth}`);
             await saveMonthlyData(yearMonth);
 
             // ✅ 성공 알림 표시

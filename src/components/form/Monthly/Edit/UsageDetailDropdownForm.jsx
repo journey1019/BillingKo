@@ -7,7 +7,7 @@ import { LuRefreshCw } from "react-icons/lu";
 
 
 const UsageDetailDropdownForm = ({ detailData, fetchDetailData }) => {
-    console.log(detailData);
+    // console.log(detailData);
 
     // ✅ Dropdown 상태 관리
     const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +24,7 @@ const UsageDetailDropdownForm = ({ detailData, fetchDetailData }) => {
         use_byte_total: initialData.use_byte_total || "",
     });
 
-    console.log("Initial Data:", initialData);
+    // console.log("Initial Data:", initialData);
 
     // ✅ 입력 변경 핸들러
     const handleChange = (e) => {
@@ -49,7 +49,7 @@ const UsageDetailDropdownForm = ({ detailData, fetchDetailData }) => {
             // ✅ 불필요한 필드 제거
             const { data_index, user_id, update_date, update_version, ...payload } = updatedData;
 
-            console.log("Sending payload:", payload);
+            // console.log("Sending payload:", payload);
 
             // ✅ API 요청 실행
             await saveKOMonthlyDetailData(detailData.data_index, payload);
@@ -60,7 +60,7 @@ const UsageDetailDropdownForm = ({ detailData, fetchDetailData }) => {
             // ✅ 저장 성공 후 '/ko_monthly' 페이지 새로고침
             window.location.href = "/ko_monthly";
         } catch (error) {
-            console.error("Error updating data:", error);
+            // console.error("Error updating data:", error);
             alert("Failed to update data.");
         }
     };

@@ -73,9 +73,9 @@ const FileUpload = () => {
     // console.log('filteredUploadHistoryData : ', filteredUploadHistoryData)
     // console.log('filteredUseData : ', filteredUseData)
 
-    console.log('uploadHistoryAllData : ', uploadHistoryAllData)
-    console.log('uploadMonthlyData : ', uploadMonthlyData)
-    console.log('uploadDetailData : ', uploadDetailData)
+    // console.log('uploadHistoryAllData : ', uploadHistoryAllData)
+    // console.log('uploadMonthlyData : ', uploadMonthlyData)
+    // console.log('uploadDetailData : ', uploadDetailData)
 
     const enrichedUploadData = uploadHistoryAllData?.map((item) => {
         if (item.use_yn === 'N') {
@@ -166,7 +166,7 @@ const FileUpload = () => {
     //     };
     // });
 
-    console.log(enrichedUploadData)
+    // console.log(enrichedUploadData)
 
     return(
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>

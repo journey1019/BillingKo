@@ -28,7 +28,7 @@ export const saveMonthlyData = async (yearMonth) => {
     try {
         return await postWithAuth(endpoint); // 인증 포함된 POST 요청
     } catch (error) {
-        console.log("Failed to fetch", error.response?.data || error.message);
+        // console.log("Failed to fetch", error.response?.data || error.message);
         throw error;
     }
 };
@@ -39,7 +39,7 @@ export const saveInvoiceData = async (yearMonth) => {
     try {
         return await postWithAuth(endpoint); // 인증 포함된 POST 요청
     } catch (error) {
-        console.log("Failed to fetch", error.response?.data || error.message);
+        // console.log("Failed to fetch", error.response?.data || error.message);
         throw error;
     }
 };
@@ -53,7 +53,7 @@ export const fetchKOMonthlyData = async (yearMonth) => {
     try {
         return await get(`/monthly/saveData/${yearMonth}`);
     } catch (error) {
-        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        // console.error("Failed to fetch account History:", error.response?.data || error.message);
         throw error;
     }
 };
@@ -77,7 +77,7 @@ export const fetchKOMonthlyDetailVersionIndexData = async (serial_number, versio
     try {
         return await get(`/monthly/saveData/version/${serial_number}/${version_index}`);
     } catch (error) {
-        console.error("Failed to fetch account History:", error.response?.data || error.message);
+        // console.error("Failed to fetch account History:", error.response?.data || error.message);
         throw error;
     }
 }
@@ -91,7 +91,7 @@ export const saveKOMonthlyDetailData = async (dataIndex, payload) => {
     try {
         return await postWithAuth(endpoint, payload); // ✅ body로 payload 추가
     } catch (error) {
-        console.log("Failed to fetch", error.response?.data || error.message);
+        // console.log("Failed to fetch", error.response?.data || error.message);
         throw error;
     }
 };
@@ -102,7 +102,7 @@ export const deleteRecentMonthly = async (serial_number) => {
     try {
         return await del(`/monthly/saveData/version/${serial_number}`);
     } catch (error) {
-        console.error("Failed to delete adjustment:", error.response?.data || error.message);
+        // console.error("Failed to delete adjustment:", error.response?.data || error.message);
         throw error;
     }
 };

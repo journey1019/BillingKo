@@ -69,7 +69,7 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
             return;
         }
 
-        console.log('📦 API Payload:', formatted); // 🔍 확인용
+        // console.log('📦 API Payload:', formatted); // 🔍 확인용
         setSaving(true);
         try {
             await updateConfirmStatus(yearMonth, formatted);
@@ -81,7 +81,7 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
                 message: 'Your changes have been saved!',
             });
         } catch (err) {
-            console.error('❌ API 요청 실패:', err);
+            // console.error('❌ API 요청 실패:', err);
             setAlert({
                 type: 'warning',
                 title: 'Warning alert!',
@@ -113,7 +113,7 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
             pagination: { pageSize: 30, pageIndex: 0 }
         },
     });
-    console.log(monthlyAcctSaveData)
+    // console.log(monthlyAcctSaveData)
 
     return (
         <div className="py-4 grid gap-0 grid-cols-1">

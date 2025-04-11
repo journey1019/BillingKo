@@ -35,7 +35,6 @@ const AccountTransactionTab = ({ selectedAccountId }) => {
             fetchAdjustmentValueData(selectedAccountId.acct_num)
         }
     }, [selectedAccountId]);
-    console.log(adjustmentValueData)
 
     useEffect(() => {
         if(selectedAdjustmentId) {
@@ -56,7 +55,7 @@ const AccountTransactionTab = ({ selectedAccountId }) => {
 
     const handleNewAdjustment = () => {
         if(!selectedAccountId?.acct_num) {
-            console.error("고객번호를 클릭해야 합니다.")
+            // console.error("고객번호를 클릭해야 합니다.")
             return;
         }
         navigate(`/adjustment/new?adjustment_code=account_num&adjustment_code_value=${selectedAccountId.acct_num}`);
@@ -73,7 +72,6 @@ const AccountTransactionTab = ({ selectedAccountId }) => {
                         <button
                             className="bg-blue-500 rounded-md text-white px-4 py-2 mb-2 hover:bg-blue-600"
                             onClick={() => {
-                                console.log('Button Clicked!');
                                 handleNewAdjustment();
                             }}
                         >

@@ -37,7 +37,7 @@ const PriceEditPage = () => {
                     surcharge_unit: formatAnyWithCommas(price.surcharge_unit),
                     each_surcharge_fee: formatAnyWithCommas(price.each_surcharge_fee),
                 })
-                console.log(formData)
+                // console.log(formData)
             } catch (err) {
                 setError("Failed to fetch price data");
                 console.error(err);

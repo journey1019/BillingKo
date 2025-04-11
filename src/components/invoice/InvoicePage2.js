@@ -36,11 +36,11 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
     const deviceDetails = Array.isArray(data.device_detail) ? data.device_detail : [];
 
     if (deviceDetails.length === 0) {
-        console.log("❌ device_detail이 비어 있어 2페이지를 생성하지 않습니다.");
+        // console.log("❌ device_detail이 비어 있어 2페이지를 생성하지 않습니다.");
         return doc;
     }
 
-    console.log("✅ device_detail이 존재하므로 2페이지를 생성합니다.");
+    // console.log("✅ device_detail이 존재하므로 2페이지를 생성합니다.");
     doc.addPage();
     doc.addImage(companyLogoBase64, 'PNG', 15, 10, 30, 7);
 

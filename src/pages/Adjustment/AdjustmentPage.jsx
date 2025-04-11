@@ -38,7 +38,7 @@ const AdjustmentPage = () => {
         fetchAdjustmentValueHistory,
         deleteAdjustmentData,
     } = useAdjustmentStore();
-    console.log(adjustmentData)
+    // console.log(adjustmentData)
 
     const [selectedAdjustId, setSelectedAdjustId] = useState(null);
     const [isAdjustExpanded, setIsAdjustExpanded] = useState(false); // Drawer 확장
@@ -97,8 +97,6 @@ const AdjustmentPage = () => {
                         ...AdjustmentTableOptions(selectedAdjustId),
                         meta: {
                             onRowSelect: (selectedRow) => {
-                                console.log('onRowSelect called with id: ', selectedRow);
-
                                 if (selectedAdjustId && selectedAdjustId.adjustment_index === selectedRow.adjustment_index) {
                                     setSelectedAdjustId(null);
                                     setIsAdjustExpanded(false);

@@ -20,12 +20,6 @@ const AccountEditPage = () => {
     const acctResidentList = useAcctResidentNumOptions();
     const acctCompanyNameList = useAcctCompanyNameOptions();
 
-    console.log(acctTypeList)
-    console.log(acctClassification)
-    console.log(acctResidentList)
-    console.log(acctCompanyNameList)
-
-
     const navigate = useNavigate();
     const {
         accountPartData,
@@ -51,7 +45,6 @@ const AccountEditPage = () => {
     // ✅ 데이터 불러오기
     useEffect(() => {
         if (accountPartData) {
-            console.log(accountPartData.regist_date)
             const formatted = {
                 ...accountPartData,
                 // regist_date: formatFormDate(accountPartData.regist_date),

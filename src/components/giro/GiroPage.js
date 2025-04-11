@@ -11,12 +11,12 @@ import { defaultAccountData, applyDefaultValues } from '@/components/invoice/hel
 /** ❓: 추후 확인해봐야 할 항목 */
 export const GiroPage = (doc, yearMonth, invoiceBasicData, accountDetailData) => {
     if (!doc) {
-        console.error("❌ Error: doc is undefined in generateInvoicePage2");
+        // console.error("❌ Error: doc is undefined in generateInvoicePage2");
         return;
     }
 
-    console.log(accountDetailData)
-    console.log(invoiceBasicData)
+    // console.log(accountDetailData)
+    // console.log(invoiceBasicData)
     const year = Math.floor(yearMonth / 100);
     const month = String(yearMonth % 100).padStart(2, '0');
 

@@ -70,9 +70,9 @@ const AccountMonthlyPage = () => {
         fetchAccountDetailData(yearMonth, selectedRowId.acct_num);
     }, [selectedRowId])
 
-    console.log(selectedRowId)
-    console.log(selectRow)
-    console.log(accountDetailData)
+    // console.log(selectedRowId)
+    // console.log(selectRow)
+    // console.log(accountDetailData)
 
     return(
         <>

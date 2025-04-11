@@ -73,7 +73,7 @@ const AdjustmentNewPage = () => {
     // ✅ URL에서 전달된 인자 추출
     const adjustment_code = searchParams.get("adjustment_code") || "";
     const adjustment_code_value = searchParams.get("adjustment_code_value") || "";
-    console.log('adjustment_code: ', adjustment_code, 'adjustment_code_value: ', adjustment_code_value)
+    // console.log('adjustment_code: ', adjustment_code, 'adjustment_code_value: ', adjustment_code_value)
 
     const [formData, setFormData] = useState({
         adjustment_code: adjustment_code || "account_num",
@@ -125,7 +125,7 @@ const AdjustmentNewPage = () => {
         };
 
         try {
-            console.log("POST 요청 보낼 데이터", validatedData);
+            // console.log("POST 요청 보낼 데이터", validatedData);
             await createAdjustment(validatedData);
             alert("조정 데이터를 성공적으로 생성했습니다.");
 

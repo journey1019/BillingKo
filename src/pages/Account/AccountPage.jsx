@@ -71,7 +71,7 @@ const AccountPage = () => {
             await fetchAccountData(); // ❌ 삭제 다시 안함! (이미 됐음)
             setSelectedAccountId(null);
             setIsExpanded(false);
-            console.log(`✅ 삭제 후 새로고침 완료 (Account: ${acct_num})`);
+            // console.log(`✅ 삭제 후 새로고침 완료 (Account: ${acct_num})`);
         } catch (error) {
             alert("삭제 후 데이터 갱신에 실패했습니다.");
         }
@@ -107,8 +107,6 @@ const AccountPage = () => {
                         ...AccountTableOptions(selectedAccountId),
                         meta: {
                             onRowSelect: (selectedRow) => {
-                                console.log('onRowSelect called with id:', selectedRow);
-
                                 // 같은 Row 선택
                                 if (selectedAccountId && selectedAccountId.acct_num === selectedRow.acct_num) {
                                     setSelectedAccountId(null);

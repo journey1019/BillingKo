@@ -31,7 +31,7 @@ const Homepage = () => {
 
     const user_name = localStorage.getItem("user_name");
     const token = localStorage.getItem("token");
-    console.log(token);
+    // console.log(token);
 
 
     return (

@@ -42,7 +42,7 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
                     adjustment_cycle: cycles.length > 0 ? cycles[0].code_value : "",
                 }));
             } catch (error) {
-                console.error("조정 옵션 데이터를 가져오는데 실패했습니다:", error);
+                // console.error("조정 옵션 데이터를 가져오는데 실패했습니다:", error);
                 setAdjustmentCategories([]);
                 setAdjustmentTypes([]);
                 setMountTypes([]);
@@ -107,8 +107,8 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
             alert("조정 정보 추가 실패");
         }
     };
-    console.log(formData)
-    console.log(adjustmentTypes)
+    // console.log(formData)
+    // console.log(adjustmentTypes)
 
     return (
         <div className="relative inline-block float-right">

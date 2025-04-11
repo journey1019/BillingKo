@@ -13,8 +13,6 @@ export const PriceTableOptions = (selectedPriceId) => ({
 
     muiTableBodyRowProps: ({ row, table }) => ({
         onClick: (event) => {
-            console.log('Row clicked:', row.original);
-
             // 선택 상태를 토글
             row.getToggleSelectedHandler()(event);
 

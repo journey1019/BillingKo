@@ -77,8 +77,8 @@ const KOMonthlyAccountSavePage = () => {
     if (invoiceBasicLoading) return <div>로딩중...</div>;
     if (invoiceBasicError) return <div>에러 발생: {invoiceBasicError.message}</div>;
 
-    console.log('monthlyAcctSaveData : ', monthlyAcctSaveData)
-    console.log('monthlyAcctSaveDetailData : ', monthlyAcctSaveDetailData)
+    // console.log('monthlyAcctSaveData : ', monthlyAcctSaveData)
+    // console.log('monthlyAcctSaveDetailData : ', monthlyAcctSaveDetailData)
 
     return(
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>

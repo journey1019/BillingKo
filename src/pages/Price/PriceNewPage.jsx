@@ -65,7 +65,7 @@ const PriceNewPage = () => {
 
         for (const field of requiredFields) {
             if (!formData[field]) {
-                console.log(field)
+                // console.log(field)
                 return `필수 입력 항목: ${field}`;
             }
         }

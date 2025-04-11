@@ -75,7 +75,7 @@ const App = () => {
         }
     }, [isAuthenticated]);
 
-    console.log(`인증 성공 여부: ${isAuthenticated}`)
+    // console.log(`인증 성공 여부: ${isAuthenticated}`)
 
     return (
         <Routes>

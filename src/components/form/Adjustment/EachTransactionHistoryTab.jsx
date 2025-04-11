@@ -21,7 +21,7 @@ const EachTransactionHistoryTab = ({ selectedData }) => {
             fetchAdjustmentValueHistory(selectedData[mainID])
         }
     }, [selectedData, mainID]);
-    console.log('adjustmentDetailHistoryData: ', adjustmentDetailHistoryData)
+    // console.log('adjustmentDetailHistoryData: ', adjustmentDetailHistoryData)
 
     return (
         <div>

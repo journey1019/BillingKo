@@ -35,7 +35,7 @@ const Login = ({ setAuth }) => {
             // }
 
             // 받은 데이터 출력 (로그인 성공 시)
-            console.log("Login Success:", data);
+            // console.log("Login Success:", data);
 
             // 토큰 및 사용자 정보 저장
             localStorage.setItem("token", data.user_token);

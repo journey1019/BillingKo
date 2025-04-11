@@ -48,7 +48,7 @@ const UploadEditPage = () => {
         };
         loadUploadData();
     }, [sp_id]);
-    console.log(formData)
+    // console.log(formData)
 
     // ✅ 날짜 변경 시 YYYY-MM → YYYYMM 변환하여 저장
     const handleDateChange = (e) => {

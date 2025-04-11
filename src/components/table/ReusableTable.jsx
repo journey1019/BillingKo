@@ -12,7 +12,7 @@ const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, er
             return;
         }
 
-        console.log("Exporting data:", data);
+        // console.log("Exporting data:", data);
 
         // 모든 필드 가져오기 (첫 번째 객체 기준)
         const allFields = Object.keys(data[0] || {});
@@ -133,7 +133,7 @@ const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, er
                     getRowProps={({ row }) => ({  // Row 클릭 이벤트
                         onClick: (event) => {
                             event.stopPropagation(); // 이벤트 전파 차단
-                            console.log("Row Clicked:", row.original);
+                            // console.log("Row Clicked:", row.original);
                             options?.meta?.onRowSelect?.(row.original);
                         },
                         style: { cursor: "pointer" },
@@ -145,7 +145,7 @@ const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, er
                                 name="rowSelect"
                                 onClick={(event) => {
                                     event.stopPropagation(); // 이벤트 전파 차단
-                                    console.log("Row Selected:", row.original);
+                                    // console.log("Row Selected:", row.original);
                                     options?.meta?.onRowSelect?.(row.original);
                                 }}
                             />

@@ -108,7 +108,7 @@ export const getWithAuth = async (url, params = {}) => {
 
 // ✅ 공통 POST 함수 (재사용 가능)
 export const post = async (url, body) => {
-    console.log("POST Body:", body); // POST 요청 데이터 확인
+    // console.log("POST Body:", body); // POST 요청 데이터 확인
     const response = await api.post(url, body);
     return response.data;
 };

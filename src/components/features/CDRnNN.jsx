@@ -25,9 +25,9 @@ const CDRnNN = () => {
     const { data: cdrData, loading: cdrLoading, error: cdrError, refetch: cdrRefetch } = useApiFetch(fetchCDRFileUpdate, yearMonth);
     const { data: nrData, loading: nrLoading, error: nrError, refetch: nrRefetch } = useApiFetch(fetchNetworkReportFileUpdate, yearMonth);
 
-    console.log('costData : ', costData)
-    console.log('cdrData : ', cdrData)
-    console.log('nrData : ', nrData)
+    // console.log('costData : ', costData)
+    // console.log('cdrData : ', cdrData)
+    // console.log('nrData : ', nrData)
 
     return(
         <div className="grid col-span-4 2xl:col-span-3 space-y-3 py-6">

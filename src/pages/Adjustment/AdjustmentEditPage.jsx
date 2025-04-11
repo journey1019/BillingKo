@@ -19,7 +19,6 @@ const AdjustmentEditPage = () => {
     const [searchParams] = useSearchParams();
     const adjustment_code = searchParams.get("adjustment_code") || "";
     const adjustment_code_value = searchParams.get("adjustment_code_value") || "";
-    console.log('adjustment_code: ', adjustment_code, 'adjustment_code_value: ', adjustment_code_value);
 
     const codeMappings = useAdjustmentMappings();
 
@@ -36,7 +35,6 @@ const AdjustmentEditPage = () => {
         use_yn: "Y",
         tax_free_yn: "Y"
     });
-    console.log(codeMappings);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -90,7 +88,7 @@ const AdjustmentEditPage = () => {
         };
 
         try {
-            console.log("PUT 요청 보낼 데이터", formattedData);
+            // console.log("PUT 요청 보낼 데이터", formattedData);
             await updateAdjustment(adjustment_index, formattedData);
             alert("조정 데이터를 성공적으로 업데이트 했습니다.");
             navigate("/adjustment");

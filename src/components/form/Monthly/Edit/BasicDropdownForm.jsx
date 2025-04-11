@@ -12,8 +12,8 @@ import { useNavigate } from 'react-router-dom';
 const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
     const navigate = useNavigate();
 
-    console.log(detailData)
-    console.log(yearMonth)
+    // console.log(detailData)
+    // console.log(yearMonth)
     const [alertBox, setAlertBox] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({});

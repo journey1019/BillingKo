@@ -10,7 +10,7 @@ const EachTransactionDetailForm = ({ naming, adjustmentDetailData, adjustmentDet
     const isSwitchOnTax = adjustmentDetailData.tax_free_yn;
 
     const codeMappings = useAdjustmentMappings();
-    console.log(adjustmentDetailData)
+    // console.log(adjustmentDetailData)
 
     const formatDisplayValue = (value) => {
         return !value || value === "null" ? "-" : value;
