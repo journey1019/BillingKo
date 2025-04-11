@@ -194,12 +194,12 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
                             })),
                             placeholder: "미납/과오납"
                         },
-                        { label: "조정 타입", name: "adjustment_type", type: "select",
+                        { label: "할인/가산 구분", name: "adjustment_type", type: "select",
                             dataList: Object.entries(codeMappings.adjustment_type).map(([value, label]) => ({
                                 code_value: value,
                                 code_alias: label,
                             })),
-                            placeholder: "할인/가산"
+                            placeholder: "할인/가산 구분"
                         },
                         { label: "요금 기준", name: "mount_type", type: "select",
                             dataList: Object.entries(codeMappings.mount_type).map(([value, label]) => ({

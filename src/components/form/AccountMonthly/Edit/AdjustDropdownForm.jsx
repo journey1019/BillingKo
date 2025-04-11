@@ -137,7 +137,7 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
                     </div>
 
                     <div className="grid grid-cols-3 items-center">
-                        <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">조정 타입</label>
+                        <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">할인/가산 구분</label>
                         <select name="adjustment_type" value={formData.adjustment_type} onChange={handleChange}
                                 className="col-span-2 border rounded-md p-2 text-xs 2xl:text-sm">
                             {adjustmentTypes.map((option) => (

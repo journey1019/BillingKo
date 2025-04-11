@@ -101,8 +101,8 @@ const AccountDeviceItem = ({ yearMonth, accountData, deviceDetail, adjustmentInf
                                 <thead className="bg-gray-200 sticky top-0 z-10">
                                 <tr>
                                     {[
-                                        '번호', '조정 유형', '조정 대상', '조정 분류', '조정 타입',
-                                        '요금 기준', '설명', '부가세 포함 여부', '조정 금액',
+                                        '번호', '조정 유형', '조정 대상', '조정 분류', '할인/가산 구분',
+                                        '요금 기준', '설명', '부가세 계산 시점', '조정 금액',
                                     ].map((header, index) => (
                                         <th
                                             key={index}

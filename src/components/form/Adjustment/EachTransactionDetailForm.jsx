@@ -49,11 +49,11 @@ const EachTransactionDetailForm = ({ naming, adjustmentDetailData, adjustmentDet
                                 },
                                 { label: '조정 대상', value: adjustmentDetailData.adjustment_code_value },
                                 {
-                                    label: '조정 종류',
+                                    label: '조정 항목',
                                     value: codeMappings.adjustment_category[adjustmentDetailData.adjustment_category],
                                 },
                                 {
-                                    label: '조정 타입',
+                                    label: '할인/가산 구분',
                                     value: codeMappings.adjustment_type[adjustmentDetailData.adjustment_type],
                                 },
                                 { label: '요금 적용 기준', value: codeMappings.mount_type[adjustmentDetailData.mount_type] },

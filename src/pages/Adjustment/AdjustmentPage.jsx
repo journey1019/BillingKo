@@ -37,6 +37,7 @@ const AdjustmentPage = () => {
         fetchAdjustmentValueHistory,
         deleteAdjustmentData,
     } = useAdjustmentStore();
+    console.log(adjustmentData)
 
     const [selectedAdjustId, setSelectedAdjustId] = useState(null);
     const [isAdjustExpanded, setIsAdjustExpanded] = useState(false); // Drawer 확장

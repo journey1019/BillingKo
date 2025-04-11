@@ -206,9 +206,9 @@ const AdjustmentNewPage = () => {
 
                 {/* ✅ 선택 필드 */}
                 {[
-                    { id: 'adjustment_category', label: '조정 종류', mappingKey: "adjustment_category", tooltip: true, tooltipContent: "조정하려는 항목을 선택합니다. ", tooltipContent2: "예를 들어 가입비, VMS 사용료, 미납금 등이 있습니다." },
-                    { id: "adjustment_type", label: "가산/할인 여부", mappingKey: "adjustment_type", tooltip: true, tooltipContent: "조정 방식이 할인인지, 추가 요금인지 선택합니다.", tooltipContent2: "'할인'은 요금을 줄이고, '가산'은 늘립니다." },
-                    { id: "mount_type", label: "지불 방법", mappingKey: "mount_type", tooltip: true, tooltipContent: "조정 금액이 '요금(정액)인지 '요율(&)'로 적용될지 선택합니다." },
+                    { id: 'adjustment_category', label: '조정 항목', mappingKey: "adjustment_category", tooltip: true, tooltipContent: "조정하려는 항목을 선택합니다. ", tooltipContent2: "예를 들어 가입비, VMS 사용료, 미납금 등이 있습니다." },
+                    { id: "adjustment_type", label: "할인/가산 구분", mappingKey: "adjustment_type", tooltip: true, tooltipContent: "조정 방식이 할인인지, 추가 요금인지 선택합니다.", tooltipContent2: "'할인'은 요금을 줄이고, '가산'은 늘립니다." },
+                    { id: "mount_type", label: "지불 방법", mappingKey: "mount_type", tooltip: true, tooltipContent: "조정 금액이 '요금(정액)인지 '요율(%)'로 적용될지 선택합니다." },
                     { id: "adjustment_cycle", label: "조정 적용 기간", mappingKey: "adjustment_cycle", tooltip: true, tooltipContent: "이 조정이 한 번만 적용될지, 매달 반복 적용될지를 선택합니다."},
                 ].map(({ id, label, mappingKey, tooltip, tooltipContent, tooltipContent2 }) => (
                     <div key={id} className="grid grid-cols-6 items-center space-x-4">
@@ -350,10 +350,10 @@ const AdjustmentNewPage = () => {
                     </div>
                 </div>
 
-                {/* 부가세 포함 여부 */}
+                {/* 부가세 계산 시점 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
                     <label className="flex flex-row items-center space-x-2 col-span-2 text-sm font-medium text-gray-900">
-                        <span>부가세 포함 여부 *</span>
+                        <span>부가세 계산 시점 *</span>
                         <Tooltip arrow placement="right"
                                  title={
                                      <div>

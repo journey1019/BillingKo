@@ -178,8 +178,8 @@ const AdjustmentEditPage = () => {
                 {/*{[*/}
                 {/*    { id: 'adjustment_code', label: '조정 대상 구분', type: 'text', required: true, readOnly: true },*/}
                 {/*    { id: 'adjustment_code_value', label: '조정 대상', type: 'text', required: true, readOnly: true },*/}
-                {/*    { id: 'adjustment_category', label: '조정 종류', type: 'text', dataList: Object.keys(codeMappings[id], required: true },*/}
-                {/*    { id: 'adjustment_type', label: '가산/할인 여부', type: 'text', dataList: Object.keys(codeMappings[id], required: true },*/}
+                {/*    { id: 'adjustment_category', label: '조정 항목', type: 'text', dataList: Object.keys(codeMappings[id], required: true },*/}
+                {/*    { id: 'adjustment_type', label: '할인/가산 구분', type: 'text', dataList: Object.keys(codeMappings[id], required: true },*/}
                 {/*    { id: 'mount_type', label: '지불 방법', type: 'text', dataList: Object.keys(codeMappings[id], required: true },*/}
                 {/*    { id: 'adjustment_cycle', label: '조정 적용 기간', type: 'text', dataList: Object.keys(codeMappings[id], required: true },*/}
                 {/*    { id: 'mount_value', label: '금액', type: 'text', required: true },*/}
@@ -218,7 +218,7 @@ const AdjustmentEditPage = () => {
                 {/*    },*/}
                 {/*    {*/}
                 {/*        id: 'adjustment_category',*/}
-                {/*        label: '조정 종류',*/}
+                {/*        label: '조정 항목',*/}
                 {/*        type: 'text',*/}
                 {/*        required: true,*/}
                 {/*        dataList: Object.keys(codeMappings.adjustment_category ?? {}),*/}
@@ -226,7 +226,7 @@ const AdjustmentEditPage = () => {
                 {/*    },*/}
                 {/*    {*/}
                 {/*        id: 'adjustment_type',*/}
-                {/*        label: '가산/할인 여부',*/}
+                {/*        label: '할인/가산 구분',*/}
                 {/*        type: 'text',*/}
                 {/*        required: true,*/}
                 {/*        dataList: Object.keys(codeMappings.adjustment_type ?? {}),*/}
@@ -323,7 +323,7 @@ const AdjustmentEditPage = () => {
                 {[
                     {
                         id: "adjustment_category",
-                        label: "조정 종류",
+                        label: "조정 항목",
                         mappingKey: "adjustment_category",
                         tooltip: true,
                         tooltipContent: "조정하려는 항목을 선택합니다. ",
@@ -331,7 +331,7 @@ const AdjustmentEditPage = () => {
                     },
                     {
                         id: "adjustment_type",
-                        label: "가산/할인 여부",
+                        label: "할인/가산 구분",
                         mappingKey: "adjustment_type",
                         tooltip: true,
                         tooltipContent: "조정 방식이 할인인지, 추가 요금인지 선택합니다.",
@@ -342,7 +342,7 @@ const AdjustmentEditPage = () => {
                         label: "지불 방법",
                         mappingKey: "mount_type",
                         tooltip: true,
-                        tooltipContent: "조정 금액이 '요금(정액)인지 '요율(&)'로 적용될지 선택합니다."
+                        tooltipContent: "조정 금액이 '요금(정액)인지 '요율(%)'로 적용될지 선택합니다."
                     },
                     {
                         id: "adjustment_cycle",
@@ -477,7 +477,7 @@ const AdjustmentEditPage = () => {
 
                 {/* 임시 조정 스위치 */}
                 <div className="grid grid-cols-6 flex items-center space-x-4">
-                    <label className="col-span-2 w-32 text-sm font-medium text-gray-900">부가세 포함 여부 *</label>
+                    <label className="col-span-2 w-32 text-sm font-medium text-gray-900">부가세 계산 시점 *</label>
                     <div className="col-span-4">
                         <Switch checked={formData.tax_free_yn === 'Y'} onChange={handleToggleTaxChange} />
                         <span className="text-sm text-gray-700">{formData.tax_free_yn === 'Y' ? 'Yes' : 'No'}</span>

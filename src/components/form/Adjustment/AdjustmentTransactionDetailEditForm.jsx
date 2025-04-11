@@ -200,7 +200,7 @@ const AdjustmentTransactionDetailEditForm = () => {
                     <div className="flex justify-between items-center">
                         <label htmlFor="adjustment_category"
                                className="text-sm font-medium text-gray-500 w-1/2 2xl:w-1/3 p-1">
-                            조정 종류
+                            조정 항목
                         </label>
                         <select
                             name="adjustment_category"
@@ -219,7 +219,7 @@ const AdjustmentTransactionDetailEditForm = () => {
                     <div className="flex justify-between items-center">
                         <label htmlFor="adjustment_type"
                                className="text-sm font-medium text-gray-500 w-1/2 2xl:w-1/3 p-1">
-                            조정 타입
+                            할인/가산 구분
                         </label>
                         <select
                             name="adjustment_type"

@@ -198,7 +198,7 @@ export const accordionItems = ({ accountData, accountInfo, deviceDetail, adjustm
     //                                     <table className="w-full text-sm text-center">
     //                                         <thead className="bg-gray-200">
     //                                         <tr>
-    //                                             {["조정 유형", "조정 대상", "조정 분류", "조정 타입", "요금 기준", "조정 금액", "설명"].map((header, index) => (
+    //                                             {["조정 유형", "조정 대상", "조정 분류", "할인/가산 구분", "요금 기준", "조정 금액", "설명"].map((header, index) => (
     //                                                 <th key={index}
     //                                                     className="px-2 py-1 border font-medium whitespace-nowrap">{header}</th>
     //                                             ))}
@@ -327,7 +327,7 @@ export const accordionDeviceItems = ({ accountData, accountInfo, deviceDetail, a
                                         <table className="w-full text-sm text-center">
                                             <thead className="bg-gray-200">
                                             <tr>
-                                                {["조정 유형", "조정 대상", "조정 분류", "조정 타입", "요금 기준", "조정 금액", "설명"].map((header, index) => (
+                                                {["조정 유형", "조정 대상", "조정 분류", "할인/가산 구분", "요금 기준", "조정 금액", "설명"].map((header, index) => (
                                                     <th key={index}
                                                         className="px-2 py-1 border font-medium whitespace-nowrap">{header}</th>
                                                 ))}

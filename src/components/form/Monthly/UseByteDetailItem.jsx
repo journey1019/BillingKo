@@ -133,7 +133,7 @@ const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProduct
                         <table className="w-full text-sm text-center border-collapse">
                             <thead className="bg-gray-200 sticky -top-0.5 z-10">
                             <tr>
-                                {["번호", "조정 유형", "조정 대상", "조정 분류", "조정 타입", "요금 기준", "부가세 포함 여부", "조정 금액", "설명"].map((header, index) => (
+                                {["번호", "조정 유형", "조정 대상", "조정 분류", "할인/가산 구분", "요금 기준", "부가세 계산 시점", "조정 금액", "설명"].map((header, index) => (
                                     <th key={index}
                                         className="px-4 py-1 2xl:py-2 border font-medium whitespace-nowrap">{header}</th>
                                 ))}

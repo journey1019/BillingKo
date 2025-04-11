@@ -13,11 +13,11 @@ import {
 import { applyCenterAlignStyles } from './cellStyle/BasicCellStyle.jsx';
 
 export const AdjustmentTableColumns = [
-    // {
-    //     accessorKey: 'adjustment_index',
-    //     header: '번호',
-    //     size: 50,
-    // },
+    {
+        accessorKey: 'adjustment_index',
+        header: '번호',
+        size: 50,
+    },
     {
         accessorKey: 'use_yn',
         header: '사용',
@@ -25,8 +25,14 @@ export const AdjustmentTableColumns = [
         ...applyCenterAlignStyles(),
     },
     {
+        accessorKey: 'tax_free_yn',
+        header: '부가세 계산 시점',
+        Cell: FormatUseYnToggle,
+        ...applyCenterAlignStyles(),
+    },
+    {
         accessorKey: 'adjustment_code',
-        header: '조정 대상 종류',
+        header: '조정 대상 구분',
         Cell: AdjustmentCell_Code,
     },
     {
@@ -35,17 +41,18 @@ export const AdjustmentTableColumns = [
     },
     {
         accessorKey: 'adjustment_category',
-        header: '조정 종류',
+        header: '조정 항목',
         Cell: AdjustmentCell_Category
     },
     {
         accessorKey: 'adjustment_type',
-        header: '조정 타입',
+        header: '할인/가산 구분',
         Cell: AdjustmentCell_Type
     },
     {
         accessorKey: 'mount_type',
         header: '요금 적용 기준',
+        Cell: AdjustmentCell_Amount
     },
     {
         accessorKey: 'adjustment_cycle',
@@ -86,12 +93,12 @@ export const AdjustmentReferencesTableColumns = [
     },
     {
         accessorKey: 'adjustment_category',
-        header: '조정 종류',
+        header: '조정 항목',
         Cell: AdjustmentCell_Category
     },
     {
         accessorKey: 'adjustment_type',
-        header: '조정 타입',
+        header: '할인/가산 구분',
         Cell: AdjustmentCell_Type
     },
     {
@@ -134,7 +141,7 @@ export const AdjustmentHistoryTableColumns = [
     },
     // {
     //     accessorKey: 'adjustment_code',
-    //     header: '조정 대상 종류',
+    //     header: '조정 대상 구분',
     //     Cell: AdjustmentCell_Code,
     // },
     // {
@@ -143,12 +150,12 @@ export const AdjustmentHistoryTableColumns = [
     // },
     {
         accessorKey: 'adjustment_category',
-        header: '조정 종류',
+        header: '조정 항목',
         Cell: AdjustmentCell_Category
     },
     {
         accessorKey: 'adjustment_type',
-        header: '조정 타입',
+        header: '할인/가산 구분',
         Cell: AdjustmentCell_Type
     },
     {

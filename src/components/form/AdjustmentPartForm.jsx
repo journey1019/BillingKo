@@ -40,11 +40,11 @@ const AdjustmentPartForm = ({ adjustPartData }) => {
                     },
                     { label: '조정 대상', value: adjustPartData.adjustment_code_value },
                     {
-                        label: '조정 종류',
+                        label: '조정 항목',
                         value: <>{codeMappings.adjustment_category[adjustPartData.adjustment_category] || formatValue(adjustPartData.adjustment_category)}</>,
                     },
                     {
-                        label: '가산/할인 여부',
+                        label: '할인/가산 구분',
                         value: <>{codeMappings.adjustment_type[adjustPartData.adjustment_type] || formatValue(adjustPartData.adjustment_type)}</>,
                     },
                     {
@@ -67,7 +67,7 @@ const AdjustmentPartForm = ({ adjustPartData }) => {
             {/*        { label: "조정 코드", value: adjustPartData.adjustment_code },*/}
             {/*        { label: "조정 코드 값", value: adjustPartData.adjustment_code_value },*/}
             {/*        { label: "조정 카테고리", value: adjustPartData.adjustment_category },*/}
-            {/*        { label: "조정 타입", value: adjustPartData.adjustment_type },*/}
+            {/*        { label: "할인/가산 구분", value: adjustPartData.adjustment_type },*/}
             {/*        { label: "마운트 타입", value: adjustPartData.mount_type },*/}
             {/*        { label: "마운트 값", value: formatNumber(adjustPartData.mount_value) },*/}
             {/*        { label: "조정 주기", value: adjustPartData.adjustment_cycle },*/}
