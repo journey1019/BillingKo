@@ -306,7 +306,7 @@ const AdjustmentEditPage = () => {
                         구분</label>
                     <input type="text" id="adjustment_code" name="adjustment_code"
                            value={codeMappings.adjustment_code[formData.adjustment_code]}
-                           className="col-span-4 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                           className="col-span-3 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                            readOnly />
                 </div>
 
@@ -315,7 +315,7 @@ const AdjustmentEditPage = () => {
                         대상</label>
                     <input type="text" id="adjustment_code_value" name="adjustment_code_value"
                            value={formData.adjustment_code_value}
-                           className="col-span-4 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                           className="col-span-3 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                            readOnly />
                 </div>
 
@@ -432,7 +432,7 @@ const AdjustmentEditPage = () => {
                         name="mount_value"
                         value={formatNumberWithCommas(formData.mount_value)} // ✅ 표시될 때는 천 단위 구분 추가
                         onChange={handleChange}
-                        className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 text-right"
+                        className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 text-right"
                         required
                     />
                 </div>
@@ -453,7 +453,7 @@ const AdjustmentEditPage = () => {
                             const selectedDate = e.target.value.replace("-", ""); // YYYY-MM → YYYYMM 변환
                             setFormData((prev) => ({ ...prev, date_index: selectedDate }));
                         }}
-                        className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                        className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                         required
                     />
                 </div>
@@ -463,13 +463,13 @@ const AdjustmentEditPage = () => {
                 <div className="grid grid-cols-6 items-center space-x-4">
                     <label htmlFor="description" className="col-span-2 text-sm font-medium text-gray-900">설명</label>
                     <textarea id="description" name="description" value={formData.description} onChange={handleChange}
-                              className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"></textarea>
+                              className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"></textarea>
                 </div>
 
                 {/* 사용여부 스위치 */}
                 <div className="grid grid-cols-6 flex items-center space-x-4">
                     <label className="col-span-2 w-32 text-sm font-medium text-gray-900">사용 여부 *</label>
-                    <div className="col-span-4">
+                    <div className="col-span-3">
                         <Switch checked={formData.use_yn === 'Y'} onChange={handleToggleChange} />
                         <span className="text-sm text-gray-700">{formData.use_yn === 'Y' ? 'Yes' : 'No'}</span>
                     </div>

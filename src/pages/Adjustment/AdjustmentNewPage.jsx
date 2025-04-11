@@ -185,7 +185,7 @@ const AdjustmentNewPage = () => {
                     </label>
                     <select id="adjustment_code" name="adjustment_code" value={formData.adjustment_code}
                             onChange={handleChange}
-                            className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5">
+                            className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5">
                         {Object.keys(codeMappings["adjustment_code"]).map((optionKey, index) => (
                             <option key={optionKey} value={optionKey}>
                                 {Object.values(codeMappings["adjustment_code"])[index]}
@@ -200,7 +200,7 @@ const AdjustmentNewPage = () => {
                         대상</label>
                     <input type="text" id="adjustment_code_value" name="adjustment_code_value"
                            value={formData.adjustment_code_value} onChange={handleChange}
-                           className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                           className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                            placeholder="01680651SKYD374" required />
                 </div>
 
@@ -297,7 +297,7 @@ const AdjustmentNewPage = () => {
                            value={formatNumberWithCommas(formData.mount_value)}
                            onChange={handleChange}
                            placeholder="0"
-                           className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 text-right"
+                           className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 text-right"
                            required />
                 </div>
 
@@ -313,7 +313,7 @@ const AdjustmentNewPage = () => {
                             const selectedDate = e.target.value.replace("-", ""); // YYYY-MM → YYYYMM
                             setFormData((prev) => ({ ...prev, date_index: selectedDate }));
                         }}
-                        className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+                        className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
                         required
                     />
                 </div>
@@ -324,7 +324,7 @@ const AdjustmentNewPage = () => {
                     <label htmlFor="description" className="col-span-2 text-sm font-medium text-gray-900">설명</label>
                     <textarea id="description" name="description" value={formData.description} onChange={handleChange}
                               placeholder="메모"
-                              className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"></textarea>
+                              className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"></textarea>
                 </div>
 
                 {/* 사용 여부 스위치 */}
