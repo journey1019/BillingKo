@@ -59,9 +59,6 @@ const FileUploadStatus = () => {
         return acc;
     }, {}) || {};
 
-    // console.log('업로드 : ', uploadMonthlyData)
-    // console.log('이번달 : ', uploadedFilesMap)
-
     const getFileDetails = (spId, fileType) => {
         return uploadMonthlyData.find(file => {
             const [id, , type] = file.file_name.split('_');
@@ -70,6 +67,10 @@ const FileUploadStatus = () => {
     };
 
 
+    // 상단 고정 타입 선언
+    const fileTypes = ['CDRv3.csv', 'NetworkReport.csv']; // 순서 고정
+
+    console.log(filteredData)
     return (
         <div className="p-5 bg-white rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-2">
@@ -107,55 +108,60 @@ const FileUploadStatus = () => {
 
             <div className="space-y-2">
                 {filteredData?.map((uploadData) => {
-                    const uploadedFiles = uploadedFilesMap[uploadData.sp_id] || new Set();
-
                     return (
                         <div
                             key={uploadData.sp_id}
-                            className="grid grid-cols-4 gap-4 items-center bg-gray-100 rounded-md p-3 text-sm relative"
+                            className="grid grid-cols-[1fr_2fr_repeat(2,1fr)] gap-x-4 items-center bg-gray-100 rounded-md px-3 text-sm relative"
                         >
+                            {/* 기본 정보 */}
                             <span>{uploadData.sp_id}</span>
                             <span className="font-medium">{uploadData.alias}</span>
 
-                            <div className="col-span-2 flex space-x-4">
-                                {uploadData.include_files.map((fileType) => {
-                                    const fileDetails = getFileDetails(uploadData.sp_id, fileType);
-                                    const isUploaded = uploadedFiles.has(fileType);
+                            {/* 각 fileType에 대해 열 맞춤 렌더링 */}
+                            {fileTypes.map((fileType) => {
+                                const fileDetails = getFileDetails(uploadData.sp_id, fileType);
+                                const isUploaded = uploadedFilesMap[uploadData.sp_id]?.has(fileType);
+                                const isExpected = uploadData.include_files.includes(fileType); // 이 항목이 기대되는지
 
-                                    return (
-                                        <div key={fileType} className="relative group cursor-pointer">
-                                            <span className="flex flex-row items-center">
-                                                <span className="pr-2">{fileType}</span>
-                                                {isUploaded ? <><FaCircleCheck className="text-green-500 w-4 h-4"/></> : <><CiCircleCheck className="w-4 h-4"/></>}
-                                            </span>
-
-                                            {isUploaded && fileDetails && (
-                                                <div
-                                                    className="absolute left-0 top-full mt-1 w-72 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-lg text-sm text-gray-500 z-10">
-                                                    <div
-                                                        className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
-                                                        <p className="font-semibold text-gray-900 truncate">
-                                                            {fileDetails.file_name}
-                                                        </p>
-                                                    </div>
-                                                    <div className="p-3 break-words whitespace-nowrap">
-                                                        <p>
-                                                            <strong>Update Date:</strong>{' '}
-                                                            {new Date(fileDetails.update_date).toLocaleString()}
-                                                        </p>
-                                                        <p>
-                                                            <strong>User ID:</strong> {fileDetails.user_id}
-                                                        </p>
-                                                        <p>
-                                                            <strong>File Size:</strong> {fileDetails.file_size} bytes
-                                                        </p>
-                                                    </div>
+                                return (
+                                    <div
+                                        key={fileType}
+                                        className="relative group cursor-pointer flex flex-col min-h-[40px] justify-center"
+                                    >
+                                        {/* ✅ 기대된 파일 유형이 있으면 보여주고, 아니면 빈칸만 유지 */}
+                                        {isExpected ? (
+                                            <>
+                                                <div className="flex items-center space-x-1">
+                                                    <span className="text-xs text-gray-700 truncate">{fileType}</span>
+                                                    {isUploaded
+                                                        ? <FaCircleCheck className="text-green-500 w-4 h-4" />
+                                                        : <CiCircleCheck className="text-gray-400 w-4 h-4" />}
                                                 </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
+
+                                                {/* Tooltip */}
+                                                {isUploaded && fileDetails && (
+                                                    <div
+                                                        className="absolute left-0 top-full mt-1 w-72 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-lg text-sm text-gray-500 z-10">
+                                                        <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
+                                                            <p className="font-semibold text-gray-900 truncate">
+                                                                {fileDetails.file_name}
+                                                            </p>
+                                                        </div>
+                                                        <div className="p-3 break-words whitespace-nowrap">
+                                                            <p><strong>Update Date:</strong> {new Date(fileDetails.update_date).toLocaleString()}</p>
+                                                            <p><strong>User ID:</strong> {fileDetails.user_id}</p>
+                                                            <p><strong>File Size:</strong> {fileDetails.file_size} bytes</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <div className="text-xs text-gray-400 text-center italic">-</div> // ✅ 비어있는 자리 유지
+                                        )}
+                                    </div>
+                                );
+                            })}
+
                         </div>
                     );
                 })}

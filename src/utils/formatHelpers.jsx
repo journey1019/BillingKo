@@ -218,3 +218,13 @@ export const formatFormDate = (datetime) => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 };
+
+
+/** 오늘 일자 기준 저번달 구하기 'YYYYMM' */
+export const getLastMonthYYYYMM = () => {
+    const today = new Date();
+    today.setMonth(today.getMonth() - 1); // 저번달로 이동
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0-indexed
+    return `${year}${month}`;
+};

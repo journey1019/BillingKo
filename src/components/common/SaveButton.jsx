@@ -6,9 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { Alert, Snackbar, Tooltip } from "@mui/material"; // ✅ MUI Alert 추가
+import { getLastMonthYYYYMM } from '@/utils/formatHelpers.jsx';
 
 const SaveButton = ({ yearMonth }) => {
     const navigate = useNavigate();
+    const befoMonth = getLastMonthYYYYMM(); // 오늘날 기준에서 저번달 'YYYYMM'
 
     // Monthly Save Button
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -16,7 +18,11 @@ const SaveButton = ({ yearMonth }) => {
     const [isLoading, setIsLoading] = useState(false); // ✅ 로딩 상태 추가
     const MySwal = withReactContent(Swal);
 
+    const isCurrentTargetMonth = yearMonth === befoMonth;
+
     const handleSave = async () => {
+        if(!isCurrentTargetMonth) return; // 잘못된 실행 방지
+
         setShowConfirmModal(false);
         setAlert({ type: "", message: "" });
         setIsLoading(true); // ✅ 로딩 시작
@@ -62,13 +68,18 @@ const SaveButton = ({ yearMonth }) => {
         }
     };
 
+
     return(
         <>
-            <Tooltip title="단말기-고객 최종 매칭 데이터를 확인 후 저장버튼을 눌러주세요">
+            <Tooltip title={isCurrentTargetMonth ? <div>단말기와 고객의 최종 매칭 내용을 확인한 후 저장해 주세요.<br />저장 후에는 수정하거나 다시 저장할 수 없습니다.</div> : '저장 및 조정은 이번 달 청구서 대상인 전월 데이터에만 가능합니다.'}>
                 <button
-                    onClick={() => setShowConfirmModal(true)}
+                    onClick={() => {if(isCurrentTargetMonth) setShowConfirmModal(true)}}
                     className={`flex flex-row items-center space-x-2 p-2 rounded-md text-white transition ${
-                        isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+                        !isCurrentTargetMonth
+                            ? 'bg-gray-300 cursor-not-allowed'
+                            : isLoading
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-blue-500 hover:bg-blue-600'
                     }`}
                     disabled={isLoading}
                 >
