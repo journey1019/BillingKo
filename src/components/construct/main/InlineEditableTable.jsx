@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import { Box, Button, CircularProgress, Typography, Tooltip } from '@mui/material';
+import { Box, Button, CircularProgress, Typography, Tooltip, Skeleton } from '@mui/material';
 import usePaymentStore from '@/stores/paymentStore.js';
 import MonthPickerArrow from '../../time/MonthPickerArrow.jsx';
 import { formatDateTime, formatDateKSTTime } from '@/columns/cellStyle/AccountCell.jsx';
@@ -19,7 +19,24 @@ import useInlineEditableColumns from '@/columns/InlineEditableTableColumns.jsx';
 
 const REQUIRED_FIELDS = ['confirm_yn', 'confirm_payment_method', 'confirm_payment_date'];
 
-const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthlyAcctSaveData }) => {
+const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthlyAcctSaveData, loading, error }) => {
+    // if (loading) {
+    //     return (
+    //         <div className="flex justify-center items-center h-[300px]">
+    //             <CircularProgress />
+    //         </div>
+    //     );
+    // }
+    //
+    // if (error) {
+    //     return (
+    //         <div className="flex flex-col items-center justify-center h-[300px] text-red-600">
+    //             <p className="text-lg font-semibold">데이터를 불러오는 중 오류가 발생했습니다.</p>
+    //             <p className="text-sm mt-1">{String(error)}</p>
+    //         </div>
+    //     );
+    // }
+
     const { updateConfirmStatus } = usePaymentStore();
     const [editedUsers, setEditedUsers] = useState({});
     const [validationErrors, setValidationErrors] = useState({});
@@ -99,6 +116,15 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
         validationErrors
     });
 
+    const VISIBLE_FIELDS = {
+        account_type: '고객 구분',
+        acct_resident_num: '사업자 번호',
+        company_address: '주소',
+        company_address2: '상세 주소',
+        company_tel: '전화번호',
+        director_email: '담당자 이메일',
+        director_tel: '담당자 전화번호',
+    };
     const table = useMaterialReactTable({
         columns,
         data: monthlyAcctSaveData || [],
@@ -112,8 +138,36 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
             density: 'compact',
             pagination: { pageSize: 30, pageIndex: 0 }
         },
+        muiTableBodyRowProps: ({ row }) => {
+            const accountInfo = row.original.account_info || {};
+
+            const tooltipContent = (
+                <Box sx={{ p: 1 }}>
+                    {Object.entries(VISIBLE_FIELDS).map(([key, label]) => (
+                        <Box key={key} sx={{ display: 'flex', mb: 0.5 }}>
+                            <Typography
+                                variant="body2"
+                                sx={{ width: '100px', fontWeight: 'bold' }}
+                            >
+                                {label}
+                            </Typography>
+                            <Typography variant="body2">
+                                {accountInfo[key] ?? '-'}
+                            </Typography>
+                        </Box>
+                    ))}
+                </Box>
+            );
+
+
+            return {
+                component: Tooltip,
+                title: tooltipContent,
+                arrow: true,
+                placement: 'top-start',
+            };
+        },
     });
-    // console.log(monthlyAcctSaveData)
 
     return (
         <div className="py-4 grid gap-0 grid-cols-1">
@@ -140,7 +194,31 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
                     </Box>
                 </div>
                 <div className="p-4">
-                    <MaterialReactTable table={table} />
+                    <MaterialReactTable
+                        table={table}
+                        state={{ isLoading: loading }}
+                        muiTableBodyProps={{
+                            sx: {
+                                position: 'relative',
+                                height: loading ? '300px' : undefined,
+                            },
+                        }}
+                        renderEmptyRowsFallback={
+                            monthlyAcctSaveData.length === 0 && loading ? (
+                                <Box sx={{ width: '100%' }}>
+                                    {[...Array(5)].map((_, i) => (
+                                        <Skeleton
+                                            key={i}
+                                            variant="rectangular"
+                                            height={40}
+                                            animation="wave"
+                                            sx={{ mb: 1, borderRadius: 1 }}
+                                        />
+                                    ))}
+                                </Box>
+                            ) : null
+                        }
+                    />
                 </div>
             </div>
             {alert && (

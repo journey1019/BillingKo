@@ -70,7 +70,7 @@ const CDRnNN = () => {
             <div className="bg-white p-4 rounded-md shadow-md">
                 <Accordion items={[
                     {
-                        title: 'example',
+                        title: 'Invoice Detail',
                         content: (
                             <div className="grid grid-col-1">
                                 <div className="mx-4 mb-3 border rounded-t-lg">

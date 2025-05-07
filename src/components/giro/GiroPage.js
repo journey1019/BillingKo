@@ -113,14 +113,14 @@ export const GiroPage = (doc, yearMonth, invoiceBasicData, accountDetailData) =>
     ---------------------------- */
     doc.setFontSize(13);
     const text = String(monthly_final_fee);
-    const startY = 225.8; // 시작 Y 좌표
+    const startY = 226; // 시작 Y 좌표
     const spacing = 5.2; // 문자 간격 (픽셀)
 
     // 전체 문자열 너비 계산
     const totalWidth = (text.length - 1) * spacing;
 
     // 오른쪽 끝 정렬을 위한 X 좌표 조정
-    const endX = 197 // 기존 우측 정렬 기준 X 좌표
+    const endX = 196 // 기존 우측 정렬 기준 X 좌표
     const startX = endX - totalWidth; // 문자열의 시작점 보정
 
     // 금액 (오른쪽 정렬)
@@ -132,28 +132,29 @@ export const GiroPage = (doc, yearMonth, invoiceBasicData, accountDetailData) =>
     // 금액(요금)
     doc.setFont("NanumGothic", "bold");
     doc.setFontSize(11);
-    doc.text(formatNumberWithCommas(monthly_final_fee), 37, 237);
+    // doc.text(formatNumberWithCommas(monthly_final_fee), 37, 237);
+    doc.text(formatNumberWithCommas(monthly_final_fee), pageWidth - 158, 238, { align: 'right' });
 
     // 첫 번째 열 (고객 번호, 고객, YYYY년 MM월 청구서, 납부기한)
     doc.setFontSize(10);
     doc.setFont("NotoSansKR", "bold");
-    doc.text(utf8_acct_name, 78, 243);
+    doc.text(utf8_acct_name, 78, 243.5);
     doc.setFont("NanumGothic", "bold");
-    doc.text(billingMonth, 78, 252.5);
+    doc.text(billingMonth, 78, 253);
 
     // 두 번째 열 (고객, YYYY년 MM월 청구서)
     doc.setFontSize(8);
-    doc.text(acct_num, 20, 248);
+    doc.text(acct_num, 20, 249);
     doc.setFont("NotoSansKR", "bold");
-    doc.text(utf8_acct_name, 20, 254.2);
+    doc.text(utf8_acct_name, 20, 255.2);
     doc.setFont("NanumGothic", "bold");
-    doc.text(billingMonth, 20, 260.7);
-    doc.text(due_date_of_payment, 20, 267);
+    doc.text(billingMonth, 20, 261.7);
+    doc.text(due_date_of_payment, 20, 268);
 
     // 세 번째 열 (고객 번호, 납부기한)
     doc.setFontSize(10);
-    doc.text(acct_num, 138, 243);
-    doc.text(due_date_of_payment, 138, 252.5);
+    doc.text(acct_num, 138, 243.5);
+    doc.text(due_date_of_payment, 138, 253);
 
     return doc;
 };

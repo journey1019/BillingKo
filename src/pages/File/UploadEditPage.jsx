@@ -158,11 +158,8 @@ const UploadEditPage = () => {
 
                 {/* ✅ 비활성화 날짜 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label htmlFor="deactive_index" className="col-span-2 text-sm font-medium text-gray-900">비활성화
-                        날짜</label>
-                    {/*<input type="month" id="deactive_index" name="deactive_index"*/}
-                    {/*       value={formData.deactive_index || ''} onChange={handleDateChange}*/}
-                    {/*       className="col-span-4 border p-2.5 rounded-lg" />*/}
+                    <label htmlFor="deactive_index" className="col-span-2 text-sm font-medium text-gray-900">비활성화 날짜</label>
+
                     <input
                         type="month"
                         id="deactive_index"
@@ -177,7 +174,6 @@ const UploadEditPage = () => {
                             setFormData((prev) => ({ ...prev, deactive_index: selectedDate }));
                         }}
                         className="col-span-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
-                        required
                     />
                 </div>
 

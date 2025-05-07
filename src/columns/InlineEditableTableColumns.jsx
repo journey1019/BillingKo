@@ -11,6 +11,7 @@ import { convertUTCToKST, convertKSTToUTC } from '@/utils/time';
 const useInlineEditableColumns = ({ editedUsers, setEditedUsers, validationErrors }) => {
     return useMemo(() => [
         { accessorKey: 'acct_num', header: '고객번호', enableEditing: false, size: 50 },
+        { accessorKey: 'account_info.acct_name', header: '고객명', enableEditing: false, size: 50 },
         { accessorKey: 'confirm_user_id', header: '확인자', enableEditing: false, size: 50 },
         {
             accessorKey: 'confirm_date',

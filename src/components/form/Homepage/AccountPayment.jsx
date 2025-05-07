@@ -180,7 +180,7 @@ const AccountPayment = () => {
                                     data={accountPaymentData}
                                     columns={PaymentAccountTableColumns}
                                     options={{
-                                        ...PaymentAccountTableOptions,
+                                        ...PaymentAccountTableOptions(selectedAcctNum),
                                         onColumnFiltersChange: setColumnFilters,
                                         state: { columnFilters }
                                     }}

@@ -74,6 +74,8 @@ const Homepage = () => {
                     handleDateChange={handleDateChange}
                     yearMonth={yearMonth}
                     monthlyAcctSaveData={monthlyAcctSaveData}
+                    loading={loading}
+                    error={error}
                 />
             </LocalizationProvider>
 

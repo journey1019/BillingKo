@@ -64,16 +64,16 @@ const MonthlyPage = () => {
             <div className="col-span-6 flex flex-row justify-between border-b pb-3 mb-2 border-gray-400">
                 <div className="flex flex-row space-x-2 items-center">
                     <h1 className="text-2xl font-base">단말기별 정산 내역 테이블</h1>
-                    {/*<Tooltip title={*/}
-                    {/*    <div>*/}
-                    {/*        단말기와 고객의 최종 매칭 내용을 확인한 후 저장해 주세요.<br />*/}
-                    {/*        저장 후에는 수정하거나 다시 저장할 수 없습니다.*/}
-                    {/*    </div>*/}
-                    {/*}>*/}
-                    {/*    <span className="cursor-pointer">*/}
-                    {/*        <CiCircleQuestion className="w-5 h-5" />*/}
-                    {/*    </span>*/}
-                    {/*</Tooltip>*/}
+                    <Tooltip title={
+                        <div>
+                            단말기와 고객의 최종 매칭 내용을 확인한 후 저장해 주세요.<br />
+                            저장 후에는 수정하거나 다시 저장할 수 없습니다.
+                        </div>
+                    }>
+                        <span className="cursor-pointer">
+                            <CiCircleQuestion className="w-5 h-5" />
+                        </span>
+                    </Tooltip>
                 </div>
                 <SaveButton yearMonth={yearMonth} />
             </div>

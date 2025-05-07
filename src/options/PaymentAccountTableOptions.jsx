@@ -1,13 +1,13 @@
-export const PaymentAccountTableOptions = {
+export const PaymentAccountTableOptions = (selectedAcctNum) => ({
     initialState: {
         sorting: [{ id: 'date_index', desc: true }],
         showColumnFilters: true,
         pagination: { pageSize: 25, pageIndex: 0 }
     },
-    enableRowSelection: true,
     enableMultiRowSelection: false,
     enablePagination: true,
     enableFilters: true,
+    enableColumnVisibility: false,
     positionToolbarAlertBanner: 'none',
 
 
@@ -23,10 +23,11 @@ export const PaymentAccountTableOptions = {
         },
         sx: {
             cursor: 'pointer',
-            // backgroundColor: row.getIsSelected() ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-            // '&:hover': {
-            //     backgroundColor: 'rgba(59, 130, 246, 0.2)',
-            // },
+            backgroundColor:
+                selectedAcctNum?.acct_num === row.original.acct_num ? '#e2e8f0' : 'transparent', // ✅ 선택된 row 배경색
+            '&:hover': {
+                backgroundColor: selectedAcctNum?.acct_num === row.original.acct_num ? '#cbd5e1' : '#f1f5f9',
+            },
         },
     }),
-};
+});

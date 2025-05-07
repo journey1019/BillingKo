@@ -8,6 +8,7 @@ import nanumGothicExtraBoldFont from '@/assets/fonts/NanumGothic-ExtraBold';// B
 import notoSansBoldFont from '@/assets/fonts/notoSansKR-Bold';
 
 export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailData) => {
+    // console.log(accountDetailData)
     if (!doc) {
         console.error("❌ Error: doc is undefined in generateInvoicePage2");
         return;
@@ -34,6 +35,26 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
     // 기본 데이터 설정
     const data = applyDefaultValues(accountDetailData?.[0] || {}, defaultAccountData);
     const deviceDetails = Array.isArray(data.device_detail) ? data.device_detail : [];
+    // ✅ alias 오름차순 정렬 (한글 정렬까지 고려)
+    // deviceDetails.sort((a, b) => a.alias.localeCompare(b.alias, 'ko-KR'));
+    // ✅ alias 오름차순 정렬 (자연 정렬 적용)
+    deviceDetails.sort((a, b) => {
+        const aNum = parseInt(a.alias.replace(/[^0-9]/g, ''), 10);
+        const bNum = parseInt(b.alias.replace(/[^0-9]/g, ''), 10);
+
+        const aPrefix = a.alias.replace(/[0-9]/g, '');
+        const bPrefix = b.alias.replace(/[0-9]/g, '');
+
+        // 1. 접두사가 다르면 문자열 기준 비교
+        if (aPrefix !== bPrefix) {
+            return aPrefix.localeCompare(bPrefix, 'ko-KR');
+        }
+
+        // 2. 접두사가 같으면 숫자 크기 기준으로 정렬
+        return aNum - bNum;
+    });
+
+    // console.log(deviceDetails);
 
     if (deviceDetails.length === 0) {
         // console.log("❌ device_detail이 비어 있어 2페이지를 생성하지 않습니다.");
