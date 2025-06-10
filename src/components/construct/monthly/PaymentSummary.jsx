@@ -34,7 +34,7 @@ const PaymentSummary = ({ monthlyAcctSaveData }) => {
         통신료: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.add_use_fee_total ?? 0), 0),
         부가서비스료: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.modification_fee_total ?? 0), 0),
         기타사용료: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.subscribe_fee_total ?? 0), 0),
-        공급가액: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.total_fee ?? 0), 0),
+        공급가액: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.supply_fee ?? 0), 0),
         부가가치세: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.tax_fee ?? 0), 0),
         절사금액: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.cut_off_fee ?? 0), 0),
         당월납부액: (monthlyAcctSaveData ?? []).reduce((sum, item) => sum + (item.monthly_final_fee ?? 0), 0),

@@ -104,7 +104,7 @@ export const accordionItems = ({ accountData, accountInfo, deviceDetail, adjustm
                 </div>
                 <div className="text-sm p-3 border-b">
                     {[
-                        ['공급가액', `${formatNumber(accountData.total_fee)}`],
+                        ['공급가액', `${formatNumber(accountData.supply_fee)}`],
                         ['부가 가치세', `${formatNumber(accountData.tax_fee)}`],
                         ['절사 금액', accountData.cut_off_fee ? `-${formatNumber(accountData.cut_off_fee)}원` : '0'],
                     ].map(([label, value], index) => (

@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
     const navigate = useNavigate();
 
-    // console.log(detailData)
+    console.log(detailData)
     // console.log(yearMonth)
     const [alertBox, setAlertBox] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +34,7 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
             deactivationDate: detailData.deactivate_date ? detailData.deactivate_date.split("T").join(" ") : "",
             free_bytes: detailData.free_bytes ?? "",
             use_period: detailData.use_period || "",
-            use_percent_of_month: detailData.use_percent_of_month || "",
+            use_percent_of_month: detailData.use_percent_of_month ?? "",
             use_byte_total: detailData.use_byte_total ?? "",
             basic_fee: detailData.payment.basic_fee ?? "",
             total_fee: detailData.payment.total_fee ?? "",
@@ -46,14 +46,29 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
         if (!name) return; // name 없으면 무시
+
+        // 숫자 필드 이름 목록 (명확하게 지정)
+        const numericFields = [
+            "free_bytes", "use_byte_total", "use_period", "use_percent_of_month",
+            "basic_fee", "subscribe_fee", "add_use_fee", "modification_fee", "total_fee"
+        ];
+
+        // total_fee 자동 계산을 위한 key
+        const autoSumFields = ["basic_fee", "add_use_fee", "subscribe_fee", "modification_fee"];
 
         let cleanedValue = value;
 
-        // 숫자일 경우 쉼표 제거
-        if (!isNaN(value.toString().replace(/,/g, ""))) {
-            cleanedValue = value.toString().replace(/,/g, "");
+        // ✅ 쉼표 제거 + 음수 부호 유지
+        const unformattedValue = value.toString().replace(/,/g, "");
+
+        // ✅ 숫자 필드라면 Number로 변환 (음수 포함)
+        if (numericFields.includes(name)) {
+            if (!isNaN(unformattedValue) && unformattedValue.trim() !== "") {
+                cleanedValue = Number(unformattedValue);
+            } else {
+                cleanedValue = ""; // 숫자가 아닌 경우 빈 값 처리 (예: "-abc")
+            }
         }
 
         // 날짜일 경우 시:분까지만 입력되었으면 ":00" 추가
@@ -61,12 +76,25 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
             cleanedValue = `${value}:00`;
         }
 
-        setFormData((prev) => ({
-            ...prev,
-            [name]: cleanedValue,
-        }));
-    };
+        setFormData((prev) => {
+            const updatedForm = {
+                ...prev,
+                [name]: cleanedValue,
+            };
 
+            // ✅ total_fee 자동 계산
+            if (autoSumFields.includes(name)) {
+                const sum = Number(updatedForm.basic_fee || 0)
+                    + Number(updatedForm.add_use_fee || 0)
+                    + Number(updatedForm.subscribe_fee || 0)
+                    + Number(updatedForm.modification_fee || 0);
+
+                updatedForm.total_fee = sum;
+            }
+
+            return updatedForm;
+        });
+    };
 
     // ✅ 저장
     const handleSave = async () => {
@@ -84,14 +112,23 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
                 use_byte_total: formData.use_byte_total,
                 use_period: formData.use_period,
                 use_percent_of_month: formData.use_percent_of_month,
-                basic_fee: formData.basic_fee,
-                total_fee: formData.total_fee,
-                subscribe_fee: formData.subscribe_fee,
-                add_use_fee: formData.add_use_fee,
-                modification_fee: formData.modification_fee,
+                // basic_fee: formData.basic_fee,
+                // total_fee: formData.total_fee,
+                // subscribe_fee: formData.subscribe_fee,
+                // add_use_fee: formData.add_use_fee,
+                // modification_fee: formData.modification_fee,
+                payment: {
+                    ...detailData.payment,
+                    basic_fee: formData.basic_fee,
+                    total_fee: formData.total_fee,
+                    subscribe_fee: formData.subscribe_fee,
+                    add_use_fee: formData.add_use_fee,
+                    modification_fee: formData.modification_fee,
+                },
             };
 
             const { data_index, user_id, update_date, update_version, ...payload } = updatedData;
+            console.log(updatedData)
 
             await saveKOMonthlyDetailData(detailData.data_index, payload);
 
@@ -159,6 +196,7 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
     };
 
 
+    console.log(formData)
     return (
         <div className="relative inline-block float-right">
             {/* ✅ AlertBox */}
@@ -190,62 +228,68 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
 
             {/* ✅ 드롭다운 */}
             <DropdownMenu isOpen={isOpen} closeDropdown={closeDropdown} title="단말 세부 내용 수정">
-                <div className="px-4 py-2 space-y-3 border-b">
-                    {[
-                        { label: "활성화 날짜", name: "activationDate", type: "datetime-local" },
-                        { label: "비활성화 날짜", name: "deactivationDate", type: "datetime-local" },
-                    ].map((field, index) => (
-                        <FormInput
-                            key={index}
-                            {...field}
-                            value={formData[field.name]}
-                            onChange={handleChange}
-                        />
-                    ))}
-                </div>
-                <div className="px-4 py-2 space-y-3 border-b">
-                    {[
-                        { label: "무료 바이트 제공량", name: "free_bytes", type: "number" },
-                        { label: "총 사용 바이트", name: "use_byte_total", type: "number" },
-                        { label: "월간 사용 기간", name: "use_period", type: "number" },
-                        { label: "월간 사용 백분율", name: "use_percent_of_month", type: "number" },
-                    ].map((field, index) => (
-                        <FormInput
-                            key={index}
-                            {...field}
-                            value={formData[field.name]}
-                            onChange={handleChange}
-                            direct={field.type}
-                        />
-                    ))}
-                </div>
-                <div className="px-4 py-2 space-y-3">
-                    {[
-                        { label: "기본료", name: "basic_fee", type: "number" },
-                        { label: "가입비", name: "subscribe_fee", type: "number" },
-                        { label: "추가 사용료", name: "add_use_fee", type: "number" },
-                        { label: "부가 서비스료", name: "modification_fee", type: "number" },
-                        { label: "총 납부액", name: "total_fee", type: "number" },
-                    ].map((field, index) => (
-                        <FormInput
-                            key={index}
-                            {...field}
-                            value={formData[field.name] ?? ""}
-                            onChange={handleChange}
-                            direct={field.type}
-                        />
-                    ))}
-                </div>
+                {isOpen && (
+                    <>
+                        <div className="px-4 py-2 space-y-3 border-b">
+                            {[
+                                { label: "활성화 날짜", name: "activationDate", type: "datetime-local" },
+                                { label: "비활성화 날짜", name: "deactivationDate", type: "datetime-local" },
+                            ].map((field, index) => (
+                                <FormInput
+                                    key={index}
+                                    {...field}
+                                    value={formData[field.name]}
+                                    onChange={handleChange}
+                                />
+                            ))}
+                        </div>
+                        <div className="px-4 py-2 space-y-3 border-b">
+                            {[
+                                { label: "무료 바이트 제공량", name: "free_bytes", type: "number" },
+                                { label: "총 사용 바이트", name: "use_byte_total", type: "number" },
+                                { label: "월간 사용 기간", name: "use_period", type: "number" },
+                                { label: "월간 사용 백분율", name: "use_percent_of_month", type: "number" },
+                            ].map((field, index) => (
+                                <FormInput
+                                    key={index}
+                                    {...field}
+                                    value={formData[field.name]}
+                                    onChange={handleChange}
+                                    direct={field.type}
+                                />
+                            ))}
+                        </div>
+                        <div className="px-4 py-2 space-y-3">
+                            {[
+                                { label: "기본료", name: "basic_fee", type: "number" },
+                                { label: "통신료", name: "add_use_fee", type: "number" },
+                                { label: "가입비", name: "subscribe_fee", type: "number" },
+                                { label: "부가 서비스료", name: "modification_fee", type: "number" },
+                                { label: "총 납부액", name: "total_fee", type: "number", disabled: true },
+                            ].map((field, index) => (
+                                <FormInput
+                                    key={index}
+                                    {...field}
+                                    value={formData[field.name] ?? ""}
+                                    onChange={handleChange}
+                                    direct={field.type}
+                                />
+                            ))}
+                        </div>
 
-                {/* ✅ 액션 버튼 */}
-                <div className="flex justify-end p-2 bg-gray-100 rounded-b-md space-x-2">
-                    <button onClick={handleSave} className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm">
-                        Save
-                    </button>
-                    <button onClick={closeDropdown} className="px-3 py-1 bg-gray-500 text-white rounded-md text-sm">
-                        Close
-                    </button>
-                </div>
+                        {/* ✅ 액션 버튼 */}
+                        <div className="flex justify-end p-2 bg-gray-100 rounded-b-md space-x-2">
+                            <button onClick={handleSave}
+                                    className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm">
+                                Save
+                            </button>
+                            <button onClick={closeDropdown}
+                                    className="px-3 py-1 bg-gray-500 text-white rounded-md text-sm">
+                                Close
+                            </button>
+                        </div>
+                    </>
+                )}
             </DropdownMenu>
         </div>
     );

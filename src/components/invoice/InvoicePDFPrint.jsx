@@ -103,6 +103,8 @@ const InvoicePDFPrint = ({ yearMonth, invoiceBasicData, accountDetailData, month
         }
     };
 
+    console.log(accountDetailData)
+
     return (
         <div>
             <div className="relative inline-block">

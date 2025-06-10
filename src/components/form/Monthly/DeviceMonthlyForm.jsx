@@ -65,7 +65,6 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
     };
 
 
-
     return (
         <>
             <div className="grid grid-cols-2 bg-white shadow-lg">
@@ -106,6 +105,7 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
                             {/* 버전 변경 버튼 */}
                             {fetchVersionData && setVersion !== null && version !== null && latestVersion !== null && (
                                 <div className="flex flex-row space-x-2 items-center">
+                                    {/* Version Buttons */}
                                     <div className="text-end space-x-4 justify-end">
                                         <button
                                             className="px-3 py-1 bg-gray-200 rounded-md disabled:opacity-50"
@@ -132,11 +132,12 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
                                         </button>
                                     </div>
 
+                                    {/* Trash Button */}
                                     <Tooltip title="가장 마지막 버전이 삭제됩니다.">
                                         <button
                                             className="text-gray-700 hover:text-red-500 hover:bg-gray-100 rounded-full p-2 disabled:opacity-30 disabled:hover:bg-white disabled:text-gray-700"
                                             onClick={handleDelete}
-                                            disabled={latestVersion <= 0}
+                                            disabled={version !== latestVersion}
                                         >
                                             <FaTrash className="w-4 h-4" />
                                         </button>

@@ -24,6 +24,7 @@ import { IoMdClose } from 'react-icons/io';
 
 import useKOMonthlyAccountSaveStore from '@/stores/koMonthlySaveStore.js';
 import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { getExportDataFromTable } from '@/utils/exportHelpers';
 import { exportToCSV } from '@/utils/csvExporter';
 import { exportToExcel } from '@/utils/excelExporter';
 
@@ -80,6 +81,8 @@ const KOMonthlyAccountSavePage = () => {
     // console.log('monthlyAcctSaveData : ', monthlyAcctSaveData)
     // console.log('monthlyAcctSaveDetailData : ', monthlyAcctSaveDetailData)
 
+    //ㅊ
+    console.log(monthlyAcctSaveData)
     return(
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             {/* 상단 제목 및 월 선택 */}

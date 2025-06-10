@@ -44,7 +44,7 @@ const AccountMonthlyForm = ({ yearMonth, accountDetailData, accountDetailLoading
     const adjustmentInfo = accountData.adjustment_info || [];
     const nonePayInfo = accountData.none_pay_info || [];
 
-    // console.log(accountData)
+    console.log(accountData)
     // console.log(adjustmentInfo)
 
 

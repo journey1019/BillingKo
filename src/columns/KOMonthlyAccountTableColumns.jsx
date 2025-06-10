@@ -27,6 +27,12 @@ const KOMonthlyAccountTableColumns = [
         Cell: ({ row }) => row.original.account_info?.acct_name || "-",
     },
     {
+        accessorKey: "account_info.classification",
+        header: "분류",
+        size: 150,
+        Cell: ({ row }) => row.original.account_info?.classification || "-",
+    },
+    {
         accessorKey: "basic_fee_total",
         header: "기본료",
         size: 100,
@@ -59,7 +65,7 @@ const KOMonthlyAccountTableColumns = [
         muiTableHeadCellProps: { align: 'right' },
     },
     {
-        accessorKey: "total_fee",
+        accessorKey: "supply_fee",
         header: "공급가액",
         size: 100,
         ...numericColumnProps,

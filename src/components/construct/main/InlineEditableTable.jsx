@@ -44,6 +44,7 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
 
     const [alert, setAlert] = useState(null); // { type, title, message } or null
 
+
     const handleSaveUsers = async () => {
         const errors = {};
         const formatted = [];
@@ -116,6 +117,7 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
         validationErrors
     });
 
+    /** Tooltip Contents */
     const VISIBLE_FIELDS = {
         account_type: '고객 구분',
         acct_resident_num: '사업자 번호',
@@ -138,36 +140,38 @@ const InlineEditableTable = ({ yearMonth, selectedDate, handleDateChange, monthl
             density: 'compact',
             pagination: { pageSize: 30, pageIndex: 0 }
         },
-        muiTableBodyRowProps: ({ row }) => {
-            const accountInfo = row.original.account_info || {};
-
-            const tooltipContent = (
-                <Box sx={{ p: 1 }}>
-                    {Object.entries(VISIBLE_FIELDS).map(([key, label]) => (
-                        <Box key={key} sx={{ display: 'flex', mb: 0.5 }}>
-                            <Typography
-                                variant="body2"
-                                sx={{ width: '100px', fontWeight: 'bold' }}
-                            >
-                                {label}
-                            </Typography>
-                            <Typography variant="body2">
-                                {accountInfo[key] ?? '-'}
-                            </Typography>
-                        </Box>
-                    ))}
-                </Box>
-            );
-
-
-            return {
-                component: Tooltip,
-                title: tooltipContent,
-                arrow: true,
-                placement: 'top-start',
-            };
-        },
+        // muiTableBodyRowProps: ({ row }) => {
+        //     const accountInfo = row.original.account_info || {};
+        //
+        //     const tooltipContent = (
+        //         <Box sx={{ p: 1 }}>
+        //             {Object.entries(VISIBLE_FIELDS).map(([key, label]) => (
+        //                 <Box key={key} sx={{ display: 'flex', mb: 0.5 }}>
+        //                     <Typography
+        //                         variant="body2"
+        //                         sx={{ width: '100px', fontWeight: 'bold' }}
+        //                     >
+        //                         {label}
+        //                     </Typography>
+        //                     <Typography variant="body2">
+        //                         {accountInfo[key] ?? '-'}
+        //                     </Typography>
+        //                 </Box>
+        //             ))}
+        //         </Box>
+        //     );
+        //
+        //
+        //     return {
+        //         component: Tooltip,
+        //         title: tooltipContent,
+        //         arrow: true,
+        //         placement: 'top-start',
+        //     };
+        // },
     });
+
+    console.log(monthlyAcctSaveData)
 
     return (
         <div className="py-4 grid gap-0 grid-cols-1">

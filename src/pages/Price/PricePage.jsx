@@ -194,7 +194,7 @@ const PricePage = () => {
                 </div>
             )}
 
-            <div className="col-span-6 justify-between border-b pb-3 mb-2 border-gray-400">
+            <div className="col-span-6 justify-between pt-10 pb-3 mb-2 border-gray-400">
                 <AdjustmentPage />
             </div>
 

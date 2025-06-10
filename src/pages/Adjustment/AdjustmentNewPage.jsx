@@ -169,12 +169,12 @@ const AdjustmentNewPage = () => {
                 {/* ✅ 조정 대상 구분 */}
                 <div key="adjustment_code" className="grid grid-cols-6 items-center space-x-4">
                     <label htmlFor="adjustment_code" className="flex flex-row space-x-2 col-span-2 text-sm font-medium text-gray-900 items-center">
-                        <span>조정 대상 구분</span>
+                        <span>조정 대상 유형</span>
                         <Tooltip arrow placement="right"
                                  title={
                                      <div>
-                                         무엇을 조정할지 선택하세요.<br />
-                                         Account, Serial Number, PPID 중 하나를 선택하여 어떤 항목에 조정을 적용할지 지정합니다.
+                                         조정이 어떤 대상을 기준으로 적용되는지 구분합니다.<br />
+                                         (Account: 고객 / Serial: 단말 / PPID: 요금제)
                                      </div>
                                  }
                         >
@@ -196,8 +196,7 @@ const AdjustmentNewPage = () => {
 
                 {/* ✅ 조정 대상 */}
                 <div key="adjustment_code_value" className="grid grid-cols-6 items-center space-x-4">
-                    <label htmlFor="adjustment_code_value" className="col-span-2 text-sm font-medium text-gray-900">조정
-                        대상</label>
+                    <label htmlFor="adjustment_code_value" className="col-span-2 text-sm font-medium text-gray-900">조정 대상 ID</label>
                     <input type="text" id="adjustment_code_value" name="adjustment_code_value"
                            value={formData.adjustment_code_value} onChange={handleChange}
                            className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
@@ -207,9 +206,9 @@ const AdjustmentNewPage = () => {
                 {/* ✅ 선택 필드 */}
                 {[
                     { id: 'adjustment_category', label: '조정 항목', mappingKey: "adjustment_category", tooltip: true, tooltipContent: "조정하려는 항목을 선택합니다. ", tooltipContent2: "예를 들어 가입비, VMS 사용료, 미납금 등이 있습니다." },
-                    { id: "adjustment_type", label: "할인/가산 구분", mappingKey: "adjustment_type", tooltip: true, tooltipContent: "조정 방식이 할인인지, 추가 요금인지 선택합니다.", tooltipContent2: "'할인'은 요금을 줄이고, '가산'은 늘립니다." },
-                    { id: "mount_type", label: "지불 방법", mappingKey: "mount_type", tooltip: true, tooltipContent: "조정 금액이 '요금(정액)인지 '요율(%)'로 적용될지 선택합니다." },
-                    { id: "adjustment_cycle", label: "조정 적용 기간", mappingKey: "adjustment_cycle", tooltip: true, tooltipContent: "이 조정이 한 번만 적용될지, 매달 반복 적용될지를 선택합니다."},
+                    { id: "adjustment_type", label: "조정 유형", mappingKey: "adjustment_type", tooltip: true, tooltipContent: "조정 방식이 할인인지, 추가 요금인지 선택합니다.", tooltipContent2: "'할인(-)'은 요금을 줄이고, '가산(+)'은 늘립니다." },
+                    { id: "mount_type", label: "적용 방식", mappingKey: "mount_type", tooltip: true, tooltipContent: "조정 금액이 고정 금액인지(Pay) 혹은 비율(%)인지를 나타냅니다." },
+                    { id: "adjustment_cycle", label: "적용 주기", mappingKey: "adjustment_cycle", tooltip: true, tooltipContent: "조정이 한 번만 적용되는 일회성인지, 매월 반복되는 정기성인지 구분합니다."},
                 ].map(({ id, label, mappingKey, tooltip, tooltipContent, tooltipContent2 }) => (
                     <div key={id} className="grid grid-cols-6 items-center space-x-4">
                         <label htmlFor={id} className="flex flex-row items-center space-x-2 col-span-2 text-sm font-medium text-gray-900">
@@ -292,7 +291,7 @@ const AdjustmentNewPage = () => {
 
                 {/* ✅ 금액 입력 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label htmlFor="mount_value" className="col-span-2 text-sm font-medium text-gray-900">금액</label>
+                    <label htmlFor="mount_value" className="col-span-2 text-sm font-medium text-gray-900">조정 값</label>
                     <input type="text" id="mount_value" name="mount_value"
                            value={formatNumberWithCommas(formData.mount_value)}
                            onChange={handleChange}
@@ -303,7 +302,19 @@ const AdjustmentNewPage = () => {
 
                 {/* ✅ 날짜 입력 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
-                    <label htmlFor="date_index" className="col-span-2 text-sm font-medium text-gray-900">적용 날짜</label>
+                    <label htmlFor="date_index" className="flex felx-row space-x-2 col-span-2 text-sm font-medium text-gray-900 items-center">
+                        <span>조정 기준일</span>
+                        <Tooltip arrow placement="right"
+                                 title={<>
+                                     조정이 적용되는 기준일입니다.<br/>
+                                     (정기 조정: 시작일, 일회성 조정: 적용일)
+                                 </>}
+                        >
+                        <span>
+                            <CiCircleQuestion className="text-gray-800 hover:cursor-pointer" />
+                        </span>
+                        </Tooltip>
+                    </label>
                     <input
                         type="month"
                         id="date_index"
@@ -330,12 +341,12 @@ const AdjustmentNewPage = () => {
                 {/* 사용 여부 스위치 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
                     <label className="flex flex-row items-center space-x-2 col-span-2 text-sm font-medium text-gray-900">
-                        <span>사용 여부 *</span>
+                        <span>적용 여부 *</span>
                         <Tooltip arrow placement="right"
                                  title={
                                      <div>
-                                         작성한 조정 내용을 실제로 적용할지 여부를 선택합니다.<br />
-                                         ‘Y’는 적용, ‘N’은 미적용입니다.
+                                         조정 내역을 현재 실제로 적용할지 여부입니다.<br />
+                                         (False: 비활성화 / True: 활성화)
                                      </div>
                                  }
                         >
@@ -353,12 +364,13 @@ const AdjustmentNewPage = () => {
                 {/* 부가세 계산 시점 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
                     <label className="flex flex-row items-center space-x-2 col-span-2 text-sm font-medium text-gray-900">
-                        <span>부가세 계산 시점 *</span>
+                        <span>VAT 적용 시점 *</span>
                         <Tooltip arrow placement="right"
                                  title={
                                      <div>
-                                         이 조정 금액이 부가세 계산 전에 적용될지, 후에 적용될지를 선택합니다.<br />
-                                         Y는 부가세 후, N은 부가세 전입니다.
+                                         이 조정이 부가세(VAT) 계산 전에 적용되는지, 이후에 적용되는지 나타냅니다.<br/>
+                                         (False: VAT 계산 전 조정 / True: VAT 계산 후 조정)<br/>
+                                         * 보통 세금계산서 발행 기준과 연관됨
                                      </div>
                                  }
                         >

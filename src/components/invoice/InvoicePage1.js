@@ -54,6 +54,8 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     ---------------------------- */
     const accountData = applyDefaultValues(accountDetailData?.[0] || {}, defaultAccountData);
 
+    console.log(accountDetailData)
+    console.log(accountData)
     // console.log(accountData)
     const acct_num = accountData.acct_num; // 없으면 '-'
     const acct_name = accountData.account_info.acct_name;
@@ -73,17 +75,22 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     const account_use_byte_total = formatNumberWithCommas(accountData.account_use_byte_total) + "Byte(s)"; // 사용한 바이트 수
     const modification_fee_total = formatNumberWithCommas(accountData.modification_fee_total); // 부가서비스료
     const subscribe_fee_total = formatNumberWithCommas(accountData.subscribe_fee_total); // 기타사용료
-    const total_fee = formatNumberWithCommas(accountData.total_fee); // 공급가액
+    const total_fee = formatNumberWithCommas(accountData.total_fee);
+    const supply_fee = formatNumberWithCommas(accountData.supply_fee); // 공급가액
     const tax_fee = formatNumberWithCommas(accountData.tax_fee); // 부가가치세
     const monthly_final_fee = formatNumberWithCommas(accountData.monthly_final_fee); // 합계금액
     const raw_cut_off_fee = accountData.cut_off_fee; // 원본 숫자 그대로 둬야, '-' 조건 판단 가능
     const cut_off_fee = formatNumberWithCommas(accountData.cut_off_fee); // 10원미만 절사금액
     const final_fee = formatNumberWithCommas(accountData.final_fee); // 당월납부액 ❓(당월납부액 == 총 납부액)
+    // Details of Adjustment
+    const adjustmentInfos = Array.isArray(accountData.adjustment_info) ? accountData.adjustment_info : [];
+    const adjustmentDescription = adjustmentInfos.map(info => info.description).join('& '); // 예: "NMS, 위성료, 통신보조금"
     // Details of Unpaid Table (Third Table)
     const nonePayInfos = Array.isArray(accountData.none_pay_info) ? accountData.none_pay_info : [];
     const late_surcharge = ""; // 연체가산금
     const none_pay_total = formatNumberWithCommas(accountData.none_pay_fee); // 미납요금계
 
+    console.log(adjustmentInfos)
     /* ----------------------------
         청구서 양식 추출
     ---------------------------- */
@@ -255,11 +262,11 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
         ["기본료", basic_fee_total, basic_fee_count],
         ["통신료", add_use_fee_total, account_use_byte_total],
         ["수수료(변경, 휴지 등)", "0", ""],
-        ["부가서비스료", modification_fee_total, ""],
+        ["부가서비스료", modification_fee_total, adjustmentDescription],
         ["기타사용료", subscribe_fee_total, ""],
         ["", "", ""],
         ["", "", ""],
-        ["공급가액", total_fee, ""],
+        ["공급가액", supply_fee, ""],
         ["부가가치세", tax_fee, ""],
         ["10원미만 절사금액", (raw_cut_off_fee && Number(raw_cut_off_fee) !== 0) ? `- ${cut_off_fee}` : `${cut_off_fee || ''}`, ""],
         ["당월납부액", monthly_final_fee, ""]

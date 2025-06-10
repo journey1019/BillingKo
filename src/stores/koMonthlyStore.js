@@ -81,11 +81,10 @@ const useKOMonthlyStore = create((set) => ({
             isExpanded: true
         }),
 
-    resetSelection: () =>
-        set({
-            selectedMonthlyIndex: null,
-            isExpanded: false
-        }),
+    resetSelection: () => set({
+        selectedMonthlyIndex: null,
+        isExpanded: false,
+    }),
 
     setVersion: (value) => set({ version: value })
 }));

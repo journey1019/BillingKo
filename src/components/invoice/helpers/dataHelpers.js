@@ -25,6 +25,7 @@ export const defaultAccountData = {
     non_pay_info: [],
     subscribe_fee_count: null,
     subscribe_fee_total: null,
+    supply_fee: null,
     tax_fee: null,
     total_fee: null,
     update_date: '-',

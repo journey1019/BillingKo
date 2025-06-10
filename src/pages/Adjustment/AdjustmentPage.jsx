@@ -16,6 +16,9 @@ import { AdjustmentTableOptions } from '@/options/AdjustmentTableOptions.jsx';
 import TabComponent from '@/components/layout/TabComponent.jsx';
 import useAdjustmentMappingStore from '@/stores/adjustmentMappingStore';
 
+import { Tooltip } from "@mui/material";
+import { CiCircleQuestion } from "react-icons/ci";
+
 const AdjustmentPage = () => {
     const { fetchCodeMappings } = useAdjustmentMappingStore();
     const {
@@ -70,8 +73,15 @@ const AdjustmentPage = () => {
 
     return(
         <div className={`grid gap-0 ${isAdjustExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
-            <div className="col-span-6 justify-between border-b pb-3 mb-2 border-gray-400">
+            <div className="flex col-span-6 border-b pb-3 mb-2 border-gray-400 space-x-4 items-center">
                 <h1 className="text-2xl font-base">조정 내역 관리</h1>
+                <Tooltip arrow placement="right"
+                         title={`가입비, 미납금, 할인, 부가 사용료 같은 항목을 조정해서 적용할 수 있어요.`}
+                >
+                    <span>
+                        <CiCircleQuestion className="text-gray-800 hover:cursor-pointer w-6 h-6" />
+                    </span>
+                </Tooltip>
             </div>
 
             {/* Left Section */}

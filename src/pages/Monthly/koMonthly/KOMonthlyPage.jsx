@@ -11,7 +11,7 @@ import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import DeviceMonthlyForm from '@/components/form/Monthly/DeviceMonthlyForm.jsx';
 import { IoMdClose } from 'react-icons/io';
 import useKOMonthlyStore from '@/stores/koMonthlyStore.js';
-
+import clsx from 'clsx';
 /**
  * @desc: 단말기별 청구서 수정 페이지
  * */
@@ -86,12 +86,12 @@ const KOMonthlyPage = () => {
     // console.log(yearMonth)
 
     return (
-        <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
+        <div className={clsx('grid gap-0', isExpanded ? 'grid-cols-6' : 'grid-cols-2')}>
             <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
                 <h1 className="text-xl font-base font-bold">단말기별 청구서 수정 및 저장 페이지</h1>
             </div>
 
-            <div className={`p-2 ${isExpanded ? "col-span-2" : "col-span-6"}`}>
+            <div className={clsx(`p-2 ${isExpanded ? "col-span-2" : "col-span-6"}`)}>
                 <div>
                     <div className="flex flex-row items-center justify-between mb-3 relative z-10">
                         <h1 className="text-xl font-bold">단말기 청구서 테이블</h1>
@@ -136,10 +136,10 @@ const KOMonthlyPage = () => {
                             <div className="flex flex-row items-center">
                                 <h1 className="text-xl font-bold text-gray-700 align-center text-center justify-center">{selectedMonthlyIndex.acct_num} _ {selectedMonthlyIndex.serial_number}</h1>
                             </div>
+                            {/* Close 버튼 */}
                             <button
                                 onClick={() => {
-                                    setIsExpanded(false);
-                                    setSelectedMonthlyIndex(null);
+                                    resetSelection();
                                 }}
                                 className="p-2 rounded-md text-black hover:text-gray-500"
                             >
