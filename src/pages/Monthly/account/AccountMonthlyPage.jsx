@@ -16,6 +16,10 @@ import { IoMdClose } from 'react-icons/io';
 import { useSearchParams } from "react-router-dom";
 
 import useAccountMonthlyStore from '@/stores/accountMonthlyStore.js';
+import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { getExportDataFromTable } from '@/utils/exportHelpers';
+import { exportToCSV } from '@/utils/csvExporter';
+import { exportToExcel } from '@/utils/excelExporter';
 
 
 /**
@@ -73,6 +77,15 @@ const AccountMonthlyPage = () => {
     // console.log(selectedRowId)
     // console.log(selectRow)
     // console.log(accountDetailData)
+    const handleExportCSV = () => {
+        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, monthlyAcctData);
+        exportToCSV(exportData, 'Acct_Bill.csv');
+    };
+
+    const handleExportExcel = () => {
+        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, monthlyAcctData);
+        exportToExcel(exportData, 'Acct_Bill.xlsx');
+    };
 
     return(
         <>
@@ -86,15 +99,22 @@ const AccountMonthlyPage = () => {
                 <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
                     <div className="flex justify-between items-center mb-4">
                         <h1 className="text-xl font-bold">고객 청구서 조정</h1>
-                        <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
+                        <div className="flex flex-row items-center space-x-4">
+                            <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
+                            <DataActionDropdown
+                                onExportCSV={handleExportCSV}
+                                onExportExcel={handleExportExcel}
+                                onRefresh={() => fetchMonthlyAcctData(yearMonth)}
+                            />
+                        </div>
                     </div>
 
                     {/* 테이블 UI */}
                     <div className="bg-white shadow-md rounded-lg p-4 overflow-x-auto">
                         <ReusableTable
                             data={monthlyAcctData || []} // 데이터가 null이면 빈 배열로 설정
-                            exportFileName="KO_Monthly_Account_Report"
-                            showExportButton={true}
+                            // exportFileName="KO_Monthly_Account_Report"
+                            // showExportButton={true}
                             columns={KOMonthlyAccountTableColumns}
                             isLoading={loading}
                             error={error}
@@ -128,11 +148,6 @@ const AccountMonthlyPage = () => {
                         <div className="flex flex-row justify-between mb-6 items-center text-center">
                             <h1 className="text-xl font-bold text-gray-800 align-center text-center justify-center">{selectedRowId.acct_num} _ {selectedRowId.account_info.acct_name}</h1>
 
-                            {/* Buttons */}
-                            {/*<div className="flex flex-row space-x-4">*/}
-                            {/*    <span>수정</span>*/}
-                            {/*    <span>삭제</span>*/}
-                            {/*</div>*/}
                             <button
                                 onClick={resetSelection}
                                 className="p-2 rounded-md text-black hover:text-gray-500"

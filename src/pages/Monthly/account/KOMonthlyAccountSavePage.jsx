@@ -81,7 +81,16 @@ const KOMonthlyAccountSavePage = () => {
     // console.log('monthlyAcctSaveData : ', monthlyAcctSaveData)
     // console.log('monthlyAcctSaveDetailData : ', monthlyAcctSaveDetailData)
 
-    //ㅊ
+    const handleExportCSV = () => {
+        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, monthlyAcctSaveData);
+        exportToCSV(exportData, 'Final_Bill.csv');
+    };
+
+    const handleExportExcel = () => {
+        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, monthlyAcctSaveData);
+        exportToExcel(exportData, 'Final_Bill.xlsx');
+    };
+
     console.log(monthlyAcctSaveData)
     return(
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
@@ -123,9 +132,14 @@ const KOMonthlyAccountSavePage = () => {
                     <h1 className="text-xl font-bold">최종 청구서 테이블</h1>
                     <div className="flex flex-row items-center space-x-4">
                         <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
+                        {/*<DataActionDropdown*/}
+                        {/*    onExportCSV={() => exportToCSV(monthlyAcctSaveData, 'Final_Bill.csv')}*/}
+                        {/*    onExportExcel={() => exportToExcel(monthlyAcctSaveData, 'Final_Bill.xlsx')}*/}
+                        {/*    onRefresh={fetchMonthlyAcctSaveData}*/}
+                        {/*/>*/}
                         <DataActionDropdown
-                            onExportCSV={() => exportToCSV(monthlyAcctSaveData, 'Final_Bill.csv')}
-                            onExportExcel={() => exportToExcel(monthlyAcctSaveData, 'Final_Bill.xlsx')}
+                            onExportCSV={handleExportCSV}
+                            onExportExcel={handleExportExcel}
                             onRefresh={fetchMonthlyAcctSaveData}
                         />
                     </div>

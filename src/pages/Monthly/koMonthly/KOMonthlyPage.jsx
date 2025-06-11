@@ -84,7 +84,6 @@ const KOMonthlyPage = () => {
     // console.log('detailData: ', detailData)
     // console.log(selectedMonthlyIndex)
     // console.log(yearMonth)
-
     return (
         <div className={clsx('grid gap-0', isExpanded ? 'grid-cols-6' : 'grid-cols-2')}>
             <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
