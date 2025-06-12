@@ -9,7 +9,7 @@ const AccountHistoryTab = ({ AccountTableColumns }) => {
             {historyLoading ? (
                 <LoadingSpinner />
             ) : historyError ? (
-                <p>Error loading history: {historyError}</p>
+                <p>{`Error loading history: ${historyError}`}</p>
             ) : (
                 <div>
                     <ReusableTable

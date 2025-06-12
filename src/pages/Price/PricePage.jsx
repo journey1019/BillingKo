@@ -29,6 +29,8 @@ import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
 import { exportToCSV } from '@/utils/csvExporter';
 import { exportToExcel } from '@/utils/excelExporter';
 
+import ExpandablePageLayout from '@/components/layout/ExpandablePageLayout'
+
 const PricePage = () => {
     const [searchParams] = useSearchParams();
     const urlValue = searchParams.get("value");
@@ -85,133 +87,66 @@ const PricePage = () => {
         }
     };
 
-
     return (
-        <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
-            <div className="col-span-6 justify-between border-b pb-3 mb-2 border-gray-400">
-                <h1 className="text-2xl font-base">통신 요금제 관리</h1>
-            </div>
-
-            {/* Left Section - Recent Table */}
-            <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>
-
-                {/* Top */}
-                <div className="flex flex-row justify-between mb-3">
-                    <h1 className="py-1 text-lg font-bold">고객별 및 단말별 요금제(PPID) 설정</h1>
-                    <div className="flex space-x-2 items-center">
-                        <NewButton to="/price/new" />
-
-                        <DataActionDropdown
-                            onExportCSV={() => exportToCSV(priceData, 'Prices.csv')}
-                            onExportExcel={() => exportToExcel(priceData, 'Prices.xlsx')}
-                            onRefresh={fetchPriceData}
-                        />
-                    </div>
-                </div>
-                {/* Bottom */}
-                <ReusableTable
-                    columns={PriceTableColumns}
-                    data={priceData || []}
-                    options={{
-                        ...PriceTableOptions(selectedPriceId),
-                        meta: {
-                            onRowSelect: (selectedRow) => {
-                                // 같은 Row 선택
-                                if (selectedPriceId && selectedPriceId.ppid === selectedRow.ppid) {
-                                    setSelectedPriceId(null);
-                                    setIsExpanded(false); // 동일 row 선택 시 닫기
-                                } else { // 다른 Row 선택시
-                                    setSelectedPriceId(selectedRow);
-                                    setIsExpanded(true); // 새로운 row 선택 시 열기
-                                }
+        <>
+            <ExpandablePageLayout
+                title="요금제 관리"
+                isExpanded={isExpanded}
+                leftTitle="고객별 및 단말기별 요금제 & 조정 설정"
+                newButtonTo="/price/new"
+                onExportCSV={() => exportToCSV(priceData, 'Prices.csv')}
+                onExportExcel={() => exportToExcel(priceData, 'prices.xlsx')}
+                onRefresh={fetchPriceData}
+                table={
+                    <ReusableTable
+                        columns={PriceTableColumns || []}
+                        data={priceData || []}
+                        options={{
+                            ...PriceTableOptions(selectedPriceId),
+                            meta: {
+                                onRowSelect: (selectedRow) => {
+                                    if (selectedPriceId?.ppid === selectedRow.ppid) {
+                                        setSelectedPriceId(null);
+                                        setIsExpanded(false); // 동일 row 선택 시 닫
+                                    } else {
+                                        setSelectedPriceId(selectedRow);
+                                        setIsExpanded(true);
+                                    }
+                                },
                             },
-                        },
-                    }}
-                    isLoading={priceLoading}
-                    error={priceError}
-                />
-            </div>
+                        }}
+                        isLoading={priceLoading}
+                        error={priceError}
+                    />
+                }
+                selectedId={selectedPriceId}
+                rightTitle={`${selectedPriceId?.ppid} _ ${selectedPriceId?.ppid}`}
+                onClose={() => {
+                    setIsExpanded(false);
+                    setSelectedPriceId(null);
+                }}
+                entityType="price"
+                editSelectedId={selectedPriceId?.ppid}
+                deleteData={deletePriceData}
+                handleDelete={handleDeleteSuccess}
+                rightTabs={[
+                    { id: 1, label: 'Overview', content: <PriceTabOverview /> },
+                    { id: 2, label: 'Transaction', content: <PriceTabTransaction selectedPriceId={selectedPriceId} /> },
+                    {
+                        id: 3, label: 'History', content: (
+                            <>
+                                <h1 className="font-bold my-2 pt-4">단말 조정 이력 정보</h1>
+                                <PriceTabHistory selectedPriceId={selectedPriceId} />
+                            </>
+                        )
+                    }
+                ]}
+            />
 
-            {/* Right Section - Drawer Form */}
-            {isExpanded && selectedPriceId && (
-                <div className="p-2 col-span-4">
-                    <div className="flex flex-col">
-                        {/* Top */}
-                        <div className="flex flex-row justify-between mb-3">
-                            {/* Acct_Num */}
-                            {/*<h2 className="py-1 text-lg font-bold">PPID Detail Form <span className="text-red-500 pl-3">{pricePartData.ppid}</span></h2>*/}
-                            <div className="flex flex-row items-center">
-                                <h2 className="py-1 text-lg font-bold">{selectedPriceId.ppid} _ {selectedPriceId.apply_company}</h2>
-                            </div>
-
-                            {/* Buttons - Edit & Mail & . */}
-                            <ButtonGroup
-                                entityType="price"
-                                id={selectedPriceId.ppid}
-                                deleteFunction={deletePriceData}
-                                onDeleteSuccess={handleDeleteSuccess}  // 삭제 후 리프레시 콜백 전달
-                            />
-                        </div>
-
-                        {/* Tab */}
-                        <TabComponent tabs={[
-                            {
-                                id: 1,
-                                label: 'Overview',
-                                content: (
-                                    <PriceTabOverview />
-                                )
-                            },
-                            {
-                                id: 2,
-                                label: 'Transaction',
-                                content: (
-                                    <PriceTabTransaction selectedPriceId={selectedPriceId}/>
-                                )
-                            },
-                            {
-                                id: 3,
-                                label: 'History',
-                                content: (
-                                    <PriceTabHistory selectedPriceId={selectedPriceId}/>
-                                )
-                            }
-                        ]}
-                        />
-                        {/*<TabComponent tabs={PriceTabItems({*/}
-                        {/*    selectedPriceId,*/}
-                        {/*    pricePartData,*/}
-                        {/*    partDataLoading,*/}
-                        {/*    partDataError,*/}
-                        {/*    adjustHistoryData,*/}
-                        {/*    adjustHistoryLoading,*/}
-                        {/*    adjustHistoryError,*/}
-                        {/*    historyData,*/}
-                        {/*    historyLoading,*/}
-                        {/*    historyError*/}
-                        {/*})} />*/}
-                    </div>
-                </div>
-            )}
-
-            <div className="col-span-6 justify-between pt-10 pb-3 mb-2 border-gray-400">
+            <div className="grid gap-0 col-span-6 justify-between pt-10 pb-3 mb-2 border-gray-400">
                 <AdjustmentPage />
             </div>
-
-            {/*<div className="col-span-5 justify-between border-b pb-3 mb-2 border-gray-400">*/}
-            {/*    <button*/}
-            {/*        onClick={() => setShowModal(true)}*/}
-            {/*        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"*/}
-            {/*    >*/}
-            {/*        플러스*/}
-            {/*    </button>*/}
-
-            {/*    <Modal show={showModal} onClose={() => setShowModal(false)}>*/}
-            {/*        <p>This is the content inside the modal.</p>*/}
-            {/*    </Modal>*/}
-            {/*</div>*/}
-
-        </div>
+        </>
     );
 };
 

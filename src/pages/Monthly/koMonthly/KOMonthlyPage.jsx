@@ -12,6 +12,11 @@ import DeviceMonthlyForm from '@/components/form/Monthly/DeviceMonthlyForm.jsx';
 import { IoMdClose } from 'react-icons/io';
 import useKOMonthlyStore from '@/stores/koMonthlyStore.js';
 import clsx from 'clsx';
+
+import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { getExportDataFromTable } from '@/utils/exportHelpers';
+import { exportToCSV } from '@/utils/csvExporter';
+import { exportToExcel } from '@/utils/excelExporter';
 /**
  * @desc: 단말기별 청구서 수정 페이지
  * */
@@ -84,6 +89,17 @@ const KOMonthlyPage = () => {
     // console.log('detailData: ', detailData)
     // console.log(selectedMonthlyIndex)
     // console.log(yearMonth)
+
+    const handleExportCSV = () => {
+        const exportData = getExportDataFromTable(MonthlyTableColumns, koMonthlyData);
+        exportToCSV(exportData, 'Dev_Bill.csv');
+    };
+
+    const handleExportExcel = () => {
+        const exportData = getExportDataFromTable(MonthlyTableColumns, koMonthlyData);
+        exportToExcel(exportData, 'Dev_Bill.xlsx');
+    };
+    console.log(koMonthlyLoading)
     return (
         <div className={clsx('grid gap-0', isExpanded ? 'grid-cols-6' : 'grid-cols-2')}>
             <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
@@ -94,37 +110,40 @@ const KOMonthlyPage = () => {
                 <div>
                     <div className="flex flex-row items-center justify-between mb-3 relative z-10">
                         <h1 className="text-xl font-bold">단말기 청구서 테이블</h1>
-                        <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
+                        <div className="flex flex-row items-center space-x-4">
+                            <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
+                            <DataActionDropdown
+                                onExportCSV={handleExportCSV}
+                                onExportExcel={handleExportExcel}
+                                onRefresh={() => fetchKOMonthlyData(yearMonth)}
+                            />
+                        </div>
                     </div>
-                    {koMonthlyLoading ? (
-                        <LoadingSpinner />
-                    ) : koMonthlyError ? (
-                        <p className="text-red-500">{koMonthlyError}</p>
-                    ) : (
-                        <ReusableTable
-                            data={koMonthlyData || []}
-                            exportFileName="KO_Monthly_Report"
-                            showExportButton={true} // ✅ 이 테이블에서는 CSV 버튼 활성화
-                            columns={[{ accessorKey: "data_index", header: "Data Index", enableHiding: true }, ...MonthlyTableColumns]}
-                            options={{
-                                ...KOMonthlyTableOptions(selectedMonthlyIndex),
-                                meta: {
-                                    onRowSelect: (row) => {
-                                        if (selectedMonthlyIndex?.data_index === row.data_index) {
-                                            resetSelection(); // 명시적 해제
-                                        } else {
-                                            setSelectedMonthlyIndex(row); // 명시적 선택
-                                        }
-                                    },
+                    <ReusableTable
+                        data={koMonthlyData || []}
+                        // exportFileName="KO_Monthly_Report"
+                        // showExportButton={true} // ✅ 이 테이블에서는 CSV 버튼 활성화
+                        columns={[{ accessorKey: "data_index", header: "Data Index", enableHiding: true }, ...MonthlyTableColumns]}
+                        options={{
+                            ...KOMonthlyTableOptions(selectedMonthlyIndex),
+                            meta: {
+                                onRowSelect: (row) => {
+                                    if (selectedMonthlyIndex?.data_index === row.data_index) {
+                                        resetSelection(); // 명시적 해제
+                                    } else {
+                                        setSelectedMonthlyIndex(row); // 명시적 선택
+                                    }
                                 },
-                                // ✅ 필터 상태 연결
-                                state: {
-                                    columnFilters,
-                                },
-                                onColumnFiltersChange: setColumnFilters,
-                            }}
-                        />
-                    )}
+                            },
+                            // ✅ 필터 상태 연결
+                            state: {
+                                columnFilters,
+                            },
+                            onColumnFiltersChange: setColumnFilters,
+                        }}
+                        isLoading={koMonthlyLoading}
+                        error={koMonthlyError}
+                    />
                 </div>
             </div>
 

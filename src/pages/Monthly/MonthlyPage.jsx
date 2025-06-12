@@ -93,7 +93,7 @@ const MonthlyPage = () => {
                         <DataActionDropdown
                             onExportCSV={() => exportToCSV(monthlyData, 'Monthly.csv')}
                             onExportExcel={() => exportToExcel(monthlyData, 'Monthly.xlsx')}
-                            onRefresh={fetchMonthlyData}
+                            onRefresh={() => fetchMonthlyData(yearMonth)}
                         />
                     </div>
                 </div>

@@ -101,7 +101,7 @@ const AdjustmentPage = () => {
                 </div>
                 {/* Bottom */}
                 <ReusableTable
-                    columns={AdjustmentTableColumns}
+                    columns={AdjustmentTableColumns || []}
                     data={adjustmentData || []}
                     options={{
                         ...AdjustmentTableOptions(selectedAdjustId),
