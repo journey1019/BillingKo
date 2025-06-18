@@ -11,10 +11,12 @@ export const PaymentAccountTableOptions = (selectedAcctNum) => ({
     enableColumnVisibility: false,
     positionToolbarAlertBanner: 'none',
 
-
+    
     muiTableBodyRowProps: ({ row, table }) => ({
         onClick: (event) => {
             console.log('Row clicked:', row.original);
+
+            event.stopPropagation();
 
             // 선택 상태를 토글
             row.getToggleSelectedHandler()(event);

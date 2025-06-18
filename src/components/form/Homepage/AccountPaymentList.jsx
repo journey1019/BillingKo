@@ -20,6 +20,8 @@ import CustomProgressBar from '@/components/ui/CustomProgressBar.jsx'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'; // 추가
 import dayjs from 'dayjs';
 
+import { formatDateToYMD } from '@/columns/cellStyle/PaymentCell.jsx';
+
 const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleStartDateChange, handleEndDateChange }) => {
     const { fetchAccountData } = useAccountStore();
     const acctNumAliasList = useAcctNumNameList();
@@ -29,8 +31,12 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
         accountPaymentHistoryData,
         accountPaymentHistoryLoading,
         accountPaymentHistoryError,
+
+        fetchAccountPaymentHistoryDetail,
+        accountPaymentHistoryDetailData,
+        accountPaymentHistoryDetailLoading,
+        accountPaymentHistoryDetailError
     } = usePaymentStore();
-    console.log(accountPaymentHistoryData)
 
     // FullScreenDialog Open
     const [open, setOpen] = useState(false);
@@ -45,6 +51,11 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
 
     // 테이블 필터 상태 추적
     const [columnFilters, setColumnFilters] = useState([]);
+
+    // detail row 상태
+    const [selectedDetailRow, setSelectedDetailRow] = useState(null);
+    const [expandedRowIds, setExpandedRowIds] = useState('');
+
 
     // 💡 필터링된 납부 집계 계산
     // ✅ 수정된 납부 합계 계산 로직
@@ -107,6 +118,18 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
         fetchAccountPaymentHistory(acct, startIndex, endIndex);
     };
 
+    // History Detail
+    const handleRowSelect = (row) => {
+        console.log(row)
+        setSelectedDetailRow(row);
+        if (selectedAcctNum && row.date_index) {
+            fetchAccountPaymentHistoryDetail(selectedAcctNum, row.date_index);
+        }
+
+        // row.id를 expandedRowIds에 넣어서 강제 open
+        setExpandedRowIds(row.date_index);
+    };
+
     // acct_num 기준 내림차순 + 검색 키워드 반영
     const filteredAcctList = useMemo(() => {
         return acctNumAliasList
@@ -133,24 +156,16 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
         }));
     }, [accountPaymentHistoryData]);
 
-    const accountName = enhancedAccountPaymentHistoryData.find((key) => key.account_info.acct_name)
-    console.log(accountName)
-    console.log(selectedAcctNum)
-    console.log(filteredAcctList)
-    console.log(acctNumAliasList)
-    console.log(selectedAcctName)
-    console.log(enhancedAccountPaymentHistoryData)
-
-
     const handleExportCSV = () => {
         const exportData = getExportDataFromTable(PaymentAccountTableColumns, enhancedAccountPaymentHistoryData);
         exportToCSV(exportData, `${selectedAcctName}_납부이력.csv`);
     };
-
     const handleExportExcel = () => {
         const exportData = getExportDataFromTable(PaymentAccountTableColumns, enhancedAccountPaymentHistoryData);
         exportToExcel(exportData, `${selectedAcctName}_납부이력.xlsx`);
     };
+
+    console.log(expandedRowIds)
     return (
         <>
             <Tooltip title="고객별 세부 납부현황 확인">
@@ -261,9 +276,65 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
                                     options={{
                                         ...PaymentAccountTableOptions(selectedAcctNum),
                                         onColumnFiltersChange: setColumnFilters,
-                                        state: { columnFilters },
-
+                                        state: {
+                                            ...columnFilters,
+                                            expanded: expandedRowIds // expand 상태 지정
+                                        },
+                                        onExpandedChange: setExpandedRowIds, // 변경시 상태 업데이트
                                         enableRowSelection: true,
+                                        meta: {
+                                            onRowSelect: handleRowSelect,
+                                        },
+                                        renderDetailPanel: ({ row }) => {
+                                            if (row.original.date_index !== selectedDetailRow?.date_index) return null;
+                                            if (!accountPaymentHistoryDetailData || accountPaymentHistoryDetailData.length === 0) {
+                                                return (
+                                                    <Box sx={{ p: 2, backgroundColor: '#f9fafb' }}>
+                                                        <Typography variant="body2">📌 상세 데이터 없음</Typography>
+                                                    </Box>
+                                                );
+                                            }
+
+                                            return (
+                                                <Box sx={{ p: 2, backgroundColor: '#f9fafb' }}>
+                                                    <Typography variant="body2" sx={{ mb: 1 }}>📌 상세 이력 데이터:</Typography>
+                                                    <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#fff' }}>
+                                                        <thead>
+                                                        <tr>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>청구금액</th>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>당월미납산정액</th>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>당월미납가산</th>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>당월미납총액</th>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>당월남은금액</th>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>회차별 납부금액</th>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>상태</th>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>납부일</th>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>납부방법</th>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>납부설명</th>
+                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>확인날짜</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {accountPaymentHistoryDetailData.map((detail, idx) => (
+                                                            <tr key={detail.update_index || idx}>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.monthly_final_fee)}</td>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.save_none_paid_basic)}</td>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.save_late_penalty_fee)}</td>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.save_none_paid_fee)}</td>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.payment_none_paid_fee)}</td>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.payment_paid_fee)}</td>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{detail.confirm_yn}</td>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatDateToYMD(detail.confirm_payment_date)}</td>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{detail.confirm_payment_method}</td>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{detail.confirm_payment_desc}</td>
+                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatDateToYMD(detail.confirm_date)}</td>
+                                                            </tr>
+                                                        ))}
+                                                        </tbody>
+                                                    </Box>
+                                                </Box>
+                                            );
+                                        },
                                         //Simply adding a table title to the top-left of the top toolbar
                                         renderTopToolbarCustomActions: ({ table }) => (
                                             <Box sx={{ display: 'flex', gap: 1 }}>
