@@ -228,3 +228,14 @@ export const getLastMonthYYYYMM = () => {
     const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0-indexed
     return `${year}${month}`;
 };
+
+
+
+/** Sun May 18 2025 10:54:56 GMT+0900 (한국 표준시) -> 'YYYY-MM' */
+export const formatToYearMonthDash = (date) => {
+    if (!(date instanceof Date) || isNaN(date)) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+};
+// formatToYearMonthDash(selectedDate);

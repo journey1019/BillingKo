@@ -4,7 +4,6 @@ import { Box, Button } from "@mui/material";
 import { saveAs } from "file-saver";
 import { exportVisibleToExcel } from '@/utils/excelExporter.js';
 
-
 const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, error = null, exportFileName = "exported_file_name", showExportButton = false, }) => {
     const exportToCSV = () => {
         if (!data || data.length === 0) {
@@ -85,28 +84,28 @@ const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, er
         },
         // enableRowSelection: true, // Row 선택 가능
         // enableRowActions: true, // Row 액션 추가
-        renderTopToolbarCustomActions: ({ table }) => (
-            <Box sx={{ display: 'flex', gap: 1 }}>
-                {showExportButton && (
-                    <>
-                        <Button
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => exportToCSV()}
-                        >
-                            Export to CSV
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            color="success"
-                            onClick={() => exportVisibleToExcel(table, `${exportFileName}.xlsx`)}
-                        >
-                            Export to Excel
-                        </Button>
-                    </>
-                )}
-            </Box>
-        ),
+        // renderTopToolbarCustomActions: ({ table }) => (
+        //     <Box sx={{ display: 'flex', gap: 1 }}>
+        //         {showExportButton && (
+        //             <>
+        //                 <Button
+        //                     variant="outlined"
+        //                     color="primary"
+        //                     onClick={() => exportToCSV()}
+        //                 >
+        //                     Export to CSV
+        //                 </Button>
+        //                 <Button
+        //                     variant="outlined"
+        //                     color="success"
+        //                     onClick={() => exportVisibleToExcel(table, `${exportFileName}.xlsx`)}
+        //                 >
+        //                     Export to Excel
+        //                 </Button>
+        //             </>
+        //         )}
+        //     </Box>
+        // ),
 
     };
 

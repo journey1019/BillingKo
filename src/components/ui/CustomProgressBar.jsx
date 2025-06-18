@@ -5,30 +5,34 @@ import { useNavigate } from "react-router-dom";
 import { Tooltip, List, ListItem, ListItemText, ListSubheader, CircularProgress, Box, TextField } from '@mui/material';
 
 const CustomProgressBar = ({ acct_num, monthlyAcctSaveData, totalUnpaidFee, confirmedFee, unpaidFee }) => {
+
+    // 해당 미납금에는 이번달 금액이 포함되지 않는 게 맞음(아직 미납한 게 아니니까, 체크 ing)
+    console.log(unpaidFee) // 현재 남은 미납금
+
     if(!monthlyAcctSaveData) return null;
     // ✅ `monthlyAcctSaveData`가 없을 경우 빈 배열을 사용하여 오류 방지
     const unconfirmedData = (monthlyAcctSaveData ?? []).filter(item => item.confirm_yn === "N");
 
-    // 총 미수금
+    // 총 미수금 (미납금 + 연체 가산금)
     const totalNonePayFee = useMemo(() =>
             (monthlyAcctSaveData ?? [])
                 .reduce((sum, item) => sum + (item.none_pay_fee ?? 0), 0), // ✅ 총 미수금 합산
         [monthlyAcctSaveData, acct_num]
     );
 
-    // 현재까지 남은 미수금
+    // 미납 잔액
     const currentNonePayFee = useMemo(() =>
             (monthlyAcctSaveData ?? [])
                 .filter(item => item.confirm_yn === "N")
-                .reduce((sum, item) => sum + (item.none_pay_fee ?? 0), 0), // ✅ 현재 남은 미수금 합산
+                .reduce((sum, item) => sum + (item.unpaid_balance_fee ?? 0), 0), // ✅ 현재 남은 미수금 합산
         [monthlyAcctSaveData, acct_num]
     );
 
-    // console.log(totalNonePayFee - currentNonePayFee)
-    // console.log('monthlyAcctSaveData: ', monthlyAcctSaveData)
-    // console.log('unconfirmedData: ', unconfirmedData);
-    // console.log('totalNonePayFee: ', totalNonePayFee);
-    // console.log('currentNonePayFee: ', currentNonePayFee);
+    console.log(totalNonePayFee - currentNonePayFee)
+    console.log('monthlyAcctSaveData: ', monthlyAcctSaveData)
+    console.log('unconfirmedData: ', unconfirmedData);
+    console.log('totalNonePayFee: ', totalNonePayFee);
+    console.log('currentNonePayFee: ', currentNonePayFee);
     // 미납료 납부 금액
     const amountPaid = totalNonePayFee - currentNonePayFee;
 
@@ -85,20 +89,6 @@ const CustomProgressBar = ({ acct_num, monthlyAcctSaveData, totalUnpaidFee, conf
                     <div className="mt-4 border-b" />
                 </div>
 
-                {/*<div className="px-4 pb-4 grid grid-cols-5 items-center space-x-4">*/}
-                {/*    <div className="flex flex-col">*/}
-                {/*        <span className="text-xs text-blue-500">총 미납 금액</span>*/}
-                {/*        <span className="text-lg">{formatNumber(totalNonePayFee)} 원</span>*/}
-                {/*    </div>*/}
-                {/*    <div className="flex flex-col">*/}
-                {/*        <span className="text-xs text-orange-500">수납액</span>*/}
-                {/*        <span className="text-lg">{formatNumber(amountPaid)} 원</span>*/}
-                {/*    </div>*/}
-                {/*    <div className="flex flex-col">*/}
-                {/*        <span className="text-xs text-yellow-500">잔여 미수금</span>*/}
-                {/*        <span className="text-lg">{formatNumber(currentNonePayFee)} 원</span>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
                 <Box className="flex flex-col md:flex-row gap-4 py-2 px-2">
                     <Box className="bg-gray-100 text-gray-800 border border-gray-300 rounded-md p-3 w-full md:w-1/3">
                         <div className="text-sm font-medium">💰 총 미납금</div>
@@ -108,6 +98,7 @@ const CustomProgressBar = ({ acct_num, monthlyAcctSaveData, totalUnpaidFee, conf
                         <div className="text-sm font-medium">💳 납부 완료 금액</div>
                         <div className="text-xl font-bold">{formatNumber(confirmedFee)} 원</div>
                     </Box>
+                    {/** 현재까지 남은 미납금 - 이번달 미납 잔액은 아직 미납금이 아님 */}
                     <Box className="bg-red-50 text-red-800 border border-red-200 rounded-md p-3 w-full md:w-1/3">
                         <div className="text-sm font-medium">🧾 미납 금액</div>
                         <div className="text-xl font-bold">{formatNumber(unpaidFee)} 원</div>

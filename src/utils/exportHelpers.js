@@ -2,36 +2,33 @@ export const getExportDataFromTable = (columns, data) => {
     return data.map((row) => {
         const rowData = {};
         columns.forEach((col) => {
+            console.log(col)
             const header = col.header;
+            let value = '';
 
-            // 1. Cell 함수에서 cell.getValue()를 사용하는 경우 → 직접 accessorKey를 통해 값 추출 후 넘겨줌
-            if (typeof col.Cell === 'function') {
-                const value = col.accessorKey
-                    ? col.accessorKey.split('.').reduce((obj, key) => obj?.[key], row)
-                    : undefined;
-
-                const rendered = col.Cell({
-                    row: { original: row },
-                    cell: { getValue: () => value }, // getValue() 제공
-                });
-
-                rowData[header] = String(rendered);
+            // 1️⃣ accessorKey가 있으면 값 추출
+            if (col.accessorKey) {
+                value = col.accessorKey.split('.').reduce((obj, key) => obj?.[key], row);
             }
 
-            // 2. accessorFn 사용 가능 시
+            // 2️⃣ accessorFn 이 있으면
             else if (typeof col.accessorFn === 'function') {
-                rowData[header] = col.accessorFn(row);
+                value = col.accessorFn(row);
             }
 
-            // 3. 기본 accessorKey 사용
-            else if (col.accessorKey) {
-                const value = col.accessorKey.split('.').reduce((obj, key) => obj?.[key], row);
-                rowData[header] = value;
+            // ✅ Cell 함수는 export에서 렌더링 X → 실제 값(value)만 export
+
+            // 3️⃣ 값이 객체/배열인 경우 JSON 문자열화
+            if (typeof value === 'object' && value !== null) {
+                value = JSON.stringify(value);
             }
 
-            else {
-                rowData[header] = '';
+            // 4️⃣ 숫자 값은 문자열로 깔끔히 변환
+            if (typeof value === 'number') {
+                value = value.toLocaleString();  // 원하는 경우 ,(콤마) 포함
             }
+
+            rowData[header] = value ?? '';
         });
         return rowData;
     });

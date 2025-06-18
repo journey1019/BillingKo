@@ -152,7 +152,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     doc.text(invoice_postcode, preciousPostcodeX, ySendPostCode-2, { align: 'right' });
 
     /* ----------------------------
-        청구서 헤더 박스 (그림자 포함)
+        청구서 헤더 박스 (그림자 포함) // YYYY년 M 통신요금 청구서
     ---------------------------- */
     const paddingX = 60, paddingY = 10;
     const boxX = paddingX, boxY = 105;

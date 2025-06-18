@@ -16,7 +16,7 @@ import InlineEditableTable from '@/components/construct/main/InlineEditableTable
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
+import EditablePaymentTable from '@/components/table/Edit/EditablePaymentTable.jsx';
 
 
 const Homepage = () => {
@@ -33,7 +33,7 @@ const Homepage = () => {
     const token = localStorage.getItem("token");
     // console.log(token);
 
-
+    console.log(monthlyAcctSaveData)
     return (
         <div className="grid gap-0 grid-cols-1">
             <div className="flex flex-row space-x-4 px-2 py-4 items-center">
@@ -46,8 +46,8 @@ const Homepage = () => {
 
             <div className="grid gap-4 grid-cols-2">
                 <Receivables
-                    yearMonth={yearMonth}
-                    monthlyAcctSaveData={monthlyAcctSaveData}
+                    fetchMonthlyAcctSaveData={fetchMonthlyAcctSaveData}
+                    loading={loading} error={error} monthlyAcctSaveData={monthlyAcctSaveData} yearMonth={yearMonth}
                 />
 
                 {/*<div className="grid gap-2 grid-cols-3">*/}
@@ -68,14 +68,22 @@ const Homepage = () => {
             {/*    monthlyAcctSaveData={monthlyAcctSaveData}*/}
             {/*/>*/}
 
+            {/** 납부 테이블 */}
+            {/*<LocalizationProvider dateAdapter={AdapterDayjs}>*/}
+            {/*    <InlineEditableTable*/}
+            {/*        selectedDate={selectedDate}*/}
+            {/*        handleDateChange={handleDateChange}*/}
+            {/*        yearMonth={yearMonth}*/}
+            {/*        monthlyAcctSaveData={monthlyAcctSaveData}*/}
+            {/*        loading={loading}*/}
+            {/*        error={error}*/}
+            {/*    />*/}
+            {/*</LocalizationProvider>*/}
+
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <InlineEditableTable
-                    selectedDate={selectedDate}
-                    handleDateChange={handleDateChange}
-                    yearMonth={yearMonth}
-                    monthlyAcctSaveData={monthlyAcctSaveData}
-                    loading={loading}
-                    error={error}
+                <EditablePaymentTable fetchMonthlyAcctSaveData={fetchMonthlyAcctSaveData}
+                                      loading={loading} error={error} data={monthlyAcctSaveData} yearMonth={yearMonth}
+                                      selectedDate={selectedDate} handleDateChange={handleDateChange}
                 />
             </LocalizationProvider>
 

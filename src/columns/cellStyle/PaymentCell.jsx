@@ -1,5 +1,6 @@
 import { convertUTCToKST } from '@/utils/time';
 import { Switch } from '@mui/material';
+import dayjs from 'dayjs';
 
 // ✅ 셀 내부에 오른쪽 테두리 (값 렌더링 + tailwind class 사용)
 export const renderDivisionCell = ({ cell }) => (
@@ -28,6 +29,12 @@ export const applyRightDivisionStyles = () => ({
 // ✅ 숫자 (오른쪽 정렬)
 export const renderNumberCell = ({ cell }) => (
     <div className="text-right font-bold pr-3">{cell.getValue().toLocaleString()}</div>
+);
+export const renderNumberCellUnder = ({ cell }) => (
+    <div className="text-right font-bold underline pr-3">{cell.getValue().toLocaleString()}</div>
+);
+export const renderNumberCellNotBold = ({ cell }) => (
+    <div className="text-right pr-3">{cell.getValue().toLocaleString()}</div>
 );
 // ✅ 숫자 (헤더 오른쪽 정렬)
 export const applyRightAlignStyles = () => ({
@@ -104,3 +111,66 @@ export const useYNSwitch = ({ cell }) => {
         </div>
     )
 }
+
+
+export const renderUseConfirmYN = ({ cell }) => {
+    const value = cell.getValue() || '';
+    const label = value === 'Y' ? '완납' : value === 'P' ? '부분납' : '미납';
+    const color = value === 'Y' ? '#53d571' : value === 'P' ? '#ffd147' : '#e46774';
+    return(
+        <div className="text-center m-0">
+            <span
+                style={{
+                    color: color,
+                    backgroundColor: 'white',
+                    padding: '4px 8px',
+                    borderWidth: 0.5,
+                    borderColor: color,
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                }}
+            >
+                {label}
+            </span>
+        </div>
+    )
+}
+
+export const renderPaymentMethod = ({ cell }) => {
+    const value = cell.getValue() || '';
+    const label = value === 'giro' ? '지로' : value === 'account' ? '은행' : '';
+    const color = value === 'giro' ? '#5a2eea' : value === 'account' ? '#ea9f2e' : '#8e8e8e';
+    return(
+        <div className="text-center m-0">
+            <span
+                style={{
+                    color: color,
+                    backgroundColor: 'white',
+                    padding: '4px 8px',
+                    borderWidth: 0.5,
+                    borderColor: color,
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                }}
+            >
+                    {label}
+                </span>
+        </div>
+    )
+}
+
+/**
+ * 날짜 문자열을 'YYYY-MM-DDTHH:mm:ss' -> 'YYYY-MM-DD' 형식으로 변환
+ * @param {string | Date | null | undefined} value
+ * @returns {string} 변환된 날짜 문자열, 변환 불가시 빈 문자열
+ */
+export const formatDateToYMD = (value) => {
+    if (!value) return '';
+
+    const parsed = dayjs(value);
+    if (!parsed.isValid()) return '';
+
+    return parsed.format('YYYY-MM-DD');
+};

@@ -1,6 +1,18 @@
-import { applyRightDivisionStyles, renderDivisionCell, getFormatDateTimeUTCtoKST, renderNumberCell, applyRightAlignStyles } from '@/columns/cellStyle/PaymentCell.jsx';
-import { applyCenterAlignStyles, useYNSwitch } from './cellStyle/PaymentCell.jsx';
+import {
+    applyCenterAlignStyles,
+    renderNumberCellNotBold,
+    formatDateToYMD,
+    applyRightDivisionStyles,
+    renderDivisionCell,
+    getFormatDateTimeUTCtoKST,
+    renderNumberCell,
+    renderNumberCellUnder,
+    applyRightAlignStyles,
+    renderUseConfirmYN,
+    renderPaymentMethod
+} from '@/columns/cellStyle/PaymentCell.jsx';
 import { formatDateIndex, formatDateTime } from './cellStyle/AccountCell.jsx';
+import { formatUntilDate } from '../utils/formatHelpers.jsx';
 
 export const PaymentAccountTableColumns = [
     {
@@ -22,43 +34,80 @@ export const PaymentAccountTableColumns = [
         }),
     },
     {
-        accessorKey: "confirm_user_id",
-        header : "확인자",
-    },
-    {
-        accessorKey: "confirm_date",
-        header : "확인일자",
-        Cell: formatDateTime,
-    },
-    {
-        accessorKey: 'none_pay_fee',
-        header: '미납료',
+        accessorKey: 'monthly_final_fee',
+        header: '청구금',
         enableEditing: false,
-        Cell: renderNumberCell,
+        Cell: renderNumberCellNotBold,
         ...applyRightAlignStyles(),
         size: 150
     },
     {
-        accessorKey: "confirm_yn",
-        header : "납부여부",
-        Cell: useYNSwitch,
+        accessorKey: 'none_pay_fee_basic',
+        header: '미납금',
+        enableEditing: false,
+        Cell: renderNumberCellNotBold,
+        ...applyRightAlignStyles(),
+        size: 150
+    },
+    {
+        accessorKey: 'late_payment_penalty_fee',
+        header: '연체 가산금',
+        enableEditing: false,
+        Cell: renderNumberCellNotBold,
+        ...applyRightAlignStyles(),
+        size: 150
+    },
+    {
+        accessorKey: 'final_fee',
+        header: '총 납부 금액',
+        enableEditing: false,
+        Cell: renderNumberCellUnder,
+        ...applyRightAlignStyles(),
+        size: 150
+    },
+    {
+        accessorKey: 'payment_amount_fee',
+        header: '고객 납부금',
+        enableEditing: false,
+        Cell: renderNumberCellNotBold,
+        ...applyRightAlignStyles(),
+        size: 150
+    },
+    {
+        accessorKey: 'unpaid_balance_fee',
+        header: '미납 잔액',
+        enableEditing: false,
+        Cell: renderNumberCellNotBold,
+        ...applyRightAlignStyles(),
+        size: 150
+    },
+    {
+        accessorKey: 'confirm_yn',
+        header: '상태',
+        enableEditing: false,
+        Cell: renderUseConfirmYN,
         ...applyCenterAlignStyles(),
+        size: 130
     },
     {
-        accessorKey: "confirm_payment_method",
-        header : "납부방법",
+        accessorKey: 'confirm_payment_date',
+        header: '납부일',
+        enableEditing: false,
+        Cell: ({ cell }) => formatDateToYMD(cell.getValue()),
+        size: 150
     },
     {
-        accessorKey: "confirm_payment_bank",
-        header : "납부은행",
+        accessorKey: 'confirm_payment_method',
+        header: '방법',
+        enableEditing: false,
+        Cell: renderPaymentMethod,
+        ...applyCenterAlignStyles(),
+        size: 130
     },
     {
-        accessorKey : "confirm_payment_date",
-        header : "납부일자",
-        Cell: formatDateTime,
-    },
-    {
-        accessorKey : "confirm_payment_desc",
-        header : "납부설명",
+        accessorKey: 'confirm_payment_desc ',
+        header: '설명',
+        enableEditing: false,
+        size: 150
     },
 ]

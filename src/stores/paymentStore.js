@@ -1,6 +1,11 @@
 import { create } from 'zustand';
-import { fetchKOMonthlyAccountSaveIndexData, fetchPaymentConfirm, fetchAccountPayment } from '@/service/monthlyAccountService';
+import { fetchKOMonthlyAccountSaveIndexData, fetchKOMonthlyAccountSaveIndexHistoryData, fetchKOMonthlyAccountSaveIndexAllHistoryData, fetchPaymentConfirm, fetchAccountPayment } from '@/service/monthlyAccountService';
 
+/**
+ * @desc fetchKOMonthlyAccountSaveIndexData: 이달의 모든 고객 납부현황 데이터 불러오기 (조회)
+ * @desc fetchKOMonthlyAccountSaveIndexHistoryData: 고객의 최근 납부방법 데이터 불러오기 (체크박스)
+ * @desc fetchKOMonthlyAccountSaveIndexAllHistoryData: 고객 납부현황 히스토리 불러오기 (1년치)
+ * */
 const usePaymentStore = create((set, get) => ({
     monthlyAcctSaveData: [],
     loading: false,
@@ -10,6 +15,16 @@ const usePaymentStore = create((set, get) => ({
     accountPaymentData: [],
     accountPaymentLoading: false,
     accountPaymentError: null,
+
+    // 고객별 납부 히스토리 데이터
+    accountPaymentHistoryData: [],
+    accountPaymentHistoryLoading: false,
+    accountPaymentHistoryError: null,
+
+    // 고객별 납부 히스토리 디테일 데이터
+    accountPaymentHistoryDetailData: [],
+    accountPaymentHistoryDetailLoading: false,
+    accountPaymentHistoryDetailError: null,
 
     fetchMonthlyAcctSaveData: async (yearMonth) => {
         set({ loading: true, error: null });
@@ -24,6 +39,7 @@ const usePaymentStore = create((set, get) => ({
     },
 
     updateConfirmStatus: async (yearMonth, updatedList) => {
+        console.log(updatedList);
         set({ loading: true, error: null });
         try {
             await fetchPaymentConfirm(yearMonth, updatedList);
@@ -46,7 +62,31 @@ const usePaymentStore = create((set, get) => ({
         } finally {
             set({ accountPaymentLoading: false });
         }
-    }
+    },
+
+    fetchAccountPaymentHistory: async (account_num, start_index, end_index) => {
+        set({ accountPaymentHistoryLoading: true, accountPaymentHistoryError: null });
+        try {
+            const data = await fetchKOMonthlyAccountSaveIndexAllHistoryData(account_num, start_index, end_index);
+            set({ accountPaymentHistoryData: data });
+        } catch (error) {
+            set({ accountPaymentHistoryError: error.message });
+        } finally {
+            set({ accountPaymentHistoryLoading: false });
+        }
+    },
+
+    fetchAccountPaymentHistoryDetail: async (account_num, date_index) => {
+        set({ accountPaymentHistoryDetailLoading: true, accountPaymentHistoryDetailError: null });
+        try {
+            const data = await fetchKOMonthlyAccountSaveIndexAllHistoryData(account_num, date_index);
+            set({ accountPaymentHistoryDetailData: data });
+        } catch (error) {
+            set({ accountPaymentHistoryDetailError: error.message });
+        } finally {
+            set({ accountPaymentHistoryDetailLoading: false });
+        }
+    },
 }));
 
 export default usePaymentStore;
