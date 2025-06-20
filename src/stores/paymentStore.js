@@ -81,8 +81,10 @@ const usePaymentStore = create((set, get) => ({
         try {
             const data = await fetchKOMonthlyAccountSaveIndexHistoryData(account_num, date_index);
             set({ accountPaymentHistoryDetailData: data });
+            return data;
         } catch (error) {
             set({ accountPaymentHistoryDetailError: error.message });
+            return null;
         } finally {
             set({ accountPaymentHistoryDetailLoading: false });
         }

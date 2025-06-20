@@ -8,6 +8,9 @@ export const KOMonthlyAccountTableOptions = (selectedRowId) => ({
     initialState: {
         sorting: [{ id: "acct_num", desc: true }],
         showColumnFilters: true,
+        pagination: {
+            pageSize: 50, // ✅ 페이지당 행 수를 50으로 지정
+        },
     },
     enableMultiRowSelection: false,
     enablePagination: true,

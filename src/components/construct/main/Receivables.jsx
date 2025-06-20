@@ -3,12 +3,32 @@ import { formatNumber, formatYearMonth } from '@/utils/formatHelpers.jsx';
 import Popover from '@/components/ui/Popover.jsx';
 
 const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
-    console.log('monthlyAcctSaveData: ', monthlyAcctSaveData);
+
+    // 기본 청구 금액 (monthly_final_fee 총합)
+    const basicChargeFee = useMemo(() =>
+            (monthlyAcctSaveData ?? [])
+                .reduce((sum, item) => sum + (Number(item.monthly_final_fee) || 0), 0),
+        [monthlyAcctSaveData, yearMonth]
+    );
+
+    // 기본 미납 금액 (none_pay_fee 총합)
+    const nonePayFee = useMemo(() =>
+            (monthlyAcctSaveData ?? [])
+                .reduce((sum, item) => sum + (Number(item.none_pay_fee) || 0), 0),
+        [monthlyAcctSaveData, yearMonth]
+    );
 
     // 총 청구 금액 (final_fee 총합)
     const totalNonePayFee = useMemo(() =>
             (monthlyAcctSaveData ?? [])
                 .reduce((sum, item) => sum + (Number(item.final_fee) || 0), 0),
+        [monthlyAcctSaveData, yearMonth]
+    );
+
+    // 고객 납부 금액 (payment_amount_fee 총합)
+    const paymentFee = useMemo(() =>
+            (monthlyAcctSaveData ?? [])
+                .reduce((sum, item) => sum + (Number(item.payment_amount_fee) || 0), 0),
         [monthlyAcctSaveData, yearMonth]
     );
 
@@ -22,7 +42,7 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
     // 현재 남은 미수금 (confirm_yn === 'N'인 unpaid_balance_fee 총합)
     const currentNonePayFee = useMemo(() =>
             (monthlyAcctSaveData ?? [])
-                .filter(item => item.confirm_yn === 'N')
+                .filter(item => item.confirm_yn === 'N' || item.confirm_yn === 'P')
                 .reduce((sum, item) => sum + (Number(item.unpaid_balance_fee) || 0), 0),
         [monthlyAcctSaveData, yearMonth]
     );
@@ -76,17 +96,25 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
                     <div className="mt-4 border-b" />
                 </div>
 
-                <div className="px-4 pb-4 grid grid-cols-4 items-center space-x-4">
+                <div className="px-4 pb-4 grid grid-cols-5 items-center space-x-4">
                     <div className="flex flex-col">
-                        <span className="text-xs text-blue-500">총 청구 금액</span>
+                        <span className="text-xs text-blue-500 font-bold">기본 청구금</span>
+                        <span className="text-lg">{formatNumber(basicChargeFee)} 원</span>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-xs text-yellow-500 font-bold">이전 미납금</span>
+                        <span className="text-lg">{formatNumber(nonePayFee)} 원</span>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-xs text-green-500 font-bold">총 청구금</span>
                         <span className="text-lg">{formatNumber(totalNonePayFee)} 원</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs text-orange-500">수납액</span>
-                        <span className="text-lg">{formatNumber(amountPaid)} 원</span>
+                        <span className="text-xs text-orange-500 font-bold">수납금</span>
+                        <span className="text-lg">{formatNumber(paymentFee)} 원</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs text-yellow-500">잔여 미수금</span>
+                        <span className="text-xs text-red-500 font-bold">남은 미납금</span>
                         <span className="text-lg">{formatNumber(currentNonePayFee)} 원</span>
                     </div>
                 </div>

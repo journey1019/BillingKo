@@ -58,7 +58,7 @@ const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, er
             minSize: 50,
             maxSize: 200,
         },
-        renderDetailPanel: null, // 기본적으로 세부 정보 패널 비황설화
+        // renderDetailPanel: null, // 기본적으로 세부 정보 패널 비황설화
         // ✅ 선택 셀(UI) 숨기기
         // muiTableBodyCellProps: ({ cell }) => {
         //     if (cell.column.id === 'mrt-row-select') {
@@ -119,6 +119,7 @@ const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, er
                     data={data} // 데이터 배열
                     state={{
                         isLoading: isLoading, // Loading 애니메이션 활성화
+                        ...options?.state,  // ✅ 외부 state 통합
                     }}
                     muiCircularProgressProps={{
                         color: 'secondary',
@@ -151,6 +152,7 @@ const ReusableTable = ({ columns, data = [], options = {}, isLoading = false, er
                         </div>
                     )}
                     {...mergedOptions} // 병합된 옵션 전달
+                    renderDetailPanel={options.renderDetailPanel} // ✅ renderDetailPanel 직접 전달
                 />
             )}
         </>

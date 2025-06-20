@@ -21,6 +21,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'; // 추가
 import dayjs from 'dayjs';
 
 import { formatDateToYMD } from '@/columns/cellStyle/PaymentCell.jsx';
+import AccountPaymentDetailPanel from './AccountPaymentDetailList.jsx';
+import AccountPaymentDetailList from './AccountPaymentDetailList.jsx';
 
 const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleStartDateChange, handleEndDateChange }) => {
     const { fetchAccountData } = useAccountStore();
@@ -54,7 +56,10 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
 
     // detail row 상태
     const [selectedDetailRow, setSelectedDetailRow] = useState(null);
-    const [expandedRowIds, setExpandedRowIds] = useState('');
+    const [expandedRowIds, setExpandedRowIds] = useState([]);
+
+    // detail data를 map 구조로 row 별 구분
+    const [accountPaymentHistoryDetailMap, setAccountPaymentHistoryDetailMap] = useState({});
 
 
     // 💡 필터링된 납부 집계 계산
@@ -100,7 +105,6 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
         fetchAccountData();
     }, []);
 
-
     useEffect(() => {
         if (selectedAcctNum && startIndex && endIndex) {
             // 날짜 또는 선택된 고객번호가 변경되면 API 호출
@@ -120,15 +124,28 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
 
     // History Detail
     const handleRowSelect = (row) => {
-        console.log(row)
-        setSelectedDetailRow(row);
-        if (selectedAcctNum && row.date_index) {
-            fetchAccountPaymentHistoryDetail(selectedAcctNum, row.date_index);
-        }
+        const rowId = row?.date_index;
+        if (!rowId) return;
 
-        // row.id를 expandedRowIds에 넣어서 강제 open
-        setExpandedRowIds(row.date_index);
+        // Row 클릭은 fetch trigger 용도 (expand toggle X)
+        if (accountPaymentHistoryDetailMap[rowId] !== undefined) return;
+
+        setAccountPaymentHistoryDetailMap((prev) => ({
+            ...prev,
+            [rowId]: 'LOADING',
+        }));
+
+        fetchAccountPaymentHistoryDetail(selectedAcctNum, rowId).then((data) => {
+            setAccountPaymentHistoryDetailMap((prev) => ({
+                ...prev,
+                [rowId]: data || [],
+            }));
+        });
     };
+
+
+
+
 
     // acct_num 기준 내림차순 + 검색 키워드 반영
     const filteredAcctList = useMemo(() => {
@@ -165,7 +182,12 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
         exportToExcel(exportData, `${selectedAcctName}_납부이력.xlsx`);
     };
 
-    console.log(expandedRowIds)
+
+
+    // console.log(expandedRowIds)
+    // console.log(accountPaymentHistoryDetailMap)
+
+
     return (
         <>
             <Tooltip title="고객별 세부 납부현황 확인">
@@ -221,118 +243,106 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
 
                     {/* 오른쪽 테이블 */}
                     <Box sx={{ flex: 1, padding: 2, overflowY: 'auto' }}>
+                        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
+                            <Box sx={{ display: 'flex'}}>
+                                {/*{accountName} 총 미수금 이력*/}
+                                <span className="text-lg"><span className="font-bold pr-1 underline">{selectedAcctName}</span> 총 미수금 이력</span>
+                            </Box>
+                            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+                                <DatePicker
+                                    label="시작 연월"
+                                    views={['year', 'month']}
+                                    format="YYYY MM" // 🔥 원하는 형식 지정
+                                    value={startDate ? dayjs(startDate) : null}
+                                    onChange={(newValue) => {
+                                        if (newValue && newValue.isValid()) {
+                                            handleStartDateChange(newValue.toDate());
+                                        }
+                                    }}
+                                    slotProps={{
+                                        textField: { size: 'small', fullWidth: false, inputProps: { readOnly: true } },
+                                    }}
+                                />
 
+                                <DatePicker
+                                    label="종료 연월"
+                                    views={['year', 'month']}
+                                    format="YYYY MM"
+                                    value={endDate ? dayjs(endDate) : null}
+                                    onChange={(newValue) => {
+                                        if (newValue && newValue.isValid()) {
+                                            handleEndDateChange(newValue.toDate());
+                                        }
+                                    }}
+                                    slotProps={{
+                                        textField: { size: 'small', fullWidth: false, inputProps: { readOnly: true } },
+                                    }}
+                                />
+                            </Box>
+                        </Box>
                         {accountPaymentHistoryLoading ? (
                             <Box className="flex justify-center items-center py-4">
                                 <CircularProgress />
                             </Box>
                         ) : accountPaymentHistoryError ? (
-                            <p className="text-red-500">{accountPaymentHistoryError}</p>
-                        ) : accountPaymentHistoryData ? (
+                            <>
+                                <span>다음 에러가 발생하고 있습니다.</span>
+                                <p>날짜를 정확히 입력해주세요</p>
+                                <p className="text-red-500">{accountPaymentHistoryError}</p>
+                            </>
+                        ) : accountPaymentHistoryData && selectedAcctNum ? (
                             <>
                                 {/*<CustomProgressBar acct_num={selectedAcctNum} monthlyAcctSaveData={enhancedAccountPaymentHistoryData} totalUnpaidFee={totalUnpaidFee} confirmedFee={confirmedFee} unpaidFee={unpaidFee}/>*/}
-
-                                <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', alignItems: 'center', paddingBottom: 2 }}>
-                                    <Box sx={{ display: 'flex'}}>
-                                        {/*{accountName} 총 미수금 이력*/}
-                                        <span className="text-lg"><span className="font-bold pr-1 underline">{selectedAcctName}</span> 총 미수금 이력</span>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-                                        <DatePicker
-                                            label="시작 연월"
-                                            views={['year', 'month']}
-                                            format="YYYY MM" // 🔥 원하는 형식 지정
-                                            value={startDate ? dayjs(startDate) : null}
-                                            onChange={(newValue) => {
-                                                if (newValue && newValue.isValid()) {
-                                                    handleStartDateChange(newValue.toDate());
-                                                }
-                                            }}
-                                            slotProps={{
-                                                textField: { size: 'small', fullWidth: false },
-                                            }}
-                                        />
-
-                                        <DatePicker
-                                            label="종료 연월"
-                                            views={['year', 'month']}
-                                            format="YYYY MM"
-                                            value={endDate ? dayjs(endDate) : null}
-                                            onChange={(newValue) => {
-                                                if (newValue && newValue.isValid()) {
-                                                    handleEndDateChange(newValue.toDate());
-                                                }
-                                            }}
-                                            slotProps={{
-                                                textField: { size: 'small', fullWidth: false },
-                                            }}
-                                        />
-                                    </Box>
-                                </Box>
 
                                 <ReusableTable
                                     data={enhancedAccountPaymentHistoryData}
                                     columns={PaymentAccountTableColumns}
+                                    getRowId={(row) => row.date_index}
                                     options={{
                                         ...PaymentAccountTableOptions(selectedAcctNum),
                                         onColumnFiltersChange: setColumnFilters,
                                         state: {
+                                            expanded: expandedRowIds.reduce((acc, id) => {
+                                                acc[id] = true;
+                                                return acc;
+                                            }, {}),
                                             ...columnFilters,
-                                            expanded: expandedRowIds // expand 상태 지정
                                         },
-                                        onExpandedChange: setExpandedRowIds, // 변경시 상태 업데이트
-                                        enableRowSelection: true,
+                                        onExpandedChange: (expanded) => {
+                                            const activeIds = Object.keys(expanded).filter((key) => expanded[key]);
+                                            setExpandedRowIds(activeIds);
+
+                                            // 새로 expand된 row만 fetch
+                                            activeIds.forEach((rowId) => {
+                                                if (accountPaymentHistoryDetailMap[rowId] === undefined) {
+                                                    setAccountPaymentHistoryDetailMap((prev) => ({
+                                                        ...prev,
+                                                        [rowId]: 'LOADING',
+                                                    }));
+
+                                                    fetchAccountPaymentHistoryDetail(selectedAcctNum, rowId).then((data) => {
+                                                        setAccountPaymentHistoryDetailMap((prev) => ({
+                                                            ...prev,
+                                                            [rowId]: data || [],
+                                                        }));
+                                                    });
+                                                }
+                                            });
+                                        },
+                                        enableRowSelection: false,
                                         meta: {
                                             onRowSelect: handleRowSelect,
                                         },
                                         renderDetailPanel: ({ row }) => {
-                                            if (row.original.date_index !== selectedDetailRow?.date_index) return null;
-                                            if (!accountPaymentHistoryDetailData || accountPaymentHistoryDetailData.length === 0) {
-                                                return (
-                                                    <Box sx={{ p: 2, backgroundColor: '#f9fafb' }}>
-                                                        <Typography variant="body2">📌 상세 데이터 없음</Typography>
-                                                    </Box>
-                                                );
-                                            }
+                                            const rowId = row?.date_index;
+                                            const detailData = accountPaymentHistoryDetailMap[rowId];
 
                                             return (
-                                                <Box sx={{ p: 2, backgroundColor: '#f9fafb' }}>
-                                                    <Typography variant="body2" sx={{ mb: 1 }}>📌 상세 이력 데이터:</Typography>
-                                                    <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#fff' }}>
-                                                        <thead>
-                                                        <tr>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>청구금액</th>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>당월미납산정액</th>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>당월미납가산</th>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>당월미납총액</th>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>당월남은금액</th>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>회차별 납부금액</th>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>상태</th>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>납부일</th>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>납부방법</th>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>납부설명</th>
-                                                            <th style={{ border: '1px solid #ccc', padding: 4 }}>확인날짜</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        {accountPaymentHistoryDetailData.map((detail, idx) => (
-                                                            <tr key={detail.update_index || idx}>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.monthly_final_fee)}</td>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.save_none_paid_basic)}</td>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.save_late_penalty_fee)}</td>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.save_none_paid_fee)}</td>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.payment_none_paid_fee)}</td>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatNumber(detail.payment_paid_fee)}</td>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{detail.confirm_yn}</td>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatDateToYMD(detail.confirm_payment_date)}</td>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{detail.confirm_payment_method}</td>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{detail.confirm_payment_desc}</td>
-                                                                <td style={{ border: '1px solid #ccc', padding: 4 }}>{formatDateToYMD(detail.confirm_date)}</td>
-                                                            </tr>
-                                                        ))}
-                                                        </tbody>
-                                                    </Box>
-                                                </Box>
+                                                <AccountPaymentDetailList
+                                                    rowId={rowId}
+                                                    expandedRowIds={expandedRowIds}
+                                                    detailData={detailData}
+                                                />
                                             );
                                         },
                                         //Simply adding a table title to the top-left of the top toolbar

@@ -27,6 +27,12 @@ const KOMonthlyAccountTableColumns = [
         Cell: ({ row }) => row.original.account_info?.acct_name || "-",
     },
     {
+        accessorKey: "account_info.business_num",
+        header: "사업자번호",
+        size: 100,
+        Cell: ({ row }) => row.original.account_info?.business_num || "-",
+    },
+    {
         accessorKey: "account_info.classification",
         header: "분류",
         size: 150,

@@ -1,3 +1,17 @@
+// ✅ exportHelpers.js
+export const prepareExportData = (columns, data) => {
+    return data.map(row => {
+        const rowData = {};
+        columns.forEach(col => {
+            const field = col.field;
+            const headerName = col.headerName || field;
+            rowData[headerName] = row[field];
+        });
+        return rowData;
+    });
+};
+
+
 export const getExportDataFromTable = (columns, data) => {
     return data.map((row) => {
         const rowData = {};

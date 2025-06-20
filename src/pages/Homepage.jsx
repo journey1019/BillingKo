@@ -44,7 +44,7 @@ const Homepage = () => {
             </div>
 
 
-            <div className="grid gap-4 grid-cols-2">
+            <div className="grid grid-cols-1">
                 <Receivables
                     fetchMonthlyAcctSaveData={fetchMonthlyAcctSaveData}
                     loading={loading} error={error} monthlyAcctSaveData={monthlyAcctSaveData} yearMonth={yearMonth}

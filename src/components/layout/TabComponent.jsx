@@ -4,7 +4,7 @@ import { MdArrowDropDown } from "react-icons/md";
 
 const TabComponent = ({ tabs, drag }) => {
     const [activeTab, setActiveTab] = useState(tabs[0]?.id || 1);
-    const [height, setHeight] = useState(650); // 초기 높이
+    const [height, setHeight] = useState(1300); // 초기 높이
 
     if (!tabs.length) return <p>No tabs available</p>;
 
@@ -55,7 +55,7 @@ const TabComponent = ({ tabs, drag }) => {
                         <div
                             className="flex justify-center items-center cursor-ns-resize transition hover:bg-gray-200"
                             style={{
-                                height: '36px',
+                                height: '50px',
                                 marginTop: '-18px',
                                 backgroundColor: '#eef1f8', // 은은한 회색 (tailwind: gray-100)
                                 borderBottomLeftRadius: '8px',

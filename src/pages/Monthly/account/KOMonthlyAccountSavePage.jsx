@@ -78,9 +78,6 @@ const KOMonthlyAccountSavePage = () => {
     if (invoiceBasicLoading) return <div>로딩중...</div>;
     if (invoiceBasicError) return <div>에러 발생: {invoiceBasicError.message}</div>;
 
-    // console.log('monthlyAcctSaveData : ', monthlyAcctSaveData)
-    // console.log('monthlyAcctSaveDetailData : ', monthlyAcctSaveDetailData)
-
     const handleExportCSV = () => {
         const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, monthlyAcctSaveData);
         exportToCSV(exportData, 'Final_Bill.csv');
@@ -179,6 +176,7 @@ const KOMonthlyAccountSavePage = () => {
                             >
                                 <IoMdClose />
                             </button>
+
                         </div>
                     </div>
                     <TabComponent tabs={[

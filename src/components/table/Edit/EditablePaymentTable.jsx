@@ -6,6 +6,7 @@ import PaymentTableColumns from '@/columns/PaymentTableColumns';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
 import { getExportDataFromTable } from '@/utils/exportHelpers';
+import { prepareExportData } from '@/utils/exportHelpers';
 import { exportToCSV } from '@/utils/csvExporter';
 import { exportToExcel } from '@/utils/excelExporter';
 import { Box, Button, CircularProgress, LinearProgress, Skeleton, Stack, Typography, Alert } from '@mui/material';
@@ -24,7 +25,7 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
     const [saving, setSaving] = useState(false); // 저장 중 로딩 표시용
     const hasModifiedRows = tableRows.some(row => row.isModified); // 렌더링 시 매번 최신 상태 계산
 
-    console.log(data)
+    // console.log(data)
     // console.log(unpaid_balance_fee)
     useEffect(() => {
         if (Array.isArray(data)) {
@@ -163,7 +164,7 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
         setTableRows((prev) =>
             prev.map((row) => {
                 if (newSelection.includes(row.id)) {
-                    console.log(row)
+                    // console.log(row)
                     // ✅ 선택된 row: 값 세팅
                     return {
                         ...row,
@@ -233,8 +234,8 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
             setSaving(false); // 🔥 저장 종료
         }
     };
-    console.log(rows)
-    console.log(data)
+    // console.log(rows)
+    // console.log(data)
 
     return (
         <Box sx={{ width: '100%', p: 2, mb: 8, backgroundColor: 'white', borderRadius: 2, boxShadow: 1 }}>
@@ -248,8 +249,14 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
                 <div className="flex flex-row z-10 items-center space-x-4">
                     <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                     <DataActionDropdown
-                        onExportCSV={() => exportToCSV(data, 'Payment_Status.csv')}
-                        onExportExcel={() => exportToExcel(data, 'Payment_Status.xlsx')}
+                        onExportCSV={() => {
+                            const exportData = prepareExportData(PaymentTableColumns, data);
+                            exportToCSV(exportData, 'Payment_Status.csv');
+                        }}
+                        onExportExcel={() => {
+                            const exportData = prepareExportData(PaymentTableColumns, data);
+                            exportToExcel(exportData, 'Payment_Status.xlsx');
+                        }}
                         onRefresh={() => fetchMonthlyAcctSaveData(yearMonth)}
                     />
                     <RefreshButton onRefresh={() => fetchMonthlyAcctSaveData(yearMonth)}/>
@@ -316,7 +323,6 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
             )}
         </Box>
     );
-
 };
 
 export default EditablePaymentTable;
