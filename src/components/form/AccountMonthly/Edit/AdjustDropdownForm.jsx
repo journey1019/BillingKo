@@ -3,6 +3,9 @@ import { MdEdit } from 'react-icons/md';
 import DropdownMenu from '@/components/dropdown/DropdownMenu.jsx';
 import FormInput from '@/components/dropdown/FormInput.jsx';
 import { createAdjustment, fetchAdjustmentCodeName } from '@/service/adjustmentService.js';
+import CodeCreateModal from '@/components/common/CodeCreateModal.jsx';
+import { CiCirclePlus } from "react-icons/ci";
+import { createCode } from '@/service/codeService.js';
 
 const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, taxFreeYn }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -85,6 +88,34 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
         }));
     };
 
+    const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
+
+    const handleCodeCreate = async (newCode) => {
+        try {
+            const payload = {
+                code_name: newCode.code_name,  // 전달받은 값 사용
+                code_type: newCode.code_type,
+                code_value: newCode.code_value,
+                code_alias: newCode.code_alias,  // 오타 수정
+            };
+            await createCode(payload);
+            alert("코드가 성공적으로 추가되었습니다.");
+
+            // ✅ 코드 생성 후 목록 다시 로드
+            const updatedCategories = await fetchAdjustmentCodeName("adjustment_category");
+            setAdjustmentCategories(updatedCategories || []);
+
+            // ✅ 새 코드 자동 선택 (선택사항)
+            setFormData((prev) => ({
+                ...prev,
+                adjustment_category: newCode.code_value,
+            }));
+        } catch (err) {
+            console.error(err);
+            alert("코드 생성 실패");
+        }
+    };
+
     // ✅ 조정 정보 저장
     const handleSave = async () => {
 
@@ -120,7 +151,16 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
 
                     {/* ✅ Select 드롭다운 목록 */}
                     <div className="grid grid-cols-3 items-center">
-                        <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">조정 구분</label>
+                        <label className="flex flex-row col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">
+                            <span>조정 구분</span>
+                            <button
+                                type="button"
+                                onClick={() => setIsCodeModalOpen(true)}
+                                className="ml-2 flex items-center text-xs"
+                            >
+                                <CiCirclePlus className="w-4 h-4" />
+                            </button>
+                        </label>
                         <select
                             name="adjustment_category"
                             value={formData.adjustment_category}
@@ -134,6 +174,12 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
                                 </option>
                             ))}
                         </select>
+                        <CodeCreateModal
+                            code_name='adjustment_category'
+                            isOpen={isCodeModalOpen}
+                            onClose={() => setIsCodeModalOpen(false)}
+                            onSubmit={handleCodeCreate}
+                        />
                     </div>
 
                     <div className="grid grid-cols-3 items-center">

@@ -106,3 +106,14 @@ export const deleteRecentMonthly = async (serial_number) => {
         throw error;
     }
 };
+
+
+/** Monthly Account Invoice Delete */
+export const deleteAccountInvoice = async (yearMonth) => {
+    try {
+        return await del(`/monthly/saveData/account/${yearMonth}`);
+    } catch (error) {
+        // console.error("Failed to delete adjustment:", error.response?.data || error.message);
+        throw error;
+    }
+};

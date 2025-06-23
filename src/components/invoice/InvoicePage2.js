@@ -73,6 +73,16 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
     let currentY = 25; // 초기 Y 위치
     const bottomMargin = 15; // 페이지 하단 마진
 
+
+    const yearMonthAccount = `${formattedYearMonth}-${data.acct_num || "-"}`;
+
+    // 루프 밖에서 한 번만 정의
+    const drawYearMonthAccountAtBottom = () => {
+        doc.setFont("NanumGothic", "bold");
+        doc.setFontSize(7);
+        doc.text(yearMonthAccount, pageWidth - rightMargin, pageHeight - bottomMargin, { align: 'right' });
+    };
+
     deviceDetails.forEach((device, index) => {
         // ✅ firstRowData 동적 생성
         const firstRowData = [
@@ -118,7 +128,9 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
 
         // ✅ 블록이 페이지를 넘는다면, 다음 페이지에서 시작
         if (currentY + totalBlockHeight > pageHeight - bottomMargin) {
+            drawYearMonthAccountAtBottom();  // 페이지 추가 전
             doc.addPage();
+            doc.addImage(companyLogoBase64, 'PNG', 15, 10, 30, 7);
             currentY = 25;
         }
 
@@ -162,7 +174,7 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
                 cellPadding: 1,
                 fillColor: [255, 255, 255],
                 textColor: [0, 0, 0],
-                lineColor: [0, 0, 0],
+                lineColor: [66, 66, 66],
                 lineWidth: 0.1,  // ✅ 모든 선 두께 0.1로 설정
             },
             headStyles: {
@@ -189,11 +201,7 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
         currentY += 5;
     });
 
-    // ✅ `yearMonthAccount`을 마지막 한 번만 표시
-    doc.setFont("NanumGothic", "bold");
-    doc.setFontSize(7);
-    const yearMonthAccount = `${formattedYearMonth}-${data.acct_num || "-"}`;
-    doc.text(yearMonthAccount, pageWidth - rightMargin, currentY, { align: 'right' });
+    drawYearMonthAccountAtBottom();
 
     return doc;
 };

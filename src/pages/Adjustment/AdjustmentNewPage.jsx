@@ -45,6 +45,7 @@ const AdjustmentNewPage = () => {
     // 입력 변경 핸들러
     const handleModalChange = (e) => {
         const { name, value } = e.target;
+
         setModalInput((prev) => ({
             ...prev,
             [name]: value,

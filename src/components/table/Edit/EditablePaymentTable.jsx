@@ -164,7 +164,7 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
         setTableRows((prev) =>
             prev.map((row) => {
                 if (newSelection.includes(row.id)) {
-                    // console.log(row)
+                    console.log(row)
                     // ✅ 선택된 row: 값 세팅
                     return {
                         ...row,
@@ -234,9 +234,8 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
             setSaving(false); // 🔥 저장 종료
         }
     };
-    // console.log(rows)
-    // console.log(data)
 
+    console.log(selectionModel)
     return (
         <Box sx={{ width: '100%', p: 2, mb: 8, backgroundColor: 'white', borderRadius: 2, boxShadow: 1 }}>
             <div className="flex flex-row items-center justify-between mb-3">
@@ -315,9 +314,10 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
                         onRowSelectionModelChange={handleSelectionChange}
                         rowSelectionModel={selectionModel}
                         sx={{ backgroundColor: 'white' }}
-                        // sortModel={[
-                        //     { field: 'confirm_yn', sort: 'desc' }
-                        // ]}
+                        sortModel={[
+                            { field: 'acct_num', sort: 'asc' },
+                            { field: 'confirm_yn', sort: 'desc' }
+                        ]}
                     />
                 </Box>
             )}

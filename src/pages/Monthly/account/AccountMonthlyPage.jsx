@@ -14,6 +14,7 @@ import AccountMonthlyForm from '@/components/form/AccountMonthly/AccountMonthlyF
 import InvoiceSaveButton from '@/components/common/InvoiceSaveButton.jsx';
 import { IoMdClose } from 'react-icons/io';
 import { useSearchParams } from "react-router-dom";
+import useKOMonthlyAccountSaveStore from '@/stores/koMonthlySaveStore.js';
 
 import useAccountMonthlyStore from '@/stores/accountMonthlyStore.js';
 import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
@@ -46,6 +47,10 @@ const AccountMonthlyPage = () => {
         resetSelection
     } = useAccountMonthlyStore();
 
+    const setSaveYearMonth = useKOMonthlyAccountSaveStore(state => state.setYearMonth);
+    const monthlyAcctSaveData = useKOMonthlyAccountSaveStore(state => state.monthlyAcctSaveData);
+    const fetchMonthlyAcctSaveData = useKOMonthlyAccountSaveStore(state => state.fetchMonthlyAcctSaveData);
+
     const [columnFilters, setColumnFilters] = useState(() => {
         return urlAcct
             ? [{ id: "acct_num", value: urlAcct }]
@@ -58,6 +63,11 @@ const AccountMonthlyPage = () => {
 
     useEffect(() => {
         fetchMonthlyAcctData(yearMonth);
+
+        if (yearMonth) {
+            setSaveYearMonth(yearMonth);
+            fetchMonthlyAcctSaveData();
+        }
     }, [yearMonth]);
 
     useEffect(() => {
@@ -87,13 +97,15 @@ const AccountMonthlyPage = () => {
         exportToExcel(exportData, 'Acct_Bill.xlsx');
     };
 
+    console.log(yearMonth)
+    console.log(monthlyAcctSaveData)
     return(
         <>
             <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
                 {/* 상단 제목 및 월 선택 */}
                 <div className="col-span-6 border-b pb-3 border-gray-400 flex flex-row justify-between items-center">
                     <h1 className="text-xl font-bold">고객별 청구서 조정 페이지</h1>
-                    <InvoiceSaveButton yearMonth={yearMonth}/>
+                    <InvoiceSaveButton yearMonth={yearMonth} monthlyAcctSaveData={monthlyAcctSaveData}/>
                 </div>
 
                 <div className={`p-2 ${isExpanded ? 'col-span-2' : 'col-span-6'}`}>

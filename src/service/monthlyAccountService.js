@@ -10,6 +10,7 @@ export const fetchKOMonthlyAccountIndexData = async (year_month) => {
 }
 
 
+/** 최종 청구서 상세 데이터 */
 export const fetchKOMonthlyAccountSaveIndexData = async (year_month) => {
     try {
         return await getWithAuth(`/monthly/saveData/account/${year_month}`);
@@ -42,6 +43,7 @@ export const fetchKOMonthlyAccountSaveIndexHistoryData = async (acct_num, year_m
 }
 
 
+/** 최종 청구서 상세 데이터 */
 export const fetchKOMonthlyAccountSaveIndexDetailData = async (year_month, acct_num) => {
     try {
         return await getWithAuth(`/monthly/saveData/account/sn/${year_month}/${acct_num}`);

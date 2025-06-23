@@ -54,8 +54,8 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     ---------------------------- */
     const accountData = applyDefaultValues(accountDetailData?.[0] || {}, defaultAccountData);
 
-    console.log(accountDetailData)
-    console.log(accountData)
+    // console.log(accountDetailData)
+    // console.log(accountData)
     // console.log(accountData)
     const acct_num = accountData.acct_num; // 없으면 '-'
     const acct_name = accountData.account_info.acct_name;
@@ -90,7 +90,6 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     const late_surcharge = ""; // 연체가산금
     const none_pay_total = formatNumberWithCommas(accountData.none_pay_fee); // 미납요금계
 
-    console.log(adjustmentInfos)
     /* ----------------------------
         청구서 양식 추출
     ---------------------------- */
@@ -155,7 +154,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
         청구서 헤더 박스 (그림자 포함) // YYYY년 M 통신요금 청구서
     ---------------------------- */
     const paddingX = 60, paddingY = 10;
-    const boxX = paddingX, boxY = 105;
+    const boxX = paddingX, boxY = 100;
     const boxWidth = pageWidth - paddingX * 2;
     const boxHeight = paddingY;
 
@@ -166,7 +165,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
 
     // 2️⃣ 원래 박스
     doc.setFillColor(255, 255, 255); // 원래 배경색 (흰색)
-    doc.setDrawColor(0, 0, 0); // 원래 테두리색 (#1F2937)
+    doc.setDrawColor(66, 66, 66); // 원래 테두리색 (#1F2937)
     doc.setLineWidth(0.3);
     doc.roundedRect(boxX, boxY, boxWidth, boxHeight, 2, 2, 'FD');
 
@@ -184,7 +183,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     /* ----------------------------
         첫 번째 표: 기본 Account 표 (수정됨)
     ---------------------------- */
-    const firstTableY = 118;
+    const firstTableY = 113;
     const firstTableMarginLeft = 18, firstTableMarginRight = 18;
     const firstTableWidth = pageWidth - (firstTableMarginLeft + firstTableMarginRight);
     const rowHeight = 7.3;
@@ -220,7 +219,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
         },
         bodyStyles: {
             lineWidth: 0.2,
-            lineColor: [0, 0, 0],
+            lineColor: [66, 66, 66],
             fillColor: [255, 255, 255]
         },
         // 열 폭을 고정 (전체 4열)
@@ -237,7 +236,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     /* ----------------------------
         두 번째 표: 당월 요금 내역 표
     ---------------------------- */
-    const secondTableY = 156;
+    const secondTableY = 150;
     const secondMarginLeft = 18, secondMarginRight = 18;
     const secondTableWidth = pageWidth - (secondMarginLeft + secondMarginRight);
     const fixedColWidthSecond = secondTableWidth / 3;
@@ -299,12 +298,12 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
         },
         bodyStyles: {
             lineWidth: 0.2,
-            lineColor: [0, 0, 0]
+            lineColor: [66, 66, 66]
         },
         didParseCell: function (data) {
             if (data.section === 'body') {
                 if (data.row.index % 2 === 0) {
-                    data.cell.styles.fillColor = [240, 240, 240];
+                    data.cell.styles.fillColor = [224, 224, 224];
                 } else {
                     data.cell.styles.fillColor = [255, 255, 255];
                 }
@@ -414,7 +413,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
                 if (data.row.index % 2 === 0) {
                     data.cell.styles.fillColor = [255, 255, 255];
                 } else {
-                    data.cell.styles.fillColor = [240, 240, 240];
+                    data.cell.styles.fillColor = [224, 224, 224];
                 }
             }
         },
@@ -423,6 +422,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
             1: { cellWidth: fixedColWidthForAuto, halign: 'right' } // 금액(원) (오른쪽 정렬)
         }
     });
+
     // 예약된 3열 영역: autoTable의 오른쪽 1/3 영역을 별도로 그리기
     const reservedColX = thirdMarginLeft + autoTableWidth;
     const reservedPadding = 2;
@@ -473,7 +473,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
         bodyStyles: {
             lineWidth: 0.3,
             lineColor: [0, 0, 0],
-            fillColor: [255, 255, 255]
+            fillColor: [224, 224, 224]
         },
         columnStyles: {
             0: { cellWidth: fixedColWidthFourth },
