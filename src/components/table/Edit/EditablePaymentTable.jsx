@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
 import usePaymentStore from '@/stores/paymentStore';
-import PaymentTableColumns from '@/columns/PaymentTableColumns';
+import getPaymentTableColumns from '@/columns/PaymentTableColumns';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
 import { getExportDataFromTable } from '@/utils/exportHelpers';
@@ -14,12 +14,18 @@ import RefreshButton from '@/components/common/RefreshButton.jsx';
 import AccountPaymentList from '@/components/form/Homepage/AccountPaymentList.jsx';
 import useYearMonth from '@/hooks/useYearMonth.js';
 
-const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, yearMonth, selectedDate, handleDateChange }) => {
+const EditablePaymentTable = ({ fetchMonthlyAcctSaveData = [], data, loading, error, yearMonth, selectedDate, handleDateChange }) => {
     const yearMonthHook = useYearMonth();
     const { updateConfirmStatus } = usePaymentStore();
     const [rows, setRows] = useState([]);
     const [tableRows, setTableRows] = useState([]); // 테이블용 가공 데이터
     const [selectionModel, setSelectionModel] = useState([]);
+    const [sortModel, setSortModel] = useState([
+        { field: 'acct_num', sort: 'asc' }
+    ]);
+
+    // PaymentTableColumn
+    const [columns, setColumns] = useState([]);
 
     // Save 상태 추가
     const [saving, setSaving] = useState(false); // 저장 중 로딩 표시용
@@ -33,7 +39,7 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
 
             // 테이블용 rows 생성
             const simplified = data.map((row, idx) => ({
-                id: idx + 1,
+                id: row.acct_num, // ✅ 핵심: acct_num을 id로 설정
                 acct_num: row.acct_num,
                 acct_name: row.account_info?.acct_name || '',
                 monthly_final_fee: row.monthly_final_fee || 0,
@@ -56,7 +62,6 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
             setTableRows([]);
         }
     }, [data]);
-
 
     // ✅ 셀 수정 반영
     const processRowUpdate = (newRow) => {
@@ -84,16 +89,25 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
 
         // 4️⃣ updatedRow 작성
         const updatedRow = {
-            ...newRow,
+            acct_num: newRow.acct_num,
+            acct_name: newRow.acct_name,
+            monthly_final_fee: monthlyFinalFee,
+            none_pay_fee_basic: nonePayFeeBasic,
+            late_payment_penalty_fee: latePaymentPenaltyFee,
             final_fee: finalFee,
+            payment_amount_fee: paymentAmountFee,
             unpaid_balance_fee: unpaidBalanceFee,
-            confirm_yn: confirmYn
+            confirm_yn: confirmYn,
+            confirm_payment_date: newRow.confirm_payment_date || null,
+            confirm_payment_method: newRow.confirm_payment_method || '',
+            confirm_payment_desc: newRow.confirm_payment_desc || '',
+            isModified: true,
         };
 
         // 5️⃣ 적용
         setTableRows((prev) =>
             prev.map((row) =>
-                row.id === updatedRow.id ? { ...updatedRow, isModified: true } : row
+                row.acct_num === updatedRow.acct_num ? { ...updatedRow, isModified: true } : row
             )
         );
 
@@ -109,9 +123,10 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
 
         setTableRows((prev) =>
             prev.map((row) => {
-                if (newSelection.includes(row.id)) {
-                    console.log(row)
-                    // ✅ 선택된 row: 값 세팅
+                const isNowSelected = newSelection.includes(row.acct_num);
+                const wasSelected = selectionModel.includes(row.acct_num);
+
+                if (isNowSelected && !wasSelected) {
                     return {
                         ...row,
                         payment_amount_fee: row.final_fee,
@@ -121,9 +136,8 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
                         confirm_payment_method: 'giro',
                         isModified: true,
                     };
-                } else if (selectionModel.includes(row.id)) {
-                    // ✅ 해제된 row: 원본 값 복원
-                    const original = rows.find((r) => r.id === row.id);
+                } else if (!isNowSelected && wasSelected) {
+                    const original = rows.find((r) => r.acct_num === row.acct_num);
                     return {
                         ...original,
                         isModified: true,
@@ -134,7 +148,39 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
         );
     };
 
-    console.log('Table Row Data', tableRows)
+    // ✅ 클릭 핸들러 정의
+    const handleFinalFeeClick = (params) => {
+        const targetId = params.id;
+        const finalFee = Number(params.value) || 0;
+
+        setTableRows((prev) =>
+            prev.map((row) => {
+                if (row.acct_num === targetId) {
+                    const paymentAmountFee = finalFee;
+                    const unpaidBalanceFee = row.final_fee - paymentAmountFee;
+                    let confirmYn = 'Y';
+                    if (paymentAmountFee === 0) confirmYn = 'N';
+                    else if (paymentAmountFee < row.final_fee) confirmYn = 'P';
+
+                    return {
+                        ...row,
+                        payment_amount_fee: paymentAmountFee,
+                        unpaid_balance_fee: unpaidBalanceFee,
+                        confirm_yn: confirmYn,
+                        isModified: true,
+                    };
+                }
+                return row;
+            })
+        );
+    };
+
+    // ✅ columns 설정
+    useEffect(() => {
+        setColumns(getPaymentTableColumns({ onFinalFeeClick: handleFinalFeeClick }));
+    }, []);
+
+
     const handleSaveAll = async () => {
         const modifiedRows = tableRows.filter((row) => row.isModified);
 
@@ -144,43 +190,61 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
         }
 
         // 분류
-        let overpaidRows = [];
-        let underpaidRows = [];
-        let exactPaidRows = [];
+        let overpaidRows = []; // 과오납
+        let underpaidRows = []; // 부분납
+        let unpaidRows = [];    // 완전 미납
+        let exactPaidRows = []; // 완납
 
         modifiedRows.forEach(row => {
             const finalFee = Number(row.final_fee);
             const paymentFee = Number(row.payment_amount_fee);
 
-            if (finalFee < paymentFee) {
-                overpaidRows.push(row);
-            } else if (finalFee > paymentFee) {
-                underpaidRows.push(row);
+            if (finalFee === 0 && paymentFee === 0 || finalFee === paymentFee) {
+                exactPaidRows.push(row); // 완납
+            } else if (paymentFee > finalFee) {
+                overpaidRows.push(row); // 과오납
+            } else if (paymentFee === 0 && finalFee > 0) {
+                unpaidRows.push(row); // 미납
+            } else if (paymentFee > 0 && paymentFee < finalFee) {
+                underpaidRows.push(row); // 부분납
             } else {
-                exactPaidRows.push(row);
+                unpaidRows.push(row); // 모든 예외도 미납 처리
             }
         });
 
         // 🔹 1. 수정된 전체 항목 요약 메시지
-        const allRowsMessage = [...exactPaidRows, ...underpaidRows, ...overpaidRows]
+        const allRowsMessage = [...exactPaidRows, ...underpaidRows, ...unpaidRows, ...overpaidRows]
             .map(row => {
                 const finalFee = Number(row.final_fee);
                 const paymentFee = Number(row.payment_amount_fee);
                 let status = '';
 
-                if (finalFee < paymentFee) status = '과오납';
-                else if (finalFee > paymentFee) status = '부분납';
-                else status = '완납';
+                if (paymentFee > finalFee) status = '과오납';
+                else if (paymentFee === finalFee) status = '완납';
+                else if (paymentFee === 0 && finalFee > 0) status = '미납';
+                else status = '부분납';
 
                 return `- ${row.acct_name} (${row.acct_num}): ${status}`;
             })
             .join('\n');
 
+
         // 🔸 2. 부분납에 대한 추가 경고
         const hasPartial = underpaidRows.length > 0;
-        const partialNotice = hasPartial
-            ? '\n\n⚠️ 부분납이 확인된 항목은 미납액이 존재하며, 다음달 청구에 합산됩니다.'
-            : '';
+        const hasUnpaid = unpaidRows.length > 0;
+        const hasOverPaid = overpaidRows.length > 0;
+
+        let partialNotice = '';
+        if (hasPartial) {
+            partialNotice += '\n\n⚠️ 부분납된 금액은 미납으로 처리되며, 다음달 청구서에 미납금과 함께 연체료가 포함되어 청구됩니다.';
+        }
+        if (hasUnpaid) {
+            partialNotice += '\n\n⚠️ 미납 항목이 존재합니다. 납부 금액이 0원입니다.';
+        }
+        if (hasOverPaid) {
+            partialNotice += '\n\n⚠️ 초과 납부된 금액은 다음달 청구금에서 감면되어 반영됩니다.';
+        }
+
 
         const confirmResult = window.confirm(
             `다음 항목의 변경 내용이 감지되었습니다:\n\n${allRowsMessage}${partialNotice}\n\n저장하시겠습니까?`
@@ -209,8 +273,6 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
     };
 
 
-
-    console.log(selectionModel)
     return (
         <Box sx={{ width: '100%', p: 2, mb: 8, backgroundColor: 'white', borderRadius: 2, boxShadow: 1 }}>
             <div className="flex flex-row items-center justify-between mb-3">
@@ -280,18 +342,27 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
             {!loading && !error && (
                 <Box sx={{ height: 650 }}>
                     <DataGrid
-                        rows={tableRows}
-                        columns={PaymentTableColumns}
+                        rows={Array.isArray(tableRows) ? tableRows : []}
+                        columns={columns}
                         checkboxSelection
                         disableRowSelectionOnClick
                         processRowUpdate={processRowUpdate}
                         experimentalFeatures={{ newEditingApi: true }}
                         onRowSelectionModelChange={handleSelectionChange}
-                        rowSelectionModel={selectionModel}
+                        rowSelectionModel={selectionModel} // ✅ 이 값도 acct_num 리스트
+                        getRowId={(row) => row.acct_num} // ✅ 핵심: acct_num을 고유 key로 사용
                         sx={{ backgroundColor: 'white' }}
-                        sortModel={[
-                            { field: 'acct_num', sort: 'asc' }
-                        ]}
+                        sortModel={sortModel}
+                        onSortModelChange={(newModel) => setSortModel(newModel)}
+
+                        pagination
+                        pageSizeOptions={[10, 25, 50, 100]}
+                        initialState={{
+                            pagination: {
+                                paginationModel: { pageSize: 25, page: 0 },
+                            },
+                        }}
+                        rowCount={tableRows.length || 0} // ✅ count 보장
                     />
                 </Box>
             )}

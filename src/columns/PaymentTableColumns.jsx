@@ -4,15 +4,15 @@ import { applyCenterAlignStyles, useYNSwitch } from './cellStyle/PaymentCell.jsx
 import { formatDateIndex, formatDateTime } from './cellStyle/AccountCell.jsx';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import SaveIcon from '@mui/icons-material/Save';
+import { Select, MenuItem } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField } from '@mui/material';
 import dayjs from 'dayjs';
-import { Select, MenuItem } from '@mui/material';
 import { Autocomplete } from '@mui/material';
 
 // 사용자가 Enter/Tab 누를 때 기본값을 자동으로 setEditCellValue로 반영 (DatePicker는 onChange 발생하지 않으면 값 적용 x)
 const renderDateEditCell = (params) => {
-    const defaultDayjs = params.value ? dayjs(params.value) : dayjs(); // 기본값: 오늘
+    const defaultDayjs = params.value ? dayjs(params.value) : null; // 기본값: 오늘
 
     const handleCommit = (newValue) => {
         params.api.setEditCellValue({
@@ -25,6 +25,7 @@ const renderDateEditCell = (params) => {
     return (
         <DatePicker
             format="YYYY-MM-DD"
+            clearable
             value={defaultDayjs}
             onChange={(newValue) => {
                 handleCommit(newValue);
@@ -60,7 +61,7 @@ const renderDateEditCell = (params) => {
 };
 
 
-const PaymentTableColumns = [
+const PaymentTableColumns = ({ onFinalFeeClick }) => [
     {
         field: 'acct_num',
         headerName: '고객번호',
@@ -108,28 +109,20 @@ const PaymentTableColumns = [
         type: 'number',
         headerClassName: 'bold-header', // 커스텀 클래스 추가
         renderCell: (params) => {
-            const handleClick = () => {
-                const rowId = params.id;
-                const finalFee = Number(params.value) || 0;
-
-                params.api.updateRows([{
-                    ...params.row,
-                    payment_amount_fee: finalFee,
-                    unpaid_balance_fee: 0,
-                    confirm_yn: 'Y',
-                    isModified: true
-                }]);
-            };
-
             return (
                 <span
-                    style={{ fontWeight: 'bold', cursor: 'pointer', textDecoration: 'underline' }}
-                    onClick={handleClick}
+                    style={{
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                    }}
+                    onClick={() => onFinalFeeClick(params)}
                 >
-                {params.value?.toLocaleString() || 0}
-            </span>
+            {params.value?.toLocaleString() || 0}
+        </span>
             );
         }
+
     },
     {
         field: 'payment_amount_fee',

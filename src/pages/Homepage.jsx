@@ -33,7 +33,7 @@ const Homepage = () => {
     const token = localStorage.getItem("token");
     // console.log(token);
 
-    console.log(monthlyAcctSaveData)
+    // console.log(monthlyAcctSaveData)
     return (
         <div className="grid gap-0 grid-cols-1">
             <div className="flex flex-row space-x-4 px-2 py-4 items-center">
