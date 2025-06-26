@@ -25,8 +25,6 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
     const [saving, setSaving] = useState(false); // 저장 중 로딩 표시용
     const hasModifiedRows = tableRows.some(row => row.isModified); // 렌더링 시 매번 최신 상태 계산
 
-    // console.log(data)
-    // console.log(unpaid_balance_fee)
     useEffect(() => {
         if (Array.isArray(data)) {
             // 원본 rows 설정
@@ -84,17 +82,6 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
             confirmYn = 'Y'; // 완납
         }
 
-        // if (
-        //     (finalFee === paymentAmountFee && unpaidBalanceFee === 0) ||
-        //     (finalFee <= paymentAmountFee && unpaidBalanceFee <= 0)
-        // ) {
-        //     confirmYn = 'Y'; // ✅ 완납
-        // } else if (finalFee === unpaidBalanceFee && paymentAmountFee === 0) {
-        //     confirmYn = 'N'; // ✅ 미납
-        // } else {
-        //     confirmYn = 'P'; // ✅ 부분납
-        // }
-
         // 4️⃣ updatedRow 작성
         const updatedRow = {
             ...newRow,
@@ -113,47 +100,6 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
         return updatedRow;
     };
 
-    // const processRowUpdate = (newRow) => {
-    //     const updatedRow = { ...newRow };
-    //
-    //     // 1️⃣ 숫자 수정 '연체 가산금' & '고객 납부금'에 따른 "금액" 계산
-    //     // 1. '연체 가산금' 변경 시 '총 납부 금액' 재계산
-    //     if ('late_payment_penalty_fee' in newRow) {
-    //         updatedRow.final_fee =
-    //             (Number(newRow.monthly_final_fee) || 0) +
-    //             (Number(newRow.none_pay_fee_basic) || 0) +
-    //             (Number(newRow.late_payment_penalty_fee) || 0);
-    //     }
-    //     // 2. '납부금' 변경 시 '미납 잔액' 재계산
-    //     if ('payment_amount_fee' in newRow) {
-    //         updatedRow.unpaid_balance_fee =
-    //             (Number(newRow.final_fee) || 0) -
-    //             (Number(newRow.payment_amount_fee) || 0);
-    //     }
-    //
-    //     // 2️⃣ '총 납부금액' & '고객 납부금' & 미납 잔액'에 따른 "상태" 계산
-    //     const finalFee = Number(updatedRow.final_fee) || 0; // 총 납부 금액
-    //     const paymentAmount = Number(updatedRow.payment_amount_fee) || 0; // 납부금
-    //     const unpaid = Number(updatedRow.unpaid_balance_fee) || 0; // 미납 잔액
-    //
-    //     if (finalFee === paymentAmount && unpaid === 0) {
-    //         updatedRow.confirm_yn = 'Y'; // 완납
-    //     } else if (finalFee === unpaid && paymentAmount === 0) {
-    //         updatedRow.confirm_yn = 'N'; // 미납
-    //     } else if (finalFee !== paymentAmount) {
-    //         updatedRow.confirm_yn = 'P'; // 부분납
-    //     } else {
-    //         updatedRow.confirm_yn = updatedRow.confirm_yn || 'N'; // 기본값
-    //     }
-    //
-    //     setTableRows((prev) =>
-    //         prev.map((row) =>
-    //             row.id === updatedRow.id ? { ...updatedRow, isModified: true } : row
-    //         )
-    //     );
-    //
-    //     return updatedRow;
-    // };
 
     // ✅ Checkbox handle
     const handleSelectionChange = (newSelection) => {
@@ -188,55 +134,81 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
         );
     };
 
+    console.log('Table Row Data', tableRows)
     const handleSaveAll = async () => {
         const modifiedRows = tableRows.filter((row) => row.isModified);
 
-        console.log(tableRows)
-        console.log(modifiedRows)
         if (modifiedRows.length === 0) {
             alert('⚠️ 수정된 데이터가 없습니다.');
             return;
         }
 
-        // 1️⃣ 과오납 데이터 체크
-        const hasOverpayment = modifiedRows.some(row =>
-            (Number(row.final_fee) <= Number(row.payment_amount_fee)) &&
-            (Number(row.unpaid_balance_fee) <= 0)
+        // 분류
+        let overpaidRows = [];
+        let underpaidRows = [];
+        let exactPaidRows = [];
+
+        modifiedRows.forEach(row => {
+            const finalFee = Number(row.final_fee);
+            const paymentFee = Number(row.payment_amount_fee);
+
+            if (finalFee < paymentFee) {
+                overpaidRows.push(row);
+            } else if (finalFee > paymentFee) {
+                underpaidRows.push(row);
+            } else {
+                exactPaidRows.push(row);
+            }
+        });
+
+        // 🔹 1. 수정된 전체 항목 요약 메시지
+        const allRowsMessage = [...exactPaidRows, ...underpaidRows, ...overpaidRows]
+            .map(row => {
+                const finalFee = Number(row.final_fee);
+                const paymentFee = Number(row.payment_amount_fee);
+                let status = '';
+
+                if (finalFee < paymentFee) status = '과오납';
+                else if (finalFee > paymentFee) status = '부분납';
+                else status = '완납';
+
+                return `- ${row.acct_name} (${row.acct_num}): ${status}`;
+            })
+            .join('\n');
+
+        // 🔸 2. 부분납에 대한 추가 경고
+        const hasPartial = underpaidRows.length > 0;
+        const partialNotice = hasPartial
+            ? '\n\n⚠️ 부분납이 확인된 항목은 미납액이 존재하며, 다음달 청구에 합산됩니다.'
+            : '';
+
+        const confirmResult = window.confirm(
+            `다음 항목의 변경 내용이 감지되었습니다:\n\n${allRowsMessage}${partialNotice}\n\n저장하시겠습니까?`
         );
 
-        // 2️⃣ 과오납이면 사용자 확인
-        console.log(hasOverpayment)
-        if (hasOverpayment) {
-            const confirmResult = window.confirm(
-                '⚠️ 과오납이 발생했습니다.\n다음달 청구금에서 해당 금액이 삭감됩니다.\n저장하시겠습니까?'
-            );
-            if (!confirmResult) {
-                return; // 저장 중단
-            }
-        }
+        if (!confirmResult) return;
 
         try {
-            setSaving(true); // 🔥 저장 시작
+            setSaving(true);
             const postData = modifiedRows.map(({ id, isModified, confirm_payment_date, ...rest }) => ({
                 ...rest,
                 confirm_payment_date: confirm_payment_date
                     ? dayjs(confirm_payment_date).format('YYYY-MM-DDTHH:mm:ss')
                     : null,
-                // confirm_payment_bank: null,
             }));
 
             await updateConfirmStatus(yearMonth, postData);
             alert('✅ 수정된 항목 저장 완료');
-            setTableRows((prev) =>
-                prev.map((row) => ({ ...row, isModified: false }))
-            );
+            setTableRows((prev) => prev.map(row => ({ ...row, isModified: false })));
         } catch (err) {
             console.error('❌ 저장 실패:', err);
             alert('❌ 저장 실패');
         } finally {
-            setSaving(false); // 🔥 저장 종료
+            setSaving(false);
         }
     };
+
+
 
     console.log(selectionModel)
     return (
@@ -318,8 +290,7 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
                         rowSelectionModel={selectionModel}
                         sx={{ backgroundColor: 'white' }}
                         sortModel={[
-                            { field: 'acct_num', sort: 'asc' },
-                            { field: 'confirm_yn', sort: 'desc' }
+                            { field: 'acct_num', sort: 'asc' }
                         ]}
                     />
                 </Box>
