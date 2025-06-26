@@ -180,11 +180,11 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
                     {/*/>*/}
 
                     {[
-                        { label: "조정 유형", name: "adjustment_code", type: "select",
-                            dataList: Object.entries(codeMappings.adjustment_code).map(([value, label]) => ({ code_value: value, code_alias: label })),
-                            disabled: true
-                        },
-                        { label: "조정 대상", name: "adjustment_value", type: "text", disabled: true },
+                        // { label: "조정 유형", name: "adjustment_code", type: "select",
+                        //     dataList: Object.entries(codeMappings.adjustment_code).map(([value, label]) => ({ code_value: value, code_alias: label })),
+                        //     disabled: true
+                        // },
+                        // { label: "조정 대상", name: "adjustment_value", type: "text", disabled: true },
                         { label: "조정 분류", name: "adjustment_category", type: "select",
                             dataList: Object.entries(codeMappings.adjustment_category).map(([value, label]) => ({
                                 code_value: value,
@@ -206,8 +206,16 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
                             })),
                             placeholder: "요금/요율"
                         },
-                        { label: "조정 금액", name: "adjustment_fee", type: "text", placeholder: "0" },
-                        { label: "설명", name: "description", type: "text", placeholder: "-" },,
+                        { label: "조정 금액", name: "adjustment_fee", type: "number", placeholder: "0" },
+                        { label: "설명", name: "description", type: "text", placeholder: "-" },
+                        { label: "적용 횟수", name: "adjustment_cycle", type: "select",
+                            dataList: Object.entries(codeMappings.adjustment_cycle).map(([value, label]) => ({
+                                code_value: value,
+                                code_alias: label,
+                            })),
+                            placeholder: "-"
+                        },
+                        { label: "적용 날짜", name: "date_index", type: "text", placeholder: "202501"},
                     ].map((field, index) => (
                         <FormInput
                             key={index}

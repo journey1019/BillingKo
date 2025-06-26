@@ -138,6 +138,7 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
             alert("조정 정보 추가 실패");
         }
     };
+
     // console.log(formData)
     // console.log(adjustmentTypes)
 
@@ -152,7 +153,7 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
                     {/* ✅ Select 드롭다운 목록 */}
                     <div className="grid grid-cols-3 items-center">
                         <label className="flex flex-row col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">
-                            <span>조정 구분</span>
+                            <span>조정 분류</span>
                             <button
                                 type="button"
                                 onClick={() => setIsCodeModalOpen(true)}
@@ -195,7 +196,7 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
                     </div>
 
                     <div className="grid grid-cols-3 items-center">
-                        <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">금액/요율</label>
+                        <label className="col-span-1 text-xs 2xl:text-sm font-semibold text-gray-600">요금 기준</label>
                         <select name="mount_type" value={formData.mount_type} onChange={handleChange}
                                 className="col-span-2 border rounded-md p-2 text-xs 2xl:text-sm">
                             {mountTypes.map((option) => (
@@ -206,7 +207,7 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
                         </select>
                     </div>
 
-                    <FormInput label="적용 요금" name="mount_value" type="number" value={formData.mount_value} onChange={handleChange} placeholder="5,000" />
+                    <FormInput label="조정 금액" name="mount_value" type="number" value={formData.mount_value} onChange={handleChange} placeholder="5,000" />
 
                     <FormInput label="설명" name="description" type="text" value={formData.description} onChange={handleChange} placeholder="-" />
 

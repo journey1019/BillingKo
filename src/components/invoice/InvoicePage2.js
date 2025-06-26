@@ -108,7 +108,7 @@ export const generateInvoicePage2 = (doc, yearMonth, invoiceData, accountDetailD
         const tableHeaders = ["기본료", "통신료", "수수료", ...dynamicHeaders];
 
         const dynamicValues = hasModification
-            ? modificationDetails.map(detail => formatNumberWithCommas(detail.adjustment_fee || 0))
+            ? modificationDetails.map(detail => formatNumberWithCommas(detail.mount_value || 0))
             : [];
 
         const tableBody = [

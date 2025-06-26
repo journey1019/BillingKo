@@ -191,6 +191,8 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
     const handleSaveAll = async () => {
         const modifiedRows = tableRows.filter((row) => row.isModified);
 
+        console.log(tableRows)
+        console.log(modifiedRows)
         if (modifiedRows.length === 0) {
             alert('⚠️ 수정된 데이터가 없습니다.');
             return;
@@ -203,6 +205,7 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
         );
 
         // 2️⃣ 과오납이면 사용자 확인
+        console.log(hasOverpayment)
         if (hasOverpayment) {
             const confirmResult = window.confirm(
                 '⚠️ 과오납이 발생했습니다.\n다음달 청구금에서 해당 금액이 삭감됩니다.\n저장하시겠습니까?'

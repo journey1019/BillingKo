@@ -120,12 +120,12 @@ export const GiroPage = (doc, yearMonth, invoiceBasicData, accountDetailData) =>
     const totalWidth = (text.length - 1) * spacing;
 
     // 오른쪽 끝 정렬을 위한 X 좌표 조정
-    const endX = 196 // 기존 우측 정렬 기준 X 좌표
+    const endX = 197 // 기존 우측 정렬 기준 X 좌표
     const startX = endX - totalWidth; // 문자열의 시작점 보정
 
     // 금액 (오른쪽 정렬)
     for (let i = 0; i < text.length; i++) {
-        doc.text(text[i], startX + (i * spacing), startY);
+        doc.text(text[i], startX + (i * spacing), startY+1);
     }
 
 
