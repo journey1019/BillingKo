@@ -98,25 +98,21 @@ const App = () => {
                     <ProtectedRoute isAuthenticated={isAuthenticated}>
                         <RootLayout>
                             <Routes>
+                                {/** Main Route */}
                                 <Route path="/" element={<Homepage />} />
-                                <Route path="/cdr_nn" element={<CDRnNNPage />} />
                                 <Route path="/file" element={<FilePage />} />
                                 <Route path="/accounts" element={<AccountPage />} />
                                 <Route path="/devices" element={<DevicePage />} />
                                 <Route path="/price" element={<PricePage />} />
-
                                 <Route path="/monthly" element={<MonthlyPage />} /> {/* 계산관리 */}
-
-                                <Route path="/adjustment" element={<AdjustmentPage />} />
-                                <Route path="/ko_monthly/account" element={<KOMonthlyAccountPage />} />
                                 <Route path="/ko_monthly" element={<KOMonthlyPage />} /> {/* 단말별 */}
-                                <Route path="/ko_monthly_account" element={<AccountMonthlyPage />} /> {/* 고객별 */}
+                                <Route path="/ko_monthly/account" element={<KOMonthlyAccountPage />} />
                                 <Route path="/ko_monthly_result" element={<KOMonthlyAccountSavePage />} /> {/* 청구서 */}
 
-                                <Route path="/font_convert" element={<FontConvertPage />} />
 
+                                {/** Manage Route */}
                                 <Route path="/file/cdr" element={<CDRPage />} />
-                                <Route path="/file/accounts" element={<CDRPage />} />
+                                <Route path="/cdr_nn" element={<CDRnNNPage />} />
 
                                 <Route path="/accounts/new" element={<AccountNewPage />} />
                                 <Route path="/accounts/:acct_num/edit" element={<AccountEditPage />} />
@@ -140,9 +136,14 @@ const App = () => {
 
                                 <Route path="/payment" element={<PaymentPage />} />
 
+                                <Route path="/adjustment" element={<AdjustmentPage />} />
                                 <Route path="/adjustment/edit/:adjustment_index" element={<AdjustmentTransactionDetailEditForm/>} />
 
 
+
+                                {/** Not Use Route */}
+                                <Route path="/ko_monthly_account" element={<AccountMonthlyPage />} /> {/* 고객별 */}
+                                <Route path="/font_convert" element={<FontConvertPage />} />
                                 <Route path="/example" element={<Example />} />
                             </Routes>
                         </RootLayout>

@@ -25,15 +25,8 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
         [monthlyAcctSaveData, yearMonth]
     );
 
-    // 고객 납부 금액 (payment_amount_fee 총합)
+    // 고객 수납액 (payment_amount_fee 총합)
     const paymentFee = useMemo(() =>
-            (monthlyAcctSaveData ?? [])
-                .reduce((sum, item) => sum + (Number(item.payment_amount_fee) || 0), 0),
-        [monthlyAcctSaveData, yearMonth]
-    );
-
-    // 수납액 (payment_amount_fee 총합)
-    const amountPaid = useMemo(() =>
             (monthlyAcctSaveData ?? [])
                 .reduce((sum, item) => sum + (Number(item.payment_amount_fee) || 0), 0),
         [monthlyAcctSaveData, yearMonth]
@@ -49,8 +42,8 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
 
     // 납부율 계산
     const progress = useMemo(() =>
-            totalNonePayFee > 0 ? (amountPaid / totalNonePayFee) * 100 : 0,
-        [amountPaid, totalNonePayFee]
+            totalNonePayFee > 0 ? (paymentFee / totalNonePayFee) * 100 : 0,
+        [paymentFee, totalNonePayFee]
     );
     const paymentStatusPercent = progress.toFixed(2);
 
@@ -76,7 +69,7 @@ const Receivables = ({ yearMonth, monthlyAcctSaveData }) => {
                             <>
                                 <div className="flex flex-row justify-between items-center">
                                     <span>수납액:</span>
-                                    <span>{formatNumber(amountPaid)} 원</span>
+                                    <span>{formatNumber(paymentFee)} 원</span>
                                 </div>
                                 <div className="flex flex-row justify-between items-center">
                                     <span>납부율:</span>
