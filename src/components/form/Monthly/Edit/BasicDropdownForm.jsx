@@ -7,18 +7,31 @@ import { formatDateAddTime, formatNumberWithCommas } from '@/utils/formatHelpers
 import { LuRefreshCw } from "react-icons/lu";
 import AlertBox from '@/components/common/AlertBox';
 import { useNavigate } from 'react-router-dom';
-
+import { hasPermission } from '@/utils/permissionUtils.js';
+import CountAlertBox from '@/components/common/CountAlertBox.jsx';
 
 const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
+    const userRole = localStorage.getItem("user_role");
+    const isAuthorized = hasPermission("deviceEditIcon", userRole);
+    const [alertBox, setAlertBox] = useState(null);
+    
     const navigate = useNavigate();
 
-    console.log(detailData)
-    // console.log(yearMonth)
-    const [alertBox, setAlertBox] = useState(null);
+    const [alert, setAlert] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({});
 
-    const toggleDropdown = () => setIsOpen(!isOpen);
+    const toggleDropdown = () => {
+        if (!isAuthorized) {
+            setAlertBox({
+                type: "error",
+                message: "이 작업은 권한이 있는 사용자만 접근할 수 있습니다.",
+            });
+            return;
+        }
+        
+        setIsOpen(!isOpen);
+    };
     const closeDropdown = () => setIsOpen(false);
 
     // ✅ detailData가 바뀔 때 formData 초기화
@@ -132,7 +145,7 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
 
             await saveKOMonthlyDetailData(detailData.data_index, payload);
 
-            setAlertBox({
+            setAlert({
                 type: "success",
                 title: "저장 성공",
                 message: "데이터가 성공적으로 저장되었습니다.",
@@ -141,14 +154,14 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
             closeDropdown();
         } catch (error) {
             console.error("Error updating data:", error);
-            setAlertBox({
+            setAlert({
                 type: "danger",
                 title: "저장 실패",
                 message: "서버에 데이터를 저장하지 못했습니다.",
             });
         }
 
-        setTimeout(() => setAlertBox(null), 3000);
+        setTimeout(() => setAlert(null), 3000);
     };
 
     // ✅ 새로고침
@@ -156,20 +169,20 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
     //     if (!fetchDetailData) return;
     //     try {
     //         await fetchDetailData();
-    //         setAlertBox({
+    //         setAlert({
     //             type: "info",
     //             title: "데이터 불러오기 성공!",
     //             message: "수정한 데이터를 성공적으로 불러왔습니다.",
     //         });
     //     } catch (error) {
-    //         setAlertBox({
+    //         setAlert({
     //             type: "danger",
     //             title: "데이터 불러오기 실패!",
     //             message: "데이터를 다시 불러오는 데 실패했습니다.",
     //         });
     //     }
     //
-    //     setTimeout(() => setAlertBox(null), 3000);
+    //     setTimeout(() => setAlert(null), 3000);
     // };
     // const handleGoToKOMonthlyPage = () => {
     //     if (!yearMonth || !detailData?.serial_number) return;
@@ -199,9 +212,15 @@ const BasicDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
     console.log(formData)
     return (
         <div className="relative inline-block float-right">
+            <CountAlertBox
+                type={alertBox?.type}
+                message={alertBox?.message}
+                onClose={() => setAlertBox(null)}
+            />
+
             {/* ✅ AlertBox */}
-            {alertBox && (
-                <AlertBox type={alertBox.type} title={alertBox.title} message={alertBox.message} />
+            {alert && (
+                <AlertBox type={alert.type} title={alert.title} message={alert.message} />
             )}
 
             {/* ✅ Refresh 버튼 */}

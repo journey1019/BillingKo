@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import Accordion from '@/components/ui/Accordions/Accordion.jsx';
 import { accordionItems } from '@/components/form/Monthly/DeviceAccordionItem.jsx';
 import UseByteDetailItem from '@/components/form/Monthly/UseByteDetailItem.jsx';
@@ -6,9 +7,15 @@ import { FaTrash } from "react-icons/fa";
 import { deleteRecentMonthly } from "@/service/monthlyService.js";
 import Swal from 'sweetalert2';
 import { Tooltip } from "@mui/material";
+import { hasPermission } from '@/utils/permissionUtils.js';
+import CountAlertBox from '@/components/common/CountAlertBox.jsx';
 
 
 const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fetchVersionData, fetchDetailData, originalSerialNumber, yearMonth }) => {
+    const userRole = localStorage.getItem("user_role");
+    const isAuthorized = hasPermission("deviceEditIcon", userRole);
+    const [alertBox, setAlertBox] = useState(null);
+
     if (!detailData) return <p>No data available</p>;
 
 
@@ -39,6 +46,14 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
 
     // 삭제 핸들러 함수
     const handleDelete = async () => {
+        if (!isAuthorized) {
+            setAlertBox({
+                type: "error",
+                message: "이 작업은 권한이 있는 사용자만 접근할 수 있습니다.",
+            });
+            return;
+        }
+
         const result = await Swal.fire({
             title: '정말 삭제하시겠습니까?',
             text: '이 동작은 되돌릴 수 없습니다.',
@@ -68,6 +83,12 @@ const DeviceMonthlyForm = ({ detailData, version, latestVersion, setVersion, fet
     return (
         <>
             <div className="grid grid-cols-2 bg-white shadow-lg">
+                <CountAlertBox
+                    type={alertBox?.type}
+                    message={alertBox?.message}
+                    onClose={() => setAlertBox(null)}
+                />
+
                 {/* Left Section - 단말 및 금액 세부 정보 */}
                 <div className="col-span-1">
                     <div className="bg-white p-4 border-r">

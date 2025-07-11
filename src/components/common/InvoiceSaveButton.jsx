@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 
 import { saveInvoiceData, deleteAccountInvoice } from '@/service/monthlyService.js';
+import { hasPermission } from '@/utils/permissionUtils.js';
+
 import ConfirmModal from '@/components/common/ConfirmModal.jsx';
+import CountAlertBox from '@/components/common/CountAlertBox.jsx';
 
 import { Alert, Popover, Snackbar, Tooltip } from '@mui/material'; // ✅ MUI Alert 추가
 import Swal from "sweetalert2";
@@ -13,7 +16,6 @@ import { FaSave } from 'react-icons/fa';
 const InvoiceSaveButton = ({ yearMonth, monthlyAcctSaveData= [] }) => {
     const navigate = useNavigate();
 
-
     // Monthly Save Button
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -21,8 +23,10 @@ const InvoiceSaveButton = ({ yearMonth, monthlyAcctSaveData= [] }) => {
     const [isLoading, setIsLoading] = useState(false); // ✅ 로딩 상태 추가
     const MySwal = withReactContent(Swal);
 
+    const [alertBox, setAlertBox] = useState(null);
+    const userRole = localStorage.getItem("user_role");
+    const isAuthorized = hasPermission("accountInvoice", userRole);
 
-    console.log(monthlyAcctSaveData)
     const handleSave = async () => {
         setShowConfirmModal(false);
         setAlert({ type: "", message: "" });
@@ -73,6 +77,7 @@ const InvoiceSaveButton = ({ yearMonth, monthlyAcctSaveData= [] }) => {
         setShowDeleteConfirm(false);
         setAlert({ type: "", message: "" });
         setIsLoading(true);
+
         try {
             await deleteAccountInvoice(yearMonth);
             setAlert({ type: "success", message: `Data for ${yearMonth} deleted successfully.` });
@@ -88,12 +93,40 @@ const InvoiceSaveButton = ({ yearMonth, monthlyAcctSaveData= [] }) => {
         }
     };
 
+    const handleSaveModal = () => {
+        if (!isAuthorized) {
+            setAlertBox({
+                type: "error",
+                message: "이 작업은 권한이 있는 사용자만 접근할 수 있습니다.",
+            });
+            return;
+        }
+
+        setShowConfirmModal(true)
+    }
+    const handleDeleteModal = () => {
+        if (!isAuthorized) {
+            setAlertBox({
+                type: "error",
+                message: "이 작업은 권한이 있는 사용자만 접근할 수 있습니다.",
+            });
+            return;
+        }
+
+        setShowDeleteConfirm(true)
+    }
 
     return(
         <div className="flex flex-row space-x-2">
+            <CountAlertBox
+                type={alertBox?.type}
+                message={alertBox?.message}
+                onClose={() => setAlertBox(null)}
+            />
+
             <Tooltip title="모든 수정을 마친 후 눌러주세요">
                 <button
-                    onClick={() => setShowConfirmModal(true)}
+                    onClick={handleSaveModal}
                     className={`flex flex-row items-center space-x-2 p-2 rounded-md text-white transition ${
                         isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
                     }`}
@@ -131,7 +164,7 @@ const InvoiceSaveButton = ({ yearMonth, monthlyAcctSaveData= [] }) => {
 
             {/* Delete Button */}
             <Tooltip title="청구 데이터 삭제 (저장된 최종 청구서 데이터 있을 때 삭제 가능">
-                <button onClick={() => setShowDeleteConfirm(true)} className={`flex flex-row items-center space-x-2 p-2 rounded-md text-white transition ${!monthlyAcctSaveData?.length || isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'}`} disabled={!monthlyAcctSaveData?.length || isLoading}>
+                <button onClick={handleDeleteModal} className={`flex flex-row items-center space-x-2 p-2 rounded-md text-white transition ${!monthlyAcctSaveData?.length || isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'}`} disabled={!monthlyAcctSaveData?.length || isLoading}>
                     {isLoading ?
                         <svg className="w-5 h-5 animate-spin mr-2 text-white" xmlns="http://www.w3.org/2000/svg"
                              fill="none" viewBox="0 0 24 24">

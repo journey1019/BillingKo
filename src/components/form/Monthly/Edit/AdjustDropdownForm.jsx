@@ -10,8 +10,14 @@ import AlertBox from '@/components/common/AlertBox';
 import { useNavigate } from 'react-router-dom';
 import useAdjustmentStore from '@/stores/adjustmentStore';
 import useAdjustmentMappings from '@/hooks/useAdjustmentMappings.js';
+import { hasPermission } from '@/utils/permissionUtils.js';
+import CountAlertBox from '@/components/common/CountAlertBox.jsx';
 
 const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
+    const userRole = localStorage.getItem("user_role");
+    const isAuthorized = hasPermission("deviceEditIcon", userRole);
+    const [alertBox, setAlertBox] = useState(null);
+    
     const codeMappings = useAdjustmentMappings();
     const {
         adjustmentCategories,
@@ -41,11 +47,21 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
 
     // console.log(detailData)
     // console.log(yearMonth)
-    const [alertBox, setAlertBox] = useState(null);
+    const [alert, setAlert] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({});
 
-    const toggleDropdown = () => setIsOpen(!isOpen);
+    const toggleDropdown = () => {
+        if (!isAuthorized) {
+            setAlertBox({
+                type: "error",
+                message: "이 작업은 권한이 있는 사용자만 접근할 수 있습니다.",
+            });
+            return;
+        }
+
+        setIsOpen(!isOpen);
+    };
     const closeDropdown = () => setIsOpen(false);
 
     // ✅ detailData가 바뀔 때 formData 초기화
@@ -121,7 +137,7 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
             // 3. PUT 요청
             await saveKOMonthlyDetailData(data_index, updatedPayload);
 
-            setAlertBox({
+            setAlert({
                 type: "success",
                 title: "저장 성공",
                 message: "데이터가 성공적으로 저장되었습니다.",
@@ -130,14 +146,14 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
             closeDropdown();
         } catch (error) {
             console.error("Error updating data:", error);
-            setAlertBox({
+            setAlert({
                 type: "danger",
                 title: "저장 실패",
                 message: "서버에 데이터를 저장하지 못했습니다.",
             });
         }
 
-        setTimeout(() => setAlertBox(null), 3000);
+        setTimeout(() => setAlert(null), 3000);
     };
 
 
@@ -151,9 +167,15 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
 
     return (
         <div className="relative inline-block float-right">
+            <CountAlertBox
+                type={alertBox?.type}
+                message={alertBox?.message}
+                onClose={() => setAlertBox(null)}
+            />
+
             {/* ✅ AlertBox */}
-            {alertBox && (
-                <AlertBox type={alertBox.type} title={alertBox.title} message={alertBox.message} />
+            {alert && (
+                <AlertBox type={alert.type} title={alert.title} message={alert.message} />
             )}
 
             <button

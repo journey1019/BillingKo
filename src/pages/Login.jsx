@@ -41,6 +41,7 @@ const Login = ({ setAuth }) => {
             localStorage.setItem("token", data.user_token);
             localStorage.setItem("user_id", data.user_id);
             localStorage.setItem("user_name", data.user_nm);
+            localStorage.setItem("user_role", data.user_role);
             localStorage.setItem("token_expired", data.token_expired);
 
             // ID/PW 기억하기 설정

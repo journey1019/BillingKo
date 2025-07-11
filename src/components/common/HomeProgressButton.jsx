@@ -9,6 +9,8 @@ import { getCurrentYearMonth, getNextYearMonth } from '@/utils/dateUtils.js';
 import StepOption from '@/components/ui/step/StepOption';
 import { getStepColorClass } from '@/utils/stepMapping.js';
 
+import { hasPermission } from '@/utils/permissionUtils.js';
+import CountAlertBox from '@/components/common/CountAlertBox.jsx';
 
 const HomeProgressButton = () => {
     const currentYearMonthly = useMemo(() => getCurrentYearMonth(), []);
@@ -19,8 +21,21 @@ const HomeProgressButton = () => {
 
     const [openStepKey, setOpenStepKey] = useState(null);
 
+    const [alertBox, setAlertBox] = useState(null);
+
     const toggleDrawer = (stepKey) => {
-        setOpenStepKey(prev => prev === stepKey ? null : stepKey);
+        const userRole = localStorage.getItem("user_role");
+        const isAuthorized = hasPermission("progressHome", userRole);
+
+        if (!isAuthorized) {
+            setAlertBox({
+                type: "error",
+                message: "이 작업은 권한이 있는 사용자만 접근할 수 있습니다.",
+            });
+            return;
+        }
+
+        setOpenStepKey((prev) => (prev === stepKey ? null : stepKey));
     };
 
     useEffect(() => {
@@ -30,6 +45,12 @@ const HomeProgressButton = () => {
 
     return(
         <div className="flex flex-row space-x-2">
+            <CountAlertBox
+                type={alertBox?.type}
+                message={alertBox?.message}
+                onClose={() => setAlertBox(null)}
+            />
+
             <div className="flex flex-col items-start text-center w-full relative">
                 <div className="flex flex-row space-x-2 items-center">
                     <span className="text-base font-medium">📆 다음 달 납입 현황</span>

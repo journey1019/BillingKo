@@ -2,29 +2,36 @@ import { useState } from "react";
 import { useStepperStore } from "@/stores/stepperStore";
 import StepDrawer from "./StepDrawer";
 import StepOption from './StepOption.jsx';
-import { getStepApiKey } from '@/utils/stepMapping.js';
+import { getStepApiKey, getStepColorClass } from '@/utils/stepMapping.js';
 import { getCurrentYearMonth, getNextYearMonth } from '@/utils/dateUtils.js';
 
-const getStepColorClass = (stepStatus) => {
-    switch (stepStatus) {
-        case "Y":
-            return "bg-indigo-600 text-white border border-indigo-200";
-        case "U":
-            return "bg-sky-300 text-white border border-sky-200";
-        default:
-            return "bg-gray-100 text-gray-600 border border-gray-300";
-    }
-};
+import { hasStepPermission } from '@/utils/permissionUtils.js';
+import CountAlertBox from '@/components/common/CountAlertBox.jsx';
 
 const steps = ["납입 현황", "파일", "단말별 청구서", "고객별 청구서"];
 
 const Stepper = () => {
+    // User Role
+    const userRole = localStorage.getItem('user_role');
+    const [alertBox, setAlertBox] = useState(null);
+
     const stepMap = useStepperStore((state) => state.stepMap);
     const [openStepKey, setOpenStepKey] = useState(null);
 
     const toggleDrawer = (stepKey) => {
+        const allow = hasStepPermission(stepKey, userRole);
+
+        if (!allow) {
+            setAlertBox({
+                type: "error",
+                message: `"${stepKey}" 단계는 권한이 있는 사용자만 접근할 수 있습니다.`,
+            });
+            return;
+        }
+
         setOpenStepKey(prev => prev === stepKey ? null : stepKey);
     };
+
 
     const firstStep = steps[0]; // 납입 현황
     const restSteps = steps.slice(1); // 파일, 단말별 청구서, 고객별 청구서
@@ -34,6 +41,12 @@ const Stepper = () => {
 
     return (
         <div className="relative w-full">
+            <CountAlertBox
+                type={alertBox?.type}
+                message={alertBox?.message}
+                onClose={() => setAlertBox(null)}
+            />
+
             {/* ✅ Drawer 영역 */}
             <StepDrawer isOpen={!!openStepKey} onClose={() => setOpenStepKey(null)}>
                 <div className="text-sm font-medium text-black">
@@ -70,12 +83,11 @@ const Stepper = () => {
                     {restSteps.map((stepKey, index) => {
                         const globalIndex = index + 1;
                         const status = stepMap[getStepApiKey(stepKey)];
-                        console.log(status)
 
                         return (
                             <li
                                 key={stepKey}
-                                onClick={() => toggleDrawer(stepKey)}
+                                onClick={() => toggleDrawer(stepKey, globalIndex)}
                                 className={`relative flex-1 flex flex-col items-center cursor-pointer text-white group`}
                             >
                                 {/* 라인 */}

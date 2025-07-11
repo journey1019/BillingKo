@@ -6,10 +6,26 @@ import { createAdjustment, fetchAdjustmentCodeName } from '@/service/adjustmentS
 import CodeCreateModal from '@/components/common/CodeCreateModal.jsx';
 import { CiCirclePlus } from "react-icons/ci";
 import { createCode } from '@/service/codeService.js';
+import { hasPermission } from '@/utils/permissionUtils.js';
+import CountAlertBox from '@/components/common/CountAlertBox.jsx';
 
 const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, taxFreeYn }) => {
+    const userRole = localStorage.getItem("user_role");
+    const isAuthorized = hasPermission("accountEditIcon", userRole);
+    const [alertBox, setAlertBox] = useState(null);
+
     const [isOpen, setIsOpen] = useState(false);
-    const toggleDropdown = () => setIsOpen(!isOpen);
+    const toggleDropdown = () => {
+        if (!isAuthorized) {
+            setAlertBox({
+                type: "error",
+                message: "이 작업은 권한이 있는 사용자만 접근할 수 있습니다.",
+            });
+            return;
+        }
+
+        setIsOpen(!isOpen)
+    };
     const closeDropdown = () => setIsOpen(false);
 
     // ✅ API에서 가져온 옵션 데이터 상태
@@ -144,6 +160,11 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
 
     return (
         <div className="relative inline-block float-right">
+            <CountAlertBox
+                type={alertBox?.type}
+                message={alertBox?.message}
+                onClose={() => setAlertBox(null)}
+            />
             <button className="hover:text-gray-500" onClick={toggleDropdown}>
                 <MdEdit />
             </button>

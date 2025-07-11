@@ -8,6 +8,9 @@ import withReactContent from "sweetalert2-react-content";
 import { Alert, Snackbar, Tooltip } from "@mui/material"; // ✅ MUI Alert 추가
 import { getLastMonthYYYYMM } from '@/utils/formatHelpers.jsx';
 
+import { hasPermission } from '@/utils/permissionUtils.js';
+import CountAlertBox from '@/components/common/CountAlertBox.jsx';
+
 const SaveButton = ({ yearMonth }) => {
     const navigate = useNavigate();
     const befoMonth = getLastMonthYYYYMM(); // 오늘날 기준에서 저번달 'YYYYMM'
@@ -19,6 +22,27 @@ const SaveButton = ({ yearMonth }) => {
     const MySwal = withReactContent(Swal);
 
     const isCurrentTargetMonth = yearMonth === befoMonth;
+
+    // User Role
+    const userRole = localStorage.getItem('user_role');
+    const isAuthorized = hasPermission('saveMonthly', userRole);
+    const [alertBox, setAlertBox] = useState(null);
+
+
+    const handleOpenConfirm = () => {
+        if (!isAuthorized) { // 권한 X
+            setAlertBox({
+                type: 'error',
+                message: '이 작업은 권한이 있는 사용자만 수행할 수 있습니다.',
+            });
+
+            return;
+        }
+        if (isCurrentTargetMonth) { // 권한 O
+            setShowConfirmModal(true);
+        }
+    };
+
 
     const handleSave = async () => {
         if(!isCurrentTargetMonth) return; // 잘못된 실행 방지
@@ -73,7 +97,7 @@ const SaveButton = ({ yearMonth }) => {
         <>
             <Tooltip title={isCurrentTargetMonth ? <div>단말기와 고객의 최종 매칭 내용을 확인한 후 저장해 주세요.<br />저장 후에는 수정하거나 다시 저장할 수 없습니다.</div> : '저장 및 조정은 이번 달 청구서 대상인 전월 데이터에만 가능합니다.'}>
                 <button
-                    onClick={() => {if(isCurrentTargetMonth) setShowConfirmModal(true)}}
+                    onClick={handleOpenConfirm}
                     className={`flex flex-row items-center space-x-2 p-2 rounded-md text-white transition ${
                         !isCurrentTargetMonth
                             ? 'bg-gray-300 cursor-not-allowed'
@@ -94,6 +118,13 @@ const SaveButton = ({ yearMonth }) => {
                     <span>{isLoading ? 'Saving...' : 'Save Monthly'}</span>
                 </button>
             </Tooltip>
+            <CountAlertBox
+                type={alertBox?.type}
+                message={alertBox?.message}
+                onClose={() => setAlertBox(null)}
+            />
+
+
 
             {/* ✅ MUI Alert을 Snackbar로 감싸서 표시 */}
             <Snackbar

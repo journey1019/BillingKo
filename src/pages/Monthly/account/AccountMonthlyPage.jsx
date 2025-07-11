@@ -84,9 +84,6 @@ const AccountMonthlyPage = () => {
         fetchAccountDetailData(yearMonth, selectedRowId.acct_num);
     }, [selectedRowId])
 
-    // console.log(selectedRowId)
-    // console.log(selectRow)
-    // console.log(accountDetailData)
     const handleExportCSV = () => {
         const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, monthlyAcctData);
         exportToCSV(exportData, 'Acct_Bill.csv');
@@ -97,8 +94,6 @@ const AccountMonthlyPage = () => {
         exportToExcel(exportData, 'Acct_Bill.xlsx');
     };
 
-    console.log(yearMonth)
-    console.log(monthlyAcctSaveData)
     return(
         <>
             <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>

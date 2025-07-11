@@ -10,10 +10,12 @@ import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
 import RefreshButton from '@/components/common/RefreshButton.jsx';
 import AccountPaymentList from '@/components/form/Homepage/AccountPaymentList.jsx';
 import ConfirmModal from '@/components/ui/modals/ConfirmModal.jsx';
+import CountAlertBox from '@/components/common/CountAlertBox.jsx';
 
 import { prepareExportData } from '@/utils/exportHelpers';
 import { exportToCSV } from '@/utils/csvExporter';
 import { exportToExcel } from '@/utils/excelExporter';
+import { hasPermission } from '@/utils/permissionUtils.js';
 
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Button, CircularProgress, LinearProgress, Skeleton, Stack, Alert } from '@mui/material';
@@ -35,6 +37,11 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
     // Save 상태 추가
     const [saving, setSaving] = useState(false); // 저장 중 로딩 표시용
     const hasModifiedRows = tableRows.some(row => row.isModified); // 저장 버튼 활성화 조건 (isModified === true 여부)
+
+    // User Role 알림
+    const userRole = localStorage.getItem("user_role");
+    const isAuthorized = hasPermission("paymentSave", userRole);
+    const [alertBox, setAlertBox] = useState(null);
 
     // 데이터 가공(acct_name, final_fee, payment_amount_fee, confirm_yn 등)
     useEffect(() => {
@@ -209,6 +216,14 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
         const modifiedRows = tableRows.filter((row) => row.isModified);
         if (modifiedRows.length === 0) return alert('⚠️ 수정된 데이터가 없습니다.');
 
+        if (!isAuthorized) {
+            setAlertBox({
+                type: "error",
+                message: "이 작업은 권한이 있는 사용자만 접근할 수 있습니다.",
+            });
+            return;
+        }
+
         // 과오납, 부분납, 완전 미납, 완납
         let overpaidRows = [], underpaidRows = [], unpaidRows = [], exactPaidRows = [];
 
@@ -271,6 +286,13 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
 
     return (
         <Box sx={{ width: '100%', p: 2, mb: 8, backgroundColor: 'white', borderRadius: 2, boxShadow: 1 }}>
+
+            <CountAlertBox
+                type={alertBox?.type}
+                message={alertBox?.message}
+                onClose={() => setAlertBox(null)}
+            />
+
             <div className="flex flex-row items-center justify-between mb-3">
                 <h1 className="text-xl font-bold">
                     {selectedDate.toLocaleDateString('ko-KR', {
