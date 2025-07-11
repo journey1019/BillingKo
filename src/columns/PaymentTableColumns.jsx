@@ -81,8 +81,7 @@ const PaymentTableColumns = ({ onFinalFeeClick }) => [
         field: 'none_pay_fee_basic',
         headerName: '미납금',
         width: 100,
-        editable: false,
-        cellClassName: 'bg-[#dedede]',
+        editable: true,
         type: 'number',
     },
     {

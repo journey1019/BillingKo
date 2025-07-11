@@ -9,6 +9,7 @@ import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
 import RefreshButton from '@/components/common/RefreshButton.jsx';
 import AccountPaymentList from '@/components/form/Homepage/AccountPaymentList.jsx';
+import ConfirmModal from '@/components/ui/modals/ConfirmModal.jsx';
 
 import { prepareExportData } from '@/utils/exportHelpers';
 import { exportToCSV } from '@/utils/csvExporter';
@@ -200,79 +201,57 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
      * 1. 상태별 Confirm Alert: 과오납 | 부분납 | 미납 | 완납 (상태별 행 분류)
      * 2. 성공 시 모든 행의 isModified = false 초기화
      * */
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [confirmRows, setConfirmRows] = useState([]);
+    const [confirmNotices, setConfirmNotices] = useState([]);
+
     const handleSaveAll = async () => {
         const modifiedRows = tableRows.filter((row) => row.isModified);
+        if (modifiedRows.length === 0) return alert('⚠️ 수정된 데이터가 없습니다.');
 
-        if (modifiedRows.length === 0) {
-            alert('⚠️ 수정된 데이터가 없습니다.');
-            return;
-        }
-
-        // 분류
-        let overpaidRows = []; // 과오납
-        let underpaidRows = []; // 부분납
-        let unpaidRows = [];    // 완전 미납
-        let exactPaidRows = []; // 완납
+        // 과오납, 부분납, 완전 미납, 완납
+        let overpaidRows = [], underpaidRows = [], unpaidRows = [], exactPaidRows = [];
 
         modifiedRows.forEach(row => {
             const finalFee = Number(row.final_fee);
             const paymentFee = Number(row.payment_amount_fee);
 
-            if (finalFee === 0 && paymentFee === 0 || finalFee === paymentFee) {
-                exactPaidRows.push(row); // 완납
-            } else if (paymentFee > finalFee) {
-                overpaidRows.push(row); // 과오납
-            } else if (paymentFee === 0 && finalFee > 0) {
-                unpaidRows.push(row); // 미납
-            } else if (paymentFee > 0 && paymentFee < finalFee) {
-                underpaidRows.push(row); // 부분납
-            } else {
-                unpaidRows.push(row); // 모든 예외도 미납 처리
-            }
+            if (finalFee === 0 && paymentFee === 0 || finalFee === paymentFee) exactPaidRows.push(row); // 완납
+            else if (paymentFee > finalFee) overpaidRows.push(row); // 과오납
+            else if (paymentFee === 0 && finalFee > 0) unpaidRows.push(row); // 미납
+            else if (paymentFee > 0 && paymentFee < finalFee) underpaidRows.push(row); // 부분납
+            else unpaidRows.push(row);
         });
 
-        // 🔹 1. 수정된 전체 항목 요약 메시지
-        const allRowsMessage = [...exactPaidRows, ...underpaidRows, ...unpaidRows, ...overpaidRows]
-            .map(row => {
-                const finalFee = Number(row.final_fee);
-                const paymentFee = Number(row.payment_amount_fee);
-                let status = '';
+        const confirmList = [...exactPaidRows, ...underpaidRows, ...unpaidRows, ...overpaidRows].map(row => {
+            const finalFee = Number(row.final_fee);
+            const paymentFee = Number(row.payment_amount_fee);
+            let status = '';
+            if (paymentFee > finalFee) status = '과오납';
+            else if (paymentFee === finalFee) status = '완납';
+            else if (paymentFee === 0 && finalFee > 0) status = '미납';
+            else status = '부분납';
 
-                if (paymentFee > finalFee) status = '과오납';
-                else if (paymentFee === finalFee) status = '완납';
-                else if (paymentFee === 0 && finalFee > 0) status = '미납';
-                else status = '부분납';
+            return { acct_name: row.acct_name, acct_num: row.acct_num, status };
+        });
 
-                return `- ${row.acct_name} (${row.acct_num}): ${status}`;
-            })
-            .join('\n');
+        // 추가 경고
+        const notices = [];
+        if (underpaidRows.length) notices.push('부분납된 금액은 미납으로 처리되며, 다음달 청구서에 연체료가 포함됩니다.');
+        if (unpaidRows.length) notices.push('미납 항목이 존재합니다. 납부 금액이 0원입니다.');
+        if (overpaidRows.length) notices.push('초과 납부된 금액은 다음달 청구금에서 감면됩니다.');
 
+        setConfirmRows(confirmList);
+        setConfirmNotices(notices);
+        setConfirmOpen(true);
+    };
 
-        // 🔸 2. 부분납에 대한 추가 경고
-        const hasPartial = underpaidRows.length > 0;
-        const hasUnpaid = unpaidRows.length > 0;
-        const hasOverPaid = overpaidRows.length > 0;
-
-        let partialNotice = '';
-        if (hasPartial) {
-            partialNotice += '\n\n⚠️ 부분납된 금액은 미납으로 처리되며, 다음달 청구서에 미납금과 함께 연체료가 포함되어 청구됩니다.';
-        }
-        if (hasUnpaid) {
-            partialNotice += '\n\n⚠️ 미납 항목이 존재합니다. 납부 금액이 0원입니다.';
-        }
-        if (hasOverPaid) {
-            partialNotice += '\n\n⚠️ 초과 납부된 금액은 다음달 청구금에서 감면되어 반영됩니다.';
-        }
-
-
-        const confirmResult = window.confirm(
-            `다음 항목의 변경 내용이 감지되었습니다:\n\n${allRowsMessage}${partialNotice}\n\n저장하시겠습니까?`
-        );
-
-        if (!confirmResult) return;
-
+    const handleConfirmSave = async () => {
         try {
             setSaving(true);
+            setConfirmOpen(false);
+            const modifiedRows = tableRows.filter((r) => r.isModified);
+
             const postData = modifiedRows.map(({ id, isModified, confirm_payment_date, ...rest }) => ({
                 ...rest,
                 confirm_payment_date: confirm_payment_date
@@ -284,7 +263,6 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
             alert('✅ 수정된 항목 저장 완료');
             setTableRows((prev) => prev.map(row => ({ ...row, isModified: false })));
         } catch (err) {
-            console.error('❌ 저장 실패:', err);
             alert('❌ 저장 실패');
         } finally {
             setSaving(false);
@@ -384,6 +362,14 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
                     />
                 </Box>
             )}
+
+            <ConfirmModal
+                open={confirmOpen}
+                messageList={confirmRows}
+                notices={confirmNotices}
+                onConfirm={handleConfirmSave}
+                onCancel={() => setConfirmOpen(false)}
+            />
         </Box>
     );
 };
