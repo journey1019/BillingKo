@@ -30,6 +30,7 @@ const UseByteDetailItem = ({ detailData, paymentInfo, paymentFeeDetail, dProduct
     return(
         <div className="flex flex-col gap-4">
             <div className="bg-white px-4">
+                <span className=" text-xs text-red-500 items-end">* 조정 비율, 조정 금액, 요금 정보 등 적용 금액 모두 수동 입력 필요</span>
                 <h2 className="text-lg font-semibold pb-2">요금 발생 바이트 상세 정보</h2>
                 {paymentFeeDetail.length > 0 ? (
                     <div className="max-h-60 overflow-y-auto border border-gray-300 rounded-md">

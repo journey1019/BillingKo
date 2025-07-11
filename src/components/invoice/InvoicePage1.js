@@ -54,9 +54,9 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     ---------------------------- */
     const accountData = applyDefaultValues(accountDetailData?.[0] || {}, defaultAccountData);
 
-    // console.log(accountDetailData)
+    console.log(accountDetailData)
     // console.log(accountData)
-    // console.log(accountData)
+    console.log(accountData)
     const acct_num = accountData.acct_num; // 없으면 '-'
     const acct_name = accountData.account_info.acct_name;
     const utf8_acct_name = decodeURIComponent(encodeURIComponent(acct_name)); // `unescape()` 대체
@@ -87,7 +87,7 @@ export const generateInvoicePage1 = (doc, yearMonth, invoiceBasicData, accountDe
     const adjustmentDescription = adjustmentInfos.map(info => info.description).join('& '); // 예: "NMS, 위성료, 통신보조금"
     // Details of Unpaid Table (Third Table)
     const nonePayInfos = Array.isArray(accountData.none_pay_info) ? accountData.none_pay_info : [];
-    const late_surcharge = ""; // 연체가산금
+    const late_surcharge = formatNumberWithCommas(accountData.late_payment_penalty_fee); // 연체가산금
     const none_pay_total = formatNumberWithCommas(accountData.none_pay_fee); // 미납요금계
 
     /* ----------------------------

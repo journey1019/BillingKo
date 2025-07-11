@@ -15,7 +15,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.9",
     "@mui/lab": "^6.0.0-beta.24",
-    "@mui/material": "^6.4.1",
+    "@mui/material": "^6.4.12",
     "@mui/x-data-grid": "^7.26.0",
     "@mui/x-date-pickers": "^8.5.2",
     "@pdf-lib/fontkit": "^1.1.1",

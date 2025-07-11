@@ -14,7 +14,7 @@ const Example = () => {
     console.log(solution(array, 123))
 
 
-    return <></>;
+    return <>Version 20250710</>;
 }
 
 export default Example;

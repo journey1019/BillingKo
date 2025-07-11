@@ -51,7 +51,6 @@ const CustomProgressBar = ({ acct_num, monthlyAcctSaveData, totalUnpaidFee, conf
             <div className="bg-white rounded-2xl shadow-md">
                 <h1 className="p-4 bg-neutral-200 rounded-t-2xl text-lg font-semibold">
                     {acct_num} 총 미수금 현황
-                    {/*{formatYearMonth(yearMonth)} 총 미수금 현황*/}
                 </h1>
 
                 <div className="p-4 items-center">

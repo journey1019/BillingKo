@@ -1,5 +1,9 @@
 // ✅ exportHelpers.js
 export const prepareExportData = (columns, data) => {
+    if (!columns || !Array.isArray(columns)) {
+        console.error("Invalid columns passed to prepareExportData", columns);
+        return [];
+    }
     return data.map(row => {
         const rowData = {};
         columns.forEach(col => {

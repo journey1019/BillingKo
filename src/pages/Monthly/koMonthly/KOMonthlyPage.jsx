@@ -17,6 +17,7 @@ import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
 import { getExportDataFromTable } from '@/utils/exportHelpers';
 import { exportToCSV } from '@/utils/csvExporter';
 import { exportToExcel } from '@/utils/excelExporter';
+import ProgressButton from '../../../components/common/ProgressButton.jsx';
 /**
  * @desc: 단말기별 청구서 수정 페이지
  * */
@@ -86,10 +87,6 @@ const KOMonthlyPage = () => {
         fetchDetailData(selectedMonthlyIndex.data_index);
     }, [selectedMonthlyIndex]);
 
-    // console.log('detailData: ', detailData)
-    // console.log(selectedMonthlyIndex)
-    // console.log(yearMonth)
-
     const handleExportCSV = () => {
         const exportData = getExportDataFromTable(MonthlyTableColumns, koMonthlyData);
         exportToCSV(exportData, 'Dev_Bill.csv');
@@ -99,11 +96,12 @@ const KOMonthlyPage = () => {
         const exportData = getExportDataFromTable(MonthlyTableColumns, koMonthlyData);
         exportToExcel(exportData, 'Dev_Bill.xlsx');
     };
-    console.log(koMonthlyLoading)
+
     return (
         <div className={clsx('grid gap-0', isExpanded ? 'grid-cols-6' : 'grid-cols-2')}>
-            <div className="col-span-6 border-b pb-3 mb-2 border-gray-400">
+            <div className="flex flex-row col-span-6 border-b pb-2 mb-2 border-gray-400 justify-between items-center">
                 <h1 className="text-xl font-base font-bold">단말기별 청구서 수정 및 저장 페이지</h1>
+                <ProgressButton keyTitle="단말별 청구서"/>
             </div>
 
             <div className={clsx(`p-2 ${isExpanded ? "col-span-2" : "col-span-6"}`)}>

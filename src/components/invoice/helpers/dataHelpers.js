@@ -18,6 +18,7 @@ export const defaultAccountData = {
     date_index: '-',
     device_detail: [],
     final_fee: null,
+    late_payment_penalty_fee: null, // 연체가산금
     modification_fee_count: null,
     modification_fee_total: null,
     monthly_final_fee: null,

@@ -120,8 +120,7 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
             )
         );
         return updatedRow;
-    };
-
+    }
 
     /**
      * ✅ 체크박스 클릭처리
@@ -195,7 +194,6 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
     useEffect(() => {
         setColumns(getPaymentTableColumns({ onFinalFeeClick: handleFinalFeeClick }));
     }, []);
-
 
     /**
      * 저장 처리

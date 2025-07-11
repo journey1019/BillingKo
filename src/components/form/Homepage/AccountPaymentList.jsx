@@ -292,6 +292,7 @@ const AccountPaymentList = ({ startDate, endDate, startIndex, endIndex, handleSt
                             </>
                         ) : accountPaymentHistoryData && selectedAcctNum ? (
                             <>
+                                {/* History ProgressBar 임시 제거 */}
                                 {/*<CustomProgressBar acct_num={selectedAcctNum} monthlyAcctSaveData={enhancedAccountPaymentHistoryData} totalUnpaidFee={totalUnpaidFee} confirmedFee={confirmedFee} unpaidFee={unpaidFee}/>*/}
 
                                 <ReusableTable
