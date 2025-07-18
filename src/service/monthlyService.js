@@ -117,3 +117,16 @@ export const deleteAccountInvoice = async (yearMonth) => {
         throw error;
     }
 };
+
+/**
+ * 저장된 Monthly 삭제
+ * @returns {Promise<object>} 서버 응답 데이터
+ */
+export const delKOMonthlyData = async (yearMonth) => {
+    try {
+        return await del(`/monthly/saveData/${yearMonth}`);
+    } catch (error) {
+        // console.error("Failed to fetch account History:", error.response?.data || error.message);
+        throw error;
+    }
+};

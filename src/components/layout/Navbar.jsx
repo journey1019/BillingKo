@@ -10,6 +10,7 @@ import Stepper from '@/components/ui/step/Stepper.jsx';
 import { FaBars, FaTimes, FaChalkboard, FaPrint } from 'react-icons/fa';
 import { TbLogout } from 'react-icons/tb';
 import { BiSolidUserAccount } from "react-icons/bi";
+import Alarm from '../alarm/Alarm.jsx';
 
 
 
@@ -80,7 +81,7 @@ const Navbar = () => {
 
 
                     {/* Main Menu */}
-                    <ul className="text-base flex space-x-4">
+                    <ul className="text-base flex items-center space-x-4">
                         <li>
                             <NavLink
                                 to="/ko_monthly"
@@ -107,6 +108,9 @@ const Navbar = () => {
                                 <FaPrint />
                                 <span>최종 청구서</span>
                             </NavLink>
+                        </li>
+                        <li>
+                            <Alarm />
                         </li>
                         <li>
                             <NavLink

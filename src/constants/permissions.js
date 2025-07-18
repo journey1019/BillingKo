@@ -8,6 +8,7 @@ export const ROLE = {
 
 export const PERMISSIONS = {
     saveMonthly: [ROLE.ADMIN, ROLE.INVOICE], // Monthly Page '단말기별 정산 내역 관리 페이지' - Button 'Save Monthly'
+    deleteMonthly: [ROLE.ADMIN, ROLE.INVOICE], // Monthly Page '단말기별 정산 내역 관리 페이지' - Button 'Delete Monthly'
     progressHome: [ROLE.ADMIN, ROLE.ACCOUNTING], // Homepage 단독 Progress - Button '납입 현황'
     paymentSave: [ROLE.ADMIN, ROLE.ACCOUNTING], // Homepage Payment - Button '전체 저장'
     deviceInvoice: [ROLE.ADMIN, ROLE.INVOICE], // KO Monthly Page '단말별 청구서 페이지' Progress - Button '단말별 청구서 작업 현황'

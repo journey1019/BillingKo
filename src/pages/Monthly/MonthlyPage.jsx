@@ -11,6 +11,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner.jsx';
 import useYearMonth from '@/hooks/useYearMonth.js';
 import MonthlyForm from '@/components/form/Monthly/MonthlyForm.jsx';
 import SaveButton from '@/components/common/SaveButton.jsx';
+import DeleteButton from '@/components/common/DeleteButton.jsx';
 import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import { IoMdClose } from "react-icons/io";
 import DeviceMonthlyForm from '@/components/form/Monthly/DeviceMonthlyForm.jsx';
@@ -77,7 +78,10 @@ const MonthlyPage = () => {
                         </span>
                     </Tooltip>
                 </div>
-                <SaveButton yearMonth={yearMonth} />
+                <div className="flex flex-row space-x-2">
+                    <DeleteButton yearMonth={yearMonth} />
+                    <SaveButton yearMonth={yearMonth} />
+                </div>
             </div>
 
             {/* Table */}

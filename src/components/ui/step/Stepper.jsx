@@ -29,6 +29,16 @@ const Stepper = () => {
             return;
         }
 
+        // ✅ '단말별 청구서'가 'Y'인 경우 접근 제한
+        const stepApiKey = getStepApiKey(stepKey);
+        if (stepApiKey === 'device' && stepMap.device === 'Y') {
+            setAlertBox({
+                type: "error",
+                message: `"${stepKey}" 단계는 작업 완료 처리되어 더 이상 수정할 수 없습니다.`,
+            });
+            return;
+        }
+
         setOpenStepKey(prev => prev === stepKey ? null : stepKey);
     };
 
