@@ -94,6 +94,8 @@ const KOMonthlyAccountSavePage = () => {
         exportToExcel(exportData, 'Final_Bill.xlsx');
     };
 
+    console.log(selectedRowData)
+
     return(
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             {/* 상단 제목 및 월 선택 */}
