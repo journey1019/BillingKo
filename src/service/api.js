@@ -3,12 +3,12 @@ import axios from "axios";
 /** 이전 버전 */
 // export const API_URL = "http://127.0.0.1:8000"; // Django API URL
 /** 현재 사용중 */
-export const API_URL = "http://112.168.252.12:29455"; // 테스트 환경
+// export const API_URL = "http://112.168.252.12:29455"; // 테스트 환경
 /** TEST 를 위한 별도 API URL 전달 */
 // export const API_URL = "http://127.0.0.1:8008";
 // export const API_URL = "http://0.0.0.0:8008";
 // export const API_URL = "http://192.168.0.74:8008";
-// export const API_URL = "http://112.168.252.12:29466"; // :33111 실 배포 환경
+export const API_URL = "http://112.168.252.12:29466"; // :33111 실 배포 환경
 
 // Axios 인스턴스 생성
 const api = axios.create({

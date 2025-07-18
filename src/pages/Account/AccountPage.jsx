@@ -7,6 +7,7 @@ import { useAcctClassificationOptions } from '@/selectors/useAccountSelectors';
 import { AccountTableColumns } from '@/columns/AccountTableColumns.jsx';
 import { AccountTableOptions } from '@/options/AccountTableOptions.jsx';
 import ReusableTable from '@/components/table/ReusableTable.jsx';
+import { getExportDataFromTable } from '@/utils/exportHelpers';
 import { exportToCSV } from '@/utils/csvExporter';
 import { exportToExcel } from '@/utils/excelExporter';
 
@@ -81,14 +82,30 @@ const AccountPage = () => {
         }
     };
 
+    const handleExportCSV = () => {
+        const sortedData = [...accountData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        })
+        const exportData = getExportDataFromTable(dynamicColumns, sortedData);
+        exportToCSV(exportData, 'Account.csv');
+    };
+
+    const handleExportExcel = () => {
+        const sortedData = [...accountData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        })
+        const exportData = getExportDataFromTable(dynamicColumns, sortedData);
+        exportToExcel(exportData, 'Account.xlsx');
+    };
+
     return (
         <ExpandablePageLayout
             title="고객 관리"
             isExpanded={isExpanded}
             leftTitle="고객 데이터 검토"
             newButtonTo="/accounts/new"
-            onExportCSV={() => exportToCSV(accountData, 'Accounts.csv')}
-            onExportExcel={() => exportToExcel(accountData, 'Accounts.xlsx')}
+            onExportCSV={handleExportCSV}
+            onExportExcel={handleExportExcel}
             onRefresh={fetchAccountData}
             table={
                 <ReusableTable

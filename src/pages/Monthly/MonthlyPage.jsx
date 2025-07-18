@@ -16,6 +16,7 @@ import MonthPickerArrow from '@/components/time/MonthPickerArrow.jsx';
 import { IoMdClose } from "react-icons/io";
 import DeviceMonthlyForm from '@/components/form/Monthly/DeviceMonthlyForm.jsx';
 import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { getExportDataFromTable } from '@/utils/exportHelpers';
 import { exportToCSV } from '@/utils/csvExporter';
 import { exportToExcel } from '@/utils/excelExporter';
 import useMonthlyStore from '@/stores/monthlyStore.js';
@@ -61,6 +62,24 @@ const MonthlyPage = () => {
         }
     }, [selectedRowData]);
 
+
+    const handleExportCSV = () => {
+        const sortedData = [...monthlyData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        })
+        const exportData = getExportDataFromTable(MonthlyTableColumns, sortedData);
+        exportToCSV(exportData, 'Monthly.csv');
+    };
+
+    const handleExportExcel = () => {
+        const sortedData = [...monthlyData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        })
+        const exportData = getExportDataFromTable(MonthlyTableColumns, sortedData);
+        exportToExcel(exportData, 'Monthly.xlsx');
+    };
+
+
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
             {/* Save */}
@@ -97,8 +116,8 @@ const MonthlyPage = () => {
                     <div className="flex flex-row z-10 items-center space-x-4">
                         <MonthPickerArrow value={selectedDate} onDateChange={handleDateChange} />
                         <DataActionDropdown
-                            onExportCSV={() => exportToCSV(monthlyData, 'Monthly.csv')}
-                            onExportExcel={() => exportToExcel(monthlyData, 'Monthly.xlsx')}
+                            onExportCSV={handleExportCSV}
+                            onExportExcel={handleExportExcel}
                             onRefresh={() => fetchMonthlyData(yearMonth)}
                         />
                     </div>

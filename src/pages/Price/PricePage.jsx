@@ -26,6 +26,7 @@ import usePriceStore from '@/stores/priceStore.js';
 
 import NewButton from '@/components/common/NewButton.jsx';
 import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { getExportDataFromTable } from '@/utils/exportHelpers';
 import { exportToCSV } from '@/utils/csvExporter';
 import { exportToExcel } from '@/utils/excelExporter';
 
@@ -87,6 +88,23 @@ const PricePage = () => {
         }
     };
 
+    const handleExportCSV = () => {
+        const sortedData = [...priceData].sort((a, b) => {
+            return Number(a.ppid) - Number(b.ppid);
+        })
+        const exportData = getExportDataFromTable(PriceTableColumns, sortedData);
+        exportToCSV(exportData, 'Prices.csv');
+    };
+
+    const handleExportExcel = () => {
+        const sortedData = [...priceData].sort((a, b) => {
+            return Number(a.ppid) - Number(b.ppid);
+        })
+        const exportData = getExportDataFromTable(PriceTableColumns, sortedData);
+        exportToExcel(exportData, 'Prices.xlsx');
+    };
+
+
     return (
         <>
             <ExpandablePageLayout
@@ -94,8 +112,8 @@ const PricePage = () => {
                 isExpanded={isExpanded}
                 leftTitle="고객별 및 단말기별 요금제 & 조정 설정"
                 newButtonTo="/price/new"
-                onExportCSV={() => exportToCSV(priceData, 'Prices.csv')}
-                onExportExcel={() => exportToExcel(priceData, 'prices.xlsx')}
+                onExportCSV={handleExportCSV}
+                onExportExcel={handleExportExcel}
                 onRefresh={fetchPriceData}
                 table={
                     <ReusableTable

@@ -8,6 +8,7 @@ import { DeviceTableColumns } from '@/columns/DeviceTableColumns.jsx';
 import { DeviceTableOptions } from '@/options/DeviceTableOptions.jsx';
 import NewButton from '@/components/common/NewButton.jsx';
 import DataActionDropdown from '@/components/common/DataActionDropdown.jsx';
+import { getExportDataFromTable } from '@/utils/exportHelpers';
 import { exportToCSV } from '@/utils/csvExporter';
 import { exportToExcel } from '@/utils/excelExporter';
 
@@ -79,6 +80,23 @@ const DevicePage = () => {
     // console.log('historyData', historyData)
     // console.log('deviceHistoryLogData', deviceHistoryLogData)
 
+    const handleExportCSV = () => {
+        const sortedData = [...deviceData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        })
+        const exportData = getExportDataFromTable(DeviceTableColumns, sortedData);
+        exportToCSV(exportData, 'Devices.csv');
+    };
+
+    const handleExportExcel = () => {
+        const sortedData = [...deviceData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        })
+        const exportData = getExportDataFromTable(DeviceTableColumns, sortedData);
+        exportToExcel(exportData, 'Devices.xlsx');
+    };
+
+
 
     return (
         <>
@@ -87,8 +105,8 @@ const DevicePage = () => {
                 isExpanded={isExpanded}
                 leftTitle="단말기 기본정보 & 매핑 & 수정"
                 newButtonTo="/devices/new"
-                onExportCSV={() => exportToCSV(deviceData, 'Devices.csv')}
-                onExportExcel={() => exportToExcel(deviceData, 'Devices.xlsx')}
+                onExportCSV={handleExportCSV}
+                onExportExcel={handleExportExcel}
                 onRefresh={fetchDeviceData}
                 table={
                     <ReusableTable

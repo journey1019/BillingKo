@@ -42,9 +42,9 @@ export const getExportDataFromTable = (columns, data) => {
             }
 
             // 4️⃣ 숫자 값은 문자열로 깔끔히 변환
-            if (typeof value === 'number') {
-                value = value.toLocaleString();  // 원하는 경우 ,(콤마) 포함
-            }
+            // if (typeof value === 'number') {
+            //     value = value.toLocaleString();  // 원하는 경우 ,(콤마) 포함
+            // }
 
             rowData[header] = value ?? '';
         });

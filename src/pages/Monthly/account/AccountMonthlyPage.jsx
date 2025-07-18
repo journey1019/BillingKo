@@ -85,12 +85,18 @@ const AccountMonthlyPage = () => {
     }, [selectedRowId])
 
     const handleExportCSV = () => {
-        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, monthlyAcctData);
+        const sortedData = [...monthlyAcctData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        })
+        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, sortedData);
         exportToCSV(exportData, 'Acct_Bill.csv');
     };
 
     const handleExportExcel = () => {
-        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, monthlyAcctData);
+        const sortedData = [...monthlyAcctData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        })
+        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, sortedData);
         exportToExcel(exportData, 'Acct_Bill.xlsx');
     };
 

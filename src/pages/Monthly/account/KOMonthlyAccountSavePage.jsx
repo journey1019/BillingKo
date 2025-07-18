@@ -79,16 +79,21 @@ const KOMonthlyAccountSavePage = () => {
     if (invoiceBasicError) return <div>에러 발생: {invoiceBasicError.message}</div>;
 
     const handleExportCSV = () => {
-        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, monthlyAcctSaveData);
+        const sortedData = [...monthlyAcctSaveData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        });
+        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, sortedData);
         exportToCSV(exportData, 'Final_Bill.csv');
     };
 
     const handleExportExcel = () => {
-        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, monthlyAcctSaveData);
+        const sortedData = [...monthlyAcctSaveData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        });
+        const exportData = getExportDataFromTable(KOMonthlyAccountTableColumns, sortedData);
         exportToExcel(exportData, 'Final_Bill.xlsx');
     };
 
-    console.log(monthlyAcctSaveData)
     return(
         <div className={`grid gap-0 ${isExpanded ? 'grid-cols-6' : 'grid-cols-2'}`}>
             {/* 상단 제목 및 월 선택 */}

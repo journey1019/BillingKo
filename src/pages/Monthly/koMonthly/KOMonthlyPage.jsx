@@ -88,12 +88,18 @@ const KOMonthlyPage = () => {
     }, [selectedMonthlyIndex]);
 
     const handleExportCSV = () => {
-        const exportData = getExportDataFromTable(MonthlyTableColumns, koMonthlyData);
+        const sortedData = [...koMonthlyData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        })
+        const exportData = getExportDataFromTable(MonthlyTableColumns, sortedData);
         exportToCSV(exportData, 'Dev_Bill.csv');
     };
 
     const handleExportExcel = () => {
-        const exportData = getExportDataFromTable(MonthlyTableColumns, koMonthlyData);
+        const sortedData = [...koMonthlyData].sort((a, b) => {
+            return a.acct_num.localeCompare(b.acct_num);
+        })
+        const exportData = getExportDataFromTable(MonthlyTableColumns, sortedData);
         exportToExcel(exportData, 'Dev_Bill.xlsx');
     };
 
