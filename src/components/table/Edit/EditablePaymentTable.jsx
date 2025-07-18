@@ -284,6 +284,18 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
         }
     };
 
+    const handleRefreshConfirm = () => {
+        if (hasModifiedRows) {
+            const shouldProceed = window.confirm(
+                "변경된 내용이 있습니다.\n리프레시하면 수정 중인 항목들이 초기화됩니다.\n계속하시겠습니까?"
+            );
+            if (!shouldProceed) return;
+        }
+
+        fetchMonthlyAcctSaveData(yearMonth);
+    };
+
+
     return (
         <Box sx={{ width: '100%', p: 2, mb: 8, backgroundColor: 'white', borderRadius: 2, boxShadow: 1 }}>
 
@@ -311,9 +323,9 @@ const EditablePaymentTable = ({ fetchMonthlyAcctSaveData, data, loading, error, 
                             const exportData = prepareExportData(columns, tableRows);
                             exportToExcel(exportData, 'Payment_Status.xlsx');
                         }}
-                        onRefresh={() => fetchMonthlyAcctSaveData(yearMonth)}
+                        onRefresh={handleRefreshConfirm}
                     />
-                    <RefreshButton onRefresh={() => fetchMonthlyAcctSaveData(yearMonth)}/>
+                    <RefreshButton onRefresh={handleRefreshConfirm}/>
                     <Stack direction="row" justifyContent="flex-end">
                         <Button variant="contained" color="primary" onClick={handleSaveAll} disabled={!hasModifiedRows || saving} startIcon={saving ? <CircularProgress size={16} color="inheerit" /> : null}
                         >
