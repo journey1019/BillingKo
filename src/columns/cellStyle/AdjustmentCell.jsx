@@ -90,19 +90,10 @@ export const AdjustmentCell_Cycle = ({ cell }) => {
     const value = cell.getValue();
     if(value === 'monthly') {
         return <span>정기(월)</span>
-    } else return <span>1회</span>
+    } else if(value === 'once') {
+        return <span>1회</span>
+    } else return <span>회차별 적용</span>
 };
-// export const AdjustmentCell_Cycle = ({ cell }) => {
-//     const value = cell.getValue();
-//
-//     const CycleStyle = (value === 'monthly' ? 'bg-orange-100 text-orange-800' : 'bg-yellow-100 text-yellow-800')
-//
-//     return (
-//         <span className={`px-2 py-1 rounded-full ${CycleStyle}`}>
-//             {value}
-//         </span>
-//     );
-// };
 
 
 export const AdjustmentCell_Use = ({ cell }) => {

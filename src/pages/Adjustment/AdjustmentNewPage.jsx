@@ -85,7 +85,8 @@ const AdjustmentNewPage = () => {
         mount_value: "",
         description: "",
         adjustment_cycle: "once",
-        date_index: "202501",
+        period_count: "",
+        date_index: "202501", // todo: default date 이번달로 지정
         use_yn: "Y",
         tax_free_yn: "Y"
     });
@@ -101,7 +102,7 @@ const AdjustmentNewPage = () => {
         const { name, value } = e.target;
 
         let formattedValue = value;
-        if (name === "mount_value") {
+        if (name === "mount_value" || name == "period_count") {
             formattedValue = value.replace(/[^0-9]/g, "");
         }
 
@@ -119,9 +120,15 @@ const AdjustmentNewPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if(formData.adjustment_cycle === "period" && (!formData.period_count || isNaN(formData.period_count))) {
+            setError("회차 지정 값을 올바르게 입력해 주세요.")
+            return;
+        }
+
         const validatedData = {
             ...formData,
             mount_value: Number(formData.mount_value.replace(/,/g, "")), // 숫자로 변환
+            period_count: Number(formData.period_count.replace(/,/g, "")), // 숫자로 변환
             description: formData.description.trim() === "" ? "" : formData.description,
         };
 
@@ -289,6 +296,32 @@ const AdjustmentNewPage = () => {
 
                     </div>
                 ))}
+
+                {/* ✅ '회차 지정' 입력 필드 (조건부 렌더링) */}
+                {formData.adjustment_cycle === "period" && (
+                    <div className="grid grid-cols-6 items-start space-x-4">
+                        <label htmlFor="period_count" className="col-span-2 text-sm font-medium text-gray-900">회차 지정</label>
+
+                        <div className="col-span-3">
+                            <input
+                                type="text"
+                                id="period_count"
+                                name="period_count"
+                                value={formData.period_count}
+                                onChange={handleChange}
+                                placeholder="예: 3"
+                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 text-right"
+                                required
+                            />
+                            {formData.period_count && (
+                                <p className="text-xs text-gray-500 mt-1">
+                                    *이번 달부터 입력한 {formData.period_count}개월 수만큼 조정 금액이 적용됩니다.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                )}
+
 
                 {/* ✅ 금액 입력 */}
                 <div className="grid grid-cols-6 items-center space-x-4">

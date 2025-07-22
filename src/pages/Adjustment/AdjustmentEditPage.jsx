@@ -31,6 +31,7 @@ const AdjustmentEditPage = () => {
         mount_value: "",
         description: "",
         adjustment_cycle: "once",
+        period_count: "",
         date_index: "",
         use_yn: "Y",
         tax_free_yn: "Y"
@@ -49,6 +50,7 @@ const AdjustmentEditPage = () => {
                     ...adjustment,  // 기존 값을 유지하면서 새로운 데이터 덮어쓰기
 
                     mount_value: adjustment.mount_value ? adjustment.mount_value.toString() : "", // 숫자 → 문자열 변환 (천 단위 표시)
+                    period_count: adjustment.period_count ? adjustment.period_count.toString() : "", // 숫자 → 문자열 변환 (천 단위 표시)
                 }));
             } catch (err) {
                 setError("조정 데이터를 불러오는 데 실패했습니다.");
@@ -69,7 +71,7 @@ const AdjustmentEditPage = () => {
         const { name, value } = e.target;
 
         let formattedValue = value;
-        if (name === "mount_value") {
+        if (name === "mount_value" || name === "period_count") {
             formattedValue = value.replace(/[^0-9]/g, ""); // 숫자만 유지
         }
 
@@ -83,10 +85,14 @@ const AdjustmentEditPage = () => {
             ...formData,
             mount_value: typeof formData.mount_value === "string"
                 ? Number(formData.mount_value.replace(/,/g, "")) // 문자열이라면 ',' 제거 후 숫자로 변환
-                : Number(formData.mount_value) // 숫자라면 그대로 변환
+                : Number(formData.mount_value), // 숫자라면 그대로 변환
+            period_count: typeof formData.period_count === "string"
+                ? Number(formData.period_count.replace(/,/g, "")) // 문자열이라면 ',' 제거 후 숫자로 변환
+                : Number(formData.period_count)
             // mount_value: Number(formData.mount_value.replace(/,/g, "")), // 저장할 때 숫자로 변환
         };
 
+        console.log(formattedData)
         try {
             // console.log("PUT 요청 보낼 데이터", formattedData);
             await updateAdjustment(adjustment_index, formattedData);
@@ -421,6 +427,30 @@ const AdjustmentEditPage = () => {
                     </div>
                 ))}
 
+                {/* ✅ '회차 지정' 입력 필드 */}
+                {formData.adjustment_cycle === "period" && (
+                    <div className="grid grid-cols-6 items-center space-x-4">
+                        <label htmlFor="period_count" className="col-span-2 text-sm font-medium text-gray-900">회차 지정</label>
+                        <div className="col-span-3">
+                            <input
+                                type="text" // ✅ input type을 text로 변경하여 문자열로 천 단위 표시
+                                id="period_count"
+                                name="period_count"
+                                value={formatNumberWithCommas(formData.period_count)} // ✅ 표시될 때는 천 단위 구분 추가
+                                onChange={handleChange}
+                                placeholder="예: 3"
+                                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 text-right"
+                                required
+                            />
+                            {formData.period_count && (
+                                <p className="text-xs text-gray-500 mt-1">
+                                    *이번 달부터 입력한 {formData.period_count}개월 수만큼 조정 금액이 적용됩니다.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 {/* ✅ 입력 필드 */}
                 <div className="grid grid-cols-6 items-center space-x-4">
                     <label htmlFor="mount_value" className="col-span-2 text-sm font-medium text-gray-900">적용 값</label>
@@ -522,7 +552,7 @@ const AdjustmentEditPage = () => {
 
                 {/* ✅ 버튼 */}
                 <div className="flex space-x-4">
-                    <button type="button"
+                    <button type="button" onClick={handleSubmit}
                             className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                         저장
                     </button>
