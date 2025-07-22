@@ -45,7 +45,7 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
         fetchOptions(); // ✅ 마운트 시 옵션 불러오기
     }, []);
 
-    // console.log(detailData)
+    console.log(detailData)
     // console.log(yearMonth)
     const [alert, setAlert] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -76,6 +76,9 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
             adjustment_fee: 0,
             description: "",
             adjustment_tax_free_yn: "N",
+            adjustment_cycle: Object.keys(codeMappings.adjustment_cycle)[0] || "",
+            date_index: "", // 초기값 설정 시 필요에 따라 지정
+            period_count: "", // 👈 추가
         });
     }, [detailData, codeMappings]);
 
@@ -229,7 +232,6 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
                             placeholder: "요금/요율"
                         },
                         { label: "조정 금액", name: "adjustment_fee", type: "number", placeholder: "0" },
-                        { label: "설명", name: "description", type: "text", placeholder: "-" },
                         { label: "적용 횟수", name: "adjustment_cycle", type: "select",
                             dataList: Object.entries(codeMappings.adjustment_cycle).map(([value, label]) => ({
                                 code_value: value,
@@ -238,6 +240,7 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
                             placeholder: "-"
                         },
                         { label: "적용 날짜", name: "date_index", type: "text", placeholder: "202501"},
+                        { label: "설명", name: "description", type: "text", placeholder: "-" },
                     ].map((field, index) => (
                         <FormInput
                             key={index}
@@ -247,7 +250,25 @@ const AdjustDropdownForm = ({ detailData, fetchDetailData, yearMonth }) => {
                             direct={field.type}
                         />
                     ))}
+
+                    {formData.adjustment_cycle === "period" && (
+                        <FormInput
+                            label="회차 주기"
+                            name="period_count"
+                            type="text"
+                            placeholder="예: 3"
+                            value={formData.period_count ?? ""}
+                            onChange={handleChange}
+                        />
+                    )}
+                    {formData.period_count && (
+                        <p className="text-xs text-gray-500 mt-1">
+                            이번 달부터 입력한 {formData.period_count}개월 동안 회차별 조정 금액이 적용됩니다.
+                        </p>
+                    )}
                 </div>
+
+
 
                 <div className="flex flex-row items-center px-4 py-2 space-x-2">
                     <label className="text-xs 2xl:text-sm font-semibold text-gray-600">부가세 할인 여부</label>
