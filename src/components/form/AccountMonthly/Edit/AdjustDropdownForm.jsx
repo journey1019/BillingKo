@@ -85,6 +85,7 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
         date_index: yearMonth, // 사용자가 입력
         use_yn: "Y", // boolean toggle
         tax_free_yn: taxFreeYn, // boolean toggle
+        period_count: "",
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -143,8 +144,17 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
             return;
         }
 
+        // ✅ 저장 전에 period_count를 숫자로 변환
+        const payload = {
+            ...formData,
+            mount_value: Number(formData.mount_value),
+            period_count: formData.period_count
+                ? Number(formData.period_count)
+                : undefined, // 혹은 null 처리도 가능
+        };
+
         try {
-            await createAdjustment(formData);
+            await createAdjustment(payload);
             alert("조정 정보가 추가되었습니다.");
             setFormData(initialFormData);
             setErrorMessage("");
@@ -243,6 +253,10 @@ const AdjustDropdownForm = ({ adjustmentCode, adjustmentCodeValue, yearMonth, ta
                             ))}
                         </select>
                     </div>
+
+                    {formData.adjustment_cycle === 'period' && (
+                        <FormInput label="회차 주기" name="period_count" type="text" value={formData.period_count} onChange={handleChange} placeholder="예: 3" />
+                    )}
 
                     <FormInput label="적용 날짜" name="date_index" type="text" value={formData.date_index} onChange={handleChange} placeholder="202501" />
 
