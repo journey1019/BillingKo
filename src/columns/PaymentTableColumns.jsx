@@ -32,7 +32,7 @@ const renderDateEditCell = (params) => {
             }}
             autoFocus
             reduceAnimations
-            disableOpenPicker
+            disableOpenPicker={false}
             slotProps={{
                 textField: {
                     variant: 'standard',
