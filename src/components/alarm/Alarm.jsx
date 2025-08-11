@@ -41,6 +41,7 @@ const Alarm = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    console.log(alarms)
     return (
         <div className="flex items-center">
             <div className="relative" ref={dropdownRef}>
@@ -61,7 +62,7 @@ const Alarm = () => {
                 {open && (
                     <div className="absolute right-0 top-10 mt-2 w-80 bg-white border rounded shadow-lg z-50 p-4">
                         <div className="flex justify-between items-center mb-2">
-                            <div className="text-sm font-semibold">📢 미확인 알림</div>
+                            <div className="text-sm text-gray-600">📢 미확인 알림</div>
                             {alarms.length > 0 && (
                                 <button
                                     onClick={handleConfirm}
@@ -81,7 +82,7 @@ const Alarm = () => {
                                     const keyMap = {
                                         cdr: '파일',
                                         device: '단말기 청구서',
-                                        account: '고객별 청구서',
+                                        billing: '고객별 청구서',
                                         payment: '납입 현황',
                                     };
                                     const keyLabel = keyMap[alarm.alarm_key] || alarm.alarm_key;
