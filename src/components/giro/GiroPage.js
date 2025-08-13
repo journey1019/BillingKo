@@ -54,9 +54,9 @@ export const GiroPage = (doc, yearMonth, invoiceBasicData, accountDetailData) =>
     const invoice_address2 = accountData.account_info.invoice_address2 || ""; // 없으면 '-'
     const invoice_postcode = String(accountData.account_info.invoice_postcode); // 없으면 '00000'
     const due_date_of_payment = `${nextYear}-${String(formattedNextMonth).padStart(2, '0')}-${String(lastDayOfMonth).padStart(2, '0')}`; // 납부기한
-    const monthly_final_fee = accountData.monthly_final_fee; // 합계금액
+    const monthly_final_fee = accountData.monthly_final_fee; // 당월납부액
+    const final_fee = accountData.final_fee; // 합계금액
     const billingMonth = `${nextYear}년 ${String(formattedNextMonth).padStart(2, '0')}월 청구서`
-
 
     /* ----------------------------
        청구서 양식 추출
@@ -112,7 +112,7 @@ export const GiroPage = (doc, yearMonth, invoiceBasicData, accountDetailData) =>
         지로 통지서 블록 (금액, 고객 정보 등)
     ---------------------------- */
     doc.setFontSize(13);
-    const text = String(monthly_final_fee);
+    const text = String(final_fee);
     const startY = 226; // 시작 Y 좌표
     const spacing = 5.2; // 문자 간격 (픽셀)
 
@@ -132,8 +132,8 @@ export const GiroPage = (doc, yearMonth, invoiceBasicData, accountDetailData) =>
     // 금액(요금)
     doc.setFont("NanumGothic", "bold");
     doc.setFontSize(11);
-    // doc.text(formatNumberWithCommas(monthly_final_fee), 37, 237);
-    doc.text(formatNumberWithCommas(monthly_final_fee), pageWidth - 158, 238, { align: 'right' });
+    // doc.text(formatNumberWithCommas(final_fee), 37, 237);
+    doc.text(formatNumberWithCommas(final_fee), pageWidth - 158, 238, { align: 'right' });
 
     // 첫 번째 열 (고객 번호, 고객, YYYY년 MM월 청구서, 납부기한)
     doc.setFontSize(10);

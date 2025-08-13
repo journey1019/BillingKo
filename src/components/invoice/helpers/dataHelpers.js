@@ -21,7 +21,7 @@ export const defaultAccountData = {
     late_payment_penalty_fee: null, // 연체가산금
     modification_fee_count: null,
     modification_fee_total: null,
-    monthly_final_fee: null,
+    monthly_final_fee: null, // 당월 납부액
     none_pay_fee: null,
     non_pay_info: [],
     subscribe_fee_count: null,
