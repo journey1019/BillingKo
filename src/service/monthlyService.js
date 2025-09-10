@@ -7,9 +7,9 @@ import { get, postWithBody, postWithAuth, del } from './api';
  */
 export const fetchMonthlyData = (yearMonth) => get(`/monthly/ko/${yearMonth}`);
 
-export const fetchMonthlyDetailData = async (data_index, serial_number) => {
+export const fetchMonthlyDetailData = async (data_index, serial_number, acct_num, ppid, profile_id) => {
     try {
-        return await get(`/monthly/ko/sn/${data_index}/${serial_number}`);
+        return await get(`/monthly/ko/sn/${data_index}/${serial_number}/${acct_num}/${ppid}/${profile_id}`);
     } catch (error) {
         console.error("Failed to fetch account History:", error.response?.data || error.message);
         throw error;

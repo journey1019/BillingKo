@@ -43,7 +43,7 @@ const useMonthlyStore = create((set, get) => ({
 
         set({ detailLoading: true, detailError: null });
         try {
-            const response = await fetchMonthlyDetailData(yearMonth, selectedRowData.serial_number);
+            const response = await fetchMonthlyDetailData(yearMonth, selectedRowData.serial_number, selectedRowData.acct_num, selectedRowData.ppid, selectedRowData.profile_id);
             set({ detailData: response });
         } catch (error) {
             set({ detailError: error.message || '상세 데이터를 불러오지 못했습니다.' });
