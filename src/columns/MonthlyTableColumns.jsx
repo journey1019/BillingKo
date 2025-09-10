@@ -96,11 +96,129 @@ export const MonthlyTableColumns = [
     {
         accessorKey: 'use_percent_of_month',
         header: '월 사용 비율(%)',
-        size: 200,
+        size: 150,
         Cell: ({ cell }) => (
             <div className="text-left">{cell.getValue()}%</div>
         ),
     },
+
+
+
+
+    // 고객별 청구서 처럼 컬럼 동일화 & 조정 내역 생성
+    // {
+    //     accessorKey: 'basic_fee',
+    //     header: '기본료',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'add_use_fee',
+    //     header: '통신료',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'modification_fee',
+    //     header: '부가 서비스료',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'subscribe_fee',
+    //     header: '기타사용료',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'total_fee',
+    //     header: '최종 금액',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+
+
+    // {
+    //     accessorKey: 'free_bytes',
+    //     header: '공급가액',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'free_bytes',
+    //     header: '부가세',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'free_bytes',
+    //     header: '절사금액',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'free_bytes',
+    //     header: '당월 납부액',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'free_bytes',
+    //     header: '조정 금액',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'free_bytes',
+    //     header: '연체 금액',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'free_bytes',
+    //     header: '미납 금액',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+    // {
+    //     accessorKey: 'free_bytes',
+    //     header: '최종 납부액',
+    //     Cell: ({ cell }) => (
+    //         <div className="text-right">{formatNumber(cell.getValue())}</div>
+    //     ),
+    //     muiTableHeadCellProps: { align: 'right' },
+    // },
+
+
+
+
+
+
+
     // {
     //     accessorKey: 'payment',
     //     header: 'Payment',

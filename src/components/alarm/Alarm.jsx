@@ -41,7 +41,6 @@ const Alarm = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    console.log(alarms)
     return (
         <div className="flex items-center">
             <div className="relative" ref={dropdownRef}>

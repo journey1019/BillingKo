@@ -79,6 +79,7 @@ const MonthlyPage = () => {
         exportToExcel(exportData, 'Monthly.xlsx');
     };
 
+    console.log(monthlyData)
 
     return (
         <div className={`grid gap-0 ${isExpanded ? "grid-cols-6" : "grid-cols-2"}`}>
